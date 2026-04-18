@@ -1318,4 +1318,58 @@
 </script>
 
 </body>
-          </html>
+          
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+
+<script>
+  // إعدادات مفاتيح مشروعك
+  const firebaseConfig = {
+    apiKey: "AIzaSyD8GM85IRh6Jt76R38sA6U6AaJ2CzRlTsI",
+    authDomain: "blackrock-95952.firebaseapp.com",
+    projectId: "blackrock-95952",
+    storageBucket: "blackrock-95952.firebasestorage.app",
+    messagingSenderId: "729385502252",
+    appId: "1:729385502252:web:4968ab485c05e72d193389",
+    measurementId: "G-FCBK94TLRT",
+    databaseURL: "https://blackrock-95952-default-rtdb.firebaseio.com/" 
+  };
+
+  // تشغيل الاتصال
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  // نظام الهوية: إنشاء رقم حساب فريد لكل هاتف يدخل الموقع
+  let userId = localStorage.getItem('blackrock_user_id');
+  if (!userId) {
+      userId = 'LP-' + Math.floor(Math.random() * 900000 + 100000);
+      localStorage.setItem('blackrock_user_id', userId);
+  }
+
+  // الربط مع قاعدة البيانات لجلب رصيد هذا المستخدم فقط
+  const userRef = database.ref('users/' + userId);
+  userRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+          // عرض الرصيد في الصفحة (تأكد أن لديك عنصر بـ id="user-balance")
+          const balanceElement = document.getElementById('user-balance');
+          if(balanceElement) balanceElement.innerText = data.balance + " $";
+      } else {
+          // إذا كان المستخدم جديداً، ننشئ له محفظة بـ 0 دولار في السيرفر
+          userRef.set({
+              id: userId,
+              balance: 0,
+              joinedAt: new Date().toLocaleString()
+          });
+      }
+  });
+
+  // وظيفة لكي ينسخ المستخدم رمزه ويرسله لك لتشحن له
+  function copyMyID() {
+      alert("رمز حسابك للشحن هو: " + userId);
+      navigator.clipboard.writeText(userId);
+  }
+</script>
+</html>
+
