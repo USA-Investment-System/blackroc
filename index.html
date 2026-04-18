@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLACKROCK GLOBAL</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #FFB800;
+    --gold-light: #FFD54F;
+    --gold-dark: #E65100;
+    --bg: #0A0A0F;
+    --bg2: #0F0F1A;
+    --bg3: #141420;
+    --card: #12121E;
+    --card2: #1A1A2E;
+    --border: rgba(255,184,0,0.15);
+    --text: #F0F0FF;
+    --text2: #9090B0;
+    --green: #00E676;
+    --red: #FF1744;
+    --blue: #448AFF;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== ANIMATED BACKGROUND ===== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 20%, rgba(255,184,0,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(68,138,255,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 2px;
+  }
+
+  .header-badge {
+    font-size: 10px;
+    color: var(--green);
+    border: 1px solid var(--green);
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+  }
+
+  .header-notif {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .notif-dot {
+    position: absolute;
+    top: 6px; left: 6px;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+  }
+
+  /* ===== PAGES ===== */
+  .page { display: none; padding: 16px 16px 90px; position: relative; z-index: 1; }
+  .page.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+
+  /* ===== BOTTOM NAV ===== */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.97);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 8px 0 16px;
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 6px 0;
+    position: relative;
+    transition: all 0.2s;
+  }
+
+  .nav-item.active .nav-icon { color: var(--gold); }
+  .nav-item.active .nav-label { color: var(--gold); }
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: 40px; height: 2px;
+    background: var(--gold);
+    border-radius: 0 0 4px 4px;
+  }
+
+  .nav-icon { font-size: 22px; color: var(--text2); transition: all 0.2s; }
+  .nav-label { font-size: 11px; color: var(--text2); font-weight: 600; transition: all 0.2s; }
+
+  /* ===== BALANCE CARD ===== */
+  .balance-card {
+    background: linear-gradient(135deg, #1A1000 0%, #0F0A00 50%, #1A1500 100%);
+    border: 1px solid rgba(255,184,0,0.3);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .balance-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(255,184,0,0.12) 0%, transparent 70%);
+  }
+
+  .balance-card::after {
+    content: 'BG';
+    position: absolute;
+    bottom: -20px; left: -10px;
+    font-family: 'Orbitron', monospace;
+    font-size: 80px;
+    font-weight: 900;
+    color: rgba(255,184,0,0.04);
+    pointer-events: none;
+  }
+
+  .balance-label {
+    font-size: 12px;
+    color: var(--text2);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .balance-amount {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .balance-currency {
+    font-size: 14px;
+    color: var(--text2);
+    margin-bottom: 20px;
+  }
+
+  .balance-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .stat-box {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  .stat-box .label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+  .stat-box .value { font-size: 16px; font-weight: 700; }
+  .stat-box .value.green { color: var(--green); }
+  .stat-box .value.gold { color: var(--gold); }
+
+  /* ===== ACTION BUTTONS ===== */
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .action-btn:active { transform: scale(0.92); }
+
+  .action-icon {
+    width: 54px; height: 54px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    border: 1px solid;
+  }
+
+  .action-icon.gold { background: rgba(255,184,0,0.12); border-color: rgba(255,184,0,0.3); }
+  .action-icon.green { background: rgba(0,230,118,0.10); border-color: rgba(0,230,118,0.25); }
+  .action-icon.blue { background: rgba(68,138,255,0.10); border-color: rgba(68,138,255,0.25); }
+  .action-icon.red { background: rgba(255,23,68,0.10); border-color: rgba(255,23,68,0.25); }
+
+  .action-label { font-size: 11px; color: var(--text2); font-weight: 600; }
+
+  /* ===== SECTION TITLE ===== */
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .section-title a {
+    font-size: 12px;
+    color: var(--gold);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  /* ===== LEVEL CARDS ===== */
+  .level-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .level-card:active { transform: scale(0.98); }
+
+  .level-card.active-level {
+    border-color: rgba(255,184,0,0.5);
+    background: linear-gradient(135deg, rgba(255,184,0,0.08), var(--card));
+  }
+
+  .level-card.locked {
+    opacity: 0.6;
+  }
+
+  .level-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .level-name {
+    font-size: 18px;
+    font-weight: 900;
+    font-family: 'Orbitron', monospace;
+    color: var(--gold);
+  }
+
+  .level-badge {
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+  }
+
+  .badge-active { background: rgba(0,230,118,0.15); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+  .badge-upgrade { background: rgba(255,184,0,0.15); color: var(--gold); border: 1px solid rgba(255,184,0,0.3); }
+  .badge-trial { background: rgba(68,138,255,0.15); color: var(--blue); border: 1px solid rgba(68,138,255,0.3); }
+
+  .level-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .level-info-item { text-align: center; }
+  .level-info-item .li-label { font-size: 10px; color: var(--text2); margin-bottom: 2px; }
+  .level-info-item .li-val { font-size: 14px; font-weight: 700; color: var(--text); }
+  .level-info-item .li-val.gold { color: var(--gold); }
+  .level-info-item .li-val.green { color: var(--green); }
+
+  .upgrade-btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, var(--gold), #FF8F00);
+    color: #000;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .upgrade-btn:active { transform: scale(0.97); opacity: 0.9; }
+
+  .locked-notice {
+    background: rgba(255,23,68,0.1);
+    border: 1px solid rgba(255,23,68,0.2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #FF6090;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  /* ===== TASKS ===== */
+  .task-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .task-card:active { transform: scale(0.98); }
+
+  .task-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    background: rgba(255,184,0,0.1);
+    border: 1px solid rgba(255,184,0,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .task-info { flex: 1; }
+  .task-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .task-desc { font-size: 12px; color: var(--text2); }
+
+  .task-reward {
+    text-align: left;
+    flex-shrink: 0;
+  }
+
+  .task-reward .amount { font-size: 14px; font-weight: 700; color: var(--gold); }
+  .task-reward .label { font-size: 10px; color: var(--text2); }
+
+  .task-progress {
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .task-progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--gold), #FF8F00);
+    transition: width 1s ease;
+  }
+
+  .task-done {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(0,230,118,0.15);
+    border: 2px solid var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* ===== ACCOUNT PAGE ===== */
+  .avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .avatar {
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #FF8F00);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    font-weight: 900;
+    color: #000;
+    border: 3px solid rgba(255,184,0,0.5);
+    flex-shrink: 0;
+  }
+
+  .user-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .user-id { font-size: 12px; color: var(--text2); margin-bottom: 8px; }
+
+  .user-level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,184,0,0.12);
+    border: 1px solid rgba(255,184,0,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .account-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .acc-stat {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+
+  .acc-stat .val { font-size: 18px; font-weight: 900; color: var(--gold); margin-bottom: 4px; }
+  .acc-stat .lbl { font-size: 11px; color: var(--text2); }
+
+  .menu-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .menu-item:last-child { border-bottom: none; }
+  .menu-item:active { background: rgba(255,255,255,0.03); }
+
+  .menu-item-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  .menu-item-text { flex: 1; }
+  .menu-item-title { font-size: 14px; font-weight: 600; }
+  .menu-item-sub { font-size: 12px; color: var(--text2); }
+  .menu-arrow { color: var(--text2); font-size: 16px; }
+
+  /* ===== TRANSACTIONS ===== */
+  .tx-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .tx-item:last-child { border-bottom: none; }
+
+  .tx-icon {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .tx-info { flex: 1; }
+  .tx-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .tx-date { font-size: 11px; color: var(--text2); }
+  .tx-amount { font-size: 15px; font-weight: 700; }
+  .tx-amount.pos { color: var(--green); }
+  .tx-amount.neg { color: var(--red); }
+
+  /* ===== PROGRESS BAR ===== */
+  .level-progress-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .progress-bar-outer {
+    height: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .progress-bar-inner {
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--gold), #FF8F00);
+    animation: progressFill 1.5s ease forwards;
+  }
+
+  @keyframes progressFill { from { width: 0; } }
+
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text2);
+  }
+
+  /* ===== TABS ===== */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    flex-shrink: 0;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    background: transparent;
+    transition: all 0.2s;
+    font-family: 'Cairo', sans-serif;
+  }
+
+  .tab.active {
+    background: rgba(255,184,0,0.15);
+    border-color: rgba(255,184,0,0.4);
+    color: var(--gold);
+  }
+
+  /* ===== REFERRAL ===== */
+  .referral-card {
+    background: linear-gradient(135deg, rgba(255,184,0,0.1), rgba(255,143,0,0.05));
+    border: 1px solid rgba(255,184,0,0.25);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .referral-code {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,184,0,0.3);
+    border-radius: 10px;
+    padding: 12px;
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 4px;
+    margin: 12px 0;
+    cursor: pointer;
+  }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed;
+    bottom: 90px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,230,118,0.15);
+    border: 1px solid rgba(0,230,118,0.3);
+    color: var(--green);
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .toast.show { opacity: 1; }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal-sheet {
+    width: 100%;
+    background: var(--bg2);
+    border-radius: 24px 24px 0 0;
+    border-top: 1px solid var(--border);
+    padding: 20px;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .modal-overlay.open .modal-sheet { transform: translateY(0); }
+
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 4px;
+    margin: 0 auto 20px;
+  }
+
+  .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--gold);
+  }
+
+  .modal-input {
+    width: 100%;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 16px;
+    outline: none;
+    margin-bottom: 12px;
+    text-align: right;
+  }
+
+  .modal-input:focus { border-color: rgba(255,184,0,0.5); }
+
+  .modal-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, var(--gold), #FF8F00);
+    color: #000;
+    font-family: 'Cairo', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+
+  .modal-btn.outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text2);
+  }
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">SECURE V3</div>
+  <div class="header-logo">BLACKROCK</div>
+  <div class="header-notif" onclick="showToast('لا توجد إشعارات جديدة')">
+    🔔
+    <div class="notif-dot"></div>
+  </div>
+</div>
+
+<!-- ===== HOME PAGE ===== -->
+<div class="page active" id="page-home">
+
+  <!-- Balance Card -->
+  <div class="balance-card">
+    <div class="balance-label">💼 رصيدك الإجمالي</div>
+    <div class="balance-amount">0.00</div>
+    <div class="balance-currency">دينار جزائري</div>
+    <div class="balance-stats">
+      <div class="stat-box">
+        <div class="label">الربح اليومي</div>
+        <div class="value green">+215 DZD</div>
+      </div>
+      <div class="stat-box">
+        <div class="label">إجمالي الأرباح</div>
+        <div class="value gold">0 DZD</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-grid">
+    <div class="action-btn" onclick="openModal('deposit')">
+      <div class="action-icon gold">⬆️</div>
+      <div class="action-label">إيداع</div>
+    </div>
+    <div class="action-btn" onclick="openModal('withdraw')">
+      <div class="action-icon green">⬇️</div>
+      <div class="action-label">سحب</div>
+    </div>
+    <div class="action-btn" onclick="showToast('قريباً...')">
+      <div class="action-icon blue">🔄</div>
+      <div class="action-label">تحويل</div>
+    </div>
+    <div class="action-btn" onclick="switchPage('referral')">
+      <div class="action-icon red">👥</div>
+      <div class="action-label">إحالة</div>
+    </div>
+  </div>
+
+  <!-- Level Progress -->
+  <div class="level-progress-section">
+    <div class="progress-header">
+      <div style="font-size:14px; font-weight:700;">المستوى الحالي: <span style="color:var(--blue)">تجريبي</span></div>
+      <div style="font-size:12px; color:var(--text2)">الترقية لـ M1</div>
+    </div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" style="width: 0%"></div>
+    </div>
+    <div class="progress-labels">
+      <span>0 DZD</span>
+      <span>7,000 DZD</span>
+    </div>
+  </div>
+
+  <!-- Recent Transactions -->
+  <div class="section-title">
+    آخر المعاملات
+    <a onclick="switchPage('history')">عرض الكل</a>
+  </div>
+
+  <div class="menu-section">
+    <div class="tx-item" style="padding: 14px;">
+      <div class="tx-icon" style="background:rgba(0,230,118,0.1)">🎁</div>
+      <div class="tx-info">
+        <div class="tx-title">مكافأة التسجيل</div>
+        <div class="tx-date">اليوم • 12:00</div>
+      </div>
+      <div class="tx-amount pos">+0 DZD</div>
+    </div>
+    <div style="padding: 20px; text-align: center; color: var(--text2); font-size: 13px;">
+      🔍 لا توجد معاملات بعد
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== LEVELS PAGE ===== -->
+<div class="page" id="page-levels">
+
+  <div class="section-title" style="margin-bottom:20px;">
+    <span>🏆 مستويات الاستثمار</span>
+  </div>
+
+  <!-- Trial Level -->
+  <div class="level-card active-level">
+    <div class="level-header">
+      <div class="level-name">تجريبي</div>
+      <div class="level-badge badge-active">✓ مفعل حالياً</div>
+    </div>
+    <div class="level-info">
+      <div class="level-info-item">
+        <div class="li-label">💰 الاستثمار</div>
+        <div class="li-val">0 DZD</div>
+      </div>
+      <div class="level-info-item">
+        <div class="li-label">📋 المهام</div>
+        <div class="li-val">5</div>
+      </div>
+      <div class="level-info-item">
+        <div class="li-label">📈 يومي</div>
+        <div class="li-val green">215 DZD</div>
+      </div>
+    </div>
+    <div class="locked-notice">
+      🔒 السحب مقفل. يتطلب الترقية إلى M2 لفتح الميزة
+    </div>
+  </div>
+
+  <!-- M1 -->
+  <div class="level-card" onclick="openUpgradeModal('M1', '7,000')">
+    <div class="level-header">
+      <div class="level-name">LEVEL M1</div>
+      <div class="level-badge badge-upgrade">ترقية</div>
+    </div>
+    <div class="level-info">
+      <div class="level-info-item">
+        <div class="li-label">💰 الاستثمار</div>
+        <div class="li-val gold">7,000 DZD</div>
+      </div>
+      <div class="level-info-item">
+        <div class="li-label">📋 المهام</div>
+        <div class="li-val">8</div>
+      </div>
+      <div class="level-info-item">
+        <div class="li-label">📈 يومي</div>
+        <div class="li-val green">215 DZD</div>
+      </div>
+    </div>
+    <button class="upgrade-btn">⬆️ ترقية الآن</button>
+  </div>
+
+  <!-- M2 -->
+  <div class="level-card" onclick="openUpgradeModal('M2', '26,600')">
+    <div class="level-header">
+      <div class="level-name">LEVEL M2</div>
+      <div class="level-badge badge-upgrade">ترقية</div>
+    </div>
+    <div class="level-info">
+      <div class="level-info-item">
+        <div class="li-label">💰 الاستثمار</div>
+        <div class="li-val gold">26,600 DZD</div>
+      </div>
+      <div class="level-info-item">
+        <div class="li-label">📋 المهام</div>
+        <div class="li-val">12</div>
+      </div>
+      <div class="level-info-item">
+        <div class="li-label">📈 يومي</div>
+        <div class="li-val green">860 DZD</div>
+      </div>
+    </div>
+    <button class="upgrade-btn">⬆️ ترقية الآن</button>
+  </div>
+
+  <!-- M3 -->
+  <div class="level-card" onclick="openUpgradeModal('M3', '95,000')">
+    <div class="level-header">
+      <div class="level-name">LEVEL M3</div>
+      <div class="level-badge badge-upgrade">ترقية</div>
+    </div>
+    <div class="level-info">
+      <div class="level-info-item">
+        <div class="li-label">💰 الاستثمار</div>
+        <div class="li-val gold">95,000 DZD</div>
+      </div>
+      <div class="level-info-item">
+        <div class="li-label">📋 المهام</div>
+        <div class="li-val">20</div>
+      </div>
+      <div class="level-info-item">
+        <div class="li-label">📈 يومي</div>
+        <div class="li-val green">3,275 DZD</div>
+      </div>
+    </div>
+    <button class="upgrade-btn">⬆️ ترقية الآن</button>
+  </div>
+
+  <!-- M4 -->
+  <div class="level-card locked">
+    <div class="level-header">
+      <div class="level-name">LEVEL M4</div>
+      <div class="level-badge" style="background:rgba(255,255,255,0.05); color:var(--text2); border:1px solid rgba(255,255,255,0.1);">🔒 مقفل</div>
+    </div>
+    <div class="level-info">
+      <div class="level-info-item">
+        <div class="li-label">💰 الاستثمار</div>
+        <div class="li-val">260,000 DZD</div>
+      </div>
+      <div class="level-info-item">
+        <div class="li-label">📋 المهام</div>
+        <div class="li-val">30</div>
+      </div>
+      <div class="level-info-item">
+        <div class="li-label">📈 يومي</div>
+        <div class="li-val green">9,100 DZD</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== TASKS PAGE ===== -->
+<div class="page" id="page-tasks">
+
+  <div class="section-title" style="margin-bottom:16px;">
+    ⚡ المهام اليومية
+    <span style="font-size:12px; color:var(--text2); font-weight:400;">0/5 مكتملة</span>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(this, 'tasks-all')">الكل</div>
+    <div class="tab" onclick="switchTab(this, 'tasks-daily')">يومية</div>
+    <div class="tab" onclick="switchTab(this, 'tasks-special')">مميزة</div>
+    <div class="tab" onclick="switchTab(this, 'tasks-done')">مكتملة</div>
+  </div>
+
+  <div id="tasks-all">
+
+    <div class="task-card" onclick="completeTask(this, 215)">
+      <div class="task-icon">📱</div>
+      <div class="task-info">
+        <div class="task-title">مهمة يومية 1</div>
+        <div class="task-desc">أكمل المهمة لتحصل على مكافأتك</div>
+        <div class="task-progress">
+          <div class="task-progress-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="task-reward">
+        <div class="amount">+215</div>
+        <div class="label">DZD</div>
+      </div>
+    </div>
+
+    <div class="task-card" onclick="completeTask(this, 215)">
+      <div class="task-icon">💎</div>
+      <div class="task-info">
+        <div class="task-title">مهمة يومية 2</div>
+        <div class="task-desc">أكمل المهمة لتحصل على مكافأتك</div>
+        <div class="task-progress">
+          <div class="task-progress-bar" style="width:30%"></div>
+        </div>
+      </div>
+      <div class="task-reward">
+        <div class="amount">+215</div>
+        <div class="label">DZD</div>
+      </div>
+    </div>
+
+    <div class="task-card" onclick="completeTask(this, 215)">
+      <div class="task-icon">🎯</div>
+      <div class="task-info">
+        <div class="task-title">مهمة يومية 3</div>
+        <div class="task-desc">أكمل المهمة لتحصل على مكافأتك</div>
+        <div class="task-progress">
+          <div class="task-progress-bar" style="width:60%"></div>
+        </div>
+      </div>
+      <div class="task-reward">
+        <div class="amount">+215</div>
+        <div class="label">DZD</div>
+      </div>
+    </div>
+
+    <div class="task-card" onclick="completeTask(this, 215)">
+      <div class="task-icon">🚀</div>
+      <div class="task-info">
+        <div class="task-title">مهمة يومية 4</div>
+        <div class="task-desc">أكمل المهمة لتحصل على مكافأتك</div>
+        <div class="task-progress">
+          <div class="task-progress-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="task-reward">
+        <div class="amount">+215</div>
+        <div class="label">DZD</div>
+      </div>
+    </div>
+
+    <div class="task-card" onclick="completeTask(this, 215)">
+      <div class="task-icon">⭐</div>
+      <div class="task-info">
+        <div class="task-title">مهمة يومية 5</div>
+        <div class="task-desc">أكمل المهمة لتحصل على مكافأتك</div>
+        <div class="task-progress">
+          <div class="task-progress-bar" style="width:80%"></div>
+        </div>
+      </div>
+      <div class="task-reward">
+        <div class="amount">+215</div>
+        <div class="label">DZD</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ===== ACCOUNT PAGE ===== -->
+<div class="page" id="page-account">
+
+  <!-- Avatar -->
+  <div class="avatar-section">
+    <div class="avatar">A</div>
+    <div>
+      <div class="user-name">المستخدم</div>
+      <div class="user-id">ID: #00001</div>
+      <div class="user-level-badge">⭐ المستوى التجريبي</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="account-stats">
+    <div class="acc-stat">
+      <div class="val">0</div>
+      <div class="lbl">الإحالات</div>
+    </div>
+    <div class="acc-stat">
+      <div class="val">0</div>
+      <div class="lbl">المهام</div>
+    </div>
+    <div class="acc-stat">
+      <div class="val">0</div>
+      <div class="lbl">الأيام</div>
+    </div>
+  </div>
+
+  <!-- Menu -->
+  <div class="section-title">الحساب</div>
+
+  <div class="menu-section">
+    <div class="menu-item" onclick="showToast('قريباً...')">
+      <div class="menu-item-icon" style="background:rgba(255,184,0,0.1)">💰</div>
+      <div class="menu-item-text">
+        <div class="menu-item-title">رصيدي</div>
+        <div class="menu-item-sub">0.00 DZD</div>
+      </div>
+      <div class="menu-arrow">←</div>
+    </div>
+    <div class="menu-item" onclick="openModal('deposit')">
+      <div class="menu-item-icon" style="background:rgba(0,230,118,0.1)">⬆️</div>
+      <div class="menu-item-text">
+        <div class="menu-item-title">إيداع</div>
+        <div class="menu-item-sub">أضف رصيداً لحسابك</div>
+      </div>
+      <div class="menu-arrow">←</div>
+    </div>
+    <div class="menu-item" onclick="openModal('withdraw')">
+      <div class="menu-item-icon" style="background:rgba(68,138,255,0.1)">⬇️</div>
+      <div class="menu-item-text">
+        <div class="menu-item-title">سحب</div>
+        <div class="menu-item-sub">اسحب أرباحك</div>
+      </div>
+      <div class="menu-arrow">←</div>
+    </div>
+    <div class="menu-item" onclick="switchPage('referral')">
+      <div class="menu-item-icon" style="background:rgba(255,23,68,0.1)">👥</div>
+      <div class="menu-item-text">
+        <div class="menu-item-title">الإحالات</div>
+        <div class="menu-item-sub">ادعُ أصدقاءك واربح</div>
+      </div>
+      <div class="menu-arrow">←</div>
+    </div>
+  </div>
+
+  <div class="menu-section">
+    <div class="menu-item" onclick="showToast('قريباً...')">
+      <div class="menu-item-icon" style="background:rgba(255,255,255,0.05)">🔒</div>
+      <div class="menu-item-text">
+        <div class="menu-item-title">الأمان</div>
+        <div class="menu-item-sub">كلمة المرور والتحقق</div>
+      </div>
+      <div class="menu-arrow">←</div>
+    </div>
+    <div class="menu-item" onclick="showToast('قريباً...')">
+      <div class="menu-item-icon" style="background:rgba(255,255,255,0.05)">❓</div>
+      <div class="menu-item-text">
+        <div class="menu-item-title">الدعم الفني</div>
+        <div class="menu-item-sub">تواصل معنا</div>
+      </div>
+      <div class="menu-arrow">←</div>
+    </div>
+    <div class="menu-item" onclick="showToast('تم تسجيل الخروج')">
+      <div class="menu-item-icon" style="background:rgba(255,23,68,0.1)">🚪</div>
+      <div class="menu-item-text">
+        <div class="menu-item-title" style="color:var(--red)">تسجيل الخروج</div>
+      </div>
+      <div class="menu-arrow">←</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== REFERRAL PAGE ===== -->
+<div class="page" id="page-referral">
+
+  <div class="section-title" style="margin-bottom:16px;">
+    👥 الإحالات
+  </div>
+
+  <div class="referral-card">
+    <div style="font-size:40px; margin-bottom:8px;">🎁</div>
+    <div style="font-size:16px; font-weight:700; margin-bottom:6px;">ادعُ صديقاً واربح</div>
+    <div style="font-size:13px; color:var(--text2); margin-bottom:12px;">احصل على مكافأة عند كل إحالة ناجحة</div>
+    <div class="referral-code" onclick="copyCode()">BG-00001</div>
+    <div style="font-size:12px; color:var(--text2);">اضغط للنسخ 📋</div>
+  </div>
+
+  <div class="account-stats" style="margin-bottom:20px;">
+    <div class="acc-stat">
+      <div class="val">0</div>
+      <div class="lbl">الإحالات</div>
+    </div>
+    <div class="acc-stat">
+      <div class="val">0</div>
+      <div class="lbl">المكافآت</div>
+    </div>
+    <div class="acc-stat">
+      <div class="val">0 DZD</div>
+      <div class="lbl">الأرباح</div>
+    </div>
+  </div>
+
+  <div class="menu-section">
+    <div style="padding: 20px; text-align:center; color:var(--text2); font-size:13px;">
+      لا توجد إحالات بعد.<br>شارك كودك مع أصدقائك!
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== BOTTOM NAV ===== -->
+<div class="bottom-nav">
+  <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
+    <div class="nav-icon">🏠</div>
+    <div class="nav-label">الرئيسية</div>
+  </div>
+  <div class="nav-item" id="nav-tasks" onclick="switchPage('tasks')">
+    <div class="nav-icon">⚡</div>
+    <div class="nav-label">المهام</div>
+  </div>
+  <div class="nav-item" id="nav-levels" onclick="switchPage('levels')">
+    <div class="nav-icon">💎</div>
+    <div class="nav-label">الترقية</div>
+  </div>
+  <div class="nav-item" id="nav-account" onclick="switchPage('account')">
+    <div class="nav-icon">👤</div>
+    <div class="nav-label">حسابي</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title">إيداع</div>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+  // Page switching
+  function switchPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    const nav = document.getElementById('nav-' + page);
+    if (nav) nav.classList.add('active');
+  }
+
+  // Referral page (no nav)
+  function switchPageNoNav(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+  }
+
+  // Override switchPage for referral
+  const origSwitch = switchPage;
+  window.switchPage = function(page) {
+    origSwitch(page);
+    if (page === 'referral') {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    }
+  }
+
+  // Tabs
+  function switchTab(el, id) {
+    el.closest('.page').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    showToast('تم التصفية');
+  }
+
+  // Toast
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // Modal
+  function openModal(type) {
+    const modal = document.getElementById('modal');
+    const title = document.getElementById('modal-title');
+    const content = document.getElementById('modal-content');
+
+    if (type === 'deposit') {
+      title.textContent = '⬆️ إيداع رصيد';
+      content.innerHTML = `
+        <p style="font-size:13px; color:var(--text2); text-align:center; margin-bottom:16px;">أدخل المبلغ المراد إيداعه</p>
+        <input class="modal-input" type="number" placeholder="المبلغ (DZD)" />
+        <button class="modal-btn" onclick="showToast('تم الإيداع بنجاح ✅'); closeModalDirect()">تأكيد الإيداع</button>
+        <button class="modal-btn outline" onclick="closeModalDirect()">إلغاء</button>
+      `;
+    } else if (type === 'withdraw') {
+      title.textContent = '⬇️ سحب رصيد';
+      content.innerHTML = `
+        <div style="background:rgba(255,23,68,0.1); border:1px solid rgba(255,23,68,0.2); border-radius:12px; padding:12px; margin-bottom:16px; font-size:12px; color:#FF6090; text-align:center;">
+          🔒 السحب مقفل في المستوى التجريبي. قم بالترقية إلى M2
+        </div>
+        <button class="modal-btn" onclick="switchPage('levels'); closeModalDirect()">🚀 الترقية الآن</button>
+        <button class="modal-btn outline" onclick="closeModalDirect()">إلغاء</button>
+      `;
+    }
+
+    modal.classList.add('open');
+  }
+
+  function openUpgradeModal(level, amount) {
+    const modal = document.getElementById('modal');
+    const title = document.getElementById('modal-title');
+    const content = document.getElementById('modal-content');
+
+    title.textContent = `⬆️ الترقية إلى ${level}`;
+    content.innerHTML = `
+      <div style="text-align:center; margin-bottom:20px;">
+        <div style="font-size:48px; margin-bottom:8px;">💎</div>
+        <div style="font-size:22px; font-weight:900; color:var(--gold);">${amount} DZD</div>
+        <div style="font-size:13px; color:var(--text2); margin-top:6px;">مبلغ الاستثمار المطلوب</div>
+      </div>
+      <button class="modal-btn" onclick="showToast('تم طلب الترقية ✅'); closeModalDirect()">✅ تأكيد الترقية</button>
+      <button class="modal-btn outline" onclick="closeModalDirect()">إلغاء</button>
+    `;
+
+    modal.classList.add('open');
+  }
+
+  function closeModal(e) {
+    document.getElementById('modal').classList.remove('open');
+  }
+
+  function closeModalDirect() {
+    document.getElementById('modal').classList.remove('open');
+  }
+
+  // Complete Task
+  function completeTask(el, reward) {
+    const bar = el.querySelector('.task-progress-bar');
+    const rewardEl = el.querySelector('.task-reward');
+    bar.style.width = '100%';
+    bar.style.background = 'var(--green)';
+    el.style.opacity = '0.7';
+    el.style.pointerEvents = 'none';
+    el.querySelector('.task-icon').textContent = '✅';
+    showToast(`+${reward} DZD تم إضافتها ✅`);
+  }
+
+  // Copy referral code
+  function copyCode() {
+    navigator.clipboard?.writeText('BG-00001').catch(() => {});
+    showToast('تم نسخ الكود 📋');
+  }
+</script>
+
+</body>
+</html>
