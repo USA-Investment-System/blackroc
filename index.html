@@ -1,224 +1,71 @@
-package com.example.usdz_app
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLACKROCK GLOBAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #0c0c0c; color: white; font-family: sans-serif; margin: 0; padding-bottom: 70px; }
+        .gold-card { background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%); border: 1px solid #332b00; }
+        .gold-text { color: #ffcc00; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.8rem; color: #888; }
+        .nav-item.active { color: #ffcc00; }
+    </style>
+</head>
+<body>
+    <div class="flex justify-between items-center p-4 bg-[#111]">
+        <i class="fas fa-star text-green-500 text-2xl"></i>
+        <h1 class="font-bold text-lg">BLACKROCK GLOBAL</h1>
+        <div class="w-6"></div>
+    </div>
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.graphics.StrokeCap
+    <div class="p-4 text-center">
+        <h2 class="gold-text font-bold text-xl tracking-widest uppercase">Blackrock</h2>
+        <span class="bg-[#0f2d1f] text-green-400 text-xs px-3 py-1 rounded-full mt-2 inline-block border border-green-900 shadow-lg">SECURE V3</span>
+    </div>
 
-// --- الألوان الرسمية للتطبيق ---
-val BgColor = Color(0xFF0D0D0D)      // أسود عميق للخلفية
-val SurfaceColor = Color(0xFF1A1A1A) // رمادي غامق للبطاقات
-val GoldMain = Color(0xFFFFB300)     // ذهبي/برتقالي للنصوص المهمة
-val GreenSecure = Color(0xFF00E676)  // أخضر لعلامة الأمان
-val RedAction = Color(0xFFD32F2F)    // أحمر للأزرار
+    <div class="mx-4 p-6 rounded-3xl gold-card relative overflow-hidden shadow-2xl">
+        <div class="text-right text-gray-400 text-sm mb-2">💼 رصيدك الإجمالي</div>
+        <div class="text-center">
+            <div class="text-5xl font-bold gold-text tracking-tighter">0.00</div>
+            <div class="text-gray-400 mt-2 text-sm">دينار جزائري</div>
+        </div>
+        <div class="flex justify-between mt-6">
+            <div class="bg-[#1a1a1a] p-3 rounded-2xl w-[48%] text-center border border-gray-800">
+                <div class="text-[10px] text-gray-500 uppercase mb-1">الربح اليومي</div>
+                <div class="text-green-500 font-bold text-sm">DZD 215+</div>
+            </div>
+            <div class="bg-[#1a1a1a] p-3 rounded-2xl w-[48%] text-center border border-gray-800">
+                <div class="text-[10px] text-gray-500 uppercase mb-1">إجمالي الأرباح</div>
+                <div class="gold-text font-bold text-sm">DZD 0</div>
+            </div>
+        </div>
+    </div>
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            AppTheme {
-                MainLayout()
-            }
-        }
-    }
-}
+    <div class="grid grid-cols-4 gap-2 p-6">
+        <div class="flex flex-col items-center"><div class="bg-[#222] p-4 rounded-2xl mb-2 text-[#ffcc00] shadow-md"><i class="fas fa-arrow-up"></i></div><span class="text-[10px]">إيداع</span></div>
+        <div class="flex flex-col items-center"><div class="bg-[#0f2d1f] p-4 rounded-2xl mb-2 text-green-500 shadow-md"><i class="fas fa-arrow-down"></i></div><span class="text-[10px]">سحب</span></div>
+        <div class="flex flex-col items-center"><div class="bg-[#0f172a] p-4 rounded-2xl mb-2 text-blue-400 shadow-md"><i class="fas fa-sync-alt"></i></div><span class="text-[10px]">تحويل</span></div>
+        <div class="flex flex-col items-center"><div class="bg-[#2d0f1a] p-4 rounded-2xl mb-2 text-red-400 shadow-md"><i class="fas fa-users"></i></div><span class="text-[10px]">إحالة</span></div>
+    </div>
 
-@Composable
-fun AppTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = darkColorScheme(
-            background = BgColor,
-            surface = SurfaceColor,
-            primary = GoldMain
-        ),
-        content = content
-    )
-}
+    <div class="mx-4 p-4 rounded-2xl bg-[#111] border border-gray-800 mb-6">
+        <div class="flex justify-between items-center mb-2">
+            <span class="text-xs text-gray-400">المستوى الحالي: <span class="text-blue-400 font-bold">VIP 0</span></span>
+            <span class="text-[10px] text-gray-500">الترقية لـ VIP 1</span>
+        </div>
+        <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-blue-500 h-full w-[5%] shadow-[0_0_8px_#3b82f6]"></div>
+        </div>
+    </div>
 
-@Composable
-fun MainLayout() {
-    Scaffold(
-        bottomBar = { BottomNav() }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(BgColor)
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp)
-        ) {
-            HeaderSection()
-            Spacer(modifier = Modifier.height(20.dp))
-            BalanceCard()
-            Spacer(modifier = Modifier.height(24.dp))
-            GridActions()
-            Spacer(modifier = Modifier.height(24.dp))
-            UpgradeSection()
-        }
-    }
-}
-
-@Composable
-fun HeaderSection() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // علامة Secure V3
-        Surface(
-            color = GreenSecure.copy(alpha = 0.2f),
-            shape = RoundedCornerShape(4.dp),
-            border = BorderStroke(1.dp, GreenSecure)
-        ) {
-            Text(
-                text = "SECURE V3",
-                color = GreenSecure,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-            )
-        }
-
-        Text(
-            text = "US.DZ",
-            color = Color.White,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.ExtraBold
-        )
-
-        Icon(
-            Icons.Default.Notifications,
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.size(28.dp)
-        )
-    }
-}
-
-@Composable
-fun BalanceCard() {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text("رصيد المحفظة الإجمالي", color = Color.Gray, fontSize = 14.sp)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                "215.00",
-                fontSize = 46.sp,
-                fontWeight = FontWeight.Black,
-                color = GoldMain
-            )
-            Text("دينار جزائري (DZD)", color = Color.White, fontSize = 12.sp)
-            
-            Divider(modifier = Modifier.padding(vertical = 16.dp), color = Color.DarkGray)
-            
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-                StatItem("أرباح اليوم", "+215 DZD", GreenSecure)
-                StatItem("إجمالي السحب", "0.00 DZD", Color.White)
-            }
-        }
-    }
-}
-
-@Composable
-fun StatItem(label: String, value: String, valueColor: Color) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(label, color = Color.Gray, fontSize = 11.sp)
-        Text(value, color = valueColor, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-    }
-}
-
-@Composable
-fun GridActions() {
-    Column {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            ActionBox("إيداع", Icons.Default.Add, GreenSecure, Modifier.weight(1f))
-            ActionBox("سحب", Icons.Default.ArrowDownward, Color(0xFF2196F3), Modifier.weight(1f))
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            ActionBox("تحويل", Icons.Default.SwapHoriz, Color(0xFF9C27B0), Modifier.weight(1f))
-            ActionBox("إحالة", Icons.Default.People, RedAction, Modifier.weight(1f))
-        }
-    }
-}
-
-@Composable
-fun ActionBox(title: String, icon: ImageVector, color: Color, modifier: Modifier) {
-    Surface(
-        modifier = modifier.height(80.dp),
-        color = SurfaceColor,
-        shape = RoundedCornerShape(12.dp),
-        onClick = { /* اضف وظيفة هنا */ }
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(28.dp))
-            Text(title, color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Medium)
-        }
-    }
-}
-
-@Composable
-fun UpgradeSection() {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = SurfaceColor)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Star, contentDescription = null, tint = GoldMain)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("نظام الترقية للمستوى M1", color = Color.White, fontWeight = FontWeight.Bold)
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            LinearProgressIndicator(
-                progress = 0.03f,
-                modifier = Modifier.fillMaxWidth().height(10.dp),
-                color = GoldMain,
-                trackColor = Color.DarkGray,
-                strokeCap = StrokeCap.Round
-            )
-            Text(
-                "أنت الآن في المستوى التجريبي (3%)",
-                color = Color.Gray,
-                fontSize = 11.sp,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun BottomNav() {
-    NavigationBar(containerColor = SurfaceColor) {
-        NavigationBarItem(selected = true, onClick = {}, icon = { Icon(Icons.Default.Home, null) }, label = { Text("الرئيسية") })
-        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Default.List, null) }, label = { Text("المهام") })
-        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Default.AccountBalanceWallet, null) }, label = { Text("المحفظة") })
-        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Default.Person, null) }, label = { Text("حسابي") })
-    }
-}
+    <div class="fixed bottom-0 w-full bg-[#0a0a0a] border-t border-gray-800 flex justify-around py-3 px-2 z-50">
+        <div class="nav-item active"><i class="fas fa-home text-xl mb-1"></i><span class="text-[10px]">الرئيسية</span></div>
+        <div class="nav-item"><i class="fas fa-bolt text-xl mb-1"></i><span class="text-[10px]">المهام</span></div>
+        <div class="nav-item"><i class="fas fa-gem text-xl mb-1"></i><span class="text-[10px]">الترقية</span></div>
+        <div class="nav-item"><i class="fas fa-user text-xl mb-1"></i><span class="text-[10px]">حسابي</span></div>
+    </div>
+</body>
+</html>
