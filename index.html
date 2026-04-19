@@ -1,133 +1,66 @@
-<script>
-// الحالة العامة للمهام
-let tasksState = {
-    total: 5,
-    done: 0,
-    failed: 0,
-    currentRunning: false
-};
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USA Investment System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0a0a0a; color: #e5e5e5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .gold-gradient { background: linear-gradient(135deg, #d4af37 0%, #f9e295 50%, #b38728 100%); }
+        .card { background: #161616; border: 1px solid #262626; border-radius: 15px; }
+        .glow { box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+    </style>
+</head>
+<body class="p-4">
 
-// بناء قائمة المهام مع حالة "قفل" ذكية
-function buildTasks() {
-    const tasksList = document.getElementById('tasks-list');
-    tasksList.innerHTML = '';
-    for(let i=1; i<=tasksState.total; i++){
-        tasksList.innerHTML += `
-            <div class="task-card" id="task-item-${i}" onclick="openMiningTask(${i})">
-                <div class="task-icon" id="icon-${i}">⚡</div>
-                <div class="task-info">
-                    <div class="task-title">المهمة اليومية رقم ${i}</div>
-                    <div id="status-text-${i}" style="font-size:11px; color:var(--text2)">اضغط للبدء (30 ثانية)</div>
-                    <div class="task-progress"><div class="task-progress-bar" id="bar-${i}" style="width:0%"></div></div>
-                </div>
-                <div class="task-reward" id="reward-val-${i}">
-                    <div class="amount">+43</div>
-                    <div class="label">DZD</div>
-                </div>
-            </div>
-        `;
-    }
-}
-
-// فتح مودال المهمة لبدء العد التنازلي
-function openMiningTask(taskId) {
-    if(tasksState.currentRunning) return showToast("⚠️ أكمل المهمة الحالية أولاً!");
-    
-    const card = document.getElementById(`task-item-${taskId}`);
-    if(card.classList.contains('completed') || card.classList.contains('failed')) return;
-
-    const title = document.getElementById('modal-title');
-    const content = document.getElementById('modal-content');
-    
-    title.textContent = `معالجة المهمة ${taskId}`;
-    content.innerHTML = `
-        <div style="text-align:center; padding:20px;">
-            <div id="modal-timer" style="font-size:50px; font-weight:900; color:var(--gold); margin-bottom:20px;">30s</div>
-            <p style="font-size:13px; color:var(--text2); margin-bottom:20px;">يجب البقاء في هذه الصفحة. إغلاق النافذة يعني خسارة المهمة نهائياً.</p>
-            <button class="modal-btn" id="confirm-task-btn" onclick="startCountdown(${taskId})">بدء المعالجة الآن</button>
-            <button class="modal-btn outline" onclick="cancelTask(${taskId})">إلغاء المهمة (خسارة الربح)</button>
+    <div class="flex justify-between items-center mb-8 mt-4">
+        <div>
+            <h1 class="text-2xl font-bold text-white leading-tight">نظام الاستثمار الأمريكي</h1>
+            <p class="text-xs text-gray-500 uppercase tracking-widest">USA Investment System</p>
         </div>
-    `;
-    openModalDirect();
-}
+        <div class="w-12 h-12 rounded-full gold-gradient flex items-center justify-center shadow-lg">
+            <span class="text-black font-bold text-xl">U</span>
+        </div>
+    </div>
 
-let activeInterval;
+    <div class="card p-6 mb-6 glow relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 gold-gradient opacity-10 rounded-full -mr-10 -mt-10"></div>
+        <p class="text-gray-400 text-sm mb-1">إجمالي الرصيد المتاح</p>
+        <h2 class="text-4xl font-bold text-white mb-4">$42,550.<span class="text-sm">00</span></h2>
+        <div class="flex gap-2">
+            <span class="bg-green-900/30 text-green-400 text-xs px-2 py-1 rounded">+12.5% اليوم</span>
+            <span class="bg-blue-900/30 text-blue-400 text-xs px-2 py-1 rounded">حساب نشط</span>
+        </div>
+    </div>
 
-function startCountdown(taskId) {
-    tasksState.currentRunning = true;
-    let s = 30;
-    const timerDisplay = document.getElementById('modal-timer');
-    const btn = document.getElementById('confirm-task-btn');
-    const progressBar = document.getElementById(`bar-${taskId}`);
-    
-    btn.disabled = true;
-    btn.style.opacity = "0.5";
-    btn.innerText = "جاري الاتصال بالعقدة...";
+    <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="card p-4 text-center">
+            <p class="text-gray-500 text-xs mb-1">الأرباح الشهرية</p>
+            <p class="text-lg font-semibold text-white">+$5,200</p>
+        </div>
+        <div class="card p-4 text-center">
+            <p class="text-gray-500 text-xs mb-1">المشاريع النشطة</p>
+            <p class="text-lg font-semibold text-white">14 مشروع</p>
+        </div>
+    </div>
 
-    activeInterval = setInterval(() => {
-        s--;
-        timerDisplay.textContent = s + "s";
-        progressBar.style.width = ((30 - s) / 30 * 100) + "%";
+    <h3 class="text-white font-bold mb-4">إدارة الاستثمارات</h3>
+    <div class="space-y-3">
+        <button class="w-full gold-gradient text-black font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-transform">
+            إضافة استثمار جديد
+        </button>
+        <button class="w-full card text-white font-semibold py-4 rounded-xl active:scale-95 transition-transform border-gray-700">
+            سحب الأرباح إلى Binance
+        </button>
+    </div>
 
-        if(s <= 0) {
-            clearInterval(activeInterval);
-            completeTaskSuccess(taskId);
-        }
-    }, 1000);
-}
+    <div class="mt-10 pt-6 border-t border-gray-800 text-center">
+        <div class="inline-flex items-center gap-2">
+            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <p class="text-gray-500 text-xs italic">النظام محمي ومؤمن بالكامل - 2026</p>
+        </div>
+    </div>
 
-function completeTaskSuccess(taskId) {
-    tasksState.currentRunning = false;
-    balance += 43;
-    tasksState.done++;
-    updateBalance();
-    
-    const card = document.getElementById(`task-item-${taskId}`);
-    card.classList.add('completed');
-    card.style.pointerEvents = "none";
-    card.style.opacity = "0.6";
-    document.getElementById(`icon-${taskId}`).textContent = "✅";
-    document.getElementById(`status-text-${taskId}`).textContent = "تم بنجاح";
-    document.getElementById(`status-text-${taskId}`).style.color = "var(--green)";
-    
-    addTransaction(`مهمة ${taskId} مكتملة`, 43, true);
-    closeModalDirect();
-    showToast("✅ تم إضافة الربح لحسابك");
-}
-
-function cancelTask(taskId) {
-    if(activeInterval) clearInterval(activeInterval);
-    tasksState.currentRunning = false;
-    tasksState.failed++;
-    
-    const card = document.getElementById(`task-item-${taskId}`);
-    card.classList.add('failed');
-    card.style.pointerEvents = "none";
-    card.style.opacity = "0.5";
-    card.style.border = "1px solid var(--red)";
-    
-    document.getElementById(`icon-${taskId}`).textContent = "❌";
-    document.getElementById(`status-text-${taskId}`).textContent = "مهمة ملغاة (مفقودة)";
-    document.getElementById(`status-text-${taskId}`).style.color = "var(--red)";
-    document.getElementById(`reward-val-${taskId}`).style.display = "none";
-    
-    closeModalDirect();
-    showToast("⚠️ تم إلغاء المهمة وخسارة الربح اليومي");
-}
-
-function openModalDirect() { document.getElementById('modal').classList.add('open'); }
-function closeModalDirect() { 
-    if(tasksState.currentRunning) {
-        if(confirm("إذا أغلقت الآن ستفشل المهمة. هل أنت متأكد؟")) {
-            // نجد الـ Task ID الحالي برمجياً أو نمنع الإغلاق
-        } else { return; }
-    }
-    document.getElementById('modal').classList.remove('open'); 
-}
-
-// تشغيل النظام عند التحميل
-window.onload = () => {
-    buildTasks();
-    updateBalance();
-};
-</script>
+</body>
+</html>
