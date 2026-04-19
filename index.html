@@ -2,374 +2,364 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLACKROCK GLOBAL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BlackRock, Inc — منصة الاستثمار</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#FFB800;--bg:#0A0A0F;--bg2:#0F0F1A;--card:#12121E;--card2:#1A1A2E;--border:rgba(255,184,0,0.15);--text:#F0F0FF;--text2:#9090B0;--green:#00E676;--red:#FF1744;--blue:#448AFF;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 80% 20%,rgba(255,184,0,0.06) 0%,transparent 60%),radial-gradient(ellipse 40% 60% at 20% 80%,rgba(68,138,255,0.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+:root{
+  --gold:#FFB800;--bg:#070710;--bg2:#0D0D1A;--card:#111120;--card2:#181830;
+  --border:rgba(255,184,0,0.13);--text:#EEF0FF;--text2:#8888AA;
+  --green:#00E676;--red:#FF1744;--blue:#448AFF;--purple:#9C27B0;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;max-width:500px;margin:0 auto;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 85% 15%,rgba(255,184,0,0.07) 0%,transparent 60%),radial-gradient(ellipse 50% 70% at 15% 85%,rgba(68,138,255,0.05) 0%,transparent 60%);pointer-events:none;z-index:0;}
 
-.header{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;}
-.header-logo{font-family:'Orbitron',monospace;font-size:15px;font-weight:900;color:var(--gold);letter-spacing:2px;}
-.header-badge{font-size:10px;color:var(--green);border:1px solid var(--green);padding:3px 10px;border-radius:20px;font-weight:700;cursor:pointer;}
-.header-notif{width:38px;height:38px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:18px;}
-.notif-badge{position:absolute;top:-3px;left:-3px;background:var(--red);color:#fff;font-size:9px;font-weight:900;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:0;height:0;}
 
-.page{display:none;padding:16px 16px 90px;position:relative;z-index:1;}
-.page.active{display:block;animation:fadeIn 0.3s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:100;background:rgba(7,7,16,0.97);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;}
+.hdr-logo{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:var(--gold);letter-spacing:1.5px;cursor:pointer;}
+.hdr-logo span{color:var(--text2);font-size:10px;font-family:'Cairo',sans-serif;display:block;font-weight:400;letter-spacing:0;}
+.hdr-left{display:flex;align-items:center;gap:10px;}
+.hdr-secure{font-size:10px;color:var(--green);border:1px solid rgba(0,230,118,0.35);padding:3px 10px;border-radius:20px;font-weight:700;cursor:pointer;}
+.hdr-bell{width:38px;height:38px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:17px;}
+.hdr-badge{position:absolute;top:-3px;left:-3px;background:var(--red);color:#fff;font-size:9px;font-weight:900;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);}
 
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(10,10,15,0.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 0 16px;}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 0;position:relative;transition:all 0.2s;}
-.nav-item.active .nav-icon,.nav-item.active .nav-label{color:var(--gold);}
-.nav-item.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:40px;height:2px;background:var(--gold);border-radius:0 0 4px 4px;}
-.nav-icon{font-size:22px;color:var(--text2);transition:all 0.2s;position:relative;}
-.nav-label{font-size:11px;color:var(--text2);font-weight:600;}
-.nav-badge{position:absolute;top:-5px;left:-5px;background:var(--red);color:#fff;font-size:9px;font-weight:900;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+/* PAGES */
+.pg{display:none;padding:14px 14px 88px;position:relative;z-index:1;min-height:calc(100vh - 60px);}
+.pg.active{display:block;animation:pgIn 0.25s ease;}
+@keyframes pgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-/* BALANCE */
-.balance-card{background:linear-gradient(135deg,#1A1000,#0F0800,#1A1200);border:1px solid rgba(255,184,0,0.4);border-radius:22px;padding:24px;margin-bottom:16px;position:relative;overflow:hidden;}
-.balance-card::before{content:'';position:absolute;top:-50px;left:-50px;width:220px;height:220px;background:radial-gradient(circle,rgba(255,184,0,0.18) 0%,transparent 70%);}
-.balance-card::after{content:'BG';position:absolute;bottom:-25px;left:-10px;font-family:'Orbitron',monospace;font-size:100px;font-weight:900;color:rgba(255,184,0,0.04);pointer-events:none;}
-.bal-label{font-size:12px;color:var(--text2);margin-bottom:6px;letter-spacing:1px;}
-.bal-amount{font-size:44px;font-weight:900;color:var(--gold);letter-spacing:-2px;line-height:1;margin-bottom:4px;text-shadow:0 0 40px rgba(255,184,0,0.5);}
-.bal-currency{font-size:13px;color:var(--text2);margin-bottom:18px;}
-.bal-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.bal-stat{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;}
-.bal-stat .bs-l{font-size:11px;color:var(--text2);margin-bottom:3px;}
-.bal-stat .bs-v{font-size:15px;font-weight:700;}
+/* NAV */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;z-index:100;background:rgba(7,7,16,0.97);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;padding:7px 0 14px;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:5px 0;position:relative;}
+.ni.active .ni-ico,.ni.active .ni-lbl{color:var(--gold);}
+.ni.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:36px;height:2px;background:var(--gold);border-radius:0 0 3px 3px;}
+.ni-ico{font-size:21px;color:var(--text2);position:relative;}
+.ni-lbl{font-size:10px;color:var(--text2);font-weight:600;}
+.ni-dot{position:absolute;top:-4px;left:-4px;background:var(--red);color:#fff;font-size:8px;font-weight:900;min-width:15px;height:15px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;border:2px solid var(--bg);}
+
+/* BALANCE CARD */
+.bal-card{background:linear-gradient(145deg,#15100000,#0A0800,#12100000);border:1px solid rgba(255,184,0,0.4);border-radius:22px;padding:22px;margin-bottom:14px;position:relative;overflow:hidden;}
+.bal-card::before{content:'';position:absolute;top:-60px;left:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(255,184,0,0.15) 0%,transparent 65%);}
+.bal-card::after{content:'BRI';position:absolute;bottom:-30px;left:-15px;font-family:'Orbitron',monospace;font-size:100px;font-weight:900;color:rgba(255,184,0,0.035);pointer-events:none;letter-spacing:-5px;}
+.bal-lbl{font-size:11px;color:var(--text2);letter-spacing:1px;margin-bottom:5px;}
+.bal-num{font-size:42px;font-weight:900;color:var(--gold);letter-spacing:-2px;line-height:1.05;text-shadow:0 0 40px rgba(255,184,0,0.45);}
+.bal-currency{font-size:13px;color:var(--text2);margin-bottom:16px;}
+.bal-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.bal-box{background:rgba(255,255,255,0.045);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:11px 13px;}
+.bal-box .bb-l{font-size:10px;color:var(--text2);margin-bottom:2px;}
+.bal-box .bb-v{font-size:14px;font-weight:700;}
 
 /* ACTIONS */
-.act-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
-.act-btn{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;}
-.act-btn:active .act-ico{transform:scale(0.88);}
-.act-ico{width:58px;height:58px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:24px;transition:transform 0.15s;border:1px solid;}
-.act-ico.g{background:rgba(0,230,118,0.12);border-color:rgba(0,230,118,0.3);}
-.act-ico.o{background:rgba(255,184,0,0.12);border-color:rgba(255,184,0,0.3);}
-.act-ico.b{background:rgba(68,138,255,0.12);border-color:rgba(68,138,255,0.3);}
-.act-ico.r{background:rgba(255,23,68,0.12);border-color:rgba(255,23,68,0.3);}
-.act-lbl{font-size:11px;color:var(--text2);font-weight:700;}
+.act-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.ab{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;}
+.ab:active .ab-i{transform:scale(0.87);}
+.ab-i{width:56px;height:56px;border-radius:17px;display:flex;align-items:center;justify-content:center;font-size:23px;transition:transform 0.15s;border:1px solid;}
+.ab-i.g{background:rgba(0,230,118,0.11);border-color:rgba(0,230,118,0.28);}
+.ab-i.o{background:rgba(255,184,0,0.11);border-color:rgba(255,184,0,0.28);}
+.ab-i.b{background:rgba(68,138,255,0.11);border-color:rgba(68,138,255,0.28);}
+.ab-i.r{background:rgba(255,23,68,0.11);border-color:rgba(255,23,68,0.28);}
+.ab-l{font-size:11px;color:var(--text2);font-weight:700;}
 
-/* PROGRESS */
-.lvl-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:16px;}
-.prog-bar-out{height:8px;background:rgba(255,255,255,0.06);border-radius:8px;overflow:hidden;margin:10px 0 6px;}
-.prog-bar-in{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--gold),#FF8F00);transition:width 0.5s;}
+/* LEVEL PROGRESS */
+.lvl-bar-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px;margin-bottom:14px;}
+.pb-out{height:7px;background:rgba(255,255,255,0.06);border-radius:7px;overflow:hidden;margin:9px 0 5px;}
+.pb-in{height:100%;border-radius:7px;background:linear-gradient(90deg,var(--gold),#FF8F00);transition:width 0.6s ease;}
 
 /* MINI STATS */
-.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
-.ms{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 8px;text-align:center;cursor:pointer;}
-.ms .ms-i{font-size:22px;margin-bottom:4px;}
-.ms .ms-v{font-size:20px;font-weight:900;color:var(--gold);}
-.ms .ms-l{font-size:11px;color:var(--text2);}
+.ms-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.ms-cell{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:13px 8px;text-align:center;cursor:pointer;transition:border-color 0.2s;}
+.ms-cell:active{border-color:rgba(255,184,0,0.4);}
+.ms-cell .ms-i{font-size:20px;margin-bottom:3px;}
+.ms-cell .ms-v{font-size:20px;font-weight:900;color:var(--gold);}
+.ms-cell .ms-l{font-size:10px;color:var(--text2);}
 
-.sec-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
-.sec-title span{font-size:12px;color:var(--text2);font-weight:400;}
+/* SEC TITLE */
+.st{font-size:14px;font-weight:700;margin-bottom:11px;display:flex;justify-content:space-between;align-items:center;}
+.st span{font-size:11px;color:var(--text2);font-weight:400;}
 
 /* CARD */
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:15px;margin-bottom:12px;}
 
 /* LEVEL CARDS */
-.lv-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
-.lv-card:active{transform:scale(0.98);}
-.lv-card.active-lv{border-color:rgba(255,184,0,0.5);background:linear-gradient(135deg,rgba(255,184,0,0.08),var(--card));}
-.lv-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.lv-name{font-size:18px;font-weight:900;font-family:'Orbitron',monospace;color:var(--gold);}
-.lv-badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;}
-.ba{background:rgba(0,230,118,0.15);color:var(--green);border:1px solid rgba(0,230,118,0.3);}
-.bu{background:rgba(255,184,0,0.15);color:var(--gold);border:1px solid rgba(255,184,0,0.3);}
-.lv-info{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:12px;}
-.li{text-align:center;background:rgba(255,255,255,0.03);border-radius:8px;padding:8px 4px;}
-.li .ll{font-size:9px;color:var(--text2);margin-bottom:2px;}
-.li .lv{font-size:12px;font-weight:700;}
-.up-btn{width:100%;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--gold),#FF8F00);color:#000;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
-.up-btn:active{opacity:0.88;transform:scale(0.97);}
-.lock-n{background:rgba(255,23,68,0.08);border:1px solid rgba(255,23,68,0.2);border-radius:10px;padding:10px;font-size:12px;color:#FF6090;display:flex;align-items:center;gap:8px;margin-top:10px;}
+.lvc{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:15px;margin-bottom:11px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.lvc:active{transform:scale(0.985);}
+.lvc.act-lv{border-color:rgba(255,184,0,0.5);background:linear-gradient(135deg,rgba(255,184,0,0.07),var(--card));}
+.lvc-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;}
+.lvc-name{font-size:17px;font-weight:900;font-family:'Orbitron',monospace;color:var(--gold);}
+.lv-bdg{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;}
+.bdg-a{background:rgba(0,230,118,0.14);color:var(--green);border:1px solid rgba(0,230,118,0.3);}
+.bdg-u{background:rgba(255,184,0,0.14);color:var(--gold);border:1px solid rgba(255,184,0,0.3);}
+.lvc-info{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:11px;}
+.lv-it{text-align:center;background:rgba(255,255,255,0.03);border-radius:8px;padding:7px 3px;}
+.lv-it .lt{font-size:8px;color:var(--text2);margin-bottom:2px;}
+.lv-it .lv{font-size:11px;font-weight:700;}
+.upbtn{width:100%;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--gold),#E68000);color:#000;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.upbtn:active{opacity:0.88;}
+.lock-n{background:rgba(255,23,68,0.07);border:1px solid rgba(255,23,68,0.2);border-radius:9px;padding:9px 12px;font-size:11px;color:#FF7090;display:flex;align-items:center;gap:7px;margin-top:9px;}
 
-/* TASKS */
-.tk-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:12px;transition:border-color 0.3s;position:relative;}
-.tk-card.running{border-color:rgba(255,184,0,0.6);box-shadow:0 0 20px rgba(255,184,0,0.08);}
-.tk-card.done{border-color:rgba(0,230,118,0.3);opacity:0.75;}
-.tk-card.cancelled{border-color:rgba(255,23,68,0.3);opacity:0.65;}
-.tk-top{display:flex;align-items:center;gap:12px;}
-.tk-ico{width:48px;height:48px;border-radius:14px;background:rgba(255,184,0,0.1);border:1px solid rgba(255,184,0,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+/* TASK CARDS */
+.tkc{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:13px;margin-bottom:11px;transition:border-color 0.3s;}
+.tkc.run{border-color:rgba(255,184,0,0.6);box-shadow:0 0 18px rgba(255,184,0,0.07);}
+.tkc.done{border-color:rgba(0,230,118,0.3);}
+.tkc.cancelled{border-color:rgba(255,23,68,0.25);opacity:0.6;}
+.tk-top{display:flex;align-items:center;gap:11px;}
+.tk-ico{width:46px;height:46px;border-radius:13px;background:rgba(255,184,0,0.09);border:1px solid rgba(255,184,0,0.18);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;}
 .tk-inf{flex:1;}
-.tk-ttl{font-size:14px;font-weight:700;margin-bottom:3px;}
+.tk-ttl{font-size:13px;font-weight:700;margin-bottom:2px;}
 .tk-sub{font-size:11px;color:var(--text2);}
 .tk-rew{text-align:left;flex-shrink:0;}
-.tk-amt{font-size:15px;font-weight:700;color:var(--gold);}
-.tk-lbl{font-size:10px;color:var(--text2);}
-.tk-prog{height:5px;background:rgba(255,255,255,0.06);border-radius:5px;margin-top:10px;overflow:hidden;}
-.tk-prog-bar{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),#FF8F00);transition:width 0.3s;}
-.tk-actions{display:flex;align-items:center;gap:10px;margin-top:10px;}
-.tk-start{flex:1;padding:10px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold),#FF8F00);color:#000;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
-.tk-cancel{width:40px;height:40px;border-radius:10px;border:1px solid rgba(255,23,68,0.3);background:rgba(255,23,68,0.08);color:var(--red);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.tk-timer{width:46px;height:46px;border-radius:50%;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--gold);animation:glow 1s infinite;flex-shrink:0;}
-@keyframes glow{0%,100%{box-shadow:0 0 8px rgba(255,184,0,0.3)}50%{box-shadow:0 0 25px rgba(255,184,0,0.7)}}
-.tk-done-row{background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.25);border-radius:10px;padding:10px;text-align:center;color:var(--green);font-size:13px;font-weight:700;margin-top:10px;}
-.tk-cancel-row{background:rgba(255,23,68,0.08);border:1px solid rgba(255,23,68,0.2);border-radius:10px;padding:10px;text-align:center;color:#FF6090;font-size:12px;margin-top:10px;}
+.tk-amt{font-size:14px;font-weight:700;color:var(--gold);}
+.tk-lbl{font-size:9px;color:var(--text2);}
+.tk-pb{height:4px;background:rgba(255,255,255,0.05);border-radius:4px;margin-top:9px;overflow:hidden;}
+.tk-pb-in{height:100%;border-radius:4px;transition:width 0.4s;}
+.tk-acts{display:flex;align-items:center;gap:9px;margin-top:9px;}
+.tk-start{flex:1;padding:10px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),#E68000);color:#000;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.tk-x{width:40px;height:40px;border-radius:9px;border:1px solid rgba(255,23,68,0.3);background:rgba(255,23,68,0.07);color:var(--red);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tk-timer{width:44px;height:44px;border-radius:50%;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--gold);flex-shrink:0;animation:tglow 1s infinite;}
+@keyframes tglow{0%,100%{box-shadow:0 0 7px rgba(255,184,0,0.3)}50%{box-shadow:0 0 22px rgba(255,184,0,0.65)}}
+.tk-done-row{background:rgba(0,230,118,0.09);border:1px solid rgba(0,230,118,0.22);border-radius:9px;padding:9px;text-align:center;color:var(--green);font-size:12px;font-weight:700;margin-top:9px;}
+.tk-cancel-row{background:rgba(255,23,68,0.07);border:1px solid rgba(255,23,68,0.2);border-radius:9px;padding:8px;text-align:center;color:#FF7090;font-size:11px;margin-top:9px;}
 
 /* ACCOUNT */
-.av-section{display:flex;align-items:center;gap:16px;padding:18px;background:var(--card);border:1px solid var(--border);border-radius:20px;margin-bottom:16px;}
-.av{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#FF8F00);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#000;border:3px solid rgba(255,184,0,0.5);flex-shrink:0;}
-.u-name{font-size:17px;font-weight:700;margin-bottom:3px;}
-.u-id{font-size:12px;color:var(--text2);margin-bottom:7px;}
-.u-lv{display:inline-flex;align-items:center;gap:5px;background:rgba(255,184,0,0.12);border:1px solid rgba(255,184,0,0.3);border-radius:20px;padding:3px 12px;font-size:11px;color:var(--gold);font-weight:700;}
-.acc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;}
-.ac-st{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 8px;text-align:center;}
-.ac-st .v{font-size:20px;font-weight:900;color:var(--gold);margin-bottom:3px;}
-.ac-st .l{font-size:11px;color:var(--text2);}
+.av-sect{display:flex;align-items:center;gap:14px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:18px;margin-bottom:14px;}
+.av{width:65px;height:65px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#E68000);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#000;border:3px solid rgba(255,184,0,0.45);flex-shrink:0;}
+.u-name{font-size:16px;font-weight:700;margin-bottom:3px;}
+.u-id{font-size:11px;color:var(--text2);margin-bottom:6px;}
+.u-lv-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,184,0,0.11);border:1px solid rgba(255,184,0,0.28);border-radius:20px;padding:3px 11px;font-size:10px;color:var(--gold);font-weight:700;}
+.acc-sts{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px;}
+.ac-st{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:13px 7px;text-align:center;}
+.ac-st .v{font-size:19px;font-weight:900;color:var(--gold);margin-bottom:3px;}
+.ac-st .l{font-size:10px;color:var(--text2);}
 
 /* MENU */
-.menu-sec{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px;}
-.m-item{display:flex;align-items:center;gap:14px;padding:15px 16px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background 0.2s;}
-.m-item:last-child{border-bottom:none;}
-.m-item:active{background:rgba(255,255,255,0.03);}
-.m-ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.m-txt{flex:1;}
-.m-ttl{font-size:14px;font-weight:600;margin-bottom:2px;}
-.m-sub{font-size:12px;color:var(--text2);}
-.m-arr{color:var(--text2);font-size:14px;}
+.menu-s{background:var(--card);border:1px solid var(--border);border-radius:15px;overflow:hidden;margin-bottom:13px;}
+.mi{display:flex;align-items:center;gap:13px;padding:14px 15px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background 0.15s;}
+.mi:last-child{border-bottom:none;}
+.mi:active{background:rgba(255,255,255,0.025);}
+.mi-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.mi-txt{flex:1;}
+.mi-ttl{font-size:13px;font-weight:600;margin-bottom:1px;}
+.mi-sub{font-size:11px;color:var(--text2);}
+.mi-arr{color:var(--text2);font-size:13px;}
 
 /* REF */
-.ref-card{background:linear-gradient(135deg,rgba(255,184,0,0.1),rgba(255,143,0,0.05));border:1px solid rgba(255,184,0,0.25);border-radius:18px;padding:22px;text-align:center;margin-bottom:16px;}
-.ref-code{background:rgba(0,0,0,0.35);border:1px solid rgba(255,184,0,0.35);border-radius:12px;padding:14px;font-family:'Orbitron',monospace;font-size:20px;font-weight:700;color:var(--gold);letter-spacing:4px;margin:12px 0;cursor:pointer;transition:transform 0.15s;}
+.ref-card{background:linear-gradient(135deg,rgba(255,184,0,0.09),rgba(255,120,0,0.04));border:1px solid rgba(255,184,0,0.22);border-radius:17px;padding:20px;text-align:center;margin-bottom:14px;}
+.ref-code{background:rgba(0,0,0,0.35);border:1px solid rgba(255,184,0,0.35);border-radius:11px;padding:13px;font-family:'Orbitron',monospace;font-size:20px;font-weight:700;color:var(--gold);letter-spacing:4px;margin:11px 0;cursor:pointer;}
 .ref-code:active{transform:scale(0.97);}
 
 /* NOTIF */
-.notif-ov{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:300;display:flex;align-items:flex-start;justify-content:center;padding-top:65px;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.notif-ov{position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(10px);z-index:300;display:flex;align-items:flex-start;justify-content:center;padding-top:62px;opacity:0;pointer-events:none;transition:opacity 0.25s;}
 .notif-ov.open{opacity:1;pointer-events:all;}
-.notif-sh{width:calc(100% - 28px);max-width:460px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;overflow:hidden;transform:translateY(-16px);transition:transform 0.3s;}
+.notif-sh{width:calc(100% - 28px);max-width:465px;background:var(--bg2);border:1px solid var(--border);border-radius:18px;overflow:hidden;transform:translateY(-14px);transition:transform 0.25s;}
 .notif-ov.open .notif-sh{transform:translateY(0);}
-.notif-hd{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);}
-.n-item{display:flex;align-items:flex-start;gap:14px;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;}
-.n-item:last-child{border-bottom:none;}
-.n-ico{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.n-txt{flex:1;}
-.n-ttl{font-size:13px;font-weight:700;margin-bottom:3px;}
-.n-sub{font-size:12px;color:var(--text2);}
-.n-time{font-size:10px;color:var(--text2);margin-top:4px;}
+.notif-hd{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border);}
+.n-it{display:flex;align-items:flex-start;gap:13px;padding:13px 18px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;}
+.n-it:last-child{border-bottom:none;}
+.n-ico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.n-tx{flex:1;}
+.n-ttl{font-size:12px;font-weight:700;margin-bottom:2px;}
+.n-sub{font-size:11px;color:var(--text2);}
+.n-time{font-size:10px;color:var(--text2);margin-top:3px;}
 
-/* CHAT */
-.ai-fab{position:fixed;bottom:90px;left:16px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#FF8F00,var(--gold));display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;z-index:50;box-shadow:0 4px 20px rgba(255,184,0,0.45);transition:transform 0.2s;border:none;}
+/* AI CHAT */
+.ai-fab{position:fixed;bottom:88px;left:14px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#E68000,var(--gold));display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;z-index:50;box-shadow:0 4px 20px rgba(255,184,0,0.4);border:none;transition:transform 0.15s;}
 .ai-fab:active{transform:scale(0.88);}
-.ai-dot{position:absolute;top:-2px;right:-2px;background:var(--green);width:14px;height:14px;border-radius:50%;border:2px solid var(--bg);}
-.chat-ov{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:300;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.ai-dot{position:absolute;top:-2px;right:-2px;background:var(--green);width:13px;height:13px;border-radius:50%;border:2px solid var(--bg);}
+
+.chat-ov{position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(10px);z-index:300;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.25s;}
 .chat-ov.open{opacity:1;pointer-events:all;}
-.chat-sh{width:100%;background:var(--bg2);border-radius:24px 24px 0 0;border-top:1px solid var(--border);height:78vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.34,1.3,0.64,1);}
+.chat-sh{width:100%;max-width:500px;margin:0 auto;background:var(--bg2);border-radius:22px 22px 0 0;border-top:1px solid var(--border);height:80vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform 0.32s cubic-bezier(0.34,1.3,0.64,1);}
 .chat-ov.open .chat-sh{transform:translateY(0);}
-.chat-hd{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.bot-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#FF8F00,var(--gold));display:flex;align-items:center;justify-content:center;font-size:20px;}
-.bot-online{font-size:11px;color:var(--green);display:flex;align-items:center;gap:4px;}
-.bot-online::before{content:'';width:7px;height:7px;background:var(--green);border-radius:50%;display:inline-block;}
-.chat-cls{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
-.chat-msgs::-webkit-scrollbar{width:0;}
-.cm{max-width:84%;display:flex;gap:8px;align-items:flex-end;}
+.chat-hd{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.bot-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#E68000,var(--gold));display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.bot-on{font-size:10px;color:var(--green);display:flex;align-items:center;gap:4px;}
+.bot-on::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;display:inline-block;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.chat-cls{width:33px;height:33px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:11px;}
+.cm{max-width:85%;display:flex;gap:7px;align-items:flex-end;}
 .cm.bot{align-self:flex-start;}
 .cm.usr{align-self:flex-end;flex-direction:row-reverse;}
-.cm-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#FF8F00,var(--gold));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
-.cm-bbl{padding:12px 14px;border-radius:16px;font-size:13px;line-height:1.65;}
-.cm.bot .cm-bbl{background:var(--card2);border:1px solid var(--border);border-bottom-right-radius:4px;}
-.cm.usr .cm-bbl{background:rgba(255,184,0,0.14);border:1px solid rgba(255,184,0,0.25);border-bottom-left-radius:4px;}
-.chat-qk{display:flex;gap:8px;padding:10px 16px;overflow-x:auto;flex-shrink:0;}
-.chat-qk::-webkit-scrollbar{display:none;}
-.qk-btn{flex-shrink:0;padding:7px 14px;border-radius:20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text2);font-size:12px;font-family:'Cairo',sans-serif;cursor:pointer;}
-.qk-btn:active{background:rgba(255,184,0,0.12);border-color:rgba(255,184,0,0.3);color:var(--gold);}
-.chat-inp-row{display:flex;gap:10px;padding:12px 16px 20px;flex-shrink:0;border-top:1px solid var(--border);}
-.chat-inp{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:22px;padding:12px 18px;color:var(--text);font-family:'Cairo',sans-serif;font-size:14px;outline:none;}
-.chat-inp:focus{border-color:rgba(255,184,0,0.4);}
-.chat-snd{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#FF8F00);border:none;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;flex-shrink:0;}
+.cm-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#E68000,var(--gold));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.cm-bbl{padding:11px 13px;border-radius:15px;font-size:12px;line-height:1.65;}
+.cm.bot .cm-bbl{background:var(--card2);border:1px solid var(--border);border-bottom-right-radius:3px;}
+.cm.usr .cm-bbl{background:rgba(255,184,0,0.13);border:1px solid rgba(255,184,0,0.23);border-bottom-left-radius:3px;}
+.cm-typing{display:flex;gap:4px;align-items:center;padding:11px 14px;}
+.cm-typing span{width:7px;height:7px;background:var(--gold);border-radius:50%;animation:typ 1.2s infinite;}
+.cm-typing span:nth-child(2){animation-delay:0.2s;}
+.cm-typing span:nth-child(3){animation-delay:0.4s;}
+@keyframes typ{0%,60%,100%{transform:translateY(0);opacity:0.4}30%{transform:translateY(-5px);opacity:1}}
+.chat-qk{display:flex;gap:7px;padding:9px 14px;overflow-x:auto;flex-shrink:0;border-top:1px solid rgba(255,255,255,0.04);}
+.qk-b{flex-shrink:0;padding:6px 13px;border-radius:20px;background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.09);color:var(--text2);font-size:11px;font-family:'Cairo',sans-serif;cursor:pointer;}
+.qk-b:active{background:rgba(255,184,0,0.11);border-color:rgba(255,184,0,0.28);color:var(--gold);}
+.chat-ir{display:flex;gap:9px;padding:11px 14px 18px;flex-shrink:0;border-top:1px solid var(--border);}
+.chat-in{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:21px;padding:11px 16px;color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none;}
+.chat-in:focus{border-color:rgba(255,184,0,0.4);}
+.chat-snd{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#E68000);border:none;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;flex-shrink:0;}
 
-/* SECURITY DOC */
-.sec-doc{background:linear-gradient(135deg,#050A05,#030803);border:2px solid rgba(0,230,118,0.3);border-radius:20px;padding:20px;margin-bottom:14px;}
-.sec-doc-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(0,230,118,0.15);}
-.sec-seal{width:60px;height:60px;border-radius:50%;background:rgba(0,230,118,0.1);border:2px solid rgba(0,230,118,0.3);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
-.sec-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-family:'Orbitron',monospace;font-size:40px;font-weight:900;color:rgba(0,230,118,0.04);pointer-events:none;white-space:nowrap;}
-.info-tbl{width:100%;border-collapse:collapse;font-size:12px;}
-.info-tbl th{background:rgba(255,184,0,0.1);color:var(--gold);padding:9px 6px;text-align:center;font-size:10px;border:1px solid rgba(255,184,0,0.15);}
-.info-tbl td{padding:9px 6px;text-align:center;border:1px solid rgba(255,255,255,0.05);color:var(--text2);}
-.info-tbl tr:nth-child(even) td{background:rgba(255,255,255,0.02);}
+/* SECURITY */
+.sec-doc{background:linear-gradient(145deg,#030A03,#020602);border:2px solid rgba(0,230,118,0.28);border-radius:18px;padding:18px;margin-bottom:13px;position:relative;overflow:hidden;}
+.sec-wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-family:'Orbitron',monospace;font-size:38px;font-weight:900;color:rgba(0,230,118,0.04);pointer-events:none;white-space:nowrap;letter-spacing:3px;}
+.sec-seal{width:56px;height:56px;border-radius:50%;background:rgba(0,230,118,0.09);border:2px solid rgba(0,230,118,0.28);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.sec-row{display:flex;justify-content:space-between;padding:9px 12px;background:rgba(0,230,118,0.04);border-radius:9px;border:1px solid rgba(0,230,118,0.09);font-size:12px;margin-bottom:7px;}
+.sec-row:last-child{margin-bottom:0;}
+
+/* INFO TABLE */
+.inf-tbl{width:100%;border-collapse:collapse;font-size:11px;}
+.inf-tbl th{background:rgba(255,184,0,0.1);color:var(--gold);padding:8px 5px;text-align:center;font-size:10px;border:1px solid rgba(255,184,0,0.14);}
+.inf-tbl td{padding:8px 5px;text-align:center;border:1px solid rgba(255,255,255,0.05);color:var(--text2);}
+.inf-tbl tr:nth-child(even) td{background:rgba(255,255,255,0.015);}
 
 /* MODAL */
-.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.3s;}
-.modal-ov.open{opacity:1;pointer-events:all;}
-.modal-sh{width:100%;background:var(--bg2);border-radius:24px 24px 0 0;border-top:1px solid var(--border);padding:20px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);}
-.modal-ov.open .modal-sh{transform:translateY(0);}
-.modal-hnd{width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:4px;margin:0 auto 18px;}
-.modal-ttl{font-size:18px;font-weight:700;text-align:center;margin-bottom:18px;color:var(--gold);}
-.modal-inp{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-family:'Cairo',sans-serif;font-size:15px;outline:none;margin-bottom:12px;text-align:right;}
-.modal-inp:focus{border-color:rgba(255,184,0,0.5);}
-.modal-btn{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--gold),#FF8F00);color:#000;font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;}
-.modal-btn.out{background:transparent;border:1px solid var(--border);color:var(--text2);}
+.mod-ov{position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+.mod-ov.open{opacity:1;pointer-events:all;}
+.mod-sh{width:100%;max-width:500px;background:var(--bg2);border-radius:22px 22px 0 0;border-top:1px solid var(--border);padding:18px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.34,1.5,0.64,1);}
+.mod-ov.open .mod-sh{transform:translateY(0);}
+.mod-hnd{width:38px;height:4px;background:rgba(255,255,255,0.14);border-radius:4px;margin:0 auto 16px;}
+.mod-ttl{font-size:17px;font-weight:700;text-align:center;margin-bottom:16px;color:var(--gold);}
+.mod-inp{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px 15px;color:var(--text);font-family:'Cairo',sans-serif;font-size:14px;outline:none;margin-bottom:11px;text-align:right;}
+.mod-inp:focus{border-color:rgba(255,184,0,0.45);}
+.mod-btn{width:100%;padding:13px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--gold),#E68000);color:#000;font-family:'Cairo',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:9px;}
+.mod-btn.out{background:transparent;border:1px solid var(--border);color:var(--text2);}
 
 /* TX */
-.tx{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
-.tx:last-child{border-bottom:none;}
-.tx-i{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.tx-inf{flex:1;}
-.tx-t{font-size:13px;font-weight:600;margin-bottom:3px;}
-.tx-d{font-size:11px;color:var(--text2);}
-.tx-a{font-size:14px;font-weight:700;}
+.txi{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.txi:last-child{border-bottom:none;}
+.txi-i{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.txi-inf{flex:1;}
+.txi-t{font-size:12px;font-weight:600;margin-bottom:2px;}
+.txi-d{font-size:10px;color:var(--text2);}
+.txi-a{font-size:13px;font-weight:700;}
 
 /* TOAST */
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(0,230,118,0.15);border:1px solid rgba(0,230,118,0.3);color:var(--green);padding:10px 24px;border-radius:30px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;}
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:rgba(0,230,118,0.14);border:1px solid rgba(0,230,118,0.3);color:var(--green);padding:9px 22px;border-radius:28px;font-size:12px;font-weight:600;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;}
 .toast.show{opacity:1;}
-.toast.err{background:rgba(255,23,68,0.15);border-color:rgba(255,23,68,0.3);color:var(--red);}
+.toast.err{background:rgba(255,23,68,0.14);border-color:rgba(255,23,68,0.3);color:var(--red);}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-badge" onclick="switchPage('security')">🔒 SECURE V3</div>
-  <div class="header-logo">BLACKROCK</div>
-  <div class="header-notif" onclick="openNotif()" id="notif-btn">🔔<div class="notif-badge" id="nb">3</div></div>
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-secure" onclick="switchPage('security')">🔒 SECURE V3</div>
+  <div class="hdr-logo" onclick="switchPage('home')">
+    BLACKROCK
+    <span>BlackRock, Inc — Investment Platform</span>
+  </div>
+  <div class="hdr-left">
+    <div class="hdr-bell" onclick="openNotif()">🔔<div class="hdr-badge" id="hdr-nb">3</div></div>
+  </div>
 </div>
 
 <!-- HOME -->
-<div class="page active" id="page-home">
-  <div class="balance-card">
-    <div class="bal-label">💼 رصيدك الإجمالي</div>
-    <div class="bal-amount" id="bal-disp">0.00</div>
+<div class="pg active" id="pg-home">
+  <div class="bal-card">
+    <div class="bal-lbl">💼 رصيدك الإجمالي</div>
+    <div class="bal-num" id="bal-num">0.00</div>
     <div class="bal-currency">دينار جزائري (DZD)</div>
-    <div class="bal-stats">
-      <div class="bal-stat"><div class="bs-l">الربح اليومي</div><div class="bs-v" style="color:var(--green)" id="daily-disp">+215 DZD</div></div>
-      <div class="bal-stat"><div class="bs-l">إجمالي الأرباح</div><div class="bs-v" style="color:var(--gold)" id="total-disp">0 DZD</div></div>
+    <div class="bal-row">
+      <div class="bal-box"><div class="bb-l">الربح اليومي</div><div class="bb-v" style="color:var(--green)" id="daily-v">+215 DZD</div></div>
+      <div class="bal-box"><div class="bb-l">إجمالي الأرباح</div><div class="bb-v" style="color:var(--gold)" id="total-v">0 DZD</div></div>
     </div>
   </div>
 
   <div class="act-row">
-    <div class="act-btn" onclick="openModal('deposit')"><div class="act-ico g">⬆️</div><div class="act-lbl">إيداع</div></div>
-    <div class="act-btn" onclick="openModal('withdraw')"><div class="act-ico o">⬇️</div><div class="act-lbl">سحب</div></div>
-    <div class="act-btn" onclick="openModal('transfer')"><div class="act-ico b">🔄</div><div class="act-lbl">تحويل</div></div>
-    <div class="act-btn" onclick="switchPage('referral')"><div class="act-ico r">👥</div><div class="act-lbl">إحالة</div></div>
+    <div class="ab" onclick="openMod('deposit')"><div class="ab-i g">⬆️</div><div class="ab-l">إيداع</div></div>
+    <div class="ab" onclick="openMod('withdraw')"><div class="ab-i o">⬇️</div><div class="ab-l">سحب</div></div>
+    <div class="ab" onclick="openMod('transfer')"><div class="ab-i b">🔄</div><div class="ab-l">تحويل</div></div>
+    <div class="ab" onclick="switchPage('referral')"><div class="ab-i r">👥</div><div class="ab-l">إحالة</div></div>
   </div>
 
-  <div class="lvl-card">
+  <div class="lvl-bar-card">
     <div style="display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-size:13px;font-weight:700;">المستوى: <span style="color:var(--blue)" id="curr-lv">تجريبي</span></div>
-      <div style="font-size:12px;color:var(--gold);font-weight:600;" id="next-lv">الترقية لـ M1</div>
+      <div style="font-size:12px;font-weight:700;">المستوى: <span style="color:var(--blue)" id="curr-lv-txt">تجريبي</span></div>
+      <div style="font-size:11px;color:var(--gold);font-weight:600;" id="next-lv-txt">الترقية لـ M1</div>
     </div>
-    <div style="display:flex;justify-content:space-between;margin-top:6px;">
-      <span style="font-size:12px;color:var(--text2);">رصيدك: <span style="color:var(--gold)" id="prog-bal">0 DZD</span></span>
-      <span style="font-size:12px;color:var(--text2);" id="prog-need">7,000 DZD</span>
+    <div style="display:flex;justify-content:space-between;margin-top:5px;">
+      <span style="font-size:11px;color:var(--text2);">رصيدك: <span style="color:var(--gold)" id="pb-bal">0 DZD</span></span>
+      <span style="font-size:11px;color:var(--text2);" id="pb-need">7,000 DZD</span>
     </div>
-    <div class="prog-bar-out"><div class="prog-bar-in" id="prog-bar" style="width:0%"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);">
-      <span id="prog-pct">0% مكتمل</span><span id="prog-next-lbl">M1</span>
+    <div class="pb-out"><div class="pb-in" id="pb-in" style="width:0%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text2);">
+      <span id="pb-pct">0% مكتمل</span><span id="pb-nxt">M1</span>
     </div>
   </div>
 
-  <div class="mini-stats">
-    <div class="ms" onclick="switchPage('tasks')"><div class="ms-i">⚡</div><div class="ms-v" id="h-tasks">0</div><div class="ms-l">المهام</div></div>
-    <div class="ms" onclick="switchPage('referral')"><div class="ms-i">👥</div><div class="ms-v" id="h-refs">0</div><div class="ms-l">الإحالات</div></div>
-    <div class="ms"><div class="ms-i">📅</div><div class="ms-v" id="h-days">1</div><div class="ms-l">الأيام</div></div>
+  <div class="ms-row">
+    <div class="ms-cell" onclick="switchPage('tasks')"><div class="ms-i">⚡</div><div class="ms-v" id="h-tasks">0</div><div class="ms-l">المهام</div></div>
+    <div class="ms-cell" onclick="switchPage('referral')"><div class="ms-i">👥</div><div class="ms-v">0</div><div class="ms-l">الإحالات</div></div>
+    <div class="ms-cell"><div class="ms-i">📅</div><div class="ms-v" id="h-days">1</div><div class="ms-l">الأيام</div></div>
   </div>
 
-  <div class="sec-title">آخر المعاملات</div>
-  <div class="card" id="tx-list"><div style="padding:12px 0;text-align:center;color:var(--text2);font-size:13px;">🔍 لا توجد معاملات بعد</div></div>
+  <div class="st">آخر المعاملات</div>
+  <div class="card" id="tx-list"><div style="padding:10px 0;text-align:center;color:var(--text2);font-size:12px;">🔍 لا توجد معاملات بعد</div></div>
 </div>
 
 <!-- LEVELS -->
-<div class="page" id="page-levels">
-  <div class="sec-title" style="margin-bottom:18px;">🏆 مستويات الاستثمار</div>
-  <div class="lv-card active-lv">
-    <div class="lv-head">
-      <div class="lv-name" style="font-size:14px;font-family:'Cairo',sans-serif;">تدريب المكتتب</div>
-      <div class="lv-badge ba">✓ مفعل</div>
-    </div>
-    <div class="lv-info">
-      <div class="li"><div class="ll">💰 الاستثمار</div><div class="lv">0 DZD</div></div>
-      <div class="li"><div class="ll">📋 المهام</div><div class="lv">5</div></div>
-      <div class="li"><div class="ll">💵 للمهمة</div><div class="lv" style="color:var(--gold)">43</div></div>
-      <div class="li"><div class="ll">📈 يومي</div><div class="lv" style="color:var(--green)">215</div></div>
+<div class="pg" id="pg-levels">
+  <div class="st" style="margin-bottom:16px;">🏆 مستويات الاستثمار</div>
+  <div class="lvc act-lv">
+    <div class="lvc-hd"><div class="lvc-name" style="font-size:13px;font-family:'Cairo',sans-serif;font-weight:900;">تدريب المكتتب</div><div class="lv-bdg bdg-a">✓ مفعل</div></div>
+    <div class="lvc-info">
+      <div class="lv-it"><div class="lt">💰 الاستثمار</div><div class="lv">0 DZD</div></div>
+      <div class="lv-it"><div class="lt">📋 المهام</div><div class="lv">5</div></div>
+      <div class="lv-it"><div class="lt">💵 للمهمة</div><div class="lv" style="color:var(--gold)">43</div></div>
+      <div class="lv-it"><div class="lt">📈 يومي</div><div class="lv" style="color:var(--green)">215</div></div>
     </div>
     <div class="lock-n">🔒 السحب مقفل — يتطلب الترقية إلى M1 على الأقل</div>
   </div>
-  <div id="levels-list"></div>
+  <div id="lvl-list"></div>
 </div>
 
 <!-- TASKS -->
-<div class="page" id="page-tasks">
-  <div class="sec-title">⚡ المهام اليومية <span id="tasks-ctr">0/5 مكتملة</span></div>
-  <div style="background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.15);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:var(--text2);line-height:1.7;">
-    ⏱️ كل مهمة تحتاج <b style="color:var(--gold)">40 ثانية</b> لإكمالها. إذا خرجت أو ضغطت ✕ أثناء المهمة، <b style="color:var(--red)">تُلغى وتعود للغد فقط</b>.
+<div class="pg" id="pg-tasks">
+  <div class="st">⚡ المهام اليومية <span id="tasks-ctr">0/5 مكتملة</span></div>
+  <div style="background:rgba(255,184,0,0.05);border:1px solid rgba(255,184,0,0.13);border-radius:11px;padding:11px 13px;margin-bottom:13px;font-size:11px;color:var(--text2);line-height:1.75;">
+    ⏱️ كل مهمة تحتاج <b style="color:var(--gold)">40 ثانية</b>. إذا ضغطت ✕ أو غادرت الصفحة <b style="color:var(--red)">تُلغى وتعود غداً فقط</b>.
   </div>
   <div id="tasks-list"></div>
 </div>
 
 <!-- ACCOUNT -->
-<div class="page" id="page-account">
-  <div class="av-section">
+<div class="pg" id="pg-account">
+  <div class="av-sect">
     <div class="av">A</div>
     <div>
-      <div class="u-name" id="acc-uname">المستخدم</div>
-      <div class="u-id">ID: #00001</div>
-      <div class="u-lv">⭐ <span id="acc-lv-name">المستوى التجريبي</span></div>
+      <div class="u-name">المستخدم</div>
+      <div class="u-id">ID: #00001 | BlackRock, Inc</div>
+      <div class="u-lv-badge">⭐ <span id="acc-lv-nm">المستوى التجريبي</span></div>
     </div>
   </div>
-  <div class="acc-stats">
+  <div class="acc-sts">
     <div class="ac-st"><div class="v">0</div><div class="l">الإحالات</div></div>
     <div class="ac-st"><div class="v" id="acc-tasks-v">0</div><div class="l">المهام</div></div>
-    <div class="ac-st"><div class="v" id="acc-bal-v" style="font-size:13px">0</div><div class="l">DZD</div></div>
+    <div class="ac-st"><div class="v" id="acc-bal-v" style="font-size:12px">0</div><div class="l">DZD</div></div>
   </div>
 
-  <div class="sec-title">العمليات المالية</div>
-  <div class="menu-sec">
-    <div class="m-item">
-      <div class="m-ico" style="background:rgba(255,184,0,0.1)">💰</div>
-      <div class="m-txt"><div class="m-ttl">رصيدي</div><div class="m-sub" id="acc-bal-show">0.00 DZD</div></div>
-      <div class="m-arr">←</div>
-    </div>
-    <div class="m-item" onclick="openModal('deposit')">
-      <div class="m-ico" style="background:rgba(0,230,118,0.1)">⬆️</div>
-      <div class="m-txt"><div class="m-ttl">إيداع</div><div class="m-sub">أضف رصيداً لحسابك</div></div>
-      <div class="m-arr">←</div>
-    </div>
-    <div class="m-item" onclick="openModal('withdraw')">
-      <div class="m-ico" style="background:rgba(68,138,255,0.1)">⬇️</div>
-      <div class="m-txt"><div class="m-ttl">سحب</div><div class="m-sub" id="withdraw-sub-acc">متاح من مستوى M1</div></div>
-      <div class="m-arr">←</div>
-    </div>
-    <div class="m-item" onclick="openModal('transfer')">
-      <div class="m-ico" style="background:rgba(68,138,255,0.08)">🔄</div>
-      <div class="m-txt"><div class="m-ttl">تحويل</div><div class="m-sub">حوّل لمستخدم آخر</div></div>
-      <div class="m-arr">←</div>
-    </div>
+  <div class="st">العمليات المالية</div>
+  <div class="menu-s">
+    <div class="mi"><div class="mi-ico" style="background:rgba(255,184,0,0.1)">💰</div><div class="mi-txt"><div class="mi-ttl">رصيدي</div><div class="mi-sub" id="acc-bal-show">0.00 DZD</div></div><div class="mi-arr">←</div></div>
+    <div class="mi" onclick="openMod('deposit')"><div class="mi-ico" style="background:rgba(0,230,118,0.09)">⬆️</div><div class="mi-txt"><div class="mi-ttl">إيداع</div><div class="mi-sub">أضف رصيداً لحسابك</div></div><div class="mi-arr">←</div></div>
+    <div class="mi" onclick="openMod('withdraw')"><div class="mi-ico" style="background:rgba(68,138,255,0.09)">⬇️</div><div class="mi-txt"><div class="mi-ttl">سحب</div><div class="mi-sub" id="wd-sub-acc">متاح من مستوى M1</div></div><div class="mi-arr">←</div></div>
+    <div class="mi" onclick="openMod('transfer')"><div class="mi-ico" style="background:rgba(68,138,255,0.07)">🔄</div><div class="mi-txt"><div class="mi-ttl">تحويل</div><div class="mi-sub">حوّل لمستخدم آخر</div></div><div class="mi-arr">←</div></div>
+  </div>
+  <div id="acc-lock-notice" style="background:rgba(255,23,68,0.07);border:1px solid rgba(255,23,68,0.18);border-radius:11px;padding:11px 14px;margin-bottom:13px;font-size:11px;color:#FF7090;text-align:center;">⚠️ المستوى التجريبي: لا يمكن سحب الأموال حتى الترقية إلى M1</div>
+
+  <div class="st">الشركة والمزيد</div>
+  <div class="menu-s">
+    <div class="mi" onclick="switchPage('security')"><div class="mi-ico" style="background:rgba(0,230,118,0.07)">🔒</div><div class="mi-txt"><div class="mi-ttl">وثيقة الأمان</div><div class="mi-sub">SECURE V3 — BlackRock, Inc</div></div><div class="mi-arr">←</div></div>
+    <div class="mi" onclick="switchPage('about')"><div class="mi-ico" style="background:rgba(255,184,0,0.07)">🏢</div><div class="mi-txt"><div class="mi-ttl">عن الشركة</div><div class="mi-sub">BlackRock, Inc — أمريكا 2020</div></div><div class="mi-arr">←</div></div>
+    <div class="mi" onclick="switchPage('referral')"><div class="mi-ico" style="background:rgba(255,23,68,0.07)">👥</div><div class="mi-txt"><div class="mi-ttl">الإحالات</div><div class="mi-sub">ادعُ أصدقاءك واربح</div></div><div class="mi-arr">←</div></div>
+    <div class="mi" onclick="doLogout()"><div class="mi-ico" style="background:rgba(255,23,68,0.07)">🚪</div><div class="mi-txt"><div class="mi-ttl" style="color:var(--red)">تسجيل الخروج</div></div><div class="mi-arr">←</div></div>
   </div>
 
-  <div id="acc-lock-notice" style="background:rgba(255,23,68,0.08);border:1px solid rgba(255,23,68,0.2);border-radius:12px;padding:12px 16px;margin-bottom:14px;font-size:12px;color:#FF6090;text-align:center;">
-    ⚠️ المستوى التجريبي: لا يمكن سحب الأموال حتى الترقية
-  </div>
-
-  <div class="sec-title">الشركة والإعدادات</div>
-  <div class="menu-sec">
-    <div class="m-item" onclick="switchPage('security')">
-      <div class="m-ico" style="background:rgba(0,230,118,0.08)">🔒</div>
-      <div class="m-txt"><div class="m-ttl">وثيقة الأمان</div><div class="m-sub">SECURE V3 — BlackRock Global</div></div>
-      <div class="m-arr">←</div>
-    </div>
-    <div class="m-item" onclick="switchPage('about')">
-      <div class="m-ico" style="background:rgba(255,184,0,0.08)">🏢</div>
-      <div class="m-txt"><div class="m-ttl">عن الشركة</div><div class="m-sub">BlackRock Global LLC — أمريكا 2020</div></div>
-      <div class="m-arr">←</div>
-    </div>
-    <div class="m-item" onclick="switchPage('referral')">
-      <div class="m-ico" style="background:rgba(255,23,68,0.08)">👥</div>
-      <div class="m-txt"><div class="m-ttl">الإحالات</div><div class="m-sub">ادعُ أصدقاءك واربح</div></div>
-      <div class="m-arr">←</div>
-    </div>
-    <div class="m-item" onclick="clearData()">
-      <div class="m-ico" style="background:rgba(255,23,68,0.08)">🚪</div>
-      <div class="m-txt"><div class="m-ttl" style="color:var(--red)">تسجيل الخروج</div></div>
-      <div class="m-arr">←</div>
-    </div>
-  </div>
-
-  <div class="sec-title">جدول المستويات الكامل</div>
-  <div class="card" style="overflow-x:auto;padding:12px;">
-    <table class="info-tbl">
+  <div class="st">جدول المستويات</div>
+  <div class="card" style="overflow-x:auto;padding:11px;">
+    <table class="inf-tbl">
       <tr><th>المستوى</th><th>الاستثمار</th><th>المهام</th><th>للمهمة</th><th>يومي</th><th>شهري</th></tr>
       <tr><td style="color:var(--blue)">تجريبي</td><td>—</td><td>5</td><td>43</td><td>215</td><td style="color:var(--text2)">3 أيام</td></tr>
       <tr><td style="color:var(--gold)">M1</td><td>7,000</td><td>5</td><td>43</td><td style="color:var(--green)">215</td><td style="color:var(--green)">6,450</td></tr>
@@ -384,112 +374,85 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 
 <!-- REFERRAL -->
-<div class="page" id="page-referral">
-  <div class="sec-title" style="margin-bottom:16px;">👥 الإحالات</div>
+<div class="pg" id="pg-referral">
+  <div class="st" style="margin-bottom:14px;">👥 الإحالات</div>
   <div class="ref-card">
-    <div style="font-size:42px;margin-bottom:8px;">🎁</div>
-    <div style="font-size:16px;font-weight:700;margin-bottom:6px;">ادعُ صديقاً واربح معه</div>
-    <div style="font-size:13px;color:var(--text2);margin-bottom:14px;">احصل على مكافأة عند كل إحالة ناجحة</div>
+    <div style="font-size:40px;margin-bottom:7px;">🎁</div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:5px;">ادعُ صديقاً واربح معه</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:13px;">احصل على مكافأة عند كل إحالة ناجحة</div>
     <div class="ref-code" onclick="copyCode()">BG-00001</div>
-    <div style="font-size:12px;color:var(--text2);">اضغط للنسخ 📋</div>
+    <div style="font-size:11px;color:var(--text2);">اضغط للنسخ 📋</div>
   </div>
-  <div class="acc-stats">
+  <div class="acc-sts">
     <div class="ac-st"><div class="v">0</div><div class="l">الإحالات</div></div>
     <div class="ac-st"><div class="v">0</div><div class="l">المكافآت</div></div>
     <div class="ac-st"><div class="v">0</div><div class="l">DZD</div></div>
   </div>
-  <div class="card" style="text-align:center;color:var(--text2);font-size:13px;padding:24px;">لا توجد إحالات بعد.<br>شارك كودك مع أصدقائك!</div>
+  <div class="card" style="text-align:center;color:var(--text2);font-size:12px;padding:22px;">لا توجد إحالات بعد.<br>شارك كودك مع أصدقائك!</div>
 </div>
 
 <!-- SECURITY DOC -->
-<div class="page" id="page-security">
-  <div class="sec-title" style="margin-bottom:16px;">🔒 وثيقة الأمان الرسمية</div>
-  <div class="sec-doc" style="position:relative;">
-    <div class="sec-watermark">VERIFIED</div>
-    <div class="sec-doc-header">
+<div class="pg" id="pg-security">
+  <div class="st" style="margin-bottom:14px;">🔒 وثيقة الأمان الرسمية</div>
+  <div class="sec-doc">
+    <div class="sec-wm">VERIFIED SECURE</div>
+    <div style="display:flex;align-items:center;gap:13px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(0,230,118,0.12);">
       <div class="sec-seal">🛡️</div>
       <div>
-        <div style="font-family:'Orbitron',monospace;font-size:14px;font-weight:900;color:var(--green);letter-spacing:1px;">SECURE V3 CERTIFICATE</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:4px;">وثيقة أمان معتمدة — رقم: BRG-2025-DZ-001</div>
-        <div style="font-size:11px;color:var(--green);margin-top:3px;">✅ صالحة حتى: ديسمبر 2028</div>
+        <div style="font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:var(--green);letter-spacing:1px;">SECURE V3 CERTIFICATE</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:3px;">رقم الوثيقة: BRI-2025-DZ-001</div>
+        <div style="font-size:10px;color:var(--green);margin-top:2px;">✅ صالحة حتى: ديسمبر 2028</div>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
-      <div style="display:flex;justify-content:space-between;padding:10px;background:rgba(0,230,118,0.05);border-radius:10px;border:1px solid rgba(0,230,118,0.1);">
-        <span style="color:var(--text2)">الشركة المُصدِرة</span>
-        <span style="font-weight:700;color:var(--green)">BlackRock Global LLC</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:10px;background:rgba(0,230,118,0.05);border-radius:10px;border:1px solid rgba(0,230,118,0.1);">
-        <span style="color:var(--text2)">دولة التسجيل</span>
-        <span style="font-weight:700;">🇺🇸 Delaware, USA</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:10px;background:rgba(0,230,118,0.05);border-radius:10px;border:1px solid rgba(0,230,118,0.1);">
-        <span style="color:var(--text2)">رقم الترخيص الأمريكي</span>
-        <span style="font-weight:700;color:var(--gold)">SEC-7291-BRG</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:10px;background:rgba(0,230,118,0.05);border-radius:10px;border:1px solid rgba(0,230,118,0.1);">
-        <span style="color:var(--text2)">بروتوكول التشفير</span>
-        <span style="font-weight:700;color:var(--green)">SSL/TLS 3.0 — AES-256</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:10px;background:rgba(0,230,118,0.05);border-radius:10px;border:1px solid rgba(0,230,118,0.1);">
-        <span style="color:var(--text2)">عقد الجزائر</span>
-        <span style="font-weight:700;color:var(--green)">✅ 2025 — 2028</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:10px;background:rgba(0,230,118,0.05);border-radius:10px;border:1px solid rgba(0,230,118,0.1);">
-        <span style="color:var(--text2)">حماية الأموال</span>
-        <span style="font-weight:700;color:var(--green)">✅ مضمونة 100%</span>
-      </div>
-    </div>
-    <div style="margin-top:16px;padding:14px;background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.15);border-radius:12px;font-size:12px;color:var(--text2);line-height:1.8;text-align:center;">
-      تُقرّ شركة <b style="color:var(--green)">BlackRock Global LLC</b> المسجلة في ولاية ديلاوير الأمريكية عام <b style="color:var(--gold)">2020</b>، بأنها أبرمت عقداً رسمياً مع الجانب الجزائري في <b style="color:var(--gold)">يناير 2025</b> لمدة <b style="color:var(--gold)">3 سنوات</b> (تنتهي 2028)، يضمن حقوق المستثمرين الجزائريين وأموالهم وفق أعلى معايير الأمان الدولية.
-    </div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;font-size:11px;color:var(--green);">
-      ✅ وثيقة موثقة ومعتمدة دولياً
+    <div class="sec-row"><span style="color:var(--text2)">الشركة المُصدِرة</span><span style="font-weight:700;color:var(--green)">BlackRock, Inc</span></div>
+    <div class="sec-row"><span style="color:var(--text2)">دولة التسجيل</span><span style="font-weight:700;">🇺🇸 New York, USA</span></div>
+    <div class="sec-row"><span style="color:var(--text2)">رقم التسجيل</span><span style="font-weight:700;color:var(--gold)">NYSE: BLK — EIN: 32-0174431</span></div>
+    <div class="sec-row"><span style="color:var(--text2)">بروتوكول التشفير</span><span style="font-weight:700;color:var(--green)">SSL/TLS 3.0 — AES-256</span></div>
+    <div class="sec-row"><span style="color:var(--text2)">عقد الجزائر</span><span style="font-weight:700;color:var(--green)">✅ يناير 2025 — ديسمبر 2028</span></div>
+    <div class="sec-row"><span style="color:var(--text2)">حماية الأموال</span><span style="font-weight:700;color:var(--green)">✅ مضمونة 100%</span></div>
+    <div style="margin-top:14px;padding:13px;background:rgba(0,230,118,0.05);border:1px solid rgba(0,230,118,0.12);border-radius:11px;font-size:11px;color:var(--text2);line-height:1.85;text-align:center;">
+      تُقرّ شركة <b style="color:var(--green)">BlackRock, Inc</b> المسجلة في نيويورك بالولايات المتحدة الأمريكية عام <b style="color:var(--gold)">2020</b>، بأنها أبرمت عقداً رسمياً مع الجانب الجزائري في <b style="color:var(--gold)">يناير 2025</b> لمدة <b style="color:var(--gold)">3 سنوات</b> (تنتهي ديسمبر 2028)، يضمن حقوق المستثمرين الجزائريين وأموالهم وفق أعلى معايير الأمان الدولية.
     </div>
   </div>
   <div class="card">
-    <div style="font-size:14px;font-weight:700;color:var(--gold);margin-bottom:14px;">🔐 ضمانات الأمان</div>
-    <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
-      <div style="display:flex;align-items:center;gap:10px;"><span style="color:var(--green);font-size:16px;">✅</span><span>تشفير بيانات المستخدمين بمعيار AES-256</span></div>
-      <div style="display:flex;align-items:center;gap:10px;"><span style="color:var(--green);font-size:16px;">✅</span><span>حماية المعاملات المالية بـ SSL V3</span></div>
-      <div style="display:flex;align-items:center;gap:10px;"><span style="color:var(--green);font-size:16px;">✅</span><span>لا يمكن السحب في المستوى التجريبي لحماية الأموال</span></div>
-      <div style="display:flex;align-items:center;gap:10px;"><span style="color:var(--green);font-size:16px;">✅</span><span>مراقبة أمنية على مدار 24/7</span></div>
-      <div style="display:flex;align-items:center;gap:10px;"><span style="color:var(--green);font-size:16px;">✅</span><span>ضمان استرداد الأموال في حالات الطوارئ</span></div>
+    <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:12px;">🔐 ضمانات الأمان</div>
+    <div style="display:flex;flex-direction:column;gap:9px;font-size:12px;">
+      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>تشفير بيانات المستخدمين بمعيار AES-256</span></div>
+      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>حماية المعاملات بـ SSL V3</span></div>
+      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>السحب مقفل في المستوى التجريبي لحماية أموالك</span></div>
+      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>مراقبة أمنية 24/7</span></div>
+      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>ضمان استرداد الأموال في حالات الطوارئ</span></div>
     </div>
   </div>
 </div>
 
 <!-- ABOUT -->
-<div class="page" id="page-about">
-  <div class="sec-title" style="margin-bottom:16px;">🏢 عن الشركة</div>
-  <div class="card" style="background:linear-gradient(135deg,#1A1000,#0F0800);border-color:rgba(255,184,0,0.3);text-align:center;padding:24px;margin-bottom:14px;">
-    <div style="font-size:36px;margin-bottom:8px;">🇺🇸</div>
-    <div style="font-family:'Orbitron',monospace;font-size:18px;font-weight:900;color:var(--gold);letter-spacing:2px;margin-bottom:6px;">BLACKROCK GLOBAL LLC</div>
-    <div style="font-size:13px;color:var(--text2);line-height:1.7;">شركة استثمار أمريكية رائدة متخصصة في إدارة الأصول وتوليد الدخل السلبي</div>
+<div class="pg" id="pg-about">
+  <div class="st" style="margin-bottom:14px;">🏢 عن الشركة</div>
+  <div class="card" style="background:linear-gradient(135deg,#180E00,#0A0700);border-color:rgba(255,184,0,0.3);text-align:center;padding:22px;margin-bottom:12px;">
+    <div style="font-size:34px;margin-bottom:7px;">🇺🇸</div>
+    <div style="font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:var(--gold);letter-spacing:2px;margin-bottom:5px;">BLACKROCK, INC</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.7;">أكبر شركة لإدارة الأصول في العالم — مقرها نيويورك، الولايات المتحدة الأمريكية</div>
   </div>
-  <div class="card" style="margin-bottom:12px;">
-    <div style="font-size:14px;font-weight:700;color:var(--gold);margin-bottom:14px;">📋 معلومات الشركة</div>
-    <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
-      <div style="display:flex;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">الاسم القانوني</span><span style="font-weight:700;">BlackRock Global LLC</span></div>
-      <div style="display:flex;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">دولة التأسيس</span><span style="font-weight:700;">🇺🇸 Delaware, USA</span></div>
-      <div style="display:flex;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">سنة التأسيس</span><span style="font-weight:700;color:var(--gold)">2020</span></div>
-      <div style="display:flex;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">المجال</span><span style="font-weight:700;">إدارة الأصول والاستثمار</span></div>
-      <div style="display:flex;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">عقد الجزائر</span><span style="font-weight:700;color:var(--green)">✅ يناير 2025</span></div>
-      <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2)">انتهاء العقد</span><span style="font-weight:700;color:var(--gold)">ديسمبر 2028 (3 سنوات)</span></div>
+  <div class="card" style="margin-bottom:11px;">
+    <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:13px;">📋 معلومات الشركة</div>
+    <div style="display:flex;flex-direction:column;gap:9px;font-size:12px;">
+      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">الاسم القانوني</span><span style="font-weight:700;">BlackRock, Inc</span></div>
+      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">المقر الرئيسي</span><span style="font-weight:700;">🇺🇸 New York, USA</span></div>
+      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">سنة التأسيس</span><span style="font-weight:700;color:var(--gold)">2020 (منصة DZ)</span></div>
+      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">المجال</span><span style="font-weight:700;">إدارة الأصول والاستثمار</span></div>
+      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">عقد الجزائر</span><span style="font-weight:700;color:var(--green)">✅ يناير 2025</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2)">انتهاء العقد</span><span style="font-weight:700;color:var(--gold)">ديسمبر 2028</span></div>
     </div>
-  </div>
-  <div class="card">
-    <div style="font-size:14px;font-weight:700;color:var(--gold);margin-bottom:12px;">📜 نص اتفاقية الشراكة</div>
-    <div style="font-size:13px;color:var(--text2);line-height:1.9;">في يناير 2025، أبرمت شركة <b style="color:var(--gold)">BlackRock Global LLC</b> الأمريكية عقداً رسمياً مع الجانب الجزائري لمدة <b style="color:var(--gold)">3 سنوات</b>، ينتهي في ديسمبر 2028. يتضمن العقد تقديم خدمات الاستثمار الرقمي وإدارة الأصول لمواطني الجزائر، مع ضمان الأرباح اليومية وفق المستويات المحددة وضمان حقوق جميع المستثمرين.</div>
   </div>
 </div>
 
 <!-- BOTTOM NAV -->
-<div class="bottom-nav">
-  <div class="nav-item active" id="nav-home" onclick="switchPage('home')"><div class="nav-icon">🏠</div><div class="nav-label">الرئيسية</div></div>
-  <div class="nav-item" id="nav-tasks" onclick="switchPage('tasks')"><div class="nav-icon">⚡<div class="nav-badge" id="nav-tb">5</div></div><div class="nav-label">المهام</div></div>
-  <div class="nav-item" id="nav-levels" onclick="switchPage('levels')"><div class="nav-icon">💎</div><div class="nav-label">الترقية</div></div>
-  <div class="nav-item" id="nav-account" onclick="switchPage('account')"><div class="nav-icon">👤</div><div class="nav-label">حسابي</div></div>
+<div class="bnav">
+  <div class="ni active" id="ni-home" onclick="switchPage('home')"><div class="ni-ico">🏠</div><div class="ni-lbl">الرئيسية</div></div>
+  <div class="ni" id="ni-tasks" onclick="switchPage('tasks')"><div class="ni-ico">⚡<div class="ni-dot" id="ni-tb">5</div></div><div class="ni-lbl">المهام</div></div>
+  <div class="ni" id="ni-levels" onclick="switchPage('levels')"><div class="ni-ico">💎</div><div class="ni-lbl">الترقية</div></div>
+  <div class="ni" id="ni-account" onclick="switchPage('account')"><div class="ni-ico">👤</div><div class="ni-lbl">حسابي</div></div>
 </div>
 
 <!-- AI FAB -->
@@ -498,47 +461,47 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <!-- NOTIFICATIONS -->
 <div class="notif-ov" id="notif-ov" onclick="if(event.target===this)closeNotif()">
   <div class="notif-sh">
-    <div class="notif-hd"><div style="font-size:16px;font-weight:700;">🔔 الإشعارات</div><div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="closeNotif()">✕</div></div>
-    <div class="n-item"><div class="n-ico" style="background:rgba(255,184,0,0.12)">⚡</div><div class="n-txt"><div class="n-ttl">مهام جديدة متاحة!</div><div class="n-sub">لديك 5 مهام يومية لكسب DZD 215</div><div class="n-time">منذ دقيقة</div></div></div>
-    <div class="n-item"><div class="n-ico" style="background:rgba(0,230,118,0.12)">🎁</div><div class="n-txt"><div class="n-ttl">مرحباً بك في BLACKROCK</div><div class="n-sub">ابدأ رحلتك نحو الثروة واكسب يومياً</div><div class="n-time">منذ ساعة</div></div></div>
-    <div class="n-item"><div class="n-ico" style="background:rgba(68,138,255,0.12)">💎</div><div class="n-txt"><div class="n-ttl">ترقية متاحة!</div><div class="n-sub">ارقِ إلى M1 بإيداع 7,000 DZD</div><div class="n-time">منذ يوم</div></div></div>
+    <div class="notif-hd"><div style="font-size:15px;font-weight:700;">🔔 الإشعارات</div><div style="width:31px;height:31px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;" onclick="closeNotif()">✕</div></div>
+    <div class="n-it"><div class="n-ico" style="background:rgba(255,184,0,0.11)">⚡</div><div class="n-tx"><div class="n-ttl">مهام جديدة متاحة!</div><div class="n-sub">لديك 5 مهام يومية لكسب 215 DZD</div><div class="n-time">منذ دقيقة</div></div></div>
+    <div class="n-it"><div class="n-ico" style="background:rgba(0,230,118,0.11)">🎁</div><div class="n-tx"><div class="n-ttl">مرحباً بك في BlackRock, Inc</div><div class="n-sub">ابدأ رحلتك نحو الثروة واكسب يومياً</div><div class="n-time">منذ ساعة</div></div></div>
+    <div class="n-it"><div class="n-ico" style="background:rgba(68,138,255,0.11)">💎</div><div class="n-tx"><div class="n-ttl">ترقية متاحة!</div><div class="n-sub">ارقِ إلى M1 بإيداع 7,000 DZD</div><div class="n-time">منذ يوم</div></div></div>
   </div>
 </div>
 
-<!-- CHAT -->
+<!-- AI CHAT with real Anthropic API -->
 <div class="chat-ov" id="chat-ov" onclick="if(event.target===this)closeChat()">
   <div class="chat-sh">
     <div class="chat-hd">
       <div style="display:flex;align-items:center;gap:10px;">
         <div class="bot-av">🤖</div>
-        <div><div style="font-size:15px;font-weight:700;">المساعد الذكي</div><div class="bot-online">متصل الآن</div></div>
+        <div><div style="font-size:14px;font-weight:700;">مساعد BlackRock الذكي</div><div class="bot-on">متصل — مدعوم بـ AI</div></div>
       </div>
       <div class="chat-cls" onclick="closeChat()">✕</div>
     </div>
     <div class="chat-msgs" id="chat-msgs">
-      <div class="cm bot"><div class="cm-av">🤖</div><div class="cm-bbl">👋 مرحباً! أنا مساعدك الذكي في <b>BLACKROCK GLOBAL</b>. كيف يمكنني مساعدتك اليوم؟</div></div>
+      <div class="cm bot"><div class="cm-av">🤖</div><div class="cm-bbl">👋 مرحباً! أنا المساعد الذكي لمنصة <b>BlackRock, Inc</b>. يمكنني الإجابة على أي سؤال حول الاستثمار والمنصة. كيف يمكنني مساعدتك؟</div></div>
     </div>
     <div class="chat-qk">
-      <button class="qk-btn" onclick="quickMsg('رصيدي')">رصيدي</button>
-      <button class="qk-btn" onclick="quickMsg('المهام المتاحة')">المهام المتاحة</button>
-      <button class="qk-btn" onclick="quickMsg('كيف أرقي؟')">كيف أرقي؟</button>
-      <button class="qk-btn" onclick="quickMsg('نصيحة')">نصيحة</button>
-      <button class="qk-btn" onclick="quickMsg('عن الشركة')">عن الشركة</button>
-      <button class="qk-btn" onclick="quickMsg('السحب')">السحب</button>
+      <button class="qk-b" onclick="quickMsg('رصيدي')">رصيدي</button>
+      <button class="qk-b" onclick="quickMsg('المهام المتاحة')">المهام المتاحة</button>
+      <button class="qk-b" onclick="quickMsg('كيف أرقي؟')">كيف أرقي؟</button>
+      <button class="qk-b" onclick="quickMsg('نصيحة استثمارية')">نصيحة</button>
+      <button class="qk-b" onclick="quickMsg('عن الشركة')">عن الشركة</button>
+      <button class="qk-b" onclick="quickMsg('كيف أسحب المال؟')">السحب</button>
     </div>
-    <div class="chat-inp-row">
-      <input class="chat-inp" id="chat-inp" placeholder="اكتب سؤالك..." onkeydown="if(event.key==='Enter')sendMsg()"/>
+    <div class="chat-ir">
+      <input class="chat-in" id="chat-in" placeholder="اكتب سؤالك..." onkeydown="if(event.key==='Enter')sendMsg()"/>
       <button class="chat-snd" onclick="sendMsg()">✈️</button>
     </div>
   </div>
 </div>
 
 <!-- MODAL -->
-<div class="modal-ov" id="modal-ov" onclick="if(event.target===this)closeModalNow()">
-  <div class="modal-sh">
-    <div class="modal-hnd"></div>
-    <div class="modal-ttl" id="modal-ttl"></div>
-    <div id="modal-cnt"></div>
+<div class="mod-ov" id="mod-ov" onclick="if(event.target===this)closeMod()">
+  <div class="mod-sh">
+    <div class="mod-hnd"></div>
+    <div class="mod-ttl" id="mod-ttl"></div>
+    <div id="mod-cnt"></div>
   </div>
 </div>
 
@@ -546,8 +509,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div class="toast" id="toast"></div>
 
 <script>
-// ============ DATA ============
-const LEVELS_DATA = [
+// ══════════════════════════════════════
+// DATA
+// ══════════════════════════════════════
+const LVL_DATA = [
   {id:'M1',price:7000,    str:'7,000',    tasks:5,  pt:43,   daily:215,    monthly:6450},
   {id:'M2',price:26600,   str:'26,600',   tasks:10, pt:86,   daily:860,    monthly:25800},
   {id:'M3',price:95000,   str:'95,000',   tasks:25, pt:131,  daily:3275,   monthly:98250},
@@ -556,456 +521,428 @@ const LEVELS_DATA = [
   {id:'M6',price:1950000, str:'1,950,000',tasks:130,pt:652,  daily:84760,  monthly:2542800},
   {id:'G7',price:4485000, str:'4,485,000',tasks:200,pt:1068, daily:213600, monthly:6408000}
 ];
-const TASK_ICONS = ['📱','💎','🎯','🚀','⭐','🔥','💫','🏆','⚡','🌟','💰','🎖️'];
-const TASK_DURATION = 40;
+const TK_ICONS = ['📱','💎','🎯','🚀','⭐','🔥','💫','🏆','⚡','🌟','💰','🎖️','📊','🌐','🔑'];
+const TASK_DUR = 40;
 
-// ============ STATE (with localStorage) ============
+// ══════════════════════════════════════
+// STATE — localStorage brain
+// ══════════════════════════════════════
+function defState() {
+  return {balance:0,txList:[],currentLevel:'trial',currentTasks:5,taskReward:43,taskStatus:{},lastDate:'',days:1,tasksDone:0};
+}
 function loadState() {
-  try {
-    const s = JSON.parse(localStorage.getItem('bg_state') || '{}');
-    return {
-      balance: s.balance || 0,
-      tasksDone: s.tasksDone || 0,
-      txList: s.txList || [],
-      currentLevel: s.currentLevel || 'trial',
-      currentTasks: s.currentTasks || 5,
-      taskReward: s.taskReward || 43,
-      taskStatus: s.taskStatus || {}, // {i: 'done'|'cancelled'}
-      lastTaskDate: s.lastTaskDate || '',
-      days: s.days || 1,
-    };
-  } catch(e) { return {balance:0,tasksDone:0,txList:[],currentLevel:'trial',currentTasks:5,taskReward:43,taskStatus:{},lastTaskDate:'',days:1}; }
+  try { const s = JSON.parse(localStorage.getItem('bri_state')||'{}'); return Object.assign(defState(), s); }
+  catch(e) { return defState(); }
 }
+function save() { try { localStorage.setItem('bri_state', JSON.stringify(S)); } catch(e){} }
 
-function saveState() {
-  try { localStorage.setItem('bg_state', JSON.stringify(state)); } catch(e) {}
-}
+let S = loadState();
 
-let state = loadState();
-
-// Reset cancelled tasks next day
-function checkDayReset() {
+// Day reset — reset ALL statuses each new day
+(function checkDay(){
   const today = new Date().toDateString();
-  if (state.lastTaskDate !== today) {
-    // New day: reset only cancelled tasks, keep done tasks
-    const newStatus = {};
-    for (const k in state.taskStatus) {
-      if (state.taskStatus[k] === 'done') newStatus[k] = 'done';
-      // cancelled tasks reset (not added back)
-    }
-    // Actually reset ALL tasks each new day
-    state.taskStatus = {};
-    state.tasksDone = 0;
-    state.lastTaskDate = today;
-    saveState();
+  if (S.lastDate !== today) {
+    S.taskStatus = {};
+    S.tasksDone = 0;
+    S.lastDate = today;
+    if (S.lastDate) S.days = (S.days || 1) + 1;
+    save();
   }
-}
-checkDayReset();
+})();
 
-// Running timers (not persisted)
-let taskTimers = {};
+let tkTimers = {};
 
-// ============ BUILD LEVELS ============
-const levelsList = document.getElementById('levels-list');
-LEVELS_DATA.forEach(v => {
-  levelsList.innerHTML += `
-    <div class="lv-card" onclick="openUpgradeModal('${v.id}','${v.str}',${v.daily},${v.pt},${v.tasks},${v.monthly})">
-      <div class="lv-head"><div class="lv-name">${v.id}</div><div class="lv-badge bu">ترقية الآن</div></div>
-      <div class="lv-info">
-        <div class="li"><div class="ll">💰 الاستثمار</div><div class="lv" style="color:var(--gold)">${v.str}</div></div>
-        <div class="li"><div class="ll">📋 المهام</div><div class="lv">${v.tasks}</div></div>
-        <div class="li"><div class="ll">💵 للمهمة</div><div class="lv" style="color:var(--gold)">${v.pt}</div></div>
-        <div class="li"><div class="ll">📈 يومي</div><div class="lv" style="color:var(--green)">${v.daily.toLocaleString()}</div></div>
-      </div>
-      <button class="up-btn">⬆️ ترقية إلى ${v.id} — ${v.str} DZD</button>
-    </div>`;
-});
+// ══════════════════════════════════════
+// BUILD LEVELS
+// ══════════════════════════════════════
+(function(){
+  const el = document.getElementById('lvl-list');
+  LVL_DATA.forEach(v => {
+    el.innerHTML += `
+      <div class="lvc" onclick="openUpgMod('${v.id}','${v.str}',${v.daily},${v.pt},${v.tasks},${v.monthly})">
+        <div class="lvc-hd"><div class="lvc-name">${v.id}</div><div class="lv-bdg bdg-u">ترقية الآن</div></div>
+        <div class="lvc-info">
+          <div class="lv-it"><div class="lt">💰 الاستثمار</div><div class="lv" style="color:var(--gold)">${v.str}</div></div>
+          <div class="lv-it"><div class="lt">📋 المهام</div><div class="lv">${v.tasks}</div></div>
+          <div class="lv-it"><div class="lt">💵 للمهمة</div><div class="lv" style="color:var(--gold)">${v.pt}</div></div>
+          <div class="lv-it"><div class="lt">📈 يومي</div><div class="lv" style="color:var(--green)">${v.daily.toLocaleString()}</div></div>
+        </div>
+        <button class="upbtn">⬆️ ترقية إلى ${v.id} — ${v.str} DZD</button>
+      </div>`;
+  });
+})();
 
-// ============ BUILD TASKS ============
+// ══════════════════════════════════════
+// BUILD TASKS
+// ══════════════════════════════════════
 function buildTasks() {
-  const tl = document.getElementById('tasks-list');
-  tl.innerHTML = '';
-  let doneCount = 0;
-  for (let i = 1; i <= state.currentTasks; i++) {
-    const status = state.taskStatus[i];
-    if (status === 'done') doneCount++;
-    const isDone = status === 'done';
-    const isCancelled = status === 'cancelled';
-
-    tl.innerHTML += `
-      <div class="tk-card ${isDone?'done':isCancelled?'cancelled':''}" id="tc-${i}">
+  const el = document.getElementById('tasks-list');
+  el.innerHTML = '';
+  let done = 0;
+  for (let i = 1; i <= S.currentTasks; i++) {
+    const st = S.taskStatus[i];
+    if (st === 'done') done++;
+    const isDone = st === 'done';
+    const isCancelled = st === 'cancelled';
+    el.innerHTML += `
+      <div class="tkc ${isDone?'done':isCancelled?'cancelled':''}" id="tkc-${i}">
         <div class="tk-top">
-          <div class="tk-ico" id="ti-${i}">${isDone ? '✅' : isCancelled ? '❌' : TASK_ICONS[(i-1)%TASK_ICONS.length]}</div>
+          <div class="tk-ico" id="tki-${i}">${isDone?'✅':isCancelled?'❌':TK_ICONS[(i-1)%TK_ICONS.length]}</div>
           <div class="tk-inf">
             <div class="tk-ttl">مهمة يومية ${i}</div>
-            <div class="tk-sub" id="ts-${i}" style="color:${isDone?'var(--green)':isCancelled?'var(--red)':''}">${isDone?'مكتملة ✅':isCancelled?'ملغاة — تعود غداً':'انتظر 40 ثانية للحصول على +'+state.taskReward+' DZD'}</div>
+            <div class="tk-sub" id="tks-${i}" style="color:${isDone?'var(--green)':isCancelled?'var(--red)':''}">${isDone?'✅ مكتملة':isCancelled?'❌ ملغاة — تعود غداً':'انتظر 40 ثانية واحصل على +'+S.taskReward+' DZD'}</div>
           </div>
-          <div class="tk-rew"><div class="tk-amt">+${state.taskReward}</div><div class="tk-lbl">DZD</div></div>
+          <div class="tk-rew"><div class="tk-amt">+${S.taskReward}</div><div class="tk-lbl">DZD</div></div>
         </div>
-        <div class="tk-prog"><div style="height:100%;border-radius:5px;background:${isDone?'var(--green)':isCancelled?'var(--red)':'linear-gradient(90deg,var(--gold),#FF8F00)'};width:${isDone?'100':isCancelled?'100':'0'}%;transition:width 0.3s;" id="tb-${i}"></div></div>
-        <div id="ta-${i}">
-          ${isDone ? '' : isCancelled ? '' : `
-          <div class="tk-actions">
-            <button class="tk-start" onclick="startTask(${i})">▶ ابدأ المهمة</button>
-          </div>`}
+        <div class="tk-pb"><div id="tkb-${i}" style="height:100%;border-radius:4px;width:${isDone||isCancelled?'100':'0'}%;background:${isDone?'var(--green)':isCancelled?'var(--red)':'linear-gradient(90deg,var(--gold),#E68000)'};transition:width 0.4s;"></div></div>
+        <div id="tka-${i}">
+          ${isDone||isCancelled?'':` <div class="tk-acts"><button class="tk-start" onclick="startTask(${i})">▶ ابدأ المهمة</button></div>`}
         </div>
       </div>`;
   }
-  state.tasksDone = doneCount;
-  document.getElementById('tasks-ctr').textContent = doneCount + '/' + state.currentTasks + ' مكتملة';
-  const rem = state.currentTasks - doneCount;
-  const nb = document.getElementById('nav-tb');
-  nb.textContent = rem;
-  nb.style.display = rem > 0 ? 'flex' : 'none';
-  document.getElementById('h-tasks').textContent = doneCount;
-  document.getElementById('acc-tasks-v').textContent = doneCount;
+  S.tasksDone = done;
+  document.getElementById('tasks-ctr').textContent = done + '/' + S.currentTasks + ' مكتملة';
+  const rem = S.currentTasks - done;
+  const nb = document.getElementById('ni-tb');
+  nb.textContent = rem; nb.style.display = rem > 0 ? 'flex' : 'none';
+  document.getElementById('h-tasks').textContent = done;
+  document.getElementById('acc-tasks-v').textContent = done;
 }
 buildTasks();
 
-// ============ START TASK ============
+// ══════════════════════════════════════
+// TASK START
+// ══════════════════════════════════════
 function startTask(i) {
-  if (state.taskStatus[i]) return;
-  if (taskTimers[i]) return;
-
-  const card = document.getElementById('tc-' + i);
-  const bar = document.getElementById('tb-' + i);
-  const sub = document.getElementById('ts-' + i);
-  const actions = document.getElementById('ta-' + i);
-
-  card.classList.add('running');
+  if (S.taskStatus[i] || tkTimers[i]) return;
+  const card = document.getElementById('tkc-'+i);
+  const bar = document.getElementById('tkb-'+i);
+  const sub = document.getElementById('tks-'+i);
+  const acts = document.getElementById('tka-'+i);
+  card.classList.add('run');
   sub.textContent = '⏱️ جاري التنفيذ... لا تغادر!';
   sub.style.color = 'var(--gold)';
-
-  actions.innerHTML = `
-    <div class="tk-actions">
-      <button class="tk-cancel" onclick="cancelTask(${i})" title="إلغاء المهمة">✕</button>
-      <div class="tk-timer" id="tt-${i}">40</div>
-    </div>`;
-
+  acts.innerHTML = `<div class="tk-acts"><button class="tk-x" onclick="cancelTask(${i})">✕</button><div class="tk-timer" id="tkt-${i}">40</div></div>`;
   let elapsed = 0;
-  taskTimers[i] = setInterval(() => {
+  tkTimers[i] = setInterval(() => {
     elapsed++;
-    const pct = (elapsed / TASK_DURATION) * 100;
-    bar.style.width = pct + '%';
-    const remaining = TASK_DURATION - elapsed;
-    const timerEl = document.getElementById('tt-' + i);
-    if (timerEl) timerEl.textContent = remaining;
-
-    if (elapsed >= TASK_DURATION) {
-      clearInterval(taskTimers[i]);
-      taskTimers[i] = null;
-      completeTask(i);
-    }
+    bar.style.width = (elapsed/TASK_DUR*100) + '%';
+    const rem = TASK_DUR - elapsed;
+    const te = document.getElementById('tkt-'+i);
+    if(te) te.textContent = rem;
+    if(elapsed >= TASK_DUR) { clearInterval(tkTimers[i]); tkTimers[i]=null; completeTask(i); }
   }, 1000);
 }
 
-// ============ CANCEL TASK ============
+// ══════════════════════════════════════
+// TASK CANCEL
+// ══════════════════════════════════════
 function cancelTask(i) {
-  if (!taskTimers[i]) return;
-  clearInterval(taskTimers[i]);
-  taskTimers[i] = null;
-
-  state.taskStatus[i] = 'cancelled';
-  saveState();
-
-  const card = document.getElementById('tc-' + i);
-  const bar = document.getElementById('tb-' + i);
-  const sub = document.getElementById('ts-' + i);
-  const ico = document.getElementById('ti-' + i);
-  const actions = document.getElementById('ta-' + i);
-
-  card.classList.remove('running');
-  card.classList.add('cancelled');
-  bar.style.width = '100%';
-  bar.style.background = 'var(--red)';
-  ico.textContent = '❌';
-  sub.textContent = 'ملغاة — تعود غداً';
-  sub.style.color = 'var(--red)';
-  actions.innerHTML = '';
+  if (!tkTimers[i]) return;
+  clearInterval(tkTimers[i]); tkTimers[i] = null;
+  S.taskStatus[i] = 'cancelled'; save();
+  const card=document.getElementById('tkc-'+i);
+  const bar=document.getElementById('tkb-'+i);
+  const sub=document.getElementById('tks-'+i);
+  const ico=document.getElementById('tki-'+i);
+  const acts=document.getElementById('tka-'+i);
+  card.classList.remove('run'); card.classList.add('cancelled');
+  bar.style.width='100%'; bar.style.background='var(--red)';
+  ico.textContent='❌';
+  sub.textContent='❌ ملغاة — تعود غداً'; sub.style.color='var(--red)';
+  acts.innerHTML='';
   showToast('❌ تم إلغاء المهمة — تعود غداً', true);
 }
 
-function cancelAllRunning() {
-  for (let i = 1; i <= state.currentTasks; i++) {
-    if (taskTimers[i]) cancelTask(i);
-  }
+function cancelAll() {
+  for (let i=1; i<=S.currentTasks; i++) if(tkTimers[i]) cancelTask(i);
 }
 
-// ============ COMPLETE TASK ============
+// ══════════════════════════════════════
+// TASK COMPLETE
+// ══════════════════════════════════════
 function completeTask(i) {
-  state.taskStatus[i] = 'done';
-  state.balance += state.taskReward;
-  state.tasksDone++;
-  addTx('مهمة يومية ' + i, state.taskReward, true, 'task');
-  saveState();
-
-  const card = document.getElementById('tc-' + i);
-  const bar = document.getElementById('tb-' + i);
-  const sub = document.getElementById('ts-' + i);
-  const ico = document.getElementById('ti-' + i);
-  const actions = document.getElementById('ta-' + i);
-
-  card.classList.remove('running');
-  card.classList.add('done');
-  bar.style.width = '100%';
-  bar.style.background = 'var(--green)';
-  ico.textContent = '✅';
-  sub.textContent = 'مكتملة ✅';
-  sub.style.color = 'var(--green)';
-  actions.innerHTML = `<div class="tk-done-row">✅ تمت! +${state.taskReward} DZD أُضيفت لرصيدك</div>`;
-
+  S.taskStatus[i] = 'done';
+  S.balance += S.taskReward;
+  S.tasksDone++;
+  addTx('مهمة يومية '+i, S.taskReward, true, '⚡');
+  save();
+  const card=document.getElementById('tkc-'+i);
+  const bar=document.getElementById('tkb-'+i);
+  const sub=document.getElementById('tks-'+i);
+  const ico=document.getElementById('tki-'+i);
+  const acts=document.getElementById('tka-'+i);
+  card.classList.remove('run'); card.classList.add('done');
+  bar.style.width='100%'; bar.style.background='var(--green)';
+  ico.textContent='✅';
+  sub.textContent='✅ مكتملة'; sub.style.color='var(--green)';
+  acts.innerHTML=`<div class="tk-done-row">✅ تمت! +${S.taskReward} DZD أُضيفت لرصيدك</div>`;
   updateUI();
-  document.getElementById('tasks-ctr').textContent = state.tasksDone + '/' + state.currentTasks + ' مكتملة';
-  const rem = state.currentTasks - state.tasksDone;
-  const nb = document.getElementById('nav-tb');
-  nb.textContent = rem;
-  nb.style.display = rem > 0 ? 'flex' : 'none';
-  document.getElementById('h-tasks').textContent = state.tasksDone;
-  document.getElementById('acc-tasks-v').textContent = state.tasksDone;
-  showToast('✅ +' + state.taskReward + ' DZD تمت إضافتها!');
+  const done = Object.values(S.taskStatus).filter(v=>v==='done').length;
+  document.getElementById('tasks-ctr').textContent = done+'/'+S.currentTasks+' مكتملة';
+  document.getElementById('h-tasks').textContent = done;
+  document.getElementById('acc-tasks-v').textContent = done;
+  const rem = S.currentTasks - done;
+  const nb = document.getElementById('ni-tb');
+  nb.textContent = rem; nb.style.display = rem > 0 ? 'flex' : 'none';
+  showToast('✅ +'+S.taskReward+' DZD تمت إضافتها!');
 }
 
-// Cancel tasks if page hidden
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) cancelAllRunning();
-});
+// Cancel tasks when leaving tasks page or hiding
+document.addEventListener('visibilitychange', () => { if(document.hidden) cancelAll(); });
 
-// ============ PAGE SWITCH ============
-function switchPage(page) {
-  if (page !== 'tasks') cancelAllRunning();
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  const nav = document.getElementById('nav-' + page);
-  if (nav) nav.classList.add('active');
+// ══════════════════════════════════════
+// PAGE SWITCH
+// ══════════════════════════════════════
+function switchPage(pg) {
+  if(pg !== 'tasks') cancelAll();
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  document.getElementById('pg-'+pg).classList.add('active');
+  const ni = document.getElementById('ni-'+pg);
+  if(ni) ni.classList.add('active');
 }
 
-// ============ UPDATE UI ============
+// ══════════════════════════════════════
+// UPDATE UI
+// ══════════════════════════════════════
 function updateUI() {
-  const fmt = state.balance.toLocaleString('en', {minimumFractionDigits:2, maximumFractionDigits:2});
-  document.getElementById('bal-disp').textContent = fmt;
-  document.getElementById('total-disp').textContent = state.balance.toLocaleString() + ' DZD';
+  const fmt = S.balance.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('bal-num').textContent = fmt;
+  document.getElementById('total-v').textContent = S.balance.toLocaleString() + ' DZD';
   document.getElementById('acc-bal-show').textContent = fmt + ' DZD';
-  document.getElementById('acc-bal-v').textContent = state.balance.toLocaleString();
-  document.getElementById('prog-bal').textContent = state.balance.toLocaleString() + ' DZD';
-
-  const nextPrice = 7000;
-  const pct = Math.min((state.balance / nextPrice) * 100, 100);
-  document.getElementById('prog-bar').style.width = pct + '%';
-  document.getElementById('prog-pct').textContent = Math.round(pct) + '% مكتمل';
+  document.getElementById('acc-bal-v').textContent = S.balance.toLocaleString();
+  document.getElementById('pb-bal').textContent = S.balance.toLocaleString() + ' DZD';
+  document.getElementById('h-days').textContent = S.days;
+  const np = 7000;
+  const pct = Math.min((S.balance/np)*100, 100);
+  document.getElementById('pb-in').style.width = pct + '%';
+  document.getElementById('pb-pct').textContent = Math.round(pct) + '% مكتمل';
 }
 
-// ============ TRANSACTIONS ============
-function addTx(title, amount, isPos, type) {
+// ══════════════════════════════════════
+// TRANSACTIONS
+// ══════════════════════════════════════
+function addTx(title, amount, isPos, ico) {
   const now = new Date();
-  const t = now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
-  const icons = {deposit:'⬆️',withdraw:'⬇️',transfer:'🔄',task:'⚡',mining:'⛏️'};
-  const ico = icons[type] || '💰';
-  state.txList.unshift({title, amount, isPos, ico, time: 'اليوم ' + t});
-  if (state.txList.length > 20) state.txList.pop();
-  saveState();
-  renderTxList();
+  const t = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+  S.txList.unshift({title,amount,isPos,ico:ico||'💰',time:'اليوم '+t});
+  if(S.txList.length > 30) S.txList.pop();
+  save(); renderTx();
 }
-
-function renderTxList() {
+function renderTx() {
   const el = document.getElementById('tx-list');
-  if (!state.txList.length) {
-    el.innerHTML = '<div style="padding:12px 0;text-align:center;color:var(--text2);font-size:13px;">🔍 لا توجد معاملات بعد</div>';
-    return;
-  }
-  el.innerHTML = state.txList.slice(0, 5).map(tx => `
-    <div class="tx">
-      <div class="tx-i" style="background:${tx.isPos?'rgba(0,230,118,0.1)':'rgba(255,23,68,0.1)'}">${tx.ico}</div>
-      <div class="tx-inf"><div class="tx-t">${tx.title}</div><div class="tx-d">${tx.time}</div></div>
-      <div class="tx-a" style="color:${tx.isPos?'var(--green)':'var(--red)'}">${tx.isPos?'+':''}${tx.amount.toLocaleString()} DZD</div>
+  if(!S.txList.length){ el.innerHTML='<div style="padding:10px 0;text-align:center;color:var(--text2);font-size:12px;">🔍 لا توجد معاملات بعد</div>'; return; }
+  el.innerHTML = S.txList.slice(0,6).map(tx=>`
+    <div class="txi">
+      <div class="txi-i" style="background:${tx.isPos?'rgba(0,230,118,0.09)':'rgba(255,23,68,0.09)'}">${tx.ico}</div>
+      <div class="txi-inf"><div class="txi-t">${tx.title}</div><div class="txi-d">${tx.time}</div></div>
+      <div class="txi-a" style="color:${tx.isPos?'var(--green)':'var(--red)'}">${tx.isPos?'+':''}${tx.amount.toLocaleString()} DZD</div>
     </div>`).join('');
 }
 
-// ============ MODAL ============
-function openModal(type) {
-  const ttl = document.getElementById('modal-ttl');
-  const cnt = document.getElementById('modal-cnt');
-
-  if (type === 'deposit') {
-    ttl.textContent = '⬆️ إيداع رصيد';
-    cnt.innerHTML = `
-      <p style="font-size:13px;color:var(--text2);text-align:center;margin-bottom:16px">أدخل المبلغ المراد إيداعه</p>
-      <input class="modal-inp" type="number" placeholder="المبلغ (DZD)" id="dep-amt" min="1"/>
-      <button class="modal-btn" onclick="confirmDeposit()">✅ تأكيد الإيداع</button>
-      <button class="modal-btn out" onclick="closeModalNow()">إلغاء</button>`;
-
-  } else if (type === 'withdraw') {
-    ttl.textContent = '⬇️ سحب رصيد';
-    const canWithdraw = state.currentLevel !== 'trial';
-    if (!canWithdraw) {
-      cnt.innerHTML = `
-        <div style="background:rgba(255,23,68,0.1);border:1px solid rgba(255,23,68,0.2);border-radius:14px;padding:18px;margin-bottom:16px;text-align:center;">
-          <div style="font-size:36px;margin-bottom:10px">🔒</div>
-          <div style="font-size:15px;font-weight:700;color:#FF6090;margin-bottom:8px">السحب مقفل</div>
-          <div style="font-size:13px;color:var(--text2);line-height:1.8;">وفقاً لعقد الاستثمار وسياسة الأمان، ميزة السحب مفعلة فقط للأعضاء من رتبة <b style="color:var(--gold)">M1 فأعلى</b>.<br>يرجى ترقية حسابك لفتح ميزة السحب النقدي.</div>
+// ══════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════
+function openMod(type) {
+  const ttl = document.getElementById('mod-ttl');
+  const cnt = document.getElementById('mod-cnt');
+  if(type==='deposit') {
+    ttl.textContent='⬆️ إيداع رصيد';
+    cnt.innerHTML=`
+      <p style="font-size:12px;color:var(--text2);text-align:center;margin-bottom:14px">أدخل المبلغ المراد إيداعه</p>
+      <input class="mod-inp" type="number" placeholder="المبلغ (DZD)" id="dep-v" min="1"/>
+      <button class="mod-btn" onclick="doDeposit()">✅ تأكيد الإيداع</button>
+      <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
+  } else if(type==='withdraw') {
+    const can = S.currentLevel !== 'trial';
+    ttl.textContent='⬇️ سحب رصيد';
+    if(!can) {
+      cnt.innerHTML=`
+        <div style="background:rgba(255,23,68,0.09);border:1px solid rgba(255,23,68,0.2);border-radius:13px;padding:16px;margin-bottom:14px;text-align:center;">
+          <div style="font-size:32px;margin-bottom:9px">🔒</div>
+          <div style="font-size:14px;font-weight:700;color:#FF7090;margin-bottom:7px">السحب مقفل</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;">وفقاً لسياسة الأمان وعقد <b style="color:var(--gold)">BlackRock, Inc</b>، ميزة السحب مفعلة فقط للأعضاء من رتبة <b style="color:var(--gold)">M1 فأعلى</b>. يرجى ترقية حسابك لفتح ميزة السحب.</div>
         </div>
-        <button class="modal-btn" onclick="switchPage('levels');closeModalNow()">🚀 ترقية الآن</button>
-        <button class="modal-btn out" onclick="closeModalNow()">إلغاء</button>`;
+        <button class="mod-btn" onclick="switchPage('levels');closeMod()">🚀 ترقية الآن</button>
+        <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
     } else {
-      cnt.innerHTML = `
-        <p style="font-size:13px;color:var(--text2);text-align:center;margin-bottom:16px">رصيدك: <b style="color:var(--gold)">${state.balance.toLocaleString()} DZD</b></p>
-        <input class="modal-inp" type="number" placeholder="المبلغ (DZD)" id="wd-amt" min="1"/>
-        <button class="modal-btn" onclick="confirmWithdraw()">✅ تأكيد السحب</button>
-        <button class="modal-btn out" onclick="closeModalNow()">إلغاء</button>`;
+      cnt.innerHTML=`
+        <p style="font-size:12px;color:var(--text2);text-align:center;margin-bottom:14px">رصيدك: <b style="color:var(--gold)">${S.balance.toLocaleString()} DZD</b></p>
+        <input class="mod-inp" type="number" placeholder="المبلغ (DZD)" id="wd-v" min="1"/>
+        <button class="mod-btn" onclick="doWithdraw()">✅ تأكيد السحب</button>
+        <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
     }
-
-  } else if (type === 'transfer') {
-    ttl.textContent = '🔄 تحويل رصيد';
-    cnt.innerHTML = `
-      <p style="font-size:13px;color:var(--text2);text-align:center;margin-bottom:16px">حوّل رصيداً لمستخدم آخر</p>
-      <input class="modal-inp" placeholder="ID المستخدم (BG-XXXXX)" id="tr-id"/>
-      <input class="modal-inp" type="number" placeholder="المبلغ (DZD)" id="tr-amt" min="1"/>
-      <button class="modal-btn" onclick="confirmTransfer()">✅ تأكيد التحويل</button>
-      <button class="modal-btn out" onclick="closeModalNow()">إلغاء</button>`;
+  } else if(type==='transfer') {
+    ttl.textContent='🔄 تحويل رصيد';
+    cnt.innerHTML=`
+      <input class="mod-inp" placeholder="ID المستخدم (BG-XXXXX)" id="tr-id"/>
+      <input class="mod-inp" type="number" placeholder="المبلغ (DZD)" id="tr-v" min="1"/>
+      <button class="mod-btn" onclick="doTransfer()">✅ تأكيد التحويل</button>
+      <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
   }
-  document.getElementById('modal-ov').classList.add('open');
+  document.getElementById('mod-ov').classList.add('open');
 }
 
-function confirmDeposit() {
-  const amt = parseFloat(document.getElementById('dep-amt')?.value || 0);
-  if (amt > 0) {
-    state.balance += amt;
-    addTx('إيداع رصيد', amt, true, 'deposit');
-    saveState(); updateUI();
-    showToast('✅ تم الإيداع: +' + amt.toLocaleString() + ' DZD');
-    closeModalNow();
-  } else showToast('⚠️ أدخل مبلغاً صحيحاً', true);
+function doDeposit() {
+  const v = parseFloat(document.getElementById('dep-v')?.value||0);
+  if(v<=0){showToast('⚠️ أدخل مبلغاً صحيحاً',true);return;}
+  S.balance+=v; addTx('إيداع رصيد',v,true,'⬆️'); save(); updateUI();
+  showToast('✅ تم الإيداع: +'+v.toLocaleString()+' DZD'); closeMod();
+}
+function doWithdraw() {
+  const v = parseFloat(document.getElementById('wd-v')?.value||0);
+  if(v<=0){showToast('⚠️ أدخل مبلغاً صحيحاً',true);return;}
+  if(v>S.balance){showToast('❌ رصيد غير كافٍ',true);return;}
+  S.balance-=v; addTx('سحب رصيد',v,false,'⬇️'); save(); updateUI();
+  showToast('✅ تم السحب: '+v.toLocaleString()+' DZD'); closeMod();
+}
+function doTransfer() {
+  const id = document.getElementById('tr-id')?.value||'';
+  const v = parseFloat(document.getElementById('tr-v')?.value||0);
+  if(!id||v<=0){showToast('⚠️ أدخل بيانات صحيحة',true);return;}
+  if(v>S.balance){showToast('❌ رصيد غير كافٍ',true);return;}
+  S.balance-=v; addTx('تحويل إلى '+id,v,false,'🔄'); save(); updateUI();
+  showToast('✅ تم التحويل إلى '+id); closeMod();
 }
 
-function confirmWithdraw() {
-  const amt = parseFloat(document.getElementById('wd-amt')?.value || 0);
-  if (amt <= 0) { showToast('⚠️ أدخل مبلغاً صحيحاً', true); return; }
-  if (amt > state.balance) { showToast('❌ رصيد غير كافٍ', true); return; }
-  state.balance -= amt;
-  addTx('سحب رصيد', amt, false, 'withdraw');
-  saveState(); updateUI();
-  showToast('✅ تم السحب: ' + amt.toLocaleString() + ' DZD');
-  closeModalNow();
-}
-
-function confirmTransfer() {
-  const id = document.getElementById('tr-id')?.value || '';
-  const amt = parseFloat(document.getElementById('tr-amt')?.value || 0);
-  if (!id || amt <= 0) { showToast('⚠️ أدخل بيانات صحيحة', true); return; }
-  if (amt > state.balance) { showToast('❌ رصيد غير كافٍ', true); return; }
-  state.balance -= amt;
-  addTx('تحويل إلى ' + id, amt, false, 'transfer');
-  saveState(); updateUI();
-  showToast('✅ تم التحويل إلى ' + id);
-  closeModalNow();
-}
-
-function openUpgradeModal(id, price, daily, pt, tasks, monthly) {
-  document.getElementById('modal-ttl').textContent = '⬆️ الترقية إلى ' + id;
-  document.getElementById('modal-cnt').innerHTML = `
-    <div style="text-align:center;margin-bottom:20px">
-      <div style="font-size:50px;margin-bottom:10px">💎</div>
-      <div style="font-size:26px;font-weight:900;color:var(--gold)">${price} DZD</div>
-      <div style="font-size:13px;color:var(--text2);margin-top:6px">مبلغ الاستثمار المطلوب</div>
+function openUpgMod(id,price,daily,pt,tasks,monthly) {
+  document.getElementById('mod-ttl').textContent='⬆️ الترقية إلى '+id;
+  document.getElementById('mod-cnt').innerHTML=`
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-size:46px;margin-bottom:9px">💎</div>
+      <div style="font-size:24px;font-weight:900;color:var(--gold)">${price} DZD</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:5px">مبلغ الاستثمار المطلوب</div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-      <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:4px">📈 يومي</div><div style="font-size:16px;font-weight:700;color:var(--green)">${daily.toLocaleString()} DZD</div></div>
-      <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:4px">📅 شهري</div><div style="font-size:16px;font-weight:700;color:var(--gold)">${monthly.toLocaleString()} DZD</div></div>
-      <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:4px">📋 المهام</div><div style="font-size:16px;font-weight:700">${tasks}</div></div>
-      <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px;text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:4px">💵 للمهمة</div><div style="font-size:16px;font-weight:700;color:var(--gold)">${pt} DZD</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px">
+      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:11px;text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px">📈 يومي</div><div style="font-size:15px;font-weight:700;color:var(--green)">${daily.toLocaleString()} DZD</div></div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:11px;text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px">📅 شهري</div><div style="font-size:15px;font-weight:700;color:var(--gold)">${monthly.toLocaleString()} DZD</div></div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:11px;text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px">📋 المهام</div><div style="font-size:15px;font-weight:700">${tasks}</div></div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:11px;text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px">💵 للمهمة</div><div style="font-size:15px;font-weight:700;color:var(--gold)">${pt} DZD</div></div>
     </div>
-    <button class="modal-btn" onclick="showToast('✅ تم طلب الترقية إلى ${id}');closeModalNow()">✅ تأكيد الترقية إلى ${id}</button>
-    <button class="modal-btn out" onclick="closeModalNow()">إلغاء</button>`;
-  document.getElementById('modal-ov').classList.add('open');
+    <button class="mod-btn" onclick="showToast('✅ تم إرسال طلب الترقية إلى ${id}');closeMod()">✅ تأكيد الترقية إلى ${id}</button>
+    <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
+  document.getElementById('mod-ov').classList.add('open');
 }
+function closeMod() { document.getElementById('mod-ov').classList.remove('open'); }
 
-function closeModalNow() { document.getElementById('modal-ov').classList.remove('open'); }
-
-// ============ NOTIF ============
-function openNotif() { document.getElementById('notif-ov').classList.add('open'); document.getElementById('nb').style.display = 'none'; }
+// ══════════════════════════════════════
+// NOTIFICATIONS
+// ══════════════════════════════════════
+function openNotif() { document.getElementById('notif-ov').classList.add('open'); document.getElementById('hdr-nb').style.display='none'; }
 function closeNotif() { document.getElementById('notif-ov').classList.remove('open'); }
 
-// ============ CHAT ============
-const BOT = {
-  'رصيدي': () => `💰 رصيدك الحالي: <b>${state.balance.toLocaleString()} DZD</b>\n📈 ربحك اليومي: <b>+${state.taskReward * state.currentTasks} DZD</b> (${state.currentTasks} مهام × ${state.taskReward} DZD)\nأكمل جميع مهامك اليومية لزيادة أرباحك!`,
-  'المهام المتاحة': () => `⚡ لديك <b>${state.currentTasks} مهام</b> يومية\n• كل مهمة = <b>40 ثانية</b> انتظار\n• كل مهمة = <b>+${state.taskReward} DZD</b>\n• ⚠️ إذا خرجت أثناء المهمة تُلغى وتعود غداً\n• المكتملة اليوم: ${state.tasksDone}/${state.currentTasks}`,
-  'كيف أرقي؟': () => `💎 للترقية:\n1️⃣ اضغط تبويب <b>الترقية</b>\n2️⃣ اختر المستوى المناسب\n3️⃣ أودع المبلغ المطلوب\n\n🔓 <b>السحب متاح من M1</b> (7,000 DZD)\n💡 كلما ارتفع مستواك، زادت أرباحك!`,
-  'نصيحة': () => `💡 نصائح لزيادة أرباحك:\n✅ أكمل جميع مهامك اليومية الـ${state.currentTasks}\n✅ لا تغلق التطبيق أثناء المهمة\n✅ ادعُ أصدقاءك للحصول على مكافآت\n✅ الترقية = أرباح أكثر كل يوم`,
-  'عن الشركة': () => `🏢 <b>BlackRock Global LLC</b>\n🇺🇸 تأسست 2020 في Delaware, USA\n📋 عقد مع الجزائر: يناير 2025 — ديسمبر 2028\n🔒 مرخصة ومضمونة 100%\nاضغط "عن الشركة" في حسابي للتفاصيل الكاملة.`,
-  'السحب': () => state.currentLevel === 'trial'
-    ? `🔒 السحب مقفل في المستوى التجريبي.\nيتطلب الترقية إلى <b>M1</b> (7,000 DZD) على الأقل لفتح ميزة السحب.`
-    : `✅ يمكنك السحب الآن!\nرصيدك: <b>${state.balance.toLocaleString()} DZD</b>\nاذهب إلى حسابي ← سحب.`,
-  'سلام': () => `👋 وعليكم السلام ورحمة الله! كيف يمكنني خدمتك؟`,
-  'مرحبا': () => `👋 أهلاً! أنا مساعدك الذكي. كيف يمكنني مساعدتك؟`,
-};
+// ══════════════════════════════════════
+// AI CHAT — Anthropic API
+// ══════════════════════════════════════
+let chatHistory = [];
 
-function getReply(msg) {
-  const m = msg.trim().toLowerCase();
-  for (const k of Object.keys(BOT)) {
-    if (m.includes(k.toLowerCase())) return BOT[k]();
+const SYSTEM_PROMPT = `أنت مساعد ذكي ومفيد لمنصة استثمار تابعة لشركة BlackRock, Inc الأمريكية.
+اسم المنصة: BlackRock Investment Platform
+الشركة: BlackRock, Inc — مقرها نيويورك، أمريكا — تأسست 2020
+عقد الجزائر: يناير 2025 — ديسمبر 2028 (3 سنوات)
+المستويات: تجريبي (مجاني، 5 مهام، 43 DZD/مهمة، 215 DZD/يوم)، M1 (7000 DZD)، M2 (26600 DZD)، M3 (95000 DZD)، M4 (300000 DZD)، M5 (780000 DZD)، M6 (1950000 DZD)، G7 (4485000 DZD)
+السحب: مقفل في المستوى التجريبي — يفتح من M1
+المهام: كل مهمة تحتاج 40 ثانية — إذا غادرت تُلغى
+أجب دائماً بالعربية بشكل ودود ومختصر ومفيد. إذا سأل عن رصيده أو مهامه قل له أنك لا تملك وصول مباشر للبيانات لكن يمكنه رؤيتها في التطبيق.`;
+
+async function callAI(userMsg) {
+  chatHistory.push({role:'user', content:userMsg});
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system: SYSTEM_PROMPT,
+        messages: chatHistory.slice(-10)
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'عذراً، حدث خطأ. حاول مرة أخرى.';
+    chatHistory.push({role:'assistant', content:reply});
+    if(chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+    return reply;
+  } catch(e) {
+    // Fallback smart responses
+    return getFallback(userMsg);
   }
-  if (m.includes('ايداع')||m.includes('إيداع')) return '⬆️ للإيداع اضغط زر "إيداع" في الصفحة الرئيسية أو من حسابي، أدخل المبلغ وأكد.';
-  if (m.includes('ربح')||m.includes('كسب')) return `📊 أرباحك حسب المستوى:\n• تجريبي: 215 DZD/يوم\n• M1: 215 DZD/يوم\n• M2: 860 DZD/يوم\n• M3: 3,275 DZD/يوم\n• M4-G7: أكثر بكثير!`;
-  if (m.includes('مهمة')||m.includes('مهام')) return BOT['المهام المتاحة']();
-  return `🤖 يمكنني مساعدتك في:\n• رصيدك ومهامك اليومية\n• كيفية الترقية والسحب\n• معلومات الشركة\n• نصائح لزيادة أرباحك\nاكتب سؤالك!`;
 }
 
-function addChatMsg(text, isBot) {
+function getFallback(msg) {
+  const m = msg.toLowerCase();
+  if(m.includes('رصيد')) return `💰 يمكنك رؤية رصيدك في الصفحة الرئيسية بالضبط. حالياً المستوى التجريبي يعطيك 215 DZD/يوم من 5 مهام يومية.`;
+  if(m.includes('سحب')) return `🔒 السحب مقفل في المستوى التجريبي. يفتح من مستوى M1 (7,000 DZD استثمار). اذهب إلى تبويب الترقية.`;
+  if(m.includes('مهم')) return `⚡ لديك 5 مهام يومية. كل مهمة = 40 ثانية انتظار = 43 DZD. إذا غادرت أثناء المهمة تُلغى وتعود غداً.`;
+  if(m.includes('رقي')||m.includes('ترقي')) return `💎 للترقية اضغط تبويب "الترقية". M1 تحتاج 7,000 DZD وتعطيك 215 DZD/يوم. M2 تحتاج 26,600 DZD وتعطيك 860 DZD/يوم.`;
+  if(m.includes('شركة')) return `🏢 BlackRock, Inc — أمريكا — تأسست 2020. عقد مع الجزائر 2025-2028. وثيقة الأمان SECURE V3 متاحة في حسابي.`;
+  return `🤖 يمكنني مساعدتك في:\n• معلومات المستويات والأرباح\n• كيفية الترقية والسحب\n• المهام اليومية\n• معلومات الشركة\n\nاكتب سؤالك!`;
+}
+
+function addChatMsg(text, isBot, isTyping) {
   const msgs = document.getElementById('chat-msgs');
   const d = document.createElement('div');
-  d.className = 'cm ' + (isBot ? 'bot' : 'usr');
-  d.innerHTML = isBot
-    ? `<div class="cm-av">🤖</div><div class="cm-bbl">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/<b>(.*?)<\/b>/g,'<b>$1</b>')}</div>`
-    : `<div class="cm-bbl">${text}</div>`;
+  d.className = 'cm ' + (isBot?'bot':'usr');
+  if(isTyping) {
+    d.id = 'typing-ind';
+    d.innerHTML = `<div class="cm-av">🤖</div><div class="cm-bbl"><div class="cm-typing"><span></span><span></span><span></span></div></div>`;
+  } else {
+    d.innerHTML = isBot
+      ? `<div class="cm-av">🤖</div><div class="cm-bbl">${text.replace(/\n/g,'<br>')}</div>`
+      : `<div class="cm-bbl">${text}</div>`;
+  }
   msgs.appendChild(d);
   msgs.scrollTop = msgs.scrollHeight;
+  return d;
 }
 
-function sendMsg() {
-  const inp = document.getElementById('chat-inp');
+async function sendMsg() {
+  const inp = document.getElementById('chat-in');
   const t = inp.value.trim();
-  if (!t) return;
+  if(!t) return;
   addChatMsg(t, false);
   inp.value = '';
-  setTimeout(() => addChatMsg(getReply(t), true), 500);
+  const typingEl = addChatMsg('', true, true);
+  const reply = await callAI(t);
+  typingEl.remove();
+  addChatMsg(reply, true);
 }
 
-function quickMsg(t) {
+async function quickMsg(t) {
   addChatMsg(t, false);
-  setTimeout(() => addChatMsg(getReply(t), true), 500);
+  const typingEl = addChatMsg('', true, true);
+  const reply = await callAI(t);
+  typingEl.remove();
+  addChatMsg(reply, true);
 }
 
 function openChat() { document.getElementById('chat-ov').classList.add('open'); }
 function closeChat() { document.getElementById('chat-ov').classList.remove('open'); }
 
-// ============ TOAST ============
+// ══════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════
 let toastT;
 function showToast(msg, isErr) {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.className = 'toast show' + (isErr ? ' err' : '');
+  t.className = 'toast show' + (isErr?' err':'');
   clearTimeout(toastT);
   toastT = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// ============ COPY ============
-function copyCode() {
-  navigator.clipboard?.writeText('BG-00001').catch(()=>{});
-  showToast('تم نسخ كود الإحالة 📋');
-}
+// ══════════════════════════════════════
+// MISC
+// ══════════════════════════════════════
+function copyCode() { navigator.clipboard?.writeText('BG-00001').catch(()=>{}); showToast('تم نسخ كود الإحالة 📋'); }
+function doLogout() { if(confirm('هل تريد تسجيل الخروج؟')) { cancelAll(); localStorage.removeItem('bri_state'); location.reload(); } }
 
-// ============ CLEAR DATA ============
-function clearData() {
-  if (confirm('هل تريد تسجيل الخروج؟')) {
-    cancelAllRunning();
-    localStorage.removeItem('bg_state');
-    location.reload();
-  }
-}
-
-// ============ INIT ============
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
 updateUI();
-renderTxList();
+renderTx();
 </script>
 </body>
 </html>
