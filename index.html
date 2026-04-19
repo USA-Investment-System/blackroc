@@ -17,42 +17,27 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.ui.graphics.StrokeCap
 
-// تعريف الألوان الأساسية بناءً على الصور
+// الألوان الأساسية للتصميم
 val DarkBackground = Color(0xFF121212)
 val CardBackground = Color(0xFF1E1E1E)
-val PrimaryOrange = Color(0xFFFF9800) // للعنوان والأرباح
-val SecureGreen = Color(0xFF00C853) // للعلامة الخضراء
-val ProfitGreen = Color(0xFF4CAF50) // للربح اليومي
-val LevelBlue = Color(0xFF2196F3) // لعنوان المستوى
+val PrimaryOrange = Color(0xFFFF9800)
+val SecureGreen = Color(0xFF00C853)
+val ProfitGreen = Color(0xFF4CAF50)
+val LevelBlue = Color(0xFF2196F3)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BlackrockCloneTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = DarkBackground
-                ) {
+            MaterialTheme {
+                Surface(modifier = Modifier.fillMaxSize(), color = DarkBackground) {
                     MainScreen()
                 }
             }
         }
     }
-}
-
-@Composable
-fun BlackrockCloneTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = darkColorScheme(
-            background = DarkBackground,
-            surface = CardBackground,
-            primary = PrimaryOrange,
-            onSurface = Color.White
-        ),
-        content = content
-    )
 }
 
 @Composable
@@ -69,7 +54,7 @@ fun MainScreen() {
         ) {
             BalanceCard()
             Spacer(modifier = Modifier.height(16.dp))
-            ActionButtons()
+            ActionButtonsGrid()
             Spacer(modifier = Modifier.height(16.dp))
             LevelCard()
         }
@@ -80,43 +65,13 @@ fun MainScreen() {
 @Composable
 fun TopBar() {
     CenterAlignedTopAppBar(
-        title = {
-            Text(
-                "BLACKROCK",
-                color = PrimaryOrange,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
-            )
-        },
+        title = { Text("US.DZ", color = Color.White, fontWeight = FontWeight.Bold) },
         navigationIcon = {
-            // علامة SECURE V3 الخضراء
-            Badge(
-                containerColor = SecureGreen,
-                modifier = Modifier.padding(start = 12.dp)
-            ) {
-                Text(
-                    "SECURE V3",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 10.sp,
-                    modifier = Modifier.padding(2.dp)
-                )
+            Surface(color = SecureGreen, shape = RoundedCornerShape(4.dp), modifier = Modifier.padding(8.dp)) {
+                Text("SECURE V3", color = Color.Black, fontSize = 10.sp, modifier = Modifier.padding(4.dp))
             }
         },
-        actions = {
-            // أيقونة الإشعارات مع رقم 4
-            BadgedBox(
-                badge = {
-                    Badge(containerColor = Color.Red) { Text("4") }
-                },
-                modifier = Modifier.padding(end = 16.dp)
-            ) {
-                Icon(Icons.Filled.Notifications, contentDescription = "الإشعارات")
-            }
-        },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = CardBackground
-        )
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = CardBackground)
     )
 }
 
@@ -124,47 +79,19 @@ fun TopBar() {
 fun BalanceCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = CardBackground)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text("رصيد الحساب", color = Color.Gray)
-            Text(
-                "215.00",
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Bold,
-                color = PrimaryOrange
-            )
+            Text("215.00", fontSize = 42.sp, color = PrimaryOrange, fontWeight = FontWeight.Bold)
             Text("دينار جزائري", color = Color.White)
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("إجمالي الأرباح", color = Color.Gray, fontSize = 12.sp)
-                    Text("DZD 215", color = PrimaryOrange, fontWeight = FontWeight.Bold)
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("الربح اليومي", color = Color.Gray, fontSize = 12.sp)
-                    Text("DZD 215+", color = ProfitGreen, fontWeight = FontWeight.Bold)
-                }
-            }
         }
     }
 }
 
 @Composable
-fun ActionButtons() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
+fun ActionButtonsGrid() {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
         ActionButton(Icons.Filled.Add, "إيداع", Color(0xFF2E7D32))
         ActionButton(Icons.Filled.ArrowDownward, "سحب", Color(0xFF1565C0))
         ActionButton(Icons.Filled.SwapHoriz, "تحويل", Color(0xFF546E7A))
@@ -173,20 +100,10 @@ fun ActionButtons() {
 }
 
 @Composable
-fun ActionButton(icon: ImageVector, text: String, color: Color) {
+fun ActionButton(icon: ImageVector, text: String, bgColor: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            modifier = Modifier
-                .size(60.dp)
-                .background(color, shape = RoundedCornerShape(12.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                icon,
-                contentDescription = text,
-                tint = Color.White,
-                modifier = Modifier.size(24.dp)
-            )
+        IconButton(onClick = {}, modifier = Modifier.background(bgColor, RoundedCornerShape(12.dp))) {
+            Icon(icon, contentDescription = null, tint = Color.White)
         }
         Text(text, color = Color.White, fontSize = 12.sp)
     }
@@ -194,40 +111,16 @@ fun ActionButton(icon: ImageVector, text: String, color: Color) {
 
 @Composable
 fun LevelCard() {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = CardBackground)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                "الترقية لـ M1",
-                color = LevelBlue,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            )
-            Text(
-                "المستوى الحالي: تجريبي",
-                color = PrimaryOrange,
-                fontSize = 14.sp
-            )
-            
-            Spacer(modifier = Modifier.height(12.dp))
-            
-            // شريط التقدم الوهمي
+    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = CardBackground)) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("المستوى الحالي: تجريبي", color = PrimaryOrange)
             LinearProgressIndicator(
                 progress = 0.03f,
-                modifier = Modifier.fillMaxWidth().height(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 color = PrimaryOrange,
                 trackColor = Color.DarkGray,
                 strokeCap = StrokeCap.Round
             )
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
             Text("3% مكتمل", color = Color.White, fontSize = 12.sp)
         }
     }
@@ -235,33 +128,9 @@ fun LevelCard() {
 
 @Composable
 fun BottomNavigationBar() {
-    NavigationBar(
-        containerColor = CardBackground
-    ) {
-        NavigationBarItem(
-            selected = true,
-            onClick = {},
-            label = { Text("الرئيسية") },
-            icon = { Icon(Icons.Filled.Home, contentDescription = "الرئيسية") },
-            colors = NavigationBarItemDefaults.colors(selectedIconColor = PrimaryOrange)
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = {},
-            label = { Text("المهام") },
-            icon = { Icon(Icons.Filled.FlashOn, contentDescription = "المهام") }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = {},
-            label = { Text("الترقية") },
-            icon = { Icon(Icons.Filled.Star, contentDescription = "الترقية") }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = {},
-            label = { Text("حسابي") },
-            icon = { Icon(Icons.Filled.Person, contentDescription = "حسابي") }
-        )
+    NavigationBar(containerColor = CardBackground) {
+        NavigationBarItem(selected = true, onClick = {}, icon = { Icon(Icons.Filled.Home, "Home") }, label = { Text("الرئيسية") })
+        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Filled.List, "Tasks") }, label = { Text("المهام") })
+        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Filled.Person, "Profile") }, label = { Text("حسابي") })
     }
 }
