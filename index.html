@@ -1,136 +1,224 @@
-package com.example.blackrockclone
+package com.example.usdz_app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.StrokeCap
 
-// الألوان الأساسية للتصميم
-val DarkBackground = Color(0xFF121212)
-val CardBackground = Color(0xFF1E1E1E)
-val PrimaryOrange = Color(0xFFFF9800)
-val SecureGreen = Color(0xFF00C853)
-val ProfitGreen = Color(0xFF4CAF50)
-val LevelBlue = Color(0xFF2196F3)
+// --- الألوان الرسمية للتطبيق ---
+val BgColor = Color(0xFF0D0D0D)      // أسود عميق للخلفية
+val SurfaceColor = Color(0xFF1A1A1A) // رمادي غامق للبطاقات
+val GoldMain = Color(0xFFFFB300)     // ذهبي/برتقالي للنصوص المهمة
+val GreenSecure = Color(0xFF00E676)  // أخضر لعلامة الأمان
+val RedAction = Color(0xFFD32F2F)    // أحمر للأزرار
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
-                Surface(modifier = Modifier.fillMaxSize(), color = DarkBackground) {
-                    MainScreen()
-                }
+            AppTheme {
+                MainLayout()
             }
         }
     }
 }
 
 @Composable
-fun MainScreen() {
+fun AppTheme(content: @Composable () -> Unit) {
+    MaterialTheme(
+        colorScheme = darkColorScheme(
+            background = BgColor,
+            surface = SurfaceColor,
+            primary = GoldMain
+        ),
+        content = content
+    )
+}
+
+@Composable
+fun MainLayout() {
     Scaffold(
-        topBar = { TopBar() },
-        bottomBar = { BottomNavigationBar() }
-    ) { innerPadding ->
+        bottomBar = { BottomNav() }
+    ) { padding ->
         Column(
             modifier = Modifier
-                .padding(innerPadding)
                 .fillMaxSize()
+                .background(BgColor)
+                .padding(padding)
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
+            HeaderSection()
+            Spacer(modifier = Modifier.height(20.dp))
             BalanceCard()
-            Spacer(modifier = Modifier.height(16.dp))
-            ActionButtonsGrid()
-            Spacer(modifier = Modifier.height(16.dp))
-            LevelCard()
+            Spacer(modifier = Modifier.height(24.dp))
+            GridActions()
+            Spacer(modifier = Modifier.height(24.dp))
+            UpgradeSection()
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar() {
-    CenterAlignedTopAppBar(
-        title = { Text("US.DZ", color = Color.White, fontWeight = FontWeight.Bold) },
-        navigationIcon = {
-            Surface(color = SecureGreen, shape = RoundedCornerShape(4.dp), modifier = Modifier.padding(8.dp)) {
-                Text("SECURE V3", color = Color.Black, fontSize = 10.sp, modifier = Modifier.padding(4.dp))
-            }
-        },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = CardBackground)
-    )
+fun HeaderSection() {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // علامة Secure V3
+        Surface(
+            color = GreenSecure.copy(alpha = 0.2f),
+            shape = RoundedCornerShape(4.dp),
+            border = BorderStroke(1.dp, GreenSecure)
+        ) {
+            Text(
+                text = "SECURE V3",
+                color = GreenSecure,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            )
+        }
+
+        Text(
+            text = "US.DZ",
+            color = Color.White,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.ExtraBold
+        )
+
+        Icon(
+            Icons.Default.Notifications,
+            contentDescription = null,
+            tint = Color.White,
+            modifier = Modifier.size(28.dp)
+        )
+    }
 }
 
 @Composable
 fun BalanceCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBackground)
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor),
+        shape = RoundedCornerShape(16.dp)
     ) {
-        Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("رصيد الحساب", color = Color.Gray)
-            Text("215.00", fontSize = 42.sp, color = PrimaryOrange, fontWeight = FontWeight.Bold)
-            Text("دينار جزائري", color = Color.White)
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("رصيد المحفظة الإجمالي", color = Color.Gray, fontSize = 14.sp)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                "215.00",
+                fontSize = 46.sp,
+                fontWeight = FontWeight.Black,
+                color = GoldMain
+            )
+            Text("دينار جزائري (DZD)", color = Color.White, fontSize = 12.sp)
+            
+            Divider(modifier = Modifier.padding(vertical = 16.dp), color = Color.DarkGray)
+            
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+                StatItem("أرباح اليوم", "+215 DZD", GreenSecure)
+                StatItem("إجمالي السحب", "0.00 DZD", Color.White)
+            }
         }
     }
 }
 
 @Composable
-fun ActionButtonsGrid() {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-        ActionButton(Icons.Filled.Add, "إيداع", Color(0xFF2E7D32))
-        ActionButton(Icons.Filled.ArrowDownward, "سحب", Color(0xFF1565C0))
-        ActionButton(Icons.Filled.SwapHoriz, "تحويل", Color(0xFF546E7A))
-        ActionButton(Icons.Filled.People, "إحالة", Color(0xFFC62828))
-    }
-}
-
-@Composable
-fun ActionButton(icon: ImageVector, text: String, bgColor: Color) {
+fun StatItem(label: String, value: String, valueColor: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        IconButton(onClick = {}, modifier = Modifier.background(bgColor, RoundedCornerShape(12.dp))) {
-            Icon(icon, contentDescription = null, tint = Color.White)
-        }
-        Text(text, color = Color.White, fontSize = 12.sp)
+        Text(label, color = Color.Gray, fontSize = 11.sp)
+        Text(value, color = valueColor, fontWeight = FontWeight.Bold, fontSize = 15.sp)
     }
 }
 
 @Composable
-fun LevelCard() {
-    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = CardBackground)) {
+fun GridActions() {
+    Column {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            ActionBox("إيداع", Icons.Default.Add, GreenSecure, Modifier.weight(1f))
+            ActionBox("سحب", Icons.Default.ArrowDownward, Color(0xFF2196F3), Modifier.weight(1f))
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            ActionBox("تحويل", Icons.Default.SwapHoriz, Color(0xFF9C27B0), Modifier.weight(1f))
+            ActionBox("إحالة", Icons.Default.People, RedAction, Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+fun ActionBox(title: String, icon: ImageVector, color: Color, modifier: Modifier) {
+    Surface(
+        modifier = modifier.height(80.dp),
+        color = SurfaceColor,
+        shape = RoundedCornerShape(12.dp),
+        onClick = { /* اضف وظيفة هنا */ }
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(28.dp))
+            Text(title, color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+        }
+    }
+}
+
+@Composable
+fun UpgradeSection() {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = SurfaceColor)
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("المستوى الحالي: تجريبي", color = PrimaryOrange)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Star, contentDescription = null, tint = GoldMain)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("نظام الترقية للمستوى M1", color = Color.White, fontWeight = FontWeight.Bold)
+            }
+            Spacer(modifier = Modifier.height(12.dp))
             LinearProgressIndicator(
                 progress = 0.03f,
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                color = PrimaryOrange,
+                modifier = Modifier.fillMaxWidth().height(10.dp),
+                color = GoldMain,
                 trackColor = Color.DarkGray,
                 strokeCap = StrokeCap.Round
             )
-            Text("3% مكتمل", color = Color.White, fontSize = 12.sp)
+            Text(
+                "أنت الآن في المستوى التجريبي (3%)",
+                color = Color.Gray,
+                fontSize = 11.sp,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }
 
 @Composable
-fun BottomNavigationBar() {
-    NavigationBar(containerColor = CardBackground) {
-        NavigationBarItem(selected = true, onClick = {}, icon = { Icon(Icons.Filled.Home, "Home") }, label = { Text("الرئيسية") })
-        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Filled.List, "Tasks") }, label = { Text("المهام") })
-        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Filled.Person, "Profile") }, label = { Text("حسابي") })
+fun BottomNav() {
+    NavigationBar(containerColor = SurfaceColor) {
+        NavigationBarItem(selected = true, onClick = {}, icon = { Icon(Icons.Default.Home, null) }, label = { Text("الرئيسية") })
+        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Default.List, null) }, label = { Text("المهام") })
+        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Default.AccountBalanceWallet, null) }, label = { Text("المحفظة") })
+        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Default.Person, null) }, label = { Text("حسابي") })
     }
 }
