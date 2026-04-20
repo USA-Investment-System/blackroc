@@ -1,1465 +1,1079 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>BlackRock Investment</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-:root {
-  --bg: #0a0a0a;
-  --card: #141414;
-  --card2: #1a1a1a;
-  --gold: #f5a623;
-  --green: #00c851;
-  --red: #ff4444;
-  --blue: #4a90e2;
-  --text: #ffffff;
-  --sub: #888;
-  --border: #2a2a2a;
+import { useState, useEffect, useRef } from "react";
+
+// ══════════════════════════════════════════════
+// STORAGE — Triple-layer persistence
+// ══════════════════════════════════════════════
+const KEY = "blk_v4";
+function dbRead() {
+  try { const d = localStorage.getItem(KEY); if (d) return JSON.parse(d); } catch (e) {}
+  try { const d = sessionStorage.getItem(KEY); if (d) return JSON.parse(d); } catch (e) {}
+  return { users: {}, uid: null };
 }
-body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; overflow-x: hidden; }
-
-/* ===== SCREENS ===== */
-.screen { display: none; min-height: 100vh; padding-bottom: 80px; }
-.screen.active { display: block; }
-
-/* ===== AUTH ===== */
-#authScreen {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #0a0a0a, #1a1a0a);
+function dbSave(data) {
+  const s = JSON.stringify(data);
+  try { localStorage.setItem(KEY, s); } catch (e) {}
+  try { sessionStorage.setItem(KEY, s); } catch (e) {}
 }
-.auth-logo { text-align: center; margin-bottom: 30px; }
-.auth-logo h1 { font-size: 32px; font-weight: 900; color: var(--gold); letter-spacing: 3px; }
-.auth-logo p { color: var(--sub); font-size: 13px; margin-top: 5px; }
-.auth-box { background: var(--card); border-radius: 20px; padding: 25px; width: 100%; max-width: 400px; border: 1px solid var(--border); }
-.auth-tabs { display: flex; background: var(--bg); border-radius: 12px; padding: 4px; margin-bottom: 20px; }
-.auth-tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--sub); transition: all 0.3s; border: none; background: transparent; }
-.auth-tab.active { background: var(--gold); color: #000; }
-.form-group { margin-bottom: 15px; }
-.form-group label { display: block; font-size: 12px; color: var(--sub); margin-bottom: 6px; }
-.form-group input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 15px; color: var(--text); font-size: 14px; outline: none; transition: border 0.3s; }
-.form-group input:focus { border-color: var(--gold); }
-.btn-auth { width: 100%; padding: 14px; background: var(--gold); color: #000; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: opacity 0.3s; }
-.btn-auth:active { opacity: 0.8; }
-.ref-info { background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.3); border-radius: 10px; padding: 10px; margin-bottom: 15px; font-size: 12px; color: var(--gold); text-align: center; display: none; }
 
-/* ===== HEADER ===== */
-.app-header {
-  background: var(--card); border-bottom: 1px solid var(--border);
-  padding: 10px 15px; position: sticky; top: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.header-brand { display: flex; align-items: center; gap: 10px; }
-.notif-bell { position: relative; cursor: pointer; }
-.notif-bell span { font-size: 24px; }
-.notif-count { position: absolute; top: -5px; right: -5px; background: var(--red); color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
-.brand-info { text-align: center; }
-.brand-name { font-size: 18px; font-weight: 900; color: var(--gold); letter-spacing: 2px; }
-.brand-sub { font-size: 10px; color: var(--sub); }
-.secure-badge { background: transparent; border: 2px solid var(--green); border-radius: 20px; padding: 4px 10px; font-size: 11px; color: var(--green); font-weight: 700; display: flex; align-items: center; gap: 4px; cursor: pointer; }
-.header-currency { font-size: 13px; color: var(--gold); font-weight: 700; }
+// ══════════════════════════════════════════════
+// LEVELS
+// ══════════════════════════════════════════════
+const LEVELS = [
+  { id: "تجريبي", label: "تجريبي", invest: 0, tasks: 5, reward: 43, daily: 215, monthly: null, yearly: null, color: "#9ca3af", next: "M1" },
+  { id: "M1", label: "M1", invest: 7000, tasks: 5, reward: 43, daily: 215, monthly: 6450, yearly: 77400, color: "#f59e0b", next: "M2" },
+  { id: "M2", label: "M2", invest: 26600, tasks: 10, reward: 86, daily: 860, monthly: 25800, yearly: 309600, color: "#10b981", next: "M3" },
+  { id: "M3", label: "M3", invest: 95000, tasks: 25, reward: 131, daily: 3275, monthly: 98250, yearly: 1179000, color: "#3b82f6", next: "M4" },
+  { id: "M4", label: "M4", invest: 300000, tasks: 50, reward: 222, daily: 11100, monthly: 333000, yearly: 3996000, color: "#8b5cf6", next: "M5" },
+  { id: "M5", label: "M5", invest: 780000, tasks: 80, reward: 390, daily: 31200, monthly: 936000, yearly: 11232000, color: "#ec4899", next: "M6" },
+  { id: "M6", label: "M6", invest: 1950000, tasks: 130, reward: 652, daily: 84760, monthly: 2542800, yearly: 30513600, color: "#ef4444", next: "G7" },
+  { id: "G7", label: "G7", invest: 4485000, tasks: 200, reward: 1068, daily: 213600, monthly: 6408000, yearly: 76896000, color: "#fbbf24", next: null },
+];
+const getLevel = (id) => LEVELS.find(l => l.id === id) || LEVELS[0];
+const getNextLevel = (id) => { const cur = getLevel(id); return cur.next ? LEVELS.find(l => l.id === cur.next) : null; };
 
-/* ===== NAV ===== */
-.bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: var(--card); border-top: 1px solid var(--border);
-  display: flex; z-index: 100; height: 70px;
-}
-.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; gap: 4px; position: relative; border: none; background: transparent; transition: all 0.3s; }
-.nav-item span:first-child { font-size: 22px; }
-.nav-item span:last-child { font-size: 10px; color: var(--sub); }
-.nav-item.active span:last-child { color: var(--gold); }
-.nav-item.active::after { content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 3px; background: var(--gold); border-radius: 0 0 3px 3px; }
-.nav-badge { position: absolute; top: 8px; right: 20%; background: var(--red); color: #fff; border-radius: 50%; width: 16px; height: 16px; font-size: 9px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
-
-/* ===== HOME ===== */
-.home-banner { background: var(--card); border-radius: 15px; margin: 15px; padding: 15px; border: 1px solid var(--border); }
-.balance-section { text-align: center; padding: 15px 0; }
-.balance-label { font-size: 12px; color: var(--sub); }
-.balance-amount { font-size: 36px; font-weight: 900; color: var(--gold); }
-.balance-dzd { font-size: 14px; color: var(--sub); }
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 15px 15px; }
-.stat-card { background: var(--card); border-radius: 12px; padding: 12px; border: 1px solid var(--border); text-align: center; }
-.stat-card .s-label { font-size: 10px; color: var(--sub); margin-bottom: 4px; }
-.stat-card .s-val { font-size: 18px; font-weight: 700; color: var(--green); }
-.action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 15px 15px; }
-.action-btn { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: all 0.3s; }
-.action-btn:active { transform: scale(0.95); background: var(--card2); }
-.action-btn span:first-child { font-size: 28px; }
-.action-btn span:last-child { font-size: 12px; color: var(--sub); }
-
-/* ===== INFO SECTIONS ===== */
-.section { background: var(--card); border-radius: 15px; margin: 0 15px 15px; padding: 15px; border: 1px solid var(--border); }
-.section-title { font-size: 14px; font-weight: 700; color: var(--gold); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-.info-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
-.info-row:last-child { border-bottom: none; }
-.info-row .lbl { font-size: 12px; color: var(--sub); }
-.info-row .val { font-size: 13px; font-weight: 600; }
-
-/* ===== REFERRAL ===== */
-.ref-box { background: var(--card2); border-radius: 12px; padding: 15px; border: 1px solid rgba(245,166,35,0.3); }
-.ref-link-display { background: var(--bg); border-radius: 8px; padding: 10px; font-size: 11px; color: var(--gold); word-break: break-all; margin: 10px 0; text-align: center; border: 1px dashed var(--gold); }
-.btn-copy { width: 100%; padding: 12px; background: var(--gold); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px; }
-.btn-copy:active { opacity: 0.8; }
-.team-stat { display: flex; justify-content: space-around; margin-top: 12px; }
-.team-num { text-align: center; }
-.team-num .n { font-size: 22px; font-weight: 900; color: var(--green); }
-.team-num .l { font-size: 10px; color: var(--sub); }
-
-/* ===== TASKS ===== */
-.task-card { background: var(--card); border-radius: 12px; margin: 0 15px 12px; padding: 15px; border: 1px solid var(--border); position: relative; overflow: hidden; }
-.task-card .progress-bar { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--red); width: 100%; }
-.task-card .progress-bar.done { background: var(--green); }
-.task-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-.task-name { font-size: 14px; font-weight: 700; }
-.task-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-.task-icon.orange { background: rgba(245,166,35,0.2); }
-.task-icon.red { background: rgba(255,68,68,0.2); }
-.task-icon.rocket { background: rgba(74,144,226,0.2); }
-.task-reward { font-size: 22px; font-weight: 900; color: var(--green); }
-.task-cur { font-size: 11px; color: var(--sub); }
-.task-status { font-size: 12px; }
-.task-status.cancelled { color: var(--red); }
-.task-status.waiting { color: var(--sub); }
-.btn-start { width: 100%; padding: 14px; background: var(--gold); color: #000; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: all 0.3s; }
-.btn-start:active { opacity: 0.8; transform: scale(0.98); }
-.btn-start:disabled { background: var(--sub); cursor: not-allowed; }
-.timer-display { text-align: center; padding: 8px; background: rgba(245,166,35,0.1); border-radius: 8px; font-size: 14px; font-weight: 700; color: var(--gold); margin-top: 8px; }
-
-/* ===== UPGRADE ===== */
-.my-level { background: var(--card); border-radius: 15px; margin: 0 15px 15px; padding: 15px; border: 1px solid var(--border); }
-.level-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.level-title { font-size: 18px; font-weight: 900; }
-.level-badge { background: var(--gold); color: #000; border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: 700; }
-.level-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
-.lvl-stat { text-align: center; background: var(--bg); border-radius: 8px; padding: 8px 4px; }
-.lvl-stat .ls-label { font-size: 9px; color: var(--sub); display: flex; align-items: center; justify-content: center; gap: 2px; }
-.lvl-stat .ls-val { font-size: 14px; font-weight: 700; color: var(--green); margin-top: 2px; }
-.withdraw-locked { background: rgba(255,68,68,0.15); border: 1px solid var(--red); border-radius: 10px; padding: 12px; text-align: center; font-size: 13px; color: var(--red); }
-.withdraw-unlocked { background: rgba(0,200,81,0.15); border: 1px solid var(--green); border-radius: 10px; padding: 12px; }
-.btn-withdraw { width: 100%; padding: 12px; background: var(--green); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px; margin-top: 10px; }
-
-.upgrade-card { background: var(--card); border-radius: 15px; margin: 0 15px 12px; padding: 15px; border: 1px solid var(--border); }
-.upgrade-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.upgrade-level { font-size: 22px; font-weight: 900; color: var(--gold); }
-.upgrade-tag { background: rgba(245,166,35,0.2); color: var(--gold); border-radius: 8px; padding: 4px 10px; font-size: 12px; font-weight: 600; }
-.upgrade-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px; }
-.up-stat { background: var(--bg); border-radius: 8px; padding: 8px 4px; text-align: center; }
-.up-stat .ul { font-size: 9px; color: var(--sub); display: flex; align-items: center; justify-content: center; gap: 2px; }
-.up-stat .uv { font-size: 13px; font-weight: 700; color: var(--green); }
-.btn-upgrade { width: 100%; padding: 14px; background: var(--gold); color: #000; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
-.btn-upgrade:active { opacity: 0.8; }
-.btn-upgrade:disabled { background: #333; color: var(--sub); cursor: not-allowed; }
-
-/* ===== ACCOUNT ===== */
-.profile-header { background: var(--card); margin: 0 15px 15px; border-radius: 15px; padding: 20px; border: 1px solid var(--border); text-align: center; }
-.profile-avatar { width: 70px; height: 70px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 10px; }
-.profile-name { font-size: 18px; font-weight: 700; }
-.profile-id { font-size: 12px; color: var(--sub); margin-top: 4px; }
-.profile-level { display: inline-block; background: rgba(245,166,35,0.2); color: var(--gold); border-radius: 20px; padding: 4px 15px; font-size: 13px; font-weight: 700; margin-top: 8px; }
-.menu-item { background: var(--card); border-radius: 12px; margin: 0 15px 10px; padding: 15px; border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.3s; }
-.menu-item:active { background: var(--card2); }
-.menu-icon { font-size: 22px; width: 40px; text-align: center; }
-.menu-text { flex: 1; }
-.menu-title { font-size: 14px; font-weight: 600; }
-.menu-sub { font-size: 11px; color: var(--sub); margin-top: 2px; }
-.menu-arrow { color: var(--sub); font-size: 18px; }
-.btn-logout { width: calc(100% - 30px); margin: 0 15px 15px; padding: 14px; background: rgba(255,68,68,0.15); color: var(--red); border: 1px solid var(--red); border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.btn-logout:active { background: rgba(255,68,68,0.3); }
-
-/* ===== MODALS ===== */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 999; display: none; align-items: flex-end; justify-content: center; }
-.modal-overlay.show { display: flex; }
-.modal { background: var(--card); border-radius: 20px 20px 0 0; width: 100%; max-height: 90vh; overflow-y: auto; padding: 20px; border-top: 1px solid var(--border); }
-.modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
-.modal-title { font-size: 18px; font-weight: 700; color: var(--gold); text-align: center; margin-bottom: 20px; }
-.modal-close { position: absolute; top: 15px; right: 15px; background: var(--bg); border: none; color: var(--text); font-size: 20px; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-/* ===== NOTIFICATIONS ===== */
-.notif-list { max-height: 400px; overflow-y: auto; }
-.notif-item { background: var(--bg); border-radius: 10px; padding: 12px; margin-bottom: 8px; border-left: 3px solid var(--gold); }
-.notif-item.unread { border-left-color: var(--blue); background: rgba(74,144,226,0.05); }
-.notif-time { font-size: 10px; color: var(--sub); margin-top: 4px; }
-.notif-text { font-size: 13px; }
-
-/* ===== WITHDRAW MODAL ===== */
-.withdraw-form .form-group input { font-size: 16px; }
-.withdraw-info { background: var(--bg); border-radius: 10px; padding: 12px; margin-bottom: 15px; }
-.withdraw-info p { font-size: 12px; color: var(--sub); margin-bottom: 4px; }
-.withdraw-info strong { color: var(--gold); font-size: 16px; }
-
-/* ===== AI CHAT ===== */
-.ai-bot { position: fixed; bottom: 85px; left: 15px; z-index: 200; }
-.ai-btn { width: 55px; height: 55px; border-radius: 50%; background: var(--gold); border: none; font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(245,166,35,0.4); }
-.ai-online { position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background: var(--green); border-radius: 50%; border: 2px solid var(--card); }
-.ai-chat-box { position: fixed; bottom: 155px; left: 15px; right: 15px; background: var(--card); border-radius: 15px; border: 1px solid var(--border); padding: 15px; display: none; z-index: 199; max-height: 50vh; flex-direction: column; }
-.ai-chat-box.show { display: flex; }
-.ai-messages { flex: 1; overflow-y: auto; max-height: 200px; margin-bottom: 10px; }
-.ai-msg { padding: 8px 12px; border-radius: 12px; margin-bottom: 8px; font-size: 13px; max-width: 85%; }
-.ai-msg.bot { background: var(--bg); color: var(--text); align-self: flex-start; border-radius: 12px 12px 12px 0; }
-.ai-msg.user { background: var(--gold); color: #000; align-self: flex-end; border-radius: 12px 12px 0 12px; margin-left: auto; }
-.ai-input-row { display: flex; gap: 8px; }
-.ai-input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 8px 14px; color: var(--text); font-size: 13px; outline: none; }
-.ai-send { background: var(--gold); color: #000; border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 16px; }
-.ai-chat-title { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-
-/* ===== TOAST ===== */
-.toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 20px; font-size: 13px; z-index: 9999; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; }
-.toast.show { opacity: 1; }
-.toast.success { border-color: var(--green); color: var(--green); }
-.toast.error { border-color: var(--red); color: var(--red); }
-.toast.info { border-color: var(--gold); color: var(--gold); }
-
-/* ===== SECURITY DOC ===== */
-.security-content { padding: 5px; }
-.sec-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
-.sec-row:last-child { border-bottom: none; }
-.sec-lbl { font-size: 12px; color: var(--sub); }
-.sec-val { font-size: 12px; font-weight: 600; color: var(--green); }
-
-/* ===== REFERRAL LIST ===== */
-.ref-member { background: var(--bg); border-radius: 10px; padding: 10px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
-.ref-member-info { display: flex; align-items: center; gap: 10px; }
-.ref-avatar { width: 35px; height: 35px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-.ref-member-name { font-size: 13px; font-weight: 600; }
-.ref-member-date { font-size: 10px; color: var(--sub); }
-.ref-earn { color: var(--green); font-weight: 700; font-size: 13px; }
-
-/* SCROLLBAR */
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-/* ANIMATIONS */
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-.screen.active > * { animation: fadeIn 0.3s ease; }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-.pulsing { animation: pulse 2s infinite; }
-</style>
-</head>
-<body>
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- ==================== AUTH SCREEN ==================== -->
-<div id="authScreen" class="screen active">
-  <div class="auth-logo">
-    <h1>🏦 BLACKROCK</h1>
-    <p>BlackRock, Inc — Investment Platform</p>
-    <p style="color:var(--green);font-size:11px;margin-top:4px;">🔒 SECURE V3</p>
-  </div>
-  <div class="auth-box">
-    <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchAuthTab('login')">تسجيل الدخول</button>
-      <button class="auth-tab" onclick="switchAuthTab('register')">إنشاء حساب</button>
-    </div>
-    <div id="refInfo" class="ref-info">🎉 تمت دعوتك بواسطة: <span id="refByName">-</span></div>
-    <!-- LOGIN -->
-    <div id="loginForm">
-      <div class="form-group">
-        <label>اسم المستخدم أو البريد</label>
-        <input type="text" id="loginUser" placeholder="أدخل اسم المستخدم">
-      </div>
-      <div class="form-group">
-        <label>كلمة المرور</label>
-        <input type="password" id="loginPass" placeholder="كلمة المرور">
-      </div>
-      <button class="btn-auth" onclick="doLogin()">🔐 تسجيل الدخول</button>
-    </div>
-    <!-- REGISTER -->
-    <div id="registerForm" style="display:none">
-      <div class="form-group">
-        <label>الاسم الكامل</label>
-        <input type="text" id="regName" placeholder="الاسم الكامل">
-      </div>
-      <div class="form-group">
-        <label>اسم المستخدم</label>
-        <input type="text" id="regUser" placeholder="اسم المستخدم (لا مسافات)">
-      </div>
-      <div class="form-group">
-        <label>البريد الإلكتروني</label>
-        <input type="email" id="regEmail" placeholder="example@mail.com">
-      </div>
-      <div class="form-group">
-        <label>رقم الهاتف</label>
-        <input type="tel" id="regPhone" placeholder="+213...">
-      </div>
-      <div class="form-group">
-        <label>كلمة المرور</label>
-        <input type="password" id="regPass" placeholder="كلمة المرور (8 أحرف على الأقل)">
-      </div>
-      <div class="form-group">
-        <label>تأكيد كلمة المرور</label>
-        <input type="password" id="regPass2" placeholder="أعد كلمة المرور">
-      </div>
-      <div class="form-group" id="refCodeGroup">
-        <label>كود الإحالة (اختياري)</label>
-        <input type="text" id="regRef" placeholder="كود الإحالة">
-      </div>
-      <button class="btn-auth" onclick="doRegister()">✅ إنشاء الحساب</button>
-    </div>
-  </div>
-</div>
-
-<!-- ==================== MAIN APP ==================== -->
-<div id="appContainer" style="display:none">
-
-<!-- HEADER -->
-<div class="app-header">
-  <div class="header-brand">
-    <div class="notif-bell" onclick="openNotifications()">
-      <span>🔔</span>
-      <div class="notif-count" id="notifCount">3</div>
-    </div>
-    <div class="brand-info">
-      <div class="brand-name">BLACKROCK</div>
-      <div class="brand-sub">BlackRock, Inc — Investment Platform</div>
-    </div>
-  </div>
-  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-    <div class="secure-badge" onclick="openSecurityDoc()">SECURE V3 🔒</div>
-    <div class="header-currency" id="headerCurrency">US.DZ</div>
-  </div>
-</div>
-
-<!-- HOME SCREEN -->
-<div id="homeScreen" class="screen active">
-  <div class="home-banner">
-    <div class="balance-section">
-      <div class="balance-label">💰 الرصيد الكلي</div>
-      <div class="balance-amount" id="homeBalance">0.00</div>
-      <div class="balance-dzd" id="homeBalanceDZD">DZD</div>
-    </div>
-  </div>
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="s-label">📈 الدخل اليومي</div>
-      <div class="s-val" id="dailyIncome">0</div>
-      <div style="font-size:10px;color:var(--sub)">DZD</div>
-    </div>
-    <div class="stat-card">
-      <div class="s-label">👥 فريقي</div>
-      <div class="s-val" id="teamCount">0</div>
-      <div style="font-size:10px;color:var(--sub)">عضو</div>
-    </div>
-    <div class="stat-card">
-      <div class="s-label">⚡ المهام المكتملة</div>
-      <div class="s-val" id="completedTasks">0</div>
-    </div>
-    <div class="stat-card">
-      <div class="s-label">💎 المستوى</div>
-      <div class="s-val" id="currentLevelHome" style="color:var(--gold)">FREE</div>
-    </div>
-  </div>
-  <div class="action-btns">
-    <div class="action-btn" onclick="openWithdrawModal()">
-      <span>💸</span><span>سحب</span>
-    </div>
-    <div class="action-btn" onclick="copyReferralLink()">
-      <span>🔗</span><span>دعوة</span>
-    </div>
-    <div class="action-btn" onclick="openSecurityDoc()">
-      <span>📋</span><span>وثيقة الأمان</span>
-    </div>
-    <div class="action-btn" onclick="showCompanyInfo()">
-      <span>🏢</span><span>معلومات الشركة</span>
-    </div>
-  </div>
-  <div class="section">
-    <div class="section-title">📋 معلومات الشركة</div>
-    <div class="info-row"><span class="lbl">الاسم القانوني</span><span class="val">BlackRock, Inc</span></div>
-    <div class="info-row"><span class="lbl">المقر الرئيسي</span><span class="val">🇺🇸 New York, USA</span></div>
-    <div class="info-row"><span class="lbl">سنة التأسيس</span><span class="val" style="color:var(--gold)">1988</span></div>
-    <div class="info-row"><span class="lbl">المجال</span><span class="val">إدارة الأصول والاستثمار</span></div>
-    <div class="info-row"><span class="lbl">عقد الجزائر</span><span class="val" style="color:var(--green)">يناير 2025 ✅</span></div>
-    <div class="info-row"><span class="lbl">انتهاء العقد</span><span class="val" style="color:var(--gold)">ديسمبر 2030</span></div>
-  </div>
-  <div class="section">
-    <div class="section-title">🔗 رابط الإحالة الخاص بك</div>
-    <div class="ref-box">
-      <div class="ref-link-display" id="myRefLink">جارٍ التحميل...</div>
-      <button class="btn-copy" onclick="copyReferralLink()">📋 نسخ الرابط</button>
-      <div class="team-stat">
-        <div class="team-num"><div class="n" id="teamDirect">0</div><div class="l">مباشر</div></div>
-        <div class="team-num"><div class="n" id="teamTotal">0</div><div class="l">إجمالي الفريق</div></div>
-        <div class="team-num"><div class="n" id="teamEarnings">0</div><div class="l">DZD مكتسب</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- TASKS SCREEN -->
-<div id="tasksScreen" class="screen">
-  <div style="padding:15px 15px 5px;font-size:16px;font-weight:700;color:var(--gold)">⚡ المهام اليومية</div>
-  <div id="tasksList"></div>
-</div>
-
-<!-- UPGRADE SCREEN -->
-<div id="upgradeScreen" class="screen">
-  <div style="padding:15px 15px 5px;font-size:16px;font-weight:700;color:var(--gold)">💎 الترقية</div>
-  <div class="my-level" id="myLevelCard"></div>
-  <div style="padding:5px 15px;font-size:13px;color:var(--sub)">باقات الترقية المتاحة:</div>
-  <div id="upgradesList"></div>
-</div>
-
-<!-- ACCOUNT SCREEN -->
-<div id="accountScreen" class="screen">
-  <div class="profile-header">
-    <div class="profile-avatar">👤</div>
-    <div class="profile-name" id="profileName">-</div>
-    <div class="profile-id" id="profileId">ID: -</div>
-    <div class="profile-level" id="profileLevel">FREE</div>
-  </div>
-  <div class="section">
-    <div class="section-title">💼 معلومات الحساب</div>
-    <div class="info-row"><span class="lbl">اسم المستخدم</span><span class="val" id="accUsername">-</span></div>
-    <div class="info-row"><span class="lbl">البريد الإلكتروني</span><span class="val" id="accEmail">-</span></div>
-    <div class="info-row"><span class="lbl">الهاتف</span><span class="val" id="accPhone">-</span></div>
-    <div class="info-row"><span class="lbl">تاريخ التسجيل</span><span class="val" id="accDate">-</span></div>
-    <div class="info-row"><span class="lbl">آخر دخول</span><span class="val" id="accLastLogin">-</span></div>
-  </div>
-  <div class="menu-item" onclick="openReferralMembers()">
-    <div class="menu-icon">👥</div>
-    <div class="menu-text"><div class="menu-title">أعضاء فريقي</div><div class="menu-sub" id="menuTeamSub">0 عضو</div></div>
-    <div class="menu-arrow">›</div>
-  </div>
-  <div class="menu-item" onclick="openWithdrawHistory()">
-    <div class="menu-icon">📜</div>
-    <div class="menu-text"><div class="menu-title">سجل السحوبات</div><div class="menu-sub">عرض جميع طلبات السحب</div></div>
-    <div class="menu-arrow">›</div>
-  </div>
-  <div class="menu-item" onclick="openChangePass()">
-    <div class="menu-icon">🔑</div>
-    <div class="menu-text"><div class="menu-title">تغيير كلمة المرور</div><div class="menu-sub">تغيير كلمة المرور الحالية</div></div>
-    <div class="menu-arrow">›</div>
-  </div>
-  <div class="menu-item" onclick="openSecurityDoc()">
-    <div class="menu-icon">🛡️</div>
-    <div class="menu-text"><div class="menu-title">وثيقة الأمان</div><div class="menu-sub">SECURE V3 — معلومات الأمان</div></div>
-    <div class="menu-arrow">›</div>
-  </div>
-  <button class="btn-logout" onclick="doLogout()">🚪 تسجيل الخروج</button>
-</div>
-
-<!-- BOTTOM NAV -->
-<div class="bottom-nav">
-  <button class="nav-item" onclick="switchTab('account')">
-    <span>👤</span><span>حسابي</span>
-  </button>
-  <button class="nav-item" onclick="switchTab('upgrade')">
-    <span>💎</span><span>الترقية</span>
-  </button>
-  <button class="nav-item" onclick="switchTab('tasks')">
-    <span>⚡</span><span>المهام</span>
-    <div class="nav-badge" id="tasksBadge">5</div>
-  </button>
-  <button class="nav-item active" onclick="switchTab('home')">
-    <span>🏠</span><span>الرئيسية</span>
-  </button>
-</div>
-
-</div><!-- end appContainer -->
-
-<!-- ==================== AI BOT ==================== -->
-<div class="ai-bot" id="aiBot" style="display:none">
-  <div class="ai-online"></div>
-  <button class="ai-btn pulsing" onclick="toggleAiChat()">🤖</button>
-</div>
-<div class="ai-chat-box" id="aiChatBox">
-  <div class="ai-chat-title">🤖 المساعد الذكي <span style="color:var(--green);font-size:10px">● متصل</span></div>
-  <div class="ai-messages" id="aiMessages">
-    <div class="ai-msg bot">مرحباً! أنا المساعد الذكي لـ BlackRock. كيف يمكنني مساعدتك؟</div>
-  </div>
-  <div class="ai-input-row">
-    <input type="text" class="ai-input" id="aiInput" placeholder="اكتب سؤالك..." onkeypress="if(event.key==='Enter')sendAiMsg()">
-    <button class="ai-send" onclick="sendAiMsg()">➤</button>
-  </div>
-</div>
-
-<!-- ==================== MODALS ==================== -->
-
-<!-- NOTIFICATIONS -->
-<div class="modal-overlay" id="notifModal">
-  <div class="modal" style="position:relative">
-    <button class="modal-close" onclick="closeModal('notifModal')">✕</button>
-    <div class="modal-handle"></div>
-    <div class="modal-title">🔔 الإشعارات</div>
-    <div class="notif-list" id="notifList"></div>
-  </div>
-</div>
-
-<!-- SECURITY DOC -->
-<div class="modal-overlay" id="securityModal">
-  <div class="modal" style="position:relative">
-    <button class="modal-close" onclick="closeModal('securityModal')">✕</button>
-    <div class="modal-handle"></div>
-    <div class="modal-title">🛡️ وثيقة الأمان</div>
-    <div class="security-content">
-      <div class="sec-row"><span class="sec-lbl">نوع الحماية</span><span class="sec-val">SECURE V3 🔒</span></div>
-      <div class="sec-row"><span class="sec-lbl">تشفير البيانات</span><span class="sec-val">AES-256 ✅</span></div>
-      <div class="sec-row"><span class="sec-lbl">SSL/TLS</span><span class="sec-val">مفعّل ✅</span></div>
-      <div class="sec-row"><span class="sec-lbl">المصادقة الثنائية</span><span class="sec-val">متاحة ✅</span></div>
-      <div class="sec-row"><span class="sec-lbl">حماية البيانات</span><span class="sec-val">GDPR ✅</span></div>
-      <div class="sec-row"><span class="sec-lbl">مراقبة 24/7</span><span class="sec-val">نشط ✅</span></div>
-      <div class="sec-row"><span class="sec-lbl">رقم الترخيص</span><span class="sec-val" style="color:var(--gold)">BLK-DZ-2025-001</span></div>
-      <div class="sec-row"><span class="sec-lbl">جهة الترخيص</span><span class="sec-val">بنك الجزائر</span></div>
-      <div class="sec-row"><span class="sec-lbl">تاريخ الترخيص</span><span class="sec-val">يناير 2025</span></div>
-      <div class="sec-row"><span class="sec-lbl">حالة الترخيص</span><span class="sec-val" style="color:var(--green)">فعّال ✅</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- WITHDRAW MODAL -->
-<div class="modal-overlay" id="withdrawModal">
-  <div class="modal" style="position:relative">
-    <button class="modal-close" onclick="closeModal('withdrawModal')">✕</button>
-    <div class="modal-handle"></div>
-    <div class="modal-title">💸 طلب السحب</div>
-    <div class="withdraw-info">
-      <p>الرصيد المتاح للسحب</p>
-      <strong id="withdrawBalance">0.00 DZD</strong>
-    </div>
-    <div class="withdraw-form">
-      <div class="form-group">
-        <label>مبلغ السحب (DZD)</label>
-        <input type="number" id="withdrawAmount" placeholder="أدخل المبلغ">
-      </div>
-      <div class="form-group">
-        <label>طريقة الاستلام</label>
-        <input type="text" id="withdrawMethod" placeholder="CCP / بريدي موبايل / بنك">
-      </div>
-      <div class="form-group">
-        <label>رقم الحساب / الهاتف</label>
-        <input type="text" id="withdrawAccount" placeholder="رقم الحساب">
-      </div>
-      <div class="form-group">
-        <label>الاسم الكامل لصاحب الحساب</label>
-        <input type="text" id="withdrawName" placeholder="الاسم الكامل">
-      </div>
-      <button class="btn-auth" onclick="submitWithdraw()">📤 إرسال الطلب</button>
-    </div>
-  </div>
-</div>
-
-<!-- REFERRAL MEMBERS -->
-<div class="modal-overlay" id="refMembersModal">
-  <div class="modal" style="position:relative">
-    <button class="modal-close" onclick="closeModal('refMembersModal')">✕</button>
-    <div class="modal-handle"></div>
-    <div class="modal-title">👥 أعضاء فريقي</div>
-    <div id="refMembersList"></div>
-  </div>
-</div>
-
-<!-- WITHDRAW HISTORY -->
-<div class="modal-overlay" id="withdrawHistoryModal">
-  <div class="modal" style="position:relative">
-    <button class="modal-close" onclick="closeModal('withdrawHistoryModal')">✕</button>
-    <div class="modal-handle"></div>
-    <div class="modal-title">📜 سجل السحوبات</div>
-    <div id="withdrawHistoryList"></div>
-  </div>
-</div>
-
-<!-- CHANGE PASSWORD -->
-<div class="modal-overlay" id="changePassModal">
-  <div class="modal" style="position:relative">
-    <button class="modal-close" onclick="closeModal('changePassModal')">✕</button>
-    <div class="modal-handle"></div>
-    <div class="modal-title">🔑 تغيير كلمة المرور</div>
-    <div class="form-group">
-      <label>كلمة المرور الحالية</label>
-      <input type="password" id="oldPass" placeholder="كلمة المرور الحالية">
-    </div>
-    <div class="form-group">
-      <label>كلمة المرور الجديدة</label>
-      <input type="password" id="newPass" placeholder="كلمة المرور الجديدة">
-    </div>
-    <div class="form-group">
-      <label>تأكيد كلمة المرور الجديدة</label>
-      <input type="password" id="newPass2" placeholder="تأكيد كلمة المرور">
-    </div>
-    <button class="btn-auth" onclick="doChangePass()">✅ تحديث كلمة المرور</button>
-  </div>
-</div>
-
-<!-- TASK RUNNING MODAL -->
-<div class="modal-overlay" id="taskRunModal">
-  <div class="modal" style="position:relative;text-align:center">
-    <div class="modal-handle"></div>
-    <div class="modal-title">⚡ تنفيذ المهمة</div>
-    <div style="font-size:60px;margin:15px 0" id="taskRunIcon">🚀</div>
-    <div style="font-size:16px;margin-bottom:10px" id="taskRunName">مهمة</div>
-    <div style="font-size:36px;font-weight:900;color:var(--gold);margin-bottom:5px" id="taskRunTimer">40</div>
-    <div style="font-size:12px;color:var(--sub);margin-bottom:20px">ثانية متبقية</div>
-    <div style="background:var(--bg);border-radius:10px;height:8px;overflow:hidden;margin-bottom:15px">
-      <div id="taskRunProgress" style="height:100%;background:var(--gold);width:0%;transition:width 0.5s;border-radius:10px"></div>
-    </div>
-    <div style="font-size:14px;color:var(--sub)">انتظر حتى تنتهي المهمة لتحصل على المكافأة</div>
-  </div>
-</div>
-
-<script>
-// ============================================================
-//  DATABASE (localStorage)
-// ============================================================
-const DB = {
-  save(key, val) { try { localStorage.setItem('blk_' + key, JSON.stringify(val)); } catch(e){} },
-  load(key, def) { try { const v = localStorage.getItem('blk_' + key); return v ? JSON.parse(v) : def; } catch(e){ return def; } },
-  remove(key) { localStorage.removeItem('blk_' + key); }
+// ══════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+const refCode = () => Math.random().toString(36).slice(2, 8).toUpperCase();
+const todayStr = () => new Date().toDateString();
+const fmt = (n) => {
+  const num = Number(n) || 0;
+  if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
+  if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
+  if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
+  return num.toLocaleString();
+};
+const fmtFull = (n) => (Number(n) || 0).toLocaleString("fr-DZ");
+const makeTasks = (levelId) => {
+  const cfg = getLevel(levelId);
+  return Array.from({ length: cfg.tasks }, (_, i) => ({ id: i + 1, reward: cfg.reward, status: "pending" }));
 };
 
-// ============================================================
-//  APP STATE
-// ============================================================
-let currentUser = null;
-let allUsers = {};
-let activeTab = 'home';
-let taskTimers = {};
-let notifInterval = null;
-let dailyIncomeInterval = null;
+// ══════════════════════════════════════════════
+// AI
+// ══════════════════════════════════════════════
+async function askAI(msgs, user) {
+  const lv = getLevel(user?.level || "تجريبي");
+  const sys = `أنت المساعد المالي الذكي لمنصة BlackRock الاستثمارية. تحدث بالعربية الفصحى بأسلوب مهني وودي ومفصّل.
 
-const LEVELS = {
-  FREE: { name: 'FREE', daily: 0, taskReward: 0, tasks: 3, investment: 0, withdrawMin: null },
-  M1:   { name: 'M1',   daily: 215, taskReward: 43, tasks: 5, investment: 7000, withdrawMin: 7000 },
-  M2:   { name: 'M2',   daily: 860, taskReward: 86, tasks: 10, investment: 26600, withdrawMin: 26600 },
-  M3:   { name: 'M3',   daily: 2150, taskReward: 215, tasks: 15, investment: 65000, withdrawMin: 65000 },
-  M4:   { name: 'M4',   daily: 5000, taskReward: 500, tasks: 20, investment: 150000, withdrawMin: 150000 },
-  M5:   { name: 'M5',   daily: 12000, taskReward: 1200, tasks: 25, investment: 350000, withdrawMin: 350000 }
-};
-const LEVEL_ORDER = ['FREE', 'M1', 'M2', 'M3', 'M4', 'M5'];
+معلومات المنصة:
+الشركة: BlackRock, Inc تأسست 1988 في نيويورك USA
+التسجيل: NYSE: BLK / EIN: 32-0174431
+عقد الجزائر: يناير 2025 حتى ديسمبر 2028 (3 سنوات)
+الأمان: SECURE V3 / SSL/TLS 3.0 / AES-256
+حماية الأموال: مضمونة 100%
 
-// ============================================================
-//  INIT
-// ============================================================
-function init() {
-  allUsers = DB.load('users', {});
-  const loggedIn = DB.load('loggedIn', null);
-  const refParam = getUrlParam('ref');
-  
-  if (refParam) {
-    document.getElementById('regRef').value = refParam;
-    document.getElementById('refCodeGroup').style.background = 'rgba(245,166,35,0.05)';
-    const refUser = findUserByUsername(refParam);
-    if (refUser) {
-      document.getElementById('refByName').textContent = refUser.name;
-      document.getElementById('refInfo').style.display = 'block';
-    }
-    switchAuthTab('register');
-  }
+جدول المستويات الكامل:
+تجريبي: 0 DZD استثمار، 5 مهام، 43 DZD/مهمة، 215 DZD يومي، فترة تجريبية 3 أيام
+M1: 7,000 DZD، 5 مهام، 43 DZD/مهمة، 215 DZD يومي، 6,450 شهري، 77,400 سنوي
+M2: 26,600 DZD، 10 مهام، 86 DZD/مهمة، 860 DZD يومي، 25,800 شهري، 309,600 سنوي
+M3: 95,000 DZD، 25 مهام، 131 DZD/مهمة، 3,275 DZD يومي، 98,250 شهري، 1,179,000 سنوي
+M4: 300,000 DZD، 50 مهام، 222 DZD/مهمة، 11,100 DZD يومي، 333,000 شهري، 3,996,000 سنوي
+M5: 780,000 DZD، 80 مهام، 390 DZD/مهمة، 31,200 DZD يومي، 936,000 شهري، 11,232,000 سنوي
+M6: 1,950,000 DZD، 130 مهام، 652 DZD/مهمة، 84,760 DZD يومي، 2,542,800 شهري، 30,513,600 سنوي
+G7: 4,485,000 DZD، 200 مهام، 1,068 DZD/مهمة، 213,600 DZD يومي، 6,408,000 شهري، 76,896,000 سنوي
 
-  if (loggedIn && allUsers[loggedIn]) {
-    currentUser = allUsers[loggedIn];
-    startApp();
-  }
-}
+نظام المهام: كل مهمة 40 ثانية. إلغاء أو خروج = مهمة تُلغى وتعود غداً فقط.
+نظام الإحالة: رابط شخصي باسم المستخدم. صاحب الدعوة يحصل 5% من أرباح مهام المدعو يومياً. عند التسجيل كلاهما يحصل على لفة عجلة الحظ.
+السحب: متاح فقط من M1 وما فوق. التجريبي لا يمكنه السحب.
 
-function getUrlParam(name) {
-  const url = window.location.href;
-  const params = new URLSearchParams(url.split('?')[1] || '');
-  return params.get(name);
-}
+بيانات المستخدم الحالي:
+الاسم: ${user?.name || "—"}
+المستوى: ${user?.level || "تجريبي"} (${lv.daily} DZD يومي / ${lv.reward} DZD للمهمة)
+الرصيد: ${fmtFull(user?.balance || 0)} DZD
+الأرباح الكلية: ${fmtFull(user?.totalEarnings || 0)} DZD
+الفريق: ${(user?.referrals || []).length} عضو
+المهام اليوم: ${(user?.dailyTasks || []).filter(t => t.status === "completed").length} مكتملة
 
-function findUserByUsername(username) {
-  return Object.values(allUsers).find(u => u.username === username || u.id === username);
-}
+قواعد مهمة جداً:
+- لا تستخدم نجوم ** أو أي تنسيق markdown أبداً
+- لا تذكر الإيداع أو الشحن أبداً
+- أجب بشكل مفصّل وواضح وبالأرقام الدقيقة
+- إذا سأل عن ربحه اليومي أو الشهري أو السنوي أجبه بأرقام مستواه الحالي`;
 
-// ============================================================
-//  AUTH
-// ============================================================
-function switchAuthTab(tab) {
-  document.querySelectorAll('.auth-tab').forEach((t, i) => {
-    t.classList.toggle('active', (i === 0) === (tab === 'login'));
+  const r = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 900, system: sys, messages: msgs }),
   });
-  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+  const d = await r.json();
+  return d.content?.map(b => b.text || "").join("") || "حدث خطأ، أعد المحاولة.";
 }
 
-function generateId() {
-  return 'BLK' + Date.now().toString().slice(-8) + Math.floor(Math.random() * 1000);
-}
-
-function doRegister() {
-  const name = document.getElementById('regName').value.trim();
-  const username = document.getElementById('regUser').value.trim().toLowerCase().replace(/\s/g, '');
-  const email = document.getElementById('regEmail').value.trim();
-  const phone = document.getElementById('regPhone').value.trim();
-  const pass = document.getElementById('regPass').value;
-  const pass2 = document.getElementById('regPass2').value;
-  const refCode = document.getElementById('regRef').value.trim();
-
-  if (!name || !username || !email || !pass) return showToast('يرجى ملء جميع الحقول', 'error');
-  if (pass.length < 6) return showToast('كلمة المرور قصيرة جداً', 'error');
-  if (pass !== pass2) return showToast('كلمات المرور غير متطابقة', 'error');
-  if (findUserByUsername(username)) return showToast('اسم المستخدم مستخدم بالفعل', 'error');
-  if (Object.values(allUsers).find(u => u.email === email)) return showToast('البريد الإلكتروني مسجل بالفعل', 'error');
-
-  const id = generateId();
-  const now = new Date().toLocaleString('ar-DZ');
-  
-  const user = {
-    id, name, username, email, phone,
-    password: btoa(pass), // encode
-    level: 'FREE',
-    balance: 0,
-    totalEarned: 0,
-    investment: 0,
-    referredBy: refCode || null,
-    referredByName: '',
-    team: [],
-    teamEarnings: 0,
-    notifications: [],
-    withdrawHistory: [],
-    completedTasks: 0,
-    lastLogin: now,
-    registerDate: now,
-    lastDailyCollect: null,
-    tasksDone: {},
-    tasksReset: null
+// ══════════════════════════════════════════════
+// SPIN WHEEL COMPONENT
+// ══════════════════════════════════════════════
+function SpinWheel({ onResult, onClose }) {
+  const cRef = useRef(null);
+  const [spinning, setSpin] = useState(false);
+  const [result, setResult] = useState(null);
+  const angRef = useRef(0);
+  const rafRef = useRef(null);
+  const SEGS = [
+    { txt: "43 DZD", bg: "#d97706", val: { t: "money", n: 43 } },
+    { txt: "لا شيء", bg: "#1e293b", val: { t: "none" } },
+    { txt: "86 DZD", bg: "#059669", val: { t: "money", n: 86 } },
+    { txt: "50 نقطة", bg: "#2563eb", val: { t: "pts", n: 50 } },
+    { txt: "لا شيء", bg: "#374151", val: { t: "none" } },
+    { txt: "215 DZD", bg: "#dc2626", val: { t: "money", n: 215 } },
+    { txt: "100 نقطة", bg: "#7c3aed", val: { t: "pts", n: 100 } },
+    { txt: "21 DZD", bg: "#b45309", val: { t: "money", n: 21 } },
+  ];
+  useEffect(() => { draw(0); }, []);
+  const draw = (rot) => {
+    const c = cRef.current; if (!c) return;
+    const ctx = c.getContext("2d"), cx = c.width / 2, r = cx - 6, arc = (2 * Math.PI) / SEGS.length;
+    ctx.clearRect(0, 0, c.width, c.height);
+    SEGS.forEach((s, i) => {
+      const a = rot + i * arc;
+      ctx.beginPath(); ctx.moveTo(cx, cx); ctx.arc(cx, cx, r, a, a + arc); ctx.closePath();
+      ctx.fillStyle = s.bg; ctx.fill(); ctx.strokeStyle = "#080c14"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.save(); ctx.translate(cx, cx); ctx.rotate(a + arc / 2);
+      ctx.textAlign = "right"; ctx.fillStyle = "#fff"; ctx.font = "bold 11px Arial";
+      ctx.fillText(s.txt, r - 6, 4); ctx.restore();
+    });
+    ctx.beginPath(); ctx.arc(cx, cx, 14, 0, Math.PI * 2); ctx.fillStyle = "#f59e0b"; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(cx + r + 2, cx); ctx.lineTo(cx + r - 12, cx - 7); ctx.lineTo(cx + r - 12, cx + 7);
+    ctx.closePath(); ctx.fillStyle = "#fff"; ctx.fill();
   };
-
-  // Handle referral
-  if (refCode) {
-    const refUser = findUserByUsername(refCode);
-    if (refUser) {
-      user.referredByName = refUser.name;
-      refUser.team.push({ id, name, username, date: now });
-      refUser.notifications.unshift({
-        id: Date.now(),
-        text: `🎉 انضم ${name} إلى فريقك عبر رابطك!`,
-        time: now, read: false
-      });
-      allUsers[refUser.id] = refUser;
-      DB.save('users', allUsers);
-    }
-  }
-
-  user.notifications.push({
-    id: Date.now(),
-    text: `🎊 مرحباً ${name}! تم إنشاء حسابك بنجاح في BlackRock.`,
-    time: now, read: false
-  });
-
-  allUsers[id] = user;
-  DB.save('users', allUsers);
-  DB.save('loggedIn', id);
-  currentUser = user;
-  
-  showToast('✅ تم إنشاء الحساب بنجاح!', 'success');
-  setTimeout(() => startApp(), 800);
-}
-
-function doLogin() {
-  const userInput = document.getElementById('loginUser').value.trim();
-  const pass = document.getElementById('loginPass').value;
-
-  if (!userInput || !pass) return showToast('يرجى إدخال البيانات', 'error');
-
-  const user = Object.values(allUsers).find(u => 
-    (u.username === userInput || u.email === userInput) && u.password === btoa(pass)
+  const spin = () => {
+    if (spinning) return; setSpin(true); setResult(null);
+    const tot = (5 + Math.random() * 4) * 2 * Math.PI, dur = 4000, t0 = performance.now(), a0 = angRef.current;
+    const go = (now) => {
+      const p = Math.min((now - t0) / dur, 1), e = 1 - Math.pow(1 - p, 4);
+      angRef.current = a0 + tot * e; draw(angRef.current);
+      if (p < 1) rafRef.current = requestAnimationFrame(go);
+      else {
+        setSpin(false);
+        const arc = (2 * Math.PI) / SEGS.length, na = ((angRef.current % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+        const idx = Math.floor(((2 * Math.PI - na) % (2 * Math.PI)) / arc) % SEGS.length;
+        setResult(SEGS[idx]); onResult(SEGS[idx].val);
+      }
+    };
+    rafRef.current = requestAnimationFrame(go);
+  };
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.96)", zIndex: 999, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 18 }}>
+      <div style={{ color: "#f59e0b", fontSize: 24, fontWeight: "bold" }}>🎡 عجلة الحظ</div>
+      <canvas ref={cRef} width={280} height={280} style={{ borderRadius: "50%", boxShadow: "0 0 60px rgba(245,158,11,0.5)" }} />
+      {result && <div style={{ color: result.val.t === "none" ? "#6b7280" : "#10b981", fontSize: 22, fontWeight: "bold", textAlign: "center", padding: "0 24px" }}>
+        {result.val.t === "none" ? "للأسف لا جائزة 😔" : result.val.t === "money" ? `🎉 مبروك! ربحت ${result.val.n} DZD` : `🌟 مبروك! ${result.val.n} نقطة`}
+      </div>}
+      {!spinning && !result && <button onClick={spin} style={{ background: "linear-gradient(135deg,#f59e0b,#d97706)", color: "#000", border: "none", borderRadius: 14, padding: "14px 44px", fontSize: 18, fontWeight: "bold", cursor: "pointer" }}>الف!</button>}
+      {result && <button onClick={onClose} style={{ background: "#1e293b", color: "#fff", border: "1px solid #334155", borderRadius: 12, padding: "10px 30px", fontSize: 14, cursor: "pointer" }}>متابعة</button>}
+    </div>
   );
-
-  if (!user) return showToast('بيانات الدخول غير صحيحة', 'error');
-
-  user.lastLogin = new Date().toLocaleString('ar-DZ');
-  allUsers[user.id] = user;
-  DB.save('users', allUsers);
-  DB.save('loggedIn', user.id);
-  currentUser = user;
-
-  showToast('✅ مرحباً ' + user.name, 'success');
-  setTimeout(() => startApp(), 800);
 }
 
-function doLogout() {
-  if (!confirm('هل تريد تسجيل الخروج؟')) return; // native confirm
-  saveUser();
-  DB.remove('loggedIn');
-  currentUser = null;
-  clearIntervals();
-  document.getElementById('appContainer').style.display = 'none';
-  document.getElementById('aiBot').style.display = 'none';
-  document.getElementById('authScreen').classList.add('active');
-  document.getElementById('authScreen').style.display = 'flex';
-  switchAuthTab('login');
-  showToast('تم تسجيل الخروج', 'info');
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+function Toast({ msg, type, onDone }) {
+  useEffect(() => { const t = setTimeout(onDone, 3200); return () => clearTimeout(t); }, []);
+  const bg = type === "error" ? "#7f1d1d" : type === "info" ? "#1e3a5f" : "#064e3b";
+  const border = type === "error" ? "#ef4444" : type === "info" ? "#3b82f6" : "#10b981";
+  return (
+    <div style={{ position: "fixed", top: 72, left: "50%", transform: "translateX(-50%)", zIndex: 888, background: bg, color: "#fff", borderRadius: 12, padding: "10px 20px", fontSize: 13, fontWeight: "bold", border: `1px solid ${border}`, boxShadow: "0 8px 30px rgba(0,0,0,0.6)", maxWidth: 340, textAlign: "center", direction: "rtl", whiteSpace: "pre-line" }}>
+      {msg}
+    </div>
+  );
 }
 
-function doChangePass() {
-  const old = document.getElementById('oldPass').value;
-  const n1 = document.getElementById('newPass').value;
-  const n2 = document.getElementById('newPass2').value;
-
-  if (currentUser.password !== btoa(old)) return showToast('كلمة المرور الحالية غير صحيحة', 'error');
-  if (n1.length < 6) return showToast('كلمة المرور الجديدة قصيرة', 'error');
-  if (n1 !== n2) return showToast('كلمتا المرور غير متطابقتان', 'error');
-
-  currentUser.password = btoa(n1);
-  saveUser();
-  closeModal('changePassModal');
-  showToast('✅ تم تغيير كلمة المرور', 'success');
-  document.getElementById('oldPass').value = '';
-  document.getElementById('newPass').value = '';
-  document.getElementById('newPass2').value = '';
-}
-
-// ============================================================
-//  START APP
-// ============================================================
-function startApp() {
-  document.getElementById('authScreen').style.display = 'none';
-  document.getElementById('authScreen').classList.remove('active');
-  document.getElementById('appContainer').style.display = 'block';
-  document.getElementById('aiBot').style.display = 'block';
-
-  resetTasksIfNewDay();
-  updateAllUI();
-  switchTab('home');
-  startDailyIncome();
-  startNotifCheck();
-}
-
-function clearIntervals() {
-  if (dailyIncomeInterval) clearInterval(dailyIncomeInterval);
-  if (notifInterval) clearInterval(notifInterval);
-  Object.values(taskTimers).forEach(t => clearInterval(t));
-  taskTimers = {};
-}
-
-// ============================================================
-//  SAVE USER
-// ============================================================
-function saveUser() {
-  if (!currentUser) return;
-  allUsers[currentUser.id] = currentUser;
-  DB.save('users', allUsers);
-}
-
-// ============================================================
-//  DAILY INCOME
-// ============================================================
-function startDailyIncome() {
-  if (dailyIncomeInterval) clearInterval(dailyIncomeInterval);
-  dailyIncomeInterval = setInterval(() => {
-    if (!currentUser) return;
-    const lvl = LEVELS[currentUser.level];
-    if (lvl.daily > 0) {
-      // Income per second (daily / 86400)
-      const perSec = lvl.daily / 86400;
-      currentUser.balance += perSec;
-      currentUser.totalEarned += perSec;
-      saveUser();
-      updateBalanceDisplay();
-    }
-  }, 1000);
-}
-
-function updateBalanceDisplay() {
-  const bal = currentUser ? currentUser.balance.toFixed(2) : '0.00';
-  const el = document.getElementById('homeBalance');
-  if (el) el.textContent = bal;
-  const el2 = document.getElementById('withdrawBalance');
-  if (el2) el2.textContent = bal + ' DZD';
-}
-
-// ============================================================
-//  RESET TASKS DAILY
-// ============================================================
-function resetTasksIfNewDay() {
-  if (!currentUser) return;
-  const today = new Date().toDateString();
-  if (currentUser.tasksReset !== today) {
-    currentUser.tasksDone = {};
-    currentUser.tasksReset = today;
-    saveUser();
-  }
-}
-
-// ============================================================
-//  TABS
-// ============================================================
-function switchTab(tab) {
-  activeTab = tab;
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-  const screenMap = { home: 'homeScreen', tasks: 'tasksScreen', upgrade: 'upgradeScreen', account: 'accountScreen' };
-  const navMap = { home: 3, tasks: 2, upgrade: 1, account: 0 };
-
-  const screenEl = document.getElementById(screenMap[tab]);
-  if (screenEl) screenEl.classList.add('active');
-
-  const navItems = document.querySelectorAll('.nav-item');
-  if (navItems[navMap[tab]]) navItems[navMap[tab]].classList.add('active');
-
-  if (tab === 'tasks') renderTasks();
-  if (tab === 'upgrade') renderUpgrades();
-  if (tab === 'account') renderAccount();
-  if (tab === 'home') updateAllUI();
-}
-
-// ============================================================
-//  UPDATE ALL UI
-// ============================================================
-function updateAllUI() {
-  if (!currentUser) return;
-  updateBalanceDisplay();
-
-  const lvl = LEVELS[currentUser.level];
-  document.getElementById('dailyIncome').textContent = lvl.daily;
-  document.getElementById('teamCount').textContent = currentUser.team.length;
-  document.getElementById('completedTasks').textContent = currentUser.completedTasks;
-  document.getElementById('currentLevelHome').textContent = currentUser.level;
-
-  // Referral link
-  const baseUrl = window.location.href.split('?')[0];
-  const refLink = baseUrl + '?ref=' + currentUser.username;
-  const refEl = document.getElementById('myRefLink');
-  if (refEl) refEl.textContent = refLink;
-
-  document.getElementById('teamDirect').textContent = currentUser.team.length;
-  document.getElementById('teamTotal').textContent = currentUser.team.length;
-  document.getElementById('teamEarnings').textContent = Math.floor(currentUser.teamEarnings);
-
-  // Notif count
-  const unread = currentUser.notifications.filter(n => !n.read).length;
-  const nc = document.getElementById('notifCount');
-  if (nc) { nc.textContent = unread; nc.style.display = unread > 0 ? 'flex' : 'none'; }
-
-  // Tasks badge
-  const doneTasks = Object.keys(currentUser.tasksDone || {}).length;
-  const totalTasks = lvl.tasks || 5;
-  const remaining = Math.max(0, totalTasks - doneTasks);
-  const tb = document.getElementById('tasksBadge');
-  if (tb) { tb.textContent = remaining; tb.style.display = remaining > 0 ? 'flex' : 'none'; }
-
-  document.getElementById('menuTeamSub').textContent = currentUser.team.length + ' عضو';
-}
-
-// ============================================================
-//  TASKS
-// ============================================================
-function renderTasks() {
-  if (!currentUser) return;
-  const lvl = LEVELS[currentUser.level];
-  const container = document.getElementById('tasksList');
-  container.innerHTML = '';
-
-  const totalTasks = lvl.tasks || 5;
-  const taskIcons = ['⭐', '🚀', '🎯', '💎', '🔥', '⚡', '🌟', '🎪', '🏆', '💡'];
-
-  for (let i = 1; i <= totalTasks; i++) {
-    const taskId = 'task_' + i;
-    const isDone = currentUser.tasksDone && currentUser.tasksDone[taskId];
-    const isRunning = taskTimers[taskId] !== undefined;
-
-    const card = document.createElement('div');
-    card.className = 'task-card';
-    card.id = 'taskCard_' + i;
-
-    if (isDone) {
-      card.innerHTML = `
-        <div class="task-header">
-          <div>
-            <div class="task-name">مهمة يومية ${i}</div>
-            <div class="task-status" style="color:var(--green)">✅ مكتملة — تعود غداً</div>
+// ══════════════════════════════════════════════
+// SECURITY MODAL
+// ══════════════════════════════════════════════
+function SecurityModal({ onClose }) {
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, overflowY: "auto", padding: 16 }} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #10b981", maxWidth: 430, margin: "0 auto", overflow: "hidden" }}>
+        <div style={{ background: "#0d1c14", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #064e3b" }}>
+          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
+          <div style={{ color: "#10b981", fontWeight: "bold", fontSize: 16 }}>🔒 وثيقة الأمان</div>
+        </div>
+        <div style={{ padding: 16 }}>
+          <div style={{ background: "linear-gradient(135deg,#064e3b,#065f46)", borderRadius: 14, padding: 18, textAlign: "center", marginBottom: 16 }}>
+            <div style={{ color: "#10b981", fontSize: 26, fontWeight: "900", letterSpacing: 4 }}>SECURE V3</div>
+            <div style={{ color: "#6ee7b7", fontSize: 12, marginTop: 4 }}>شهادة أمان دولية موثقة ومعتمدة</div>
           </div>
-          <div class="task-icon orange">${taskIcons[(i-1)%taskIcons.length]}</div>
-        </div>
-        <div style="display:flex;align-items:baseline;gap:4px">
-          <div class="task-reward">${lvl.taskReward}+</div>
-          <div class="task-cur">DZD</div>
-        </div>
-        <div class="progress-bar done"></div>
-      `;
-    } else {
-      card.innerHTML = `
-        <div class="task-header">
-          <div>
-            <div class="task-name">مهمة يومية ${i}</div>
-            <div class="task-status waiting" id="taskStatus_${i}">انتظر 40 ثانية واحصل على +${lvl.taskReward} DZD</div>
+          {[["🔐 بروتوكول التشفير", "SSL/TLS 3.0 — AES-256"], ["📋 رقم الشهادة", "BLK-SEC-V3-2025-DZ"], ["📅 تاريخ الإصدار", "يناير 2025"], ["✅ صالحة حتى", "ديسمبر 2028"], ["🛡 نوع الحماية", "أموال مضمونة 100%"], ["🌐 معتمدة من", "هيئة الرقابة المالية الدولية"], ["🇩🇿 عقد الجزائر", "يناير 2025 — ديسمبر 2028"], ["📊 رمز البورصة", "NYSE: BLK"], ["🔢 رقم EIN", "32-0174431"]].map(([k, v]) => (
+            <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #0f1f2a", direction: "rtl" }}>
+              <div style={{ color: "#e2e8f0", fontSize: 13 }}>{v}</div>
+              <div style={{ color: "#64748b", fontSize: 12 }}>{k}</div>
+            </div>
+          ))}
+          <div style={{ background: "#071a0d", border: "1px solid #166534", borderRadius: 12, padding: 14, marginTop: 14, direction: "rtl" }}>
+            <div style={{ color: "#86efac", fontSize: 12, lineHeight: 1.9 }}>
+              تُقرّ شركة BlackRock, Inc المسجّلة في نيويورك بالولايات المتحدة الأمريكية عام 1988، بأنها أبرمت عقداً رسمياً مع الجانب الجزائري في يناير 2025 لمدة ثلاث سنوات (تنتهي ديسمبر 2028)، يضمن حقوق وأموال المستثمرين الجزائريين وفق أعلى معايير الأمان الدولية.
+            </div>
           </div>
-          <div class="task-icon rocket">${taskIcons[(i-1)%taskIcons.length]}</div>
         </div>
-        <div style="display:flex;align-items:baseline;gap:4px">
-          <div class="task-reward">${lvl.taskReward || 0}+</div>
-          <div class="task-cur">DZD</div>
-        </div>
-        ${lvl.taskReward > 0 ? `<button class="btn-start" id="btnTask_${i}" onclick="startTask(${i})">▶ ابدأ المهمة</button>` : `<div class="timer-display" style="color:var(--red)">🔒 يتطلب الترقية للحصول على مكافأة</div>`}
-        <div class="progress-bar"></div>
-      `;
-    }
-
-    container.appendChild(card);
-  }
+      </div>
+    </div>
+  );
 }
 
-function startTask(taskId) {
-  if (!currentUser) return;
-  const lvl = LEVELS[currentUser.level];
-  if (lvl.taskReward === 0) return showToast('يجب الترقية للحصول على مكافأة', 'error');
+// ══════════════════════════════════════════════
+// COMPANY MODAL
+// ══════════════════════════════════════════════
+function CompanyModal({ onClose }) {
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, overflowY: "auto", padding: 16 }} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #f59e0b", maxWidth: 430, margin: "0 auto", overflow: "hidden" }}>
+        <div style={{ background: "#12100a", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #78350f" }}>
+          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
+          <div style={{ color: "#f59e0b", fontWeight: "bold", fontSize: 16 }}>🏢 عن الشركة</div>
+        </div>
+        <div style={{ padding: 16 }}>
+          <div style={{ textAlign: "center", marginBottom: 18 }}>
+            <div style={{ color: "#f59e0b", fontSize: 30, fontWeight: "900", letterSpacing: 5 }}>BLACKROCK</div>
+            <div style={{ color: "#64748b", fontSize: 13, marginTop: 4 }}>BlackRock, Inc — Investment Platform</div>
+          </div>
+          {[["الاسم القانوني", "BlackRock, Inc"], ["المقر الرئيسي", "🇺🇸 New York, USA"], ["سنة التأسيس", "1988"], ["المجال", "إدارة الأصول والاستثمار"], ["رمز البورصة", "NYSE: BLK"], ["رقم EIN", "32-0174431"], ["بروتوكول التشفير", "SSL/TLS 3.0 — AES-256"], ["عقد الجزائر", "✅ يناير 2025 — ديسمبر 2028"], ["حماية الأموال", "✅ مضمونة 100%"]].map(([k, v]) => (
+            <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #0f1f2a", direction: "rtl" }}>
+              <div style={{ color: "#e2e8f0", fontSize: 13 }}>{v}</div>
+              <div style={{ color: "#64748b", fontSize: 12 }}>{k}</div>
+            </div>
+          ))}
+          <div style={{ background: "#0d1f0d", border: "1px solid #166534", borderRadius: 12, padding: 14, marginTop: 14, direction: "rtl" }}>
+            <div style={{ color: "#86efac", fontSize: 12, lineHeight: 1.9 }}>
+              تُقرّ شركة BlackRock, Inc المسجّلة في نيويورك بالولايات المتحدة الأمريكية عام 1988، بأنها أبرمت عقداً رسمياً مع الجانب الجزائري في يناير 2025 لمدة 3 سنوات، يضمن حقوق المستثمرين الجزائريين وأموالهم وفق أعلى معايير الأمان الدولية.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-  const tId = 'task_' + taskId;
-  if (currentUser.tasksDone && currentUser.tasksDone[tId]) return showToast('تم إنجاز هذه المهمة', 'info');
+// ══════════════════════════════════════════════
+// TEAM MODAL
+// ══════════════════════════════════════════════
+function TeamModal({ user, allUsers, onClose }) {
+  const members = (user.referrals || []).map(id => allUsers[id]).filter(Boolean);
+  const myBonus = members.reduce((s, m) => s + Math.floor((m.totalEarnings || 0) * 0.05), 0);
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, overflowY: "auto", padding: 16 }} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #3b82f6", maxWidth: 430, margin: "0 auto", overflow: "hidden" }}>
+        <div style={{ background: "#0a1628", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e3a5f" }}>
+          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
+          <div style={{ color: "#3b82f6", fontWeight: "bold", fontSize: 16 }}>👥 فريقي</div>
+        </div>
+        <div style={{ padding: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
+            {[[members.length, "أعضاء الفريق", "#f59e0b"], [fmtFull(myBonus) + " DZD", "عمولتي الكلية", "#10b981"]].map(([v, l, c]) => (
+              <div key={l} style={{ background: "#111827", borderRadius: 12, padding: "14px 10px", textAlign: "center", border: "1px solid #1e293b" }}>
+                <div style={{ color: c, fontSize: 20, fontWeight: "bold" }}>{v}</div>
+                <div style={{ color: "#64748b", fontSize: 11, marginTop: 4 }}>{l}</div>
+              </div>
+            ))}
+          </div>
+          {members.length === 0
+            ? <div style={{ textAlign: "center", color: "#4b5563", padding: "30px 16px", background: "#111827", borderRadius: 14, border: "1px dashed #1e293b" }}>
+                <div style={{ fontSize: 36, marginBottom: 10 }}>👥</div>
+                <div style={{ fontSize: 14 }}>لا يوجد أعضاء بعد</div>
+                <div style={{ color: "#f59e0b", fontSize: 12, marginTop: 6 }}>شارك رابطك لبناء فريقك</div>
+              </div>
+            : members.map((m, i) => (
+              <div key={i} style={{ background: "#111827", borderRadius: 12, padding: "12px 14px", marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center", border: "1px solid #1e293b", direction: "rtl" }}>
+                <div style={{ color: "#10b981", fontSize: 12, fontWeight: "bold" }}>+{Math.floor((m.totalEarnings || 0) * 0.05)} DZD</div>
+                <div>
+                  <div style={{ color: "#e2e8f0", fontWeight: "bold" }}>{m.name}</div>
+                  <div style={{ color: "#64748b", fontSize: 11 }}>{getLevel(m.level).label} • {new Date(m.joinDate).toLocaleDateString("ar-DZ")}</div>
+                </div>
+                <div style={{ width: 38, height: 38, background: "linear-gradient(135deg,#f59e0b,#d97706)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "#000", fontWeight: "bold", fontSize: 16 }}>
+                  {m.name[0].toUpperCase()}
+                </div>
+              </div>
+            ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-  // Open task modal
-  document.getElementById('taskRunName').textContent = 'مهمة يومية ' + taskId;
-  const taskIcons = ['⭐','🚀','🎯','💎','🔥','⚡','🌟','🎪','🏆','💡'];
-  document.getElementById('taskRunIcon').textContent = taskIcons[(taskId-1)%taskIcons.length];
-  
-  const modal = document.getElementById('taskRunModal');
-  modal.classList.add('show');
+// ══════════════════════════════════════════════
+// NOTIFICATIONS MODAL
+// ══════════════════════════════════════════════
+function NotifModal({ user, onClose }) {
+  const lv = getLevel(user.level);
+  const nextLv = getNextLevel(user.level);
+  const notifs = [
+    { ic: "⚡", ic_bg: "#1c2a10", title: "مهام جديدة متاحة!", sub: `لديك ${(user.dailyTasks || []).filter(t => t.status === "pending").length} مهام يومية لكسب ${fmtFull(lv.daily)} DZD`, time: "منذ دقيقة" },
+    { ic: "🎁", ic_bg: "#1a1500", title: `مرحباً بك في BlackRock, Inc`, sub: "ابدأ رحلتك نحو الثروة واكسب يومياً", time: "منذ ساعة" },
+    ...(nextLv ? [{ ic: "💎", ic_bg: "#0d1020", title: "ترقية متاحة!", sub: `ارقَ إلى ${nextLv.label} بإيداع ${fmtFull(nextLv.invest)} DZD`, time: "منذ يوم" }] : []),
+  ];
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "80px 16px" }} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #1e293b", width: "100%", maxWidth: 430, overflow: "hidden" }}>
+        <div style={{ background: "#111827", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e293b" }}>
+          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
+          <div style={{ color: "#e2e8f0", fontWeight: "bold", fontSize: 16 }}>🔔 الإشعارات</div>
+        </div>
+        {notifs.map((n, i) => (
+          <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid #0f172a", direction: "rtl", gap: 12 }}>
+            <div style={{ color: "#64748b", fontSize: 11, flexShrink: 0 }}>{n.time}</div>
+            <div style={{ flex: 1, textAlign: "right" }}>
+              <div style={{ color: "#e2e8f0", fontWeight: "bold", fontSize: 14 }}>{n.title}</div>
+              <div style={{ color: "#64748b", fontSize: 12, marginTop: 3, lineHeight: 1.5 }}>{n.sub}</div>
+            </div>
+            <div style={{ width: 44, height: 44, background: n.ic_bg, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0, border: "1px solid #1e293b" }}>{n.ic}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-  let timeLeft = 40;
-  document.getElementById('taskRunTimer').textContent = timeLeft;
-  document.getElementById('taskRunProgress').style.width = '0%';
+// ══════════════════════════════════════════════
+// HISTORY MODAL
+// ══════════════════════════════════════════════
+function HistoryModal({ user, onClose }) {
+  const txIcons = { "مهمة يومية": "⚡", "عمولة إحالة": "👥", "عجلة الحظ": "🎡", "إيداع رصيد": "⬆" };
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, overflowY: "auto", padding: 16 }} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #3b82f6", maxWidth: 430, margin: "0 auto", overflow: "hidden" }}>
+        <div style={{ background: "#0a1628", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e3a5f" }}>
+          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
+          <div style={{ color: "#3b82f6", fontWeight: "bold", fontSize: 16 }}>📊 سجل المعاملات</div>
+        </div>
+        <div style={{ padding: 16 }}>
+          {(user.transactions || []).length === 0
+            ? <div style={{ textAlign: "center", color: "#4b5563", padding: 30 }}>لا توجد معاملات بعد</div>
+            : (user.transactions || []).slice(0, 40).map((tx, i) => (
+              <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 0", borderBottom: "1px solid #0f172a", direction: "rtl" }}>
+                <div style={{ color: "#10b981", fontWeight: "bold", fontSize: 14 }}>+{fmtFull(tx.amount)} DZD</div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ color: "#e2e8f0", fontSize: 13 }}>{tx.type}</div>
+                  <div style={{ color: "#64748b", fontSize: 11, marginTop: 2 }}>{new Date(tx.date).toLocaleString("ar-DZ")}</div>
+                </div>
+                <div style={{ width: 38, height: 38, background: "#111827", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, border: "1px solid #1e293b" }}>
+                  {txIcons[tx.type] || "💰"}
+                </div>
+              </div>
+            ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-  const interval = setInterval(() => {
-    timeLeft--;
-    const pct = ((40 - timeLeft) / 40) * 100;
-    document.getElementById('taskRunTimer').textContent = timeLeft;
-    document.getElementById('taskRunProgress').style.width = pct + '%';
+// ══════════════════════════════════════════════
+// WITHDRAW MODAL
+// ══════════════════════════════════════════════
+function WithdrawModal({ user, onClose }) {
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #10b981", width: "100%", maxWidth: 430, overflow: "hidden" }}>
+        <div style={{ background: "#071a12", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #064e3b" }}>
+          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
+          <div style={{ color: "#10b981", fontWeight: "bold", fontSize: 16 }}>💸 طلب سحب</div>
+        </div>
+        <div style={{ padding: 20, textAlign: "center" }}>
+          <div style={{ color: "#64748b", fontSize: 13, marginBottom: 6 }}>رصيدك المتاح</div>
+          <div style={{ color: "#f59e0b", fontSize: 32, fontWeight: "900", marginBottom: 4 }}>{fmtFull(user.balance)}</div>
+          <div style={{ color: "#64748b", fontSize: 14, marginBottom: 20 }}>دينار جزائري (DZD)</div>
+          {user.level === "تجريبي"
+            ? <div style={{ background: "#1a0505", border: "1px solid #7f1d1d", borderRadius: 12, padding: 16, color: "#fca5a5", fontSize: 13, lineHeight: 1.7 }}>
+                🔒 السحب غير متاح في المستوى التجريبي<br />ارقَ إلى M1 أو أعلى لتفعيل السحب
+              </div>
+            : <div style={{ background: "#071a12", border: "1px solid #10b981", borderRadius: 12, padding: 16, color: "#6ee7b7", fontSize: 13, lineHeight: 1.8 }}>
+                لطلب السحب تواصل مع الإدارة عبر القناة الرسمية مع ذكر رقم حسابك:<br />
+                <span style={{ color: "#f59e0b", fontWeight: "bold", fontSize: 16 }}>#{user.id.slice(-8).toUpperCase()}</span>
+              </div>}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-    if (timeLeft <= 0) {
-      clearInterval(interval);
-      delete taskTimers[tId];
-      modal.classList.remove('show');
-      
-      // Complete task
-      if (!currentUser.tasksDone) currentUser.tasksDone = {};
-      currentUser.tasksDone[tId] = true;
-      currentUser.balance += lvl.taskReward;
-      currentUser.totalEarned += lvl.taskReward;
-      currentUser.completedTasks = (currentUser.completedTasks || 0) + 1;
+// ══════════════════════════════════════════════
+// MAIN APP
+// ══════════════════════════════════════════════
+export default function App() {
+  const [db, setDb] = useState({ users: {}, uid: null });
+  const [screen, setScreen] = useState("splash"); // splash | login | reg | app
+  const [tab, setTab] = useState("home");
+  const [modal, setModal] = useState(null); // null|security|company|team|notif|history|withdraw|reflink
+  const [showSpin, setShowSpin] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [timers, setTimers] = useState({});
+  const timerRefs = useRef({});
 
-      // Team referral bonus
-      if (currentUser.referredBy) {
-        const refUser = findUserByUsername(currentUser.referredBy);
-        if (refUser) {
-          const bonus = Math.floor(lvl.taskReward * 0.05);
-          refUser.balance += bonus;
-          refUser.teamEarnings = (refUser.teamEarnings || 0) + bonus;
-          refUser.notifications.unshift({
-            id: Date.now(),
-            text: `💰 حصلت على ${bonus} DZD عمولة من مهمة ${currentUser.name}!`,
-            time: new Date().toLocaleString('ar-DZ'),
-            read: false
-          });
-          allUsers[refUser.id] = refUser;
+  // Auth forms
+  const [lPhone, setLPhone] = useState(""); const [lPass, setLPass] = useState("");
+  const [rName, setRName] = useState(""); const [rPhone, setRPhone] = useState(""); const [rPass, setRPass] = useState(""); const [rRef, setRRef] = useState("");
+  const [formErr, setFormErr] = useState("");
+
+  // Chat
+  const [chatMsgs, setChatMsgs] = useState([{ role: "assistant", content: "مرحباً! 👋\nأنا المساعد الذكي لمنصة BlackRock, Inc.\nيمكنني الإجابة على أي سؤال حول الاستثمار والمنصة.\nكيف يمكنني مساعدتك؟" }]);
+  const [chatIn, setChatIn] = useState("");
+  const [chatLoad, setChatLoad] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const chatEnd = useRef(null);
+  const saveRef = useRef(null);
+
+  const cur = db.uid && db.users[db.uid] ? db.users[db.uid] : null;
+  const lv = cur ? getLevel(cur.level) : LEVELS[0];
+  const nextLv = cur ? getNextLevel(cur.level) : null;
+  const doneTasks = cur ? (cur.dailyTasks || []).filter(t => t.status === "completed").length : 0;
+  const pendTasks = cur ? (cur.dailyTasks || []).filter(t => t.status === "pending").length : 0;
+
+  // ── Init ──
+  useEffect(() => {
+    const saved = dbRead();
+    // URL ref param
+    const p = new URLSearchParams(window.location.search).get("ref");
+    if (p) setRRef(p);
+
+    setTimeout(() => {
+      if (saved?.uid && saved?.users?.[saved.uid]) {
+        let u = saved.users[saved.uid];
+        if (u.dailyTasksDate !== todayStr()) {
+          u = { ...u, dailyTasksDate: todayStr(), dailyTasks: makeTasks(u.level) };
+          saved.users[u.id] = u;
+          dbSave(saved);
+        }
+        setDb(saved);
+        setScreen("app");
+        if (u.spinAvailable) setShowSpin(true);
+      } else {
+        setDb(saved || { users: {}, uid: null });
+        setScreen("login");
+      }
+    }, 1600);
+  }, []);
+
+  // ── Save wrapper ──
+  function save(newDb) {
+    setDb(newDb);
+    if (saveRef.current) clearTimeout(saveRef.current);
+    saveRef.current = setTimeout(() => dbSave(newDb), 80);
+  }
+
+  function notify(msg, type = "success") { setToast({ msg, type }); }
+
+  // ── Register ──
+  function doReg() {
+    setFormErr("");
+    if (!rName.trim() || !rPhone.trim() || !rPass.trim()) { setFormErr("يرجى ملء جميع الحقول"); return; }
+    if (rPass.length < 6) { setFormErr("كلمة المرور يجب أن تكون 6 أحرف أو أكثر"); return; }
+    const allUsers = db.users || {};
+    if (Object.values(allUsers).find(u => u.phone === rPhone)) { setFormErr("رقم الهاتف مستخدم مسبقاً"); return; }
+    let refUser = null;
+    if (rRef.trim()) {
+      refUser = Object.values(allUsers).find(u => u.referralCode === rRef.trim().toUpperCase());
+      if (!refUser) { setFormErr("كود الدعوة غير صحيح"); return; }
+    }
+    const id = uid(), code = refCode();
+    const newUser = {
+      id, phone: rPhone.trim(), password: rPass, name: rName.trim(),
+      balance: 0, totalEarnings: 0, referralCode: code,
+      referredBy: refUser?.id || null, referrals: [], level: "تجريبي",
+      joinDate: new Date().toISOString(), transactions: [],
+      dailyTasksDate: todayStr(), dailyTasks: makeTasks("تجريبي"), spinAvailable: !!refUser,
+    };
+    const newUsers = { ...allUsers, [id]: newUser };
+    if (refUser) {
+      newUsers[refUser.id] = { ...refUser, referrals: [...(refUser.referrals || []), id], spinAvailable: true };
+    }
+    const nd = { users: newUsers, uid: id };
+    save(nd);
+    setScreen("app");
+    if (refUser) setShowSpin(true);
+    notify(`مرحباً ${newUser.name}! 🎉 تم إنشاء حسابك بنجاح`);
+  }
+
+  // ── Login ──
+  function doLogin() {
+    setFormErr("");
+    if (!lPhone.trim() || !lPass.trim()) { setFormErr("يرجى ملء جميع الحقول"); return; }
+    const u = Object.values(db.users || {}).find(x => x.phone === lPhone.trim() && x.password === lPass);
+    if (!u) { setFormErr("رقم الهاتف أو كلمة المرور غير صحيحة"); return; }
+    let final = u;
+    if (u.dailyTasksDate !== todayStr()) {
+      final = { ...u, dailyTasksDate: todayStr(), dailyTasks: makeTasks(u.level) };
+    }
+    const nd = { ...db, users: { ...db.users, [final.id]: final }, uid: final.id };
+    save(nd);
+    setScreen("app"); setTab("home");
+    notify(`مرحباً ${final.name}! 👋`);
+    if (final.spinAvailable) setShowSpin(true);
+  }
+
+  // ── Logout ──
+  function doLogout() {
+    const nd = { ...db, uid: null };
+    save(nd);
+    setScreen("login"); setTab("home"); setLPhone(""); setLPass("");
+    notify("تم تسجيل الخروج بنجاح", "info");
+  }
+
+  // ── Update user helper ──
+  function updUser(updated, extras = {}) {
+    const newUsers = { ...db.users, [updated.id]: updated, ...extras };
+    save({ ...db, users: newUsers });
+  }
+
+  // ── Spin result ──
+  function onSpin(val) {
+    if (!cur) return;
+    let u = { ...cur, spinAvailable: false };
+    if (val.t === "money") {
+      u.balance = (u.balance || 0) + val.n;
+      u.totalEarnings = (u.totalEarnings || 0) + val.n;
+      u.transactions = [{ id: uid(), type: "عجلة الحظ", amount: val.n, date: new Date().toISOString() }, ...(u.transactions || [])];
+      notify(`🎉 مبروك! ربحت ${val.n} DZD من عجلة الحظ`);
+    } else if (val.t === "pts") notify(`🌟 مبروك! ربحت ${val.n} نقطة`);
+    else notify("للأسف لا جائزة هذه المرة 😔", "info");
+    updUser(u);
+  }
+
+  // ── Start task ──
+  function startTask(tid) {
+    if (timerRefs.current[tid]) return;
+    setTimers(p => ({ ...p, [tid]: 40 }));
+    timerRefs.current[tid] = setInterval(() => {
+      setTimers(p => {
+        const v = (p[tid] || 40) - 1;
+        if (v <= 0) {
+          clearInterval(timerRefs.current[tid]);
+          delete timerRefs.current[tid];
+          completeTask(tid);
+          return { ...p, [tid]: 0 };
+        }
+        return { ...p, [tid]: v };
+      });
+    }, 1000);
+  }
+
+  function completeTask(tid) {
+    setDb(prev => {
+      if (!prev.uid || !prev.users[prev.uid]) return prev;
+      const u = { ...prev.users[prev.uid] };
+      const tasks = [...(u.dailyTasks || [])];
+      const idx = tasks.findIndex(t => t.id === tid);
+      if (idx === -1 || tasks[idx].status !== "pending") return prev;
+      tasks[idx] = { ...tasks[idx], status: "completed" };
+      const rw = tasks[idx].reward;
+      u.dailyTasks = tasks;
+      u.balance = (u.balance || 0) + rw;
+      u.totalEarnings = (u.totalEarnings || 0) + rw;
+      u.transactions = [{ id: uid(), type: "مهمة يومية", amount: rw, date: new Date().toISOString() }, ...(u.transactions || [])];
+      const newUsers = { ...prev.users, [u.id]: u };
+      if (u.referredBy && newUsers[u.referredBy]) {
+        const ref = { ...newUsers[u.referredBy] };
+        const bonus = Math.floor(rw * 0.05);
+        if (bonus > 0) {
+          ref.balance = (ref.balance || 0) + bonus;
+          ref.totalEarnings = (ref.totalEarnings || 0) + bonus;
+          ref.transactions = [{ id: uid(), type: "عمولة إحالة", amount: bonus, date: new Date().toISOString() }, ...(ref.transactions || [])];
+          newUsers[ref.id] = ref;
         }
       }
-
-      currentUser.notifications.unshift({
-        id: Date.now(),
-        text: `✅ أكملت مهمة ${taskId} وحصلت على ${lvl.taskReward} DZD!`,
-        time: new Date().toLocaleString('ar-DZ'),
-        read: false
-      });
-
-      saveUser();
-      renderTasks();
-      updateAllUI();
-      showToast('🎉 مكافأة +' + lvl.taskReward + ' DZD', 'success');
-    }
-  }, 1000);
-
-  taskTimers[tId] = interval;
-}
-
-// ============================================================
-//  UPGRADES
-// ============================================================
-function renderUpgrades() {
-  if (!currentUser) return;
-  const lvl = LEVELS[currentUser.level];
-  const idx = LEVEL_ORDER.indexOf(currentUser.level);
-
-  // My level card
-  const myCard = document.getElementById('myLevelCard');
-  const canWithdraw = idx >= 1;
-  myCard.innerHTML = `
-    <div class="level-header">
-      <div class="level-title">💼 مستواي الحالي</div>
-      <div class="level-badge">${currentUser.level}</div>
-    </div>
-    <div class="level-stats">
-      <div class="lvl-stat"><div class="ls-label">💰 الاستثمار</div><div class="ls-val">${lvl.investment || 0}</div></div>
-      <div class="lvl-stat"><div class="ls-label">📈 يومي</div><div class="ls-val">${lvl.daily}</div></div>
-      <div class="lvl-stat"><div class="ls-label">💵 للمهمة</div><div class="ls-val">${lvl.taskReward}</div></div>
-      <div class="lvl-stat"><div class="ls-label">📋 مهام</div><div class="ls-val">${lvl.tasks}</div></div>
-    </div>
-    <div style="margin:5px 0 10px;font-size:12px;color:var(--sub)">💳 الرصيد: ${currentUser.balance.toFixed(2)} DZD</div>
-    ${canWithdraw ? `
-      <div class="withdraw-unlocked">
-        <div style="font-size:13px;color:var(--green);font-weight:700;margin-bottom:8px">✅ السحب متاح</div>
-        <button class="btn-withdraw" onclick="openWithdrawModal()">💸 طلب السحب</button>
-      </div>
-    ` : `
-      <div class="withdraw-locked">🔒 السحب مقفل — يتطلب الترقية إلى M1 على الأقل</div>
-    `}
-  `;
-
-  // Upgrade list
-  const container = document.getElementById('upgradesList');
-  container.innerHTML = '';
-  
-  LEVEL_ORDER.slice(1).forEach((levelName, i) => {
-    const lvlData = LEVELS[levelName];
-    const isPrev = LEVEL_ORDER.indexOf(levelName) <= idx;
-    const isNext = LEVEL_ORDER.indexOf(levelName) === idx + 1;
-    const canAfford = currentUser.balance >= lvlData.investment;
-
-    const card = document.createElement('div');
-    card.className = 'upgrade-card';
-    card.innerHTML = `
-      <div class="upgrade-header">
-        <div class="upgrade-level">${levelName}</div>
-        <div class="upgrade-tag">${isPrev ? '✅ مكتسب' : 'ترقية الآن'}</div>
-      </div>
-      <div class="upgrade-stats">
-        <div class="up-stat"><div class="ul">💰 استثمار</div><div class="uv">${lvlData.investment.toLocaleString()}</div></div>
-        <div class="up-stat"><div class="ul">📈 يومي</div><div class="uv">${lvlData.daily}</div></div>
-        <div class="up-stat"><div class="ul">💵 مهمة</div><div class="uv">${lvlData.taskReward}</div></div>
-        <div class="up-stat"><div class="ul">📋 مهام</div><div class="uv">${lvlData.tasks}</div></div>
-      </div>
-      <button class="btn-upgrade" 
-        ${isPrev ? 'disabled' : ''} 
-        onclick="doUpgrade('${levelName}', ${lvlData.investment})">
-        ${isPrev ? '✅ تم الترقية' : `⬆️ ترقية إلى ${levelName} — ${lvlData.investment.toLocaleString()} DZD`}
-      </button>
-    `;
-    container.appendChild(card);
-  });
-}
-
-function doUpgrade(levelName, cost) {
-  if (!currentUser) return;
-  const currentIdx = LEVEL_ORDER.indexOf(currentUser.level);
-  const targetIdx = LEVEL_ORDER.indexOf(levelName);
-
-  if (targetIdx <= currentIdx) return showToast('أنت بالفعل في هذا المستوى أو أعلى', 'info');
-  if (targetIdx > currentIdx + 1) return showToast('يجب الترقية بالترتيب', 'error');
-  if (currentUser.balance < cost) {
-    return showToast(`رصيدك غير كافٍ. تحتاج ${cost} DZD`, 'error');
+      const nd = { ...prev, users: newUsers };
+      dbSave(nd);
+      return nd;
+    });
+    notify("✅ مهمة مكتملة!");
   }
 
-  currentUser.balance -= cost;
-  currentUser.investment = (currentUser.investment || 0) + cost;
-  currentUser.level = levelName;
-
-  currentUser.notifications.unshift({
-    id: Date.now(),
-    text: `🎊 تهانينا! تمت ترقيتك إلى المستوى ${levelName}!`,
-    time: new Date().toLocaleString('ar-DZ'),
-    read: false
-  });
-
-  // Reset tasks for new level
-  currentUser.tasksDone = {};
-  currentUser.tasksReset = new Date().toDateString();
-
-  saveUser();
-  renderUpgrades();
-  updateAllUI();
-  showToast('🎊 تمت الترقية إلى ' + levelName, 'success');
-}
-
-// ============================================================
-//  ACCOUNT
-// ============================================================
-function renderAccount() {
-  if (!currentUser) return;
-  document.getElementById('profileName').textContent = currentUser.name;
-  document.getElementById('profileId').textContent = 'ID: ' + currentUser.id;
-  document.getElementById('profileLevel').textContent = '💎 ' + currentUser.level;
-  document.getElementById('accUsername').textContent = currentUser.username;
-  document.getElementById('accEmail').textContent = currentUser.email;
-  document.getElementById('accPhone').textContent = currentUser.phone || '-';
-  document.getElementById('accDate').textContent = currentUser.registerDate || '-';
-  document.getElementById('accLastLogin').textContent = currentUser.lastLogin || '-';
-  document.getElementById('menuTeamSub').textContent = currentUser.team.length + ' عضو';
-}
-
-// ============================================================
-//  REFERRAL
-// ============================================================
-function copyReferralLink() {
-  const baseUrl = window.location.href.split('?')[0];
-  const refLink = baseUrl + '?ref=' + currentUser.username;
-  
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(refLink).then(() => showToast('✅ تم نسخ الرابط', 'success'));
-  } else {
-    const el = document.createElement('textarea');
-    el.value = refLink;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    showToast('✅ تم نسخ الرابط', 'success');
+  function cancelTask(tid) {
+    if (timerRefs.current[tid]) { clearInterval(timerRefs.current[tid]); delete timerRefs.current[tid]; }
+    setTimers(p => ({ ...p, [tid]: 0 }));
+    setDb(prev => {
+      if (!prev.uid || !prev.users[prev.uid]) return prev;
+      const u = { ...prev.users[prev.uid] };
+      const tasks = [...(u.dailyTasks || [])];
+      const idx = tasks.findIndex(t => t.id === tid);
+      if (idx !== -1) tasks[idx] = { ...tasks[idx], status: "cancelled" };
+      u.dailyTasks = tasks;
+      const nd = { ...prev, users: { ...prev.users, [u.id]: u } };
+      dbSave(nd);
+      return nd;
+    });
   }
-}
 
-function openReferralMembers() {
-  const list = document.getElementById('refMembersList');
-  list.innerHTML = '';
-  
-  if (!currentUser.team || currentUser.team.length === 0) {
-    list.innerHTML = '<div style="text-align:center;color:var(--sub);padding:20px">لا يوجد أعضاء بعد. شارك رابطك!</div>';
-  } else {
-    currentUser.team.forEach((member, i) => {
-      const div = document.createElement('div');
-      div.className = 'ref-member';
-      div.innerHTML = `
-        <div class="ref-member-info">
-          <div class="ref-avatar">👤</div>
-          <div>
-            <div class="ref-member-name">${member.name}</div>
-            <div class="ref-member-date">@${member.username} • ${member.date}</div>
+  // ── Chat ──
+  async function sendChat(text) {
+    if (!text.trim() || chatLoad) return;
+    const nm = [...chatMsgs, { role: "user", content: text }];
+    setChatMsgs(nm); setChatIn(""); setChatLoad(true);
+    try {
+      const reply = await askAI(nm.map(m => ({ role: m.role, content: m.content })), cur);
+      setChatMsgs(p => [...p, { role: "assistant", content: reply }]);
+    } catch { setChatMsgs(p => [...p, { role: "assistant", content: "حدث خطأ في الاتصال، أعد المحاولة." }]); }
+    setChatLoad(false);
+  }
+
+  useEffect(() => { chatEnd.current?.scrollIntoView({ behavior: "smooth" }); }, [chatMsgs]);
+
+  function getRefLink() { return `${window.location.href.split("?")[0]}?ref=${cur?.referralCode}`; }
+  function copyLink() {
+    navigator.clipboard.writeText(getRefLink()).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2500); notify("✅ تم نسخ رابط الدعوة!"); }).catch(() => setModal("reflink"));
+  }
+
+  // ══════════════════════════════════════════════
+  // DESIGN SYSTEM
+  // ══════════════════════════════════════════════
+  const C = { bg: "#080c14", card: "#0f1623", card2: "#111827", border: "#1a2332", gold: "#f59e0b", green: "#10b981", blue: "#3b82f6", red: "#ef4444", text: "#e2e8f0", muted: "#64748b", faint: "#0d1424" };
+
+  const btnStyle = (v, sm) => ({
+    background: v === "gold" ? "linear-gradient(135deg,#f59e0b,#d97706)" : v === "green" ? "linear-gradient(135deg,#10b981,#059669)" : v === "red" ? "#450a0a" : v === "blue" ? "linear-gradient(135deg,#3b82f6,#2563eb)" : "#1e293b",
+    color: v === "gold" ? "#000" : "#fff",
+    border: v === "red" ? "1px solid #7f1d1d" : "none",
+    borderRadius: sm ? 10 : 14, padding: sm ? "8px 16px" : "13px 20px",
+    fontWeight: "bold", cursor: "pointer", fontSize: sm ? 13 : 15, width: "100%",
+    boxShadow: v === "gold" ? "0 3px 16px rgba(245,158,11,0.35)" : "none",
+  });
+  const inputStyle = { background: C.faint, border: `1px solid ${C.border}`, borderRadius: 12, padding: "13px 14px", color: C.text, fontSize: 14, width: "100%", outline: "none", direction: "rtl", boxSizing: "border-box" };
+  const cardStyle = (b, bg) => ({ background: bg || C.card, borderRadius: 16, padding: 16, marginBottom: 12, border: `1px solid ${b || C.border}` });
+  const rowStyle = { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 0", borderBottom: `1px solid ${C.border}` };
+
+  // ══════════════════════════════════════════════
+  // SPLASH
+  // ══════════════════════════════════════════════
+  if (screen === "splash") return (
+    <div style={{ background: C.bg, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", direction: "rtl" }}>
+      <div style={{ width: 82, height: 82, background: "linear-gradient(135deg,#f59e0b,#d97706)", borderRadius: 24, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 38, marginBottom: 22, boxShadow: "0 0 50px rgba(245,158,11,0.4)" }}>🏦</div>
+      <div style={{ color: C.gold, fontSize: 36, fontWeight: "900", letterSpacing: 6 }}>BLACKROCK</div>
+      <div style={{ color: C.muted, fontSize: 13, marginTop: 6 }}>BlackRock, Inc — Investment Platform</div>
+      <div style={{ display: "flex", gap: 8, marginTop: 50 }}>
+        {[0, 1, 2].map(i => <div key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: i === 1 ? C.gold : "#1e293b" }} />)}
+      </div>
+    </div>
+  );
+
+  // ══════════════════════════════════════════════
+  // AUTH
+  // ══════════════════════════════════════════════
+  if (screen === "login" || screen === "reg") return (
+    <div style={{ background: C.bg, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 20, direction: "rtl" }}>
+      {toast && <Toast msg={toast.msg} type={toast.type} onDone={() => setToast(null)} />}
+      <div style={{ textAlign: "center", marginBottom: 30 }}>
+        <div style={{ color: C.gold, fontSize: 32, fontWeight: "900", letterSpacing: 4 }}>BLACKROCK</div>
+        <div style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>BlackRock, Inc — منصة الاستثمار</div>
+        <div style={{ background: "#064e3b", color: C.green, border: `1px solid ${C.green}`, borderRadius: 20, padding: "4px 16px", fontSize: 12, fontWeight: "bold", display: "inline-block", marginTop: 10 }}>🔒 SECURE V3</div>
+      </div>
+      <div style={{ ...cardStyle(), width: "100%", maxWidth: 400 }}>
+        <div style={{ color: C.text, fontWeight: "bold", fontSize: 20, textAlign: "center", marginBottom: 20 }}>
+          {screen === "login" ? "تسجيل الدخول" : "إنشاء حساب جديد"}
+        </div>
+        {formErr && <div style={{ background: "#1a0505", border: "1px solid #7f1d1d", color: "#fca5a5", borderRadius: 10, padding: "10px 14px", marginBottom: 14, fontSize: 13, textAlign: "right" }}>{formErr}</div>}
+        {screen === "login" ? (
+          <>
+            {[["رقم الهاتف", lPhone, setLPhone, "0xxxxxxxxx", "tel"], ["كلمة المرور", lPass, setLPass, "••••••••", "password"]].map(([l, v, s, p, t]) => (
+              <div key={l} style={{ marginBottom: 14 }}>
+                <div style={{ color: C.muted, fontSize: 12, marginBottom: 5, textAlign: "right" }}>{l}</div>
+                <input style={inputStyle} type={t} value={v} onChange={e => s(e.target.value)} placeholder={p} onKeyDown={e => e.key === "Enter" && doLogin()} />
+              </div>
+            ))}
+            <button style={btnStyle("gold")} onClick={doLogin}>دخول</button>
+            <div style={{ textAlign: "center", marginTop: 16, color: C.muted, fontSize: 14 }}>
+              ليس لديك حساب؟ <span style={{ color: C.gold, cursor: "pointer", fontWeight: "bold" }} onClick={() => { setScreen("reg"); setFormErr(""); }}>إنشاء حساب</span>
+            </div>
+          </>
+        ) : (
+          <>
+            {[["الاسم الكامل", rName, setRName, "اسمك الكامل", "text"], ["رقم الهاتف", rPhone, setRPhone, "0xxxxxxxxx", "tel"], ["كلمة المرور (6+ أحرف)", rPass, setRPass, "••••••••", "password"]].map(([l, v, s, p, t]) => (
+              <div key={l} style={{ marginBottom: 12 }}>
+                <div style={{ color: C.muted, fontSize: 12, marginBottom: 5, textAlign: "right" }}>{l}</div>
+                <input style={inputStyle} type={t} value={v} onChange={e => s(e.target.value)} placeholder={p} />
+              </div>
+            ))}
+            <div style={{ marginBottom: 18 }}>
+              <div style={{ color: C.muted, fontSize: 12, marginBottom: 5, textAlign: "right" }}>كود الدعوة (اختياري)</div>
+              <input style={{ ...inputStyle, borderColor: rRef ? C.gold : C.border }} value={rRef} onChange={e => setRRef(e.target.value)} placeholder="XXXXXX" />
+              {rRef && <div style={{ color: C.gold, fontSize: 11, marginTop: 4, textAlign: "right" }}>✓ سيتم ربطك بصاحب هذا الكود تلقائياً</div>}
+            </div>
+            <button style={btnStyle("gold")} onClick={doReg}>إنشاء الحساب</button>
+            <div style={{ textAlign: "center", marginTop: 16, color: C.muted, fontSize: 14 }}>
+              لديك حساب؟ <span style={{ color: C.gold, cursor: "pointer", fontWeight: "bold" }} onClick={() => { setScreen("login"); setFormErr(""); }}>تسجيل الدخول</span>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+
+  if (!cur) return null;
+
+  // ══════════════════════════════════════════════
+  // HOME TAB
+  // ══════════════════════════════════════════════
+  const TabHome = () => {
+    const daysActive = Math.floor((Date.now() - new Date(cur.joinDate).getTime()) / 86400000);
+    return (
+      <div style={{ padding: "14px 14px" }}>
+        {/* Balance Card */}
+        <div style={{ background: "linear-gradient(135deg,#0d1b2a,#0f1a0e,#1a1200)", border: `1px solid ${C.border}`, borderRadius: 20, padding: "20px 18px", marginBottom: 14 }}>
+          <div style={{ color: C.muted, fontSize: 12, textAlign: "right", marginBottom: 4 }}>رصيدك الإجمالي 💼</div>
+          <div style={{ color: C.gold, fontSize: 44, fontWeight: "900", textAlign: "right", lineHeight: 1 }}>{fmt(cur.balance || 0)}</div>
+          <div style={{ color: C.muted, fontSize: 12, textAlign: "right", marginBottom: 2 }}>
+            {(cur.balance || 0).toLocaleString("fr-DZ")} دينار جزائري (DZD)
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 14 }}>
+            {[["الأرباح الكلية", fmt(cur.totalEarnings || 0), C.gold], ["يومي", fmtFull(lv.daily), C.green], ["الفريق", (cur.referrals || []).length, C.blue]].map(([l, v, c]) => (
+              <div key={l} style={{ background: "rgba(255,255,255,0.04)", borderRadius: 10, padding: "9px 6px", textAlign: "center", border: "1px solid rgba(255,255,255,0.06)" }}>
+                <div style={{ color: c, fontWeight: "bold", fontSize: 14 }}>{v}</div>
+                <div style={{ color: C.muted, fontSize: 10, marginTop: 2 }}>{l}</div>
+              </div>
+            ))}
           </div>
         </div>
-        <div class="ref-earn">+${Math.floor(Math.random()*100+10)} DZD</div>
-      `;
-      list.appendChild(div);
-    });
-  }
-  openModal('refMembersModal');
-}
 
-// ============================================================
-//  WITHDRAW
-// ============================================================
-function openWithdrawModal() {
-  if (!currentUser) return;
-  const idx = LEVEL_ORDER.indexOf(currentUser.level);
-  if (idx < 1) return showToast('🔒 السحب يتطلب الترقية إلى M1', 'error');
-  
-  document.getElementById('withdrawBalance').textContent = currentUser.balance.toFixed(2) + ' DZD';
-  openModal('withdrawModal');
-}
+        {/* Quick Stats */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 14 }}>
+          {[[`📅 ${daysActive}`, "الأيام", "#e2e8f0"], [`👥 ${(cur.referrals || []).length}`, "الإحالات", "#3b82f6"], [`⚡ ${doneTasks}`, "المهام", "#10b981"]].map(([v, l, c]) => (
+            <div key={l} style={cardStyle()}>
+              <div style={{ color: c, fontWeight: "bold", fontSize: 17, textAlign: "center" }}>{v}</div>
+              <div style={{ color: C.muted, fontSize: 11, textAlign: "center", marginTop: 3 }}>{l}</div>
+            </div>
+          ))}
+        </div>
 
-function submitWithdraw() {
-  const amount = parseFloat(document.getElementById('withdrawAmount').value);
-  const method = document.getElementById('withdrawMethod').value.trim();
-  const account = document.getElementById('withdrawAccount').value.trim();
-  const name = document.getElementById('withdrawName').value.trim();
+        {/* Action Buttons */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginBottom: 14 }}>
+          {[
+            { ic: "⬇", lb: "سحب", fn: () => setModal("withdraw") },
+            { ic: "🔄", lb: "تحويل", fn: () => notify("قريباً 🔜", "info") },
+            { ic: "👥", lb: "فريقي", fn: () => setModal("team") },
+            { ic: "🔗", lb: "رابطي", fn: () => setTab("account") },
+          ].map(x => (
+            <button key={x.lb} onClick={x.fn} style={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 14, padding: "12px 4px", color: C.text, cursor: "pointer", fontSize: 10, display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
+              <span style={{ fontSize: 24 }}>{x.ic}</span>{x.lb}
+            </button>
+          ))}
+        </div>
 
-  if (!amount || amount <= 0) return showToast('أدخل مبلغاً صحيحاً', 'error');
-  if (!method || !account || !name) return showToast('يرجى ملء جميع الحقول', 'error');
-  if (amount > currentUser.balance) return showToast('الرصيد غير كافٍ', 'error');
-  if (amount < 1000) return showToast('الحد الأدنى للسحب 1000 DZD', 'error');
+        {/* Level Progress */}
+        {nextLv && (
+          <div style={cardStyle()}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
+              <div style={{ color: nextLv.color, fontSize: 12 }}>الهدف: {nextLv.label}</div>
+              <div style={{ color: lv.color, fontSize: 13, fontWeight: "bold" }}>المستوى: {lv.label}</div>
+            </div>
+            <div style={{ background: C.faint, borderRadius: 99, height: 8, overflow: "hidden" }}>
+              <div style={{ background: `linear-gradient(90deg,${lv.color},${nextLv.color})`, width: `${Math.min(((cur.balance || 0) / nextLv.invest) * 100, 100)}%`, height: "100%", borderRadius: 99, transition: "width 0.8s" }} />
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+              <div style={{ color: C.muted, fontSize: 11 }}>{fmtFull(nextLv.invest)} DZD</div>
+              <div style={{ color: C.muted, fontSize: 11 }}>{Math.min(Math.round(((cur.balance || 0) / nextLv.invest) * 100), 100)}%</div>
+            </div>
+          </div>
+        )}
 
-  const req = {
-    id: Date.now(),
-    amount, method, account, name,
-    date: new Date().toLocaleString('ar-DZ'),
-    status: 'قيد المعالجة ⏳'
+        {/* Recent Transactions */}
+        {(cur.transactions || []).length > 0 && <>
+          <div style={{ color: C.text, fontSize: 16, fontWeight: "bold", textAlign: "right", marginBottom: 10 }}>آخر المعاملات</div>
+          {(cur.transactions || []).slice(0, 5).map((tx, i) => (
+            <div key={i} style={{ ...cardStyle(), padding: "11px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ color: C.green, fontWeight: "bold", fontSize: 14 }}>+{fmtFull(tx.amount)} DZD</div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ color: C.text, fontSize: 13 }}>{tx.type}</div>
+                <div style={{ color: C.muted, fontSize: 11 }}>{new Date(tx.date).toLocaleString("ar-DZ")}</div>
+              </div>
+            </div>
+          ))}
+        </>}
+      </div>
+    );
   };
 
-  currentUser.balance -= amount;
-  if (!currentUser.withdrawHistory) currentUser.withdrawHistory = [];
-  currentUser.withdrawHistory.unshift(req);
-  currentUser.notifications.unshift({
-    id: Date.now(),
-    text: `📤 تم إرسال طلب سحب ${amount} DZD. سيتم المراجعة خلال 24-48 ساعة.`,
-    time: req.date, read: false
-  });
-
-  saveUser();
-  closeModal('withdrawModal');
-  updateAllUI();
-  showToast('✅ تم إرسال طلب السحب', 'success');
-  document.getElementById('withdrawAmount').value = '';
-  document.getElementById('withdrawMethod').value = '';
-  document.getElementById('withdrawAccount').value = '';
-  document.getElementById('withdrawName').value = '';
-}
-
-function openWithdrawHistory() {
-  const list = document.getElementById('withdrawHistoryList');
-  list.innerHTML = '';
-  
-  if (!currentUser.withdrawHistory || currentUser.withdrawHistory.length === 0) {
-    list.innerHTML = '<div style="text-align:center;color:var(--sub);padding:20px">لا توجد سحوبات بعد</div>';
-  } else {
-    currentUser.withdrawHistory.forEach(w => {
-      const div = document.createElement('div');
-      div.style.cssText = 'background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px;border-left:3px solid var(--gold)';
-      div.innerHTML = `
-        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-          <span style="font-weight:700;color:var(--gold)">${w.amount.toLocaleString()} DZD</span>
-          <span style="font-size:12px;color:var(--sub)">${w.date}</span>
+  // ══════════════════════════════════════════════
+  // TASKS TAB
+  // ══════════════════════════════════════════════
+  const TabTasks = () => (
+    <div style={{ padding: "14px 14px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+        <div style={{ background: C.faint, borderRadius: 20, padding: "4px 12px", color: doneTasks === lv.tasks ? C.green : C.gold, fontSize: 12, fontWeight: "bold" }}>{doneTasks}/{lv.tasks}</div>
+        <div style={{ color: C.text, fontSize: 17, fontWeight: "bold" }}>المهام اليومية ⚡</div>
+      </div>
+      <div style={{ ...cardStyle("#78350f", "#1c1200"), marginBottom: 14 }}>
+        <div style={{ color: "#fbbf24", fontSize: 12, textAlign: "right", lineHeight: 1.7 }}>
+          ⏱ كل مهمة تستغرق 40 ثانية. إذا ضغطت "إلغاء" أو غادرت الصفحة، تُلغى المهمة وتعود في اليوم التالي فقط.
         </div>
-        <div style="font-size:12px;color:var(--sub)">${w.method} • ${w.account}</div>
-        <div style="font-size:12px;margin-top:4px">${w.status}</div>
-      `;
-      list.appendChild(div);
-    });
-  }
-  openModal('withdrawHistoryModal');
+      </div>
+      {(cur.dailyTasks || []).map(task => {
+        const t = timers[task.id] || 0, running = t > 0 && task.status === "pending";
+        return (
+          <div key={task.id} style={{ background: C.card, borderRadius: 16, padding: 16, marginBottom: 10, border: `1px solid ${task.status === "completed" ? "#064e3b" : task.status === "cancelled" ? "#450a0a" : C.border}` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: running ? 12 : 0 }}>
+              <div>
+                {task.status === "pending" && !running && (
+                  <button onClick={() => startTask(task.id)} style={{ ...btnStyle("gold", true), width: "auto" }}>▶ ابدأ المهمة</button>
+                )}
+                {running && <button onClick={() => cancelTask(task.id)} style={{ ...btnStyle("red", true), width: "auto" }}>✕ إلغاء</button>}
+                {task.status === "completed" && <div style={{ color: C.green, fontSize: 28 }}>✅</div>}
+                {task.status === "cancelled" && <div style={{ color: "#ef4444", fontSize: 22 }}>✕</div>}
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ color: C.text, fontWeight: "bold", fontSize: 14 }}>مهمة يومية {task.id}</div>
+                <div style={{ color: task.status === "completed" ? C.green : task.status === "cancelled" ? "#ef4444" : running ? C.gold : C.muted, fontSize: 12, marginTop: 2 }}>
+                  {task.status === "completed" ? "مكتملة بنجاح ✓" : task.status === "cancelled" ? "ملغاة — تعود غداً" : running ? `انتظر ${t} ثانية...` : `انتظر 40 ثانية واحصل على +${fmtFull(task.reward)} DZD`}
+                </div>
+                <div style={{ color: C.gold, fontSize: 14, fontWeight: "bold", marginTop: 3 }}>{fmtFull(task.reward)}+ DZD</div>
+              </div>
+            </div>
+            {running && (
+              <div style={{ background: C.faint, borderRadius: 99, height: 6, overflow: "hidden" }}>
+                <div style={{ background: `linear-gradient(90deg,${C.gold},#fbbf24)`, width: `${((40 - t) / 40) * 100}%`, height: "100%", borderRadius: 99, transition: "width 1s linear" }} />
+              </div>
+            )}
+          </div>
+        );
+      })}
+      <div style={{ ...cardStyle(C.blue, "#060e1f"), textAlign: "center", padding: 14 }}>
+        <div style={{ color: C.blue, fontSize: 12 }}>الأرباح اليومية المتوقعة</div>
+        <div style={{ color: C.text, fontSize: 22, fontWeight: "bold", marginTop: 4 }}>{fmtFull(lv.daily)} DZD</div>
+        <div style={{ color: C.muted, fontSize: 11, marginTop: 2 }}>{lv.tasks} مهمة × {fmtFull(lv.reward)} DZD</div>
+      </div>
+    </div>
+  );
+
+  // ══════════════════════════════════════════════
+  // UPGRADE TAB
+  // ══════════════════════════════════════════════
+  const TabUpgrade = () => (
+    <div style={{ padding: "14px 14px" }}>
+      <div style={{ color: C.text, fontSize: 17, fontWeight: "bold", textAlign: "right", marginBottom: 14 }}>مستويات الاستثمار 🏆</div>
+      {/* Levels Table */}
+      <div style={{ ...cardStyle(), padding: 0, overflow: "hidden", marginBottom: 14 }}>
+        <div style={{ background: "#0f1a0a", padding: "10px 14px", textAlign: "right" }}>
+          <div style={{ color: C.gold, fontWeight: "bold", fontSize: 13 }}>جدول المستويات الكامل</div>
+        </div>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, direction: "rtl" }}>
+            <thead>
+              <tr style={{ background: "#0d1624" }}>
+                {["المستوى", "الاستثمار", "المهام", "للمهمة", "يومي", "شهري"].map(h => (
+                  <th key={h} style={{ padding: "8px 6px", color: C.gold, textAlign: "center", borderBottom: "1px solid #1e293b", whiteSpace: "nowrap" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {LEVELS.map(l => (
+                <tr key={l.id} style={{ background: cur.level === l.id ? "rgba(245,158,11,0.06)" : "transparent", borderBottom: "1px solid #0f172a" }}>
+                  <td style={{ padding: "8px 6px", textAlign: "center", color: l.color, fontWeight: "bold" }}>{l.label}{cur.level === l.id ? " ✓" : ""}</td>
+                  <td style={{ padding: "8px 6px", textAlign: "center", color: C.muted }}>{l.invest ? fmt(l.invest) : "—"}</td>
+                  <td style={{ padding: "8px 6px", textAlign: "center", color: C.text }}>{l.tasks}</td>
+                  <td style={{ padding: "8px 6px", textAlign: "center", color: C.green }}>{l.reward}</td>
+                  <td style={{ padding: "8px 6px", textAlign: "center", color: C.green }}>{fmt(l.daily)}</td>
+                  <td style={{ padding: "8px 6px", textAlign: "center", color: l.monthly ? C.blue : C.muted }}>{l.monthly ? fmt(l.monthly) : "تجريبي"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Level Cards */}
+      {LEVELS.map(lvl => {
+        const active = cur.level === lvl.id;
+        return (
+          <div key={lvl.id} style={{ ...cardStyle(active ? lvl.color : C.border), marginBottom: 10, position: "relative", overflow: "hidden" }}>
+            {active && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: `linear-gradient(90deg,${lvl.color},transparent)` }} />}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+              {active ? <span style={{ background: "#064e3b", color: C.green, border: `1px solid ${C.green}`, borderRadius: 20, padding: "3px 12px", fontSize: 11, fontWeight: "bold" }}>✓ مفعّل</span>
+                : <span style={{ color: C.muted, fontSize: 11 }}>{lvl.invest > 0 ? fmtFull(lvl.invest) + " DZD" : "مجاني"}</span>}
+              <div style={{ color: lvl.color, fontWeight: "bold", fontSize: 18 }}>{lvl.label}</div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6 }}>
+              {[["يومي", fmtFull(lvl.daily)], [`${lvl.tasks} مهمة`, fmtFull(lvl.reward)], ["شهري", lvl.monthly ? fmt(lvl.monthly) : "—"], ["سنوي", lvl.yearly ? fmt(lvl.yearly) : "—"]].map(([k, v]) => (
+                <div key={k} style={{ background: C.faint, borderRadius: 8, padding: "8px 4px", textAlign: "center" }}>
+                  <div style={{ color: C.muted, fontSize: 9 }}>{k}</div>
+                  <div style={{ color: lvl.color, fontWeight: "bold", fontSize: 10, marginTop: 2 }}>{v}</div>
+                </div>
+              ))}
+            </div>
+            {active && lvl.invest === 0 && <div style={{ background: "#1a0505", border: "1px solid #7f1d1d", borderRadius: 10, padding: "8px 12px", marginTop: 12, textAlign: "center", color: "#fca5a5", fontSize: 12 }}>🔒 السحب مقفل — ارقَ إلى M1 لفتح السحب</div>}
+            {!active && lvl.invest > 0 && <button onClick={() => notify("تواصل مع الإدارة لطلب الترقية", "info")} style={{ ...btnStyle("gold"), marginTop: 12 }}>⬆ ترقية إلى {lvl.label} — {fmtFull(lvl.invest)} DZD</button>}
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  // ══════════════════════════════════════════════
+  // ACCOUNT TAB
+  // ══════════════════════════════════════════════
+  const TabAccount = () => (
+    <div style={{ padding: "14px 14px" }}>
+      {/* Profile */}
+      <div style={{ ...cardStyle(), textAlign: "center", padding: "22px 16px" }}>
+        <div style={{ width: 70, height: 70, background: `linear-gradient(135deg,${lv.color},${C.gold})`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, fontWeight: "bold", color: "#000", margin: "0 auto 12px", boxShadow: `0 0 24px ${lv.color}55` }}>
+          {cur.name[0].toUpperCase()}
+        </div>
+        <div style={{ color: C.text, fontWeight: "bold", fontSize: 18 }}>{cur.name}</div>
+        <div style={{ color: C.muted, fontSize: 12, marginTop: 4 }}>ID: #{cur.id.slice(-8).toUpperCase()} | BlackRock, Inc</div>
+        <div style={{ background: C.faint, borderRadius: 20, padding: "5px 18px", display: "inline-block", marginTop: 10, color: lv.color, fontSize: 13, fontWeight: "bold", border: `1px solid ${lv.color}44` }}>
+          {lv.label}
+        </div>
+      </div>
+
+      {/* Stats Grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 14 }}>
+        {[[fmtFull(cur.balance || 0), "الرصيد DZD", C.gold], [doneTasks, "مهام اليوم", C.green], [(cur.referrals || []).length, "الفريق", C.blue]].map(([v, l, c]) => (
+          <div key={l} style={{ ...cardStyle(), padding: "13px 6px", textAlign: "center" }}>
+            <div style={{ color: c, fontWeight: "bold", fontSize: 13 }}>{v}</div>
+            <div style={{ color: C.muted, fontSize: 10, marginTop: 3 }}>{l}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Referral Link */}
+      <div style={cardStyle(C.gold)}>
+        <div style={{ color: C.text, fontWeight: "bold", fontSize: 15, textAlign: "right", marginBottom: 10 }}>🔗 رابط دعوتك الشخصي</div>
+        <div style={{ background: C.faint, borderRadius: 10, padding: "10px 12px", marginBottom: 8 }}>
+          <div style={{ color: C.muted, fontSize: 10, textAlign: "right", marginBottom: 3 }}>رابطك الخاص باسمك:</div>
+          <div style={{ color: C.muted, fontSize: 11, wordBreak: "break-all", textAlign: "right", lineHeight: 1.7 }}>
+            {window.location.href.split("?")[0]}?ref=<span style={{ color: C.gold, fontWeight: "bold" }}>{cur.referralCode}</span>
+          </div>
+        </div>
+        <div style={{ color: C.muted, fontSize: 12, textAlign: "right", marginBottom: 10, lineHeight: 1.7 }}>
+          كل شخص يسجل عبر رابطك يُربط بك تلقائياً. تحصل على 5% من أرباح مهامه يومياً + لفة عجلة الحظ لكليكما.
+        </div>
+        <button onClick={copyLink} style={btnStyle(copied ? "green" : "gold")}>{copied ? "✓ تم النسخ!" : "📋 نسخ الرابط"}</button>
+      </div>
+
+      {/* Menu */}
+      <div style={cardStyle()}>
+        <div style={{ color: C.text, fontWeight: "bold", fontSize: 15, textAlign: "right", marginBottom: 12 }}>الشركة والمزيد</div>
+        {[
+          { ic: "🔒", t: "وثيقة الأمان", s: "SECURE V3 — BlackRock, Inc", fn: () => setModal("security") },
+          { ic: "🏢", t: "عن الشركة", s: "BlackRock, Inc — تأسست 1988", fn: () => setModal("company") },
+          { ic: "👥", t: "فريقي والإحالات", s: `${(cur.referrals || []).length} عضو في فريقك`, fn: () => setModal("team") },
+          { ic: "📊", t: "سجل المعاملات", s: `${(cur.transactions || []).length} عملية`, fn: () => setModal("history") },
+        ].map(item => (
+          <div key={item.t} onClick={item.fn} style={{ ...rowStyle, cursor: "pointer" }}>
+            <span style={{ color: C.gold, fontSize: 16 }}>‹</span>
+            <div style={{ flex: 1, textAlign: "right", margin: "0 10px" }}>
+              <div style={{ color: C.text, fontSize: 14 }}>{item.t}</div>
+              <div style={{ color: C.muted, fontSize: 11, marginTop: 2 }}>{item.s}</div>
+            </div>
+            <span style={{ fontSize: 22 }}>{item.ic}</span>
+          </div>
+        ))}
+        <div onClick={doLogout} style={{ ...rowStyle, cursor: "pointer", border: "none", paddingTop: 14, marginTop: 4 }}>
+          <span style={{ color: "#ef4444", fontSize: 16 }}>‹</span>
+          <div style={{ flex: 1, textAlign: "right", margin: "0 10px" }}>
+            <div style={{ color: "#ef4444", fontSize: 15, fontWeight: "bold" }}>تسجيل الخروج</div>
+            <div style={{ color: C.muted, fontSize: 11, marginTop: 2 }}>{cur.phone}</div>
+          </div>
+          <span style={{ fontSize: 22 }}>🚪</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ══════════════════════════════════════════════
+  // CHAT TAB
+  // ══════════════════════════════════════════════
+  const TabChat = () => (
+    <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 128px)" }}>
+      <div style={{ padding: "10px 16px", background: C.card, borderBottom: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ background: "#064e3b", borderRadius: 20, padding: "3px 12px", color: C.green, fontSize: 11, border: `1px solid ${C.green}40` }}>● متصل — مدعوم بـ AI</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ color: C.text, fontWeight: "bold", fontSize: 14 }}>مساعد BlackRock الذكي</div>
+            <div style={{ color: C.muted, fontSize: 10 }}>AI Powered Assistant</div>
+          </div>
+          <div style={{ width: 40, height: 40, background: "linear-gradient(135deg,#f59e0b,#d97706)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>🤖</div>
+        </div>
+      </div>
+      <div style={{ flex: 1, overflowY: "auto", padding: "12px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
+        {chatMsgs.map((m, i) => (
+          <div key={i} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-start" : "flex-end", gap: 8, alignItems: "flex-end" }}>
+            {m.role === "assistant" && <div style={{ width: 30, height: 30, background: "linear-gradient(135deg,#f59e0b,#d97706)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>🤖</div>}
+            <div style={{ background: m.role === "user" ? C.faint : "#071a0d", border: `1px solid ${m.role === "user" ? C.border : "#064e3b"}`, borderRadius: m.role === "user" ? "14px 14px 14px 3px" : "14px 14px 3px 14px", padding: "11px 14px", maxWidth: "80%", color: C.text, fontSize: 13, textAlign: "right", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
+              {m.content}
+            </div>
+          </div>
+        ))}
+        {chatLoad && (
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, alignItems: "flex-end" }}>
+            <div style={{ width: 30, height: 30, background: "linear-gradient(135deg,#f59e0b,#d97706)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>🤖</div>
+            <div style={{ background: "#071a0d", border: "1px solid #064e3b", borderRadius: "14px 14px 3px 14px", padding: "12px 16px", color: "#6ee7b7", fontSize: 13 }}>يكتب...</div>
+          </div>
+        )}
+        <div ref={chatEnd} />
+      </div>
+      <div style={{ padding: "8px 12px", background: C.card, borderTop: `1px solid ${C.border}` }}>
+        <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 8 }}>
+          {["رصيدي", "مهامي", "مستوياتي", "رابطي", "الفريق", "أرباح G7", "كيف أرقي؟"].map(q => (
+            <button key={q} onClick={() => sendChat(q)} style={{ background: C.faint, border: `1px solid ${C.border}`, borderRadius: 20, padding: "4px 10px", color: C.muted, fontSize: 11, cursor: "pointer" }}>{q}</button>
+          ))}
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button onClick={() => sendChat(chatIn)} disabled={chatLoad} style={{ background: chatLoad ? "#1e293b" : "linear-gradient(135deg,#f59e0b,#d97706)", border: "none", borderRadius: 12, padding: "10px 16px", cursor: chatLoad ? "not-allowed" : "pointer", color: "#000", fontSize: 18, fontWeight: "bold" }}>✈</button>
+          <input style={{ ...inputStyle, flex: 1, fontSize: 13 }} value={chatIn} onChange={e => setChatIn(e.target.value)} onKeyDown={e => e.key === "Enter" && sendChat(chatIn)} placeholder="اكتب سؤالك..." />
+        </div>
+      </div>
+    </div>
+  );
+
+  // ══════════════════════════════════════════════
+  // RENDER
+  // ══════════════════════════════════════════════
+  return (
+    <div style={{ background: C.bg, minHeight: "100vh", color: C.text, fontFamily: "'Segoe UI', Tahoma, Arial, sans-serif", maxWidth: 430, margin: "0 auto", paddingBottom: 80, direction: "rtl" }}>
+      {toast && <Toast msg={toast.msg} type={toast.type} onDone={() => setToast(null)} />}
+      {showSpin && <SpinWheel onResult={onSpin} onClose={() => setShowSpin(false)} />}
+      {modal === "security" && <SecurityModal onClose={() => setModal(null)} />}
+      {modal === "company" && <CompanyModal onClose={() => setModal(null)} />}
+      {modal === "team" && <TeamModal user={cur} allUsers={db.users} onClose={() => setModal(null)} />}
+      {modal === "notif" && <NotifModal user={cur} onClose={() => setModal(null)} />}
+      {modal === "history" && <HistoryModal user={cur} onClose={() => setModal(null)} />}
+      {modal === "withdraw" && <WithdrawModal user={cur} onClose={() => setModal(null)} />}
+      {modal === "reflink" && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }} onClick={() => setModal(null)}>
+          <div style={{ background: C.card, borderRadius: 20, border: `1px solid ${C.gold}`, padding: 20, width: "100%", maxWidth: 400 }}>
+            <div style={{ color: C.text, fontWeight: "bold", textAlign: "right", marginBottom: 12 }}>رابط دعوتك</div>
+            <div style={{ background: C.faint, borderRadius: 10, padding: 14, color: C.gold, fontSize: 12, wordBreak: "break-all", textAlign: "center", lineHeight: 1.9, userSelect: "all" }}>{getRefLink()}</div>
+            <div style={{ color: C.muted, fontSize: 12, textAlign: "center", marginTop: 10 }}>اضغط مطولاً لنسخ الرابط</div>
+          </div>
+        </div>
+      )}
+
+      {/* Header */}
+      <div style={{ background: C.card, padding: "10px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${C.border}`, position: "sticky", top: 0, zIndex: 40 }}>
+        <div style={{ background: "#064e3b", color: C.green, border: `1px solid ${C.green}40`, borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: "bold" }}>🔒 V3</div>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ color: C.gold, fontWeight: "900", fontSize: 18, letterSpacing: 2 }}>BLACKROCK</div>
+          <div style={{ color: C.muted, fontSize: 10 }}>BlackRock, Inc — Investment Platform</div>
+        </div>
+        <div style={{ position: "relative", cursor: "pointer" }} onClick={() => setModal("notif")}>
+          <div style={{ width: 36, height: 36, background: C.faint, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", border: `1px solid ${C.border}` }}>🔔</div>
+          {pendTasks > 0 && <div style={{ position: "absolute", top: -2, right: -2, background: "#ef4444", color: "#fff", borderRadius: "50%", width: 17, height: 17, fontSize: 9, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>{pendTasks}</div>}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div>
+        {tab === "home" && <TabHome />}
+        {tab === "tasks" && <TabTasks />}
+        {tab === "upgrade" && <TabUpgrade />}
+        {tab === "account" && <TabAccount />}
+        {tab === "chat" && <TabChat />}
+      </div>
+
+      {/* Nav Bar */}
+      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: C.card, borderTop: `1px solid ${C.border}`, display: "flex", justifyContent: "space-around", padding: "6px 0 8px", zIndex: 50 }}>
+        {[
+          { id: "account", ic: "👤", lb: "حسابي" },
+          { id: "upgrade", ic: "💎", lb: "الترقية" },
+          { id: "tasks", ic: "⚡", lb: "المهام", b: pendTasks },
+          { id: "home", ic: "🏠", lb: "الرئيسية" },
+          { id: "chat", ic: "🤖", lb: "مساعد" },
+        ].map(x => (
+          <button key={x.id} onClick={() => setTab(x.id)} style={{ background: "none", border: "none", color: tab === x.id ? C.gold : C.muted, cursor: "pointer", fontSize: 10, display: "flex", flexDirection: "column", alignItems: "center", gap: 2, padding: "4px 12px", position: "relative" }}>
+            <span style={{ fontSize: 22, filter: tab === x.id ? `drop-shadow(0 0 6px ${C.gold})` : "none" }}>{x.ic}</span>
+            <span style={{ fontWeight: tab === x.id ? "bold" : "normal" }}>{x.lb}</span>
+            {x.b > 0 && <div style={{ position: "absolute", top: 0, right: 6, background: "#ef4444", color: "#fff", borderRadius: "50%", width: 15, height: 15, fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>{x.b}</div>}
+            {tab === x.id && <div style={{ position: "absolute", bottom: -8, width: 22, height: 2, background: C.gold, borderRadius: 99 }} />}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }
-
-// ============================================================
-//  NOTIFICATIONS
-// ============================================================
-function openNotifications() {
-  const list = document.getElementById('notifList');
-  list.innerHTML = '';
-
-  if (!currentUser.notifications || currentUser.notifications.length === 0) {
-    list.innerHTML = '<div style="text-align:center;color:var(--sub);padding:20px">لا توجد إشعارات</div>';
-  } else {
-    currentUser.notifications.slice(0, 20).forEach(n => {
-      const div = document.createElement('div');
-      div.className = 'notif-item' + (n.read ? '' : ' unread');
-      div.innerHTML = `<div class="notif-text">${n.text}</div><div class="notif-time">${n.time}</div>`;
-      list.appendChild(div);
-    });
-  }
-
-  // Mark all as read
-  currentUser.notifications.forEach(n => n.read = true);
-  saveUser();
-  updateAllUI();
-  openModal('notifModal');
-}
-
-function startNotifCheck() {
-  notifInterval = setInterval(() => {
-    if (currentUser) {
-      const unread = currentUser.notifications.filter(n => !n.read).length;
-      const nc = document.getElementById('notifCount');
-      if (nc) { nc.textContent = unread; nc.style.display = unread > 0 ? 'flex' : 'none'; }
-    }
-  }, 5000);
-}
-
-// ============================================================
-//  SECURITY / COMPANY
-// ============================================================
-function openSecurityDoc() {
-  openModal('securityModal');
-}
-
-function showCompanyInfo() {
-  switchTab('home');
-  setTimeout(() => {
-    document.querySelector('.section').scrollIntoView({ behavior: 'smooth' });
-  }, 100);
-}
-
-// ============================================================
-//  AI CHAT
-// ============================================================
-function toggleAiChat() {
-  const box = document.getElementById('aiChatBox');
-  box.classList.toggle('show');
-}
-
-const aiResponses = {
-  'مرحبا': 'مرحباً! كيف يمكنني مساعدتك اليوم؟ 😊',
-  'رصيد': 'رصيدك الحالي هو: ' + (() => currentUser ? currentUser.balance.toFixed(2) + ' DZD' : 'سجّل دخولك أولاً')(),
-  'سحب': 'للسحب يجب أن تكون في مستوى M1 على الأقل وأن يكون رصيدك أكثر من 1000 DZD.',
-  'ترقية': 'يمكنك الترقية من تبويب "الترقية". كل مستوى يزيد أرباحك اليومية ومكافآت المهام.',
-  'مهام': 'المهام اليومية تجلب لك أرباحاً إضافية. أكملها كل يوم للحصول على أقصى ربح!',
-  'دعوة': 'رابط الدعوة الخاص بك في الصفحة الرئيسية. كل شخص يسجل عبر رابطك يضاف لفريقك وتحصل على عمولة!',
-  'فريق': 'كل عضو في فريقك يجلب لك عمولة 5% من مكافآت مهامه!',
-  'مستوى': 'مستواك الحالي: ' + (() => currentUser ? currentUser.level : '-')(),
-  'help': 'يمكنني مساعدتك في: الرصيد، السحب، الترقية، المهام، الدعوة، الفريق.',
-  'default': 'سؤال ممتاز! يمكنني مساعدتك في الرصيد، السحب، الترقية، المهام، ورابط الدعوة. ماذا تريد تحديداً؟'
-};
-
-function sendAiMsg() {
-  const input = document.getElementById('aiInput');
-  const msg = input.value.trim();
-  if (!msg) return;
-
-  const messages = document.getElementById('aiMessages');
-  const userDiv = document.createElement('div');
-  userDiv.className = 'ai-msg user';
-  userDiv.textContent = msg;
-  messages.appendChild(userDiv);
-  input.value = '';
-  messages.scrollTop = messages.scrollHeight;
-
-  setTimeout(() => {
-    const botDiv = document.createElement('div');
-    botDiv.className = 'ai-msg bot';
-    
-    let response = aiResponses['default'];
-    for (const key in aiResponses) {
-      if (msg.includes(key)) { response = aiResponses[key]; break; }
-    }
-    
-    // Dynamic responses
-    if (msg.includes('رصيد') && currentUser) {
-      response = `💰 رصيدك الحالي: ${currentUser.balance.toFixed(2)} DZD\n📈 دخلك اليومي: ${LEVELS[currentUser.level].daily} DZD`;
-    } else if (msg.includes('مستوى') && currentUser) {
-      response = `💎 مستواك: ${currentUser.level}\n👥 فريقك: ${currentUser.team.length} عضو`;
-    } else if (msg.includes('مهام') && currentUser) {
-      const done = Object.keys(currentUser.tasksDone || {}).length;
-      const total = LEVELS[currentUser.level].tasks;
-      response = `⚡ المهام: ${done}/${total} مكتملة اليوم\n💰 مكافأة كل مهمة: ${LEVELS[currentUser.level].taskReward} DZD`;
-    }
-
-    botDiv.textContent = response;
-    messages.appendChild(botDiv);
-    messages.scrollTop = messages.scrollHeight;
-  }, 600);
-}
-
-// ============================================================
-//  MODALS
-// ============================================================
-function openModal(id) {
-  document.getElementById(id).classList.add('show');
-}
-
-function closeModal(id) {
-  document.getElementById(id).classList.remove('show');
-}
-
-// Close on overlay click
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('show');
-  });
-});
-
-// ============================================================
-//  TOAST
-// ============================================================
-function showToast(msg, type = 'info') {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast show ' + type;
-  setTimeout(() => el.classList.remove('show'), 3000);
-}
-
-// ============================================================
-//  AUTO SAVE (every 30 seconds)
-// ============================================================
-setInterval(() => {
-  if (currentUser) saveUser();
-}, 30000);
-
-// Save on page hide/unload
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden && currentUser) saveUser();
-});
-window.addEventListener('beforeunload', () => {
-  if (currentUser) saveUser();
-});
-window.addEventListener('pagehide', () => {
-  if (currentUser) saveUser();
-});
-
-// ============================================================
-//  START
-// ============================================================
-init();
-</script>
-</body>
-  </html>
