@@ -1,994 +1,948 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-
-// ═══════════════════════════════════════════════════════════════
-// STORAGE ENGINE — Dual-layer: localStorage + sessionStorage backup
-// ═══════════════════════════════════════════════════════════════
-const DB_KEY = "blk_pro_v3";
-
-function dbRead() {
-  try {
-    const a = localStorage.getItem(DB_KEY);
-    if (a) return JSON.parse(a);
-    const b = sessionStorage.getItem(DB_KEY);
-    if (b) return JSON.parse(b);
-  } catch (e) {}
-  return null;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BlackRock, Inc — منصة الاستثمار</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#FFB800;--bg:#070710;--bg2:#0D0D1A;--card:#111120;--card2:#181830;
+  --border:rgba(255,184,0,0.13);--text:#EEF0FF;--text2:#8888AA;
+  --green:#00E676;--red:#FF1744;--blue:#448AFF;--purple:#9C27B0;
 }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;max-width:500px;margin:0 auto;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 85% 15%,rgba(255,184,0,0.07) 0%,transparent 60%),radial-gradient(ellipse 50% 70% at 15% 85%,rgba(68,138,255,0.05) 0%,transparent 60%);pointer-events:none;z-index:0;}
 
-function dbWrite(data) {
-  const s = JSON.stringify(data);
-  try { localStorage.setItem(DB_KEY, s); } catch (e) {}
-  try { sessionStorage.setItem(DB_KEY, s); } catch (e) {}
-}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:0;height:0;}
 
-// ═══════════════════════════════════════════════════════════════
-// LEVELS CONFIG (from the real table image)
-// ═══════════════════════════════════════════════════════════════
-const LEVELS = [
-  { id: "تجريبي", name: "تدريب المكتتب", invest: 0,       tasks: 5,   reward: 43,   daily: 215,    monthly: null,      yearly: null,       color: "#9ca3af" },
-  { id: "M1",    name: "M1",             invest: 7000,    tasks: 5,   reward: 43,   daily: 215,    monthly: 6450,      yearly: 77400,      color: "#f59e0b" },
-  { id: "M2",    name: "M2",             invest: 26600,   tasks: 10,  reward: 86,   daily: 860,    monthly: 25800,     yearly: 309600,     color: "#10b981" },
-  { id: "M3",    name: "M3",             invest: 95000,   tasks: 25,  reward: 131,  daily: 3275,   monthly: 98250,     yearly: 1179000,    color: "#3b82f6" },
-  { id: "S4",    name: "S4",             invest: 300000,  tasks: 50,  reward: 222,  daily: 11100,  monthly: 333000,    yearly: 3996000,    color: "#8b5cf6" },
-  { id: "S5",    name: "S5",             invest: 780000,  tasks: 80,  reward: 390,  daily: 31200,  monthly: 936000,    yearly: 11232000,   color: "#ec4899" },
-  { id: "S6",    name: "S6",             invest: 1950000, tasks: 130, reward: 652,  daily: 84760,  monthly: 2542800,   yearly: 30513600,   color: "#ef4444" },
-  { id: "G7",    name: "G7",             invest: 4485000, tasks: 200, reward: 1068, daily: 213600, monthly: 6408000,   yearly: 76896000,   color: "#fbbf24" },
-];
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:100;background:rgba(7,7,16,0.97);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;}
+.hdr-logo{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:var(--gold);letter-spacing:1.5px;cursor:pointer;}
+.hdr-logo span{color:var(--text2);font-size:10px;font-family:'Cairo',sans-serif;display:block;font-weight:400;letter-spacing:0;}
+.hdr-left{display:flex;align-items:center;gap:10px;}
+.hdr-secure{font-size:10px;color:var(--green);border:1px solid rgba(0,230,118,0.35);padding:3px 10px;border-radius:20px;font-weight:700;cursor:pointer;}
+.hdr-bell{width:38px;height:38px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:17px;}
+.hdr-badge{position:absolute;top:-3px;left:-3px;background:var(--red);color:#fff;font-size:9px;font-weight:900;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);}
 
-function getLevelConfig(levelId) {
-  return LEVELS.find(l => l.id === levelId) || LEVELS[0];
-}
+/* PAGES */
+.pg{display:none;padding:14px 14px 88px;position:relative;z-index:1;min-height:calc(100vh - 60px);}
+.pg.active{display:block;animation:pgIn 0.25s ease;}
+@keyframes pgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
-function genCode() { return Math.random().toString(36).slice(2, 8).toUpperCase(); }
-function genTasks(lvl) {
-  const cfg = getLevelConfig(lvl);
-  return Array.from({ length: cfg.tasks }, (_, i) => ({ id: i + 1, reward: cfg.reward, status: "pending" }));
-}
-function today() { return new Date().toDateString(); }
-function fmtNum(n) { return Number(n).toLocaleString("ar-DZ"); }
+/* NAV */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;z-index:100;background:rgba(7,7,16,0.97);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;padding:7px 0 14px;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:5px 0;position:relative;}
+.ni.active .ni-ico,.ni.active .ni-lbl{color:var(--gold);}
+.ni.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:36px;height:2px;background:var(--gold);border-radius:0 0 3px 3px;}
+.ni-ico{font-size:21px;color:var(--text2);position:relative;}
+.ni-lbl{font-size:10px;color:var(--text2);font-weight:600;}
+.ni-dot{position:absolute;top:-4px;left:-4px;background:var(--red);color:#fff;font-size:8px;font-weight:900;min-width:15px;height:15px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;border:2px solid var(--bg);}
 
-// ═══════════════════════════════════════════════════════════════
-// AI ASSISTANT
-// ═══════════════════════════════════════════════════════════════
-async function callAI(history, user) {
-  const levelCfg = getLevelConfig(user?.level || "تجريبي");
-  const sys = `أنت المساعد المالي الذكي لمنصة BlackRock الاستثمارية. تحدث بالعربية دائماً بأسلوب مهني وودي.
+/* BALANCE CARD */
+.bal-card{background:linear-gradient(145deg,#15100000,#0A0800,#12100000);border:1px solid rgba(255,184,0,0.4);border-radius:22px;padding:22px;margin-bottom:14px;position:relative;overflow:hidden;}
+.bal-card::before{content:'';position:absolute;top:-60px;left:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(255,184,0,0.15) 0%,transparent 65%);}
+.bal-card::after{content:'BRI';position:absolute;bottom:-30px;left:-15px;font-family:'Orbitron',monospace;font-size:100px;font-weight:900;color:rgba(255,184,0,0.035);pointer-events:none;letter-spacing:-5px;}
+.bal-lbl{font-size:11px;color:var(--text2);letter-spacing:1px;margin-bottom:5px;}
+.bal-num{font-size:42px;font-weight:900;color:var(--gold);letter-spacing:-2px;line-height:1.05;text-shadow:0 0 40px rgba(255,184,0,0.45);}
+.bal-currency{font-size:13px;color:var(--text2);margin-bottom:16px;}
+.bal-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.bal-box{background:rgba(255,255,255,0.045);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:11px 13px;}
+.bal-box .bb-l{font-size:10px;color:var(--text2);margin-bottom:2px;}
+.bal-box .bb-v{font-size:14px;font-weight:700;}
 
-معلومات المنصة:
-- الشركة: BlackRock, Inc — تأسست 1988 نيويورك الولايات المتحدة الأمريكية
-- التسجيل: NYSE: BLK — EIN: 32-0174431
-- عقد الجزائر: يناير 2025 حتى ديسمبر 2028
-- الأمان: SECURE V3 — SSL/TLS 3.0 — AES-256
-- حماية الأموال: مضمونة 100%
+/* ACTIONS */
+.act-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.ab{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;}
+.ab:active .ab-i{transform:scale(0.87);}
+.ab-i{width:56px;height:56px;border-radius:17px;display:flex;align-items:center;justify-content:center;font-size:23px;transition:transform 0.15s;border:1px solid;}
+.ab-i.g{background:rgba(0,230,118,0.11);border-color:rgba(0,230,118,0.28);}
+.ab-i.o{background:rgba(255,184,0,0.11);border-color:rgba(255,184,0,0.28);}
+.ab-i.b{background:rgba(68,138,255,0.11);border-color:rgba(68,138,255,0.28);}
+.ab-i.r{background:rgba(255,23,68,0.11);border-color:rgba(255,23,68,0.28);}
+.ab-l{font-size:11px;color:var(--text2);font-weight:700;}
 
-جدول المستويات الكامل:
-| المستوى | الاستثمار DZD | المهام | للمهمة DZD | يومي DZD | شهري DZD | سنوي DZD |
-|---------|--------------|--------|------------|---------|---------|---------|
-| تجريبي | 0 | 5 | 43 | 215 | فترة تجريبية | — |
-| M1 | 7,000 | 5 | 43 | 215 | 6,450 | 77,400 |
-| M2 | 26,600 | 10 | 86 | 860 | 25,800 | 309,600 |
-| M3 | 95,000 | 25 | 131 | 3,275 | 98,250 | 1,179,000 |
-| S4 | 300,000 | 50 | 222 | 11,100 | 333,000 | 3,996,000 |
-| S5 | 780,000 | 80 | 390 | 31,200 | 936,000 | 11,232,000 |
-| S6 | 1,950,000 | 130 | 652 | 84,760 | 2,542,800 | 30,513,600 |
-| G7 | 4,485,000 | 200 | 1,068 | 213,600 | 6,408,000 | 76,896,000 |
+/* LEVEL PROGRESS */
+.lvl-bar-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px;margin-bottom:14px;}
+.pb-out{height:7px;background:rgba(255,255,255,0.06);border-radius:7px;overflow:hidden;margin:9px 0 5px;}
+.pb-in{height:100%;border-radius:7px;background:linear-gradient(90deg,var(--gold),#FF8F00);transition:width 0.6s ease;}
 
-نظام المهام: كل مهمة 40 ثانية. الإلغاء أو الخروج يلغي المهمة وتعود الغد.
-نظام الإحالة: رابط شخصي. 5% عمولة من أرباح المهام اليومية للمدعوين. كلاهما يحصل على لفة عجلة الحظ.
-السحب: متاح من M1 وما فوق فقط.
+/* MINI STATS */
+.ms-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.ms-cell{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:13px 8px;text-align:center;cursor:pointer;transition:border-color 0.2s;}
+.ms-cell:active{border-color:rgba(255,184,0,0.4);}
+.ms-cell .ms-i{font-size:20px;margin-bottom:3px;}
+.ms-cell .ms-v{font-size:20px;font-weight:900;color:var(--gold);}
+.ms-cell .ms-l{font-size:10px;color:var(--text2);}
 
-بيانات المستخدم:
-- الاسم: ${user?.name || "—"}
-- المستوى: ${user?.level || "تجريبي"} — الربح اليومي: ${levelCfg.daily} DZD — للمهمة: ${levelCfg.reward} DZD
-- الرصيد: ${fmtNum(user?.balance || 0)} DZD
-- الأرباح الكلية: ${fmtNum(user?.totalEarnings || 0)} DZD
-- الفريق: ${user?.referrals?.length || 0} عضو
-- المهام المكتملة اليوم: ${(user?.dailyTasks || []).filter(t => t.status === "completed").length}
+/* SEC TITLE */
+.st{font-size:14px;font-weight:700;margin-bottom:11px;display:flex;justify-content:space-between;align-items:center;}
+.st span{font-size:11px;color:var(--text2);font-weight:400;}
 
-القواعد:
-- لا تستخدم ** أو أي تنسيق markdown
-- لا تذكر الإيداع أو الشحن أبداً
-- أجب بدقة ومعلومات حقيقية من الجدول أعلاه
-- إذا سأل عن مستوى معين أعطه المعلومات الكاملة من الجدول`;
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:15px;margin-bottom:12px;}
 
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      system: sys,
-      messages: history
-    })
-  });
-  const d = await r.json();
-  return d.content?.map(b => b.text || "").join("") || "حدث خطأ، أعد المحاولة.";
-}
+/* LEVEL CARDS */
+.lvc{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:15px;margin-bottom:11px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.lvc:active{transform:scale(0.985);}
+.lvc.act-lv{border-color:rgba(255,184,0,0.5);background:linear-gradient(135deg,rgba(255,184,0,0.07),var(--card));}
+.lvc-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;}
+.lvc-name{font-size:17px;font-weight:900;font-family:'Orbitron',monospace;color:var(--gold);}
+.lv-bdg{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;}
+.bdg-a{background:rgba(0,230,118,0.14);color:var(--green);border:1px solid rgba(0,230,118,0.3);}
+.bdg-u{background:rgba(255,184,0,0.14);color:var(--gold);border:1px solid rgba(255,184,0,0.3);}
+.lvc-info{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:11px;}
+.lv-it{text-align:center;background:rgba(255,255,255,0.03);border-radius:8px;padding:7px 3px;}
+.lv-it .lt{font-size:8px;color:var(--text2);margin-bottom:2px;}
+.lv-it .lv{font-size:11px;font-weight:700;}
+.upbtn{width:100%;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--gold),#E68000);color:#000;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.upbtn:active{opacity:0.88;}
+.lock-n{background:rgba(255,23,68,0.07);border:1px solid rgba(255,23,68,0.2);border-radius:9px;padding:9px 12px;font-size:11px;color:#FF7090;display:flex;align-items:center;gap:7px;margin-top:9px;}
 
-// ═══════════════════════════════════════════════════════════════
-// SPIN WHEEL
-// ═══════════════════════════════════════════════════════════════
-function SpinWheel({ onResult, onClose }) {
-  const ref = useRef(null);
-  const [spinning, setSpinning] = useState(false);
-  const [result, setResult] = useState(null);
-  const ang = useRef(0);
-  const raf = useRef(null);
-  const segs = [
-    { txt: "43 DZD", bg: "#f59e0b", val: { type: "money", n: 43 } },
-    { txt: "لا شيء", bg: "#1f2937", val: { type: "none" } },
-    { txt: "86 DZD", bg: "#10b981", val: { type: "money", n: 86 } },
-    { txt: "نقاط 50", bg: "#3b82f6", val: { type: "pts", n: 50 } },
-    { txt: "لا شيء", bg: "#374151", val: { type: "none" } },
-    { txt: "215 DZD", bg: "#ef4444", val: { type: "money", n: 215 } },
-    { txt: "نقاط 100", bg: "#8b5cf6", val: { type: "pts", n: 100 } },
-    { txt: "21 DZD", bg: "#f59e0b", val: { type: "money", n: 21 } },
-  ];
-  useEffect(() => { draw(0); }, []);
-  function draw(r) {
-    const c = ref.current; if (!c) return;
-    const x = c.getContext("2d"), cx = c.width / 2, rad = cx - 8, arc = (2 * Math.PI) / segs.length;
-    x.clearRect(0, 0, c.width, c.height);
-    segs.forEach((s, i) => {
-      const a = r + i * arc;
-      x.beginPath(); x.moveTo(cx, cx); x.arc(cx, cx, rad, a, a + arc); x.closePath();
-      x.fillStyle = s.bg; x.fill(); x.strokeStyle = "#0d0d0d"; x.lineWidth = 2; x.stroke();
-      x.save(); x.translate(cx, cx); x.rotate(a + arc / 2);
-      x.textAlign = "right"; x.fillStyle = "#fff"; x.font = "bold 11px sans-serif";
-      x.fillText(s.txt, rad - 6, 4); x.restore();
-    });
-    x.beginPath(); x.arc(cx, cx, 16, 0, 2 * Math.PI); x.fillStyle = "#f59e0b"; x.fill();
-    x.beginPath(); x.moveTo(cx + rad + 3, cx); x.lineTo(cx + rad - 13, cx - 8); x.lineTo(cx + rad - 13, cx + 8);
-    x.closePath(); x.fillStyle = "#fff"; x.fill();
-  }
-  function spin() {
-    if (spinning) return; setSpinning(true); setResult(null);
-    const tot = (5 + Math.random() * 5) * 2 * Math.PI, dur = 4500, t0 = performance.now(), a0 = ang.current;
-    function go(now) {
-      const p = Math.min((now - t0) / dur, 1), e = 1 - Math.pow(1 - p, 4);
-      ang.current = a0 + tot * e; draw(ang.current);
-      if (p < 1) { raf.current = requestAnimationFrame(go); }
-      else {
-        setSpinning(false);
-        const arc = (2 * Math.PI) / segs.length, na = ((ang.current % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-        const idx = Math.floor(((2 * Math.PI - na) % (2 * Math.PI)) / arc) % segs.length;
-        setResult(segs[idx]); onResult(segs[idx].val);
-      }
-    }
-    raf.current = requestAnimationFrame(go);
-  }
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.95)", zIndex: 300, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 20 }}>
-      <div style={{ color: "#f59e0b", fontSize: 22, fontWeight: "bold", letterSpacing: 1 }}>🎡 عجلة الحظ</div>
-      <canvas ref={ref} width={290} height={290} style={{ borderRadius: "50%", boxShadow: "0 0 50px rgba(245,158,11,0.5), 0 0 100px rgba(245,158,11,0.2)" }} />
-      {result && (
-        <div style={{ color: result.val.type === "none" ? "#6b7280" : "#10b981", fontSize: 22, fontWeight: "bold", textAlign: "center" }}>
-          {result.val.type === "none" ? "للأسف لا جائزة هذه المرة 😔" : result.val.type === "money" ? `🎉 مبروك! ربحت ${result.val.n} DZD` : `🌟 مبروك! ربحت ${result.val.n} نقطة`}
-        </div>
-      )}
-      {!spinning && !result && <button onClick={spin} style={{ background: "linear-gradient(135deg,#f59e0b,#d97706)", color: "#000", border: "none", borderRadius: 16, padding: "14px 44px", fontSize: 18, fontWeight: "bold", cursor: "pointer", boxShadow: "0 4px 20px rgba(245,158,11,0.4)" }}>الف!</button>}
-      {result && <button onClick={onClose} style={{ background: "#1f2937", color: "#fff", border: "1px solid #374151", borderRadius: 12, padding: "10px 30px", fontSize: 14, cursor: "pointer" }}>متابعة</button>}
+/* TASK CARDS */
+.tkc{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:13px;margin-bottom:11px;transition:border-color 0.3s;}
+.tkc.run{border-color:rgba(255,184,0,0.6);box-shadow:0 0 18px rgba(255,184,0,0.07);}
+.tkc.done{border-color:rgba(0,230,118,0.3);}
+.tkc.cancelled{border-color:rgba(255,23,68,0.25);opacity:0.6;}
+.tk-top{display:flex;align-items:center;gap:11px;}
+.tk-ico{width:46px;height:46px;border-radius:13px;background:rgba(255,184,0,0.09);border:1px solid rgba(255,184,0,0.18);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;}
+.tk-inf{flex:1;}
+.tk-ttl{font-size:13px;font-weight:700;margin-bottom:2px;}
+.tk-sub{font-size:11px;color:var(--text2);}
+.tk-rew{text-align:left;flex-shrink:0;}
+.tk-amt{font-size:14px;font-weight:700;color:var(--gold);}
+.tk-lbl{font-size:9px;color:var(--text2);}
+.tk-pb{height:4px;background:rgba(255,255,255,0.05);border-radius:4px;margin-top:9px;overflow:hidden;}
+.tk-pb-in{height:100%;border-radius:4px;transition:width 0.4s;}
+.tk-acts{display:flex;align-items:center;gap:9px;margin-top:9px;}
+.tk-start{flex:1;padding:10px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),#E68000);color:#000;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.tk-x{width:40px;height:40px;border-radius:9px;border:1px solid rgba(255,23,68,0.3);background:rgba(255,23,68,0.07);color:var(--red);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tk-timer{width:44px;height:44px;border-radius:50%;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--gold);flex-shrink:0;animation:tglow 1s infinite;}
+@keyframes tglow{0%,100%{box-shadow:0 0 7px rgba(255,184,0,0.3)}50%{box-shadow:0 0 22px rgba(255,184,0,0.65)}}
+.tk-done-row{background:rgba(0,230,118,0.09);border:1px solid rgba(0,230,118,0.22);border-radius:9px;padding:9px;text-align:center;color:var(--green);font-size:12px;font-weight:700;margin-top:9px;}
+.tk-cancel-row{background:rgba(255,23,68,0.07);border:1px solid rgba(255,23,68,0.2);border-radius:9px;padding:8px;text-align:center;color:#FF7090;font-size:11px;margin-top:9px;}
+
+/* ACCOUNT */
+.av-sect{display:flex;align-items:center;gap:14px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:18px;margin-bottom:14px;}
+.av{width:65px;height:65px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#E68000);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#000;border:3px solid rgba(255,184,0,0.45);flex-shrink:0;}
+.u-name{font-size:16px;font-weight:700;margin-bottom:3px;}
+.u-id{font-size:11px;color:var(--text2);margin-bottom:6px;}
+.u-lv-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,184,0,0.11);border:1px solid rgba(255,184,0,0.28);border-radius:20px;padding:3px 11px;font-size:10px;color:var(--gold);font-weight:700;}
+.acc-sts{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px;}
+.ac-st{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:13px 7px;text-align:center;}
+.ac-st .v{font-size:19px;font-weight:900;color:var(--gold);margin-bottom:3px;}
+.ac-st .l{font-size:10px;color:var(--text2);}
+
+/* MENU */
+.menu-s{background:var(--card);border:1px solid var(--border);border-radius:15px;overflow:hidden;margin-bottom:13px;}
+.mi{display:flex;align-items:center;gap:13px;padding:14px 15px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background 0.15s;}
+.mi:last-child{border-bottom:none;}
+.mi:active{background:rgba(255,255,255,0.025);}
+.mi-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.mi-txt{flex:1;}
+.mi-ttl{font-size:13px;font-weight:600;margin-bottom:1px;}
+.mi-sub{font-size:11px;color:var(--text2);}
+.mi-arr{color:var(--text2);font-size:13px;}
+
+/* REF */
+.ref-card{background:linear-gradient(135deg,rgba(255,184,0,0.09),rgba(255,120,0,0.04));border:1px solid rgba(255,184,0,0.22);border-radius:17px;padding:20px;text-align:center;margin-bottom:14px;}
+.ref-code{background:rgba(0,0,0,0.35);border:1px solid rgba(255,184,0,0.35);border-radius:11px;padding:13px;font-family:'Orbitron',monospace;font-size:20px;font-weight:700;color:var(--gold);letter-spacing:4px;margin:11px 0;cursor:pointer;}
+.ref-code:active{transform:scale(0.97);}
+
+/* NOTIF */
+.notif-ov{position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(10px);z-index:300;display:flex;align-items:flex-start;justify-content:center;padding-top:62px;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+.notif-ov.open{opacity:1;pointer-events:all;}
+.notif-sh{width:calc(100% - 28px);max-width:465px;background:var(--bg2);border:1px solid var(--border);border-radius:18px;overflow:hidden;transform:translateY(-14px);transition:transform 0.25s;}
+.notif-ov.open .notif-sh{transform:translateY(0);}
+.notif-hd{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border);}
+.n-it{display:flex;align-items:flex-start;gap:13px;padding:13px 18px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;}
+.n-it:last-child{border-bottom:none;}
+.n-ico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.n-tx{flex:1;}
+.n-ttl{font-size:12px;font-weight:700;margin-bottom:2px;}
+.n-sub{font-size:11px;color:var(--text2);}
+.n-time{font-size:10px;color:var(--text2);margin-top:3px;}
+
+/* AI CHAT */
+.ai-fab{position:fixed;bottom:88px;left:14px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#E68000,var(--gold));display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;z-index:50;box-shadow:0 4px 20px rgba(255,184,0,0.4);border:none;transition:transform 0.15s;}
+.ai-fab:active{transform:scale(0.88);}
+.ai-dot{position:absolute;top:-2px;right:-2px;background:var(--green);width:13px;height:13px;border-radius:50%;border:2px solid var(--bg);}
+
+.chat-ov{position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(10px);z-index:300;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+.chat-ov.open{opacity:1;pointer-events:all;}
+.chat-sh{width:100%;max-width:500px;margin:0 auto;background:var(--bg2);border-radius:22px 22px 0 0;border-top:1px solid var(--border);height:80vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform 0.32s cubic-bezier(0.34,1.3,0.64,1);}
+.chat-ov.open .chat-sh{transform:translateY(0);}
+.chat-hd{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.bot-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#E68000,var(--gold));display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.bot-on{font-size:10px;color:var(--green);display:flex;align-items:center;gap:4px;}
+.bot-on::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;display:inline-block;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.chat-cls{width:33px;height:33px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:11px;}
+.cm{max-width:85%;display:flex;gap:7px;align-items:flex-end;}
+.cm.bot{align-self:flex-start;}
+.cm.usr{align-self:flex-end;flex-direction:row-reverse;}
+.cm-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#E68000,var(--gold));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.cm-bbl{padding:11px 13px;border-radius:15px;font-size:12px;line-height:1.65;}
+.cm.bot .cm-bbl{background:var(--card2);border:1px solid var(--border);border-bottom-right-radius:3px;}
+.cm.usr .cm-bbl{background:rgba(255,184,0,0.13);border:1px solid rgba(255,184,0,0.23);border-bottom-left-radius:3px;}
+.cm-typing{display:flex;gap:4px;align-items:center;padding:11px 14px;}
+.cm-typing span{width:7px;height:7px;background:var(--gold);border-radius:50%;animation:typ 1.2s infinite;}
+.cm-typing span:nth-child(2){animation-delay:0.2s;}
+.cm-typing span:nth-child(3){animation-delay:0.4s;}
+@keyframes typ{0%,60%,100%{transform:translateY(0);opacity:0.4}30%{transform:translateY(-5px);opacity:1}}
+.chat-qk{display:flex;gap:7px;padding:9px 14px;overflow-x:auto;flex-shrink:0;border-top:1px solid rgba(255,255,255,0.04);}
+.qk-b{flex-shrink:0;padding:6px 13px;border-radius:20px;background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.09);color:var(--text2);font-size:11px;font-family:'Cairo',sans-serif;cursor:pointer;}
+.qk-b:active{background:rgba(255,184,0,0.11);border-color:rgba(255,184,0,0.28);color:var(--gold);}
+.chat-ir{display:flex;gap:9px;padding:11px 14px 18px;flex-shrink:0;border-top:1px solid var(--border);}
+.chat-in{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:21px;padding:11px 16px;color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none;}
+.chat-in:focus{border-color:rgba(255,184,0,0.4);}
+.chat-snd{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#E68000);border:none;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;flex-shrink:0;}
+
+/* SECURITY */
+.sec-doc{background:linear-gradient(145deg,#030A03,#020602);border:2px solid rgba(0,230,118,0.28);border-radius:18px;padding:18px;margin-bottom:13px;position:relative;overflow:hidden;}
+.sec-wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-family:'Orbitron',monospace;font-size:38px;font-weight:900;color:rgba(0,230,118,0.04);pointer-events:none;white-space:nowrap;letter-spacing:3px;}
+.sec-seal{width:56px;height:56px;border-radius:50%;background:rgba(0,230,118,0.09);border:2px solid rgba(0,230,118,0.28);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.sec-row{display:flex;justify-content:space-between;padding:9px 12px;background:rgba(0,230,118,0.04);border-radius:9px;border:1px solid rgba(0,230,118,0.09);font-size:12px;margin-bottom:7px;}
+.sec-row:last-child{margin-bottom:0;}
+
+/* INFO TABLE */
+.inf-tbl{width:100%;border-collapse:collapse;font-size:11px;}
+.inf-tbl th{background:rgba(255,184,0,0.1);color:var(--gold);padding:8px 5px;text-align:center;font-size:10px;border:1px solid rgba(255,184,0,0.14);}
+.inf-tbl td{padding:8px 5px;text-align:center;border:1px solid rgba(255,255,255,0.05);color:var(--text2);}
+.inf-tbl tr:nth-child(even) td{background:rgba(255,255,255,0.015);}
+
+/* MODAL */
+.mod-ov{position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+.mod-ov.open{opacity:1;pointer-events:all;}
+.mod-sh{width:100%;max-width:500px;background:var(--bg2);border-radius:22px 22px 0 0;border-top:1px solid var(--border);padding:18px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.34,1.5,0.64,1);}
+.mod-ov.open .mod-sh{transform:translateY(0);}
+.mod-hnd{width:38px;height:4px;background:rgba(255,255,255,0.14);border-radius:4px;margin:0 auto 16px;}
+.mod-ttl{font-size:17px;font-weight:700;text-align:center;margin-bottom:16px;color:var(--gold);}
+.mod-inp{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px 15px;color:var(--text);font-family:'Cairo',sans-serif;font-size:14px;outline:none;margin-bottom:11px;text-align:right;}
+.mod-inp:focus{border-color:rgba(255,184,0,0.45);}
+.mod-btn{width:100%;padding:13px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--gold),#E68000);color:#000;font-family:'Cairo',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:9px;}
+.mod-btn.out{background:transparent;border:1px solid var(--border);color:var(--text2);}
+
+/* TX */
+.txi{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.txi:last-child{border-bottom:none;}
+.txi-i{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.txi-inf{flex:1;}
+.txi-t{font-size:12px;font-weight:600;margin-bottom:2px;}
+.txi-d{font-size:10px;color:var(--text2);}
+.txi-a{font-size:13px;font-weight:700;}
+
+/* TOAST */
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:rgba(0,230,118,0.14);border:1px solid rgba(0,230,118,0.3);color:var(--green);padding:9px 22px;border-radius:28px;font-size:12px;font-weight:600;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;}
+.toast.err{background:rgba(255,23,68,0.14);border-color:rgba(255,23,68,0.3);color:var(--red);}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-secure" onclick="switchPage('security')">🔒 SECURE V3</div>
+  <div class="hdr-logo" onclick="switchPage('home')">
+    BLACKROCK
+    <span>BlackRock, Inc — Investment Platform</span>
+  </div>
+  <div class="hdr-left">
+    <div class="hdr-bell" onclick="openNotif()">🔔<div class="hdr-badge" id="hdr-nb">3</div></div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="pg active" id="pg-home">
+  <div class="bal-card">
+    <div class="bal-lbl">💼 رصيدك الإجمالي</div>
+    <div class="bal-num" id="bal-num">0.00</div>
+    <div class="bal-currency">دينار جزائري (DZD)</div>
+    <div class="bal-row">
+      <div class="bal-box"><div class="bb-l">الربح اليومي</div><div class="bb-v" style="color:var(--green)" id="daily-v">+215 DZD</div></div>
+      <div class="bal-box"><div class="bb-l">إجمالي الأرباح</div><div class="bb-v" style="color:var(--gold)" id="total-v">0 DZD</div></div>
     </div>
-  );
-}
+  </div>
 
-// ═══════════════════════════════════════════════════════════════
-// NOTIFICATION SYSTEM
-// ═══════════════════════════════════════════════════════════════
-function Toast({ msg, type, onDone }) {
-  useEffect(() => { const t = setTimeout(onDone, 3000); return () => clearTimeout(t); }, []);
-  return (
-    <div style={{ position: "fixed", top: 70, left: "50%", transform: "translateX(-50%)", zIndex: 400, background: type === "success" ? "#065f46" : type === "error" ? "#7f1d1d" : "#1e3a5f", color: "#fff", borderRadius: 12, padding: "10px 20px", fontSize: 13, fontWeight: "bold", border: `1px solid ${type === "success" ? "#10b981" : type === "error" ? "#ef4444" : "#3b82f6"}`, boxShadow: "0 8px 30px rgba(0,0,0,0.5)", maxWidth: 320, textAlign: "center", direction: "rtl" }}>
-      {msg}
+  <div class="act-row">
+    <div class="ab" onclick="openMod('deposit')"><div class="ab-i g">⬆️</div><div class="ab-l">إيداع</div></div>
+    <div class="ab" onclick="openMod('withdraw')"><div class="ab-i o">⬇️</div><div class="ab-l">سحب</div></div>
+    <div class="ab" onclick="openMod('transfer')"><div class="ab-i b">🔄</div><div class="ab-l">تحويل</div></div>
+    <div class="ab" onclick="switchPage('referral')"><div class="ab-i r">👥</div><div class="ab-l">إحالة</div></div>
+  </div>
+
+  <div class="lvl-bar-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:12px;font-weight:700;">المستوى: <span style="color:var(--blue)" id="curr-lv-txt">تجريبي</span></div>
+      <div style="font-size:11px;color:var(--gold);font-weight:600;" id="next-lv-txt">الترقية لـ M1</div>
     </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════
-// MODALS
-// ═══════════════════════════════════════════════════════════════
-function Modal({ title, color, children, onClose }) {
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.92)", zIndex: 200, overflowY: "auto", padding: "16px 12px" }} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={{ background: "#0f1623", borderRadius: 20, border: `1px solid ${color || "#374151"}`, maxWidth: 430, margin: "0 auto", overflow: "hidden" }}>
-        <div style={{ background: "#111827", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${color || "#1f2937"}` }}>
-          <button onClick={onClose} style={{ background: "#374151", border: "none", color: "#9ca3af", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
-          <div style={{ color: color || "#fff", fontWeight: "bold", fontSize: 16 }}>{title}</div>
-        </div>
-        <div style={{ padding: 16 }}>{children}</div>
-      </div>
+    <div style="display:flex;justify-content:space-between;margin-top:5px;">
+      <span style="font-size:11px;color:var(--text2);">رصيدك: <span style="color:var(--gold)" id="pb-bal">0 DZD</span></span>
+      <span style="font-size:11px;color:var(--text2);" id="pb-need">7,000 DZD</span>
     </div>
-  );
-}
-
-function SecurityDoc({ onClose }) {
-  const rows = [
-    ["بروتوكول التشفير", "SSL/TLS 3.0 — AES-256"],
-    ["رقم الشهادة", "BLK-SEC-V3-2025-DZ"],
-    ["تاريخ الإصدار", "يناير 2025"],
-    ["صالحة حتى", "ديسمبر 2028"],
-    ["نوع الحماية", "أموال مضمونة 100%"],
-    ["معتمدة من", "هيئة الرقابة المالية الدولية"],
-    ["عقد الجزائر", "يناير 2025 — ديسمبر 2028"],
-    ["رقم EIN", "32-0174431"],
-    ["رمز البورصة", "NYSE: BLK"],
-  ];
-  return (
-    <Modal title="🔒 وثيقة الأمان SECURE V3" color="#10b981" onClose={onClose}>
-      <div style={{ background: "linear-gradient(135deg,#064e3b,#065f46)", borderRadius: 14, padding: 18, textAlign: "center", marginBottom: 16 }}>
-        <div style={{ color: "#10b981", fontSize: 28, fontWeight: "bold", letterSpacing: 3 }}>SECURE V3</div>
-        <div style={{ color: "#6ee7b7", fontSize: 12, marginTop: 4 }}>شهادة أمان دولية موثقة</div>
-      </div>
-      {rows.map(([k, v]) => (
-        <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 0", borderBottom: "1px solid #1f2937", direction: "rtl" }}>
-          <div style={{ color: "#e5e7eb", fontSize: 13 }}>{v}</div>
-          <div style={{ color: "#6b7280", fontSize: 12, flexShrink: 0, marginRight: 10 }}>{k}</div>
-        </div>
-      ))}
-      <div style={{ background: "#0d1f0d", border: "1px solid #166534", borderRadius: 12, padding: 14, marginTop: 14, direction: "rtl" }}>
-        <div style={{ color: "#86efac", fontSize: 12, lineHeight: 1.9 }}>
-          تُقرّ شركة BlackRock, Inc المسجلة في نيويورك بالولايات المتحدة الأمريكية عام 1988، بأنها أبرمت عقداً رسمياً مع الجانب الجزائري في يناير 2025 لمدة ثلاث سنوات، يضمن حقوق وأموال المستثمرين الجزائريين وفق أعلى معايير الأمان الدولية.
-        </div>
-      </div>
-    </Modal>
-  );
-}
-
-function CompanyInfo({ onClose }) {
-  const rows = [
-    ["الاسم القانوني", "BlackRock, Inc"],
-    ["المقر الرئيسي", "🇺🇸 New York, USA"],
-    ["سنة التأسيس", "1988"],
-    ["المجال", "إدارة الأصول والاستثمار"],
-    ["رمز البورصة", "NYSE: BLK"],
-    ["رقم EIN", "32-0174431"],
-    ["التشفير", "SSL/TLS 3.0 — AES-256"],
-    ["عقد الجزائر", "✅ يناير 2025 — ديسمبر 2028"],
-    ["حماية الأموال", "✅ مضمونة 100%"],
-  ];
-  return (
-    <Modal title="🏢 عن الشركة" color="#f59e0b" onClose={onClose}>
-      <div style={{ textAlign: "center", marginBottom: 16 }}>
-        <div style={{ color: "#f59e0b", fontSize: 30, fontWeight: "bold", letterSpacing: 4 }}>BLACKROCK</div>
-        <div style={{ color: "#9ca3af", fontSize: 13, marginTop: 4 }}>BlackRock, Inc — Investment Platform</div>
-      </div>
-      {rows.map(([k, v]) => (
-        <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 0", borderBottom: "1px solid #1f2937", direction: "rtl" }}>
-          <div style={{ color: "#e5e7eb", fontSize: 13 }}>{v}</div>
-          <div style={{ color: "#6b7280", fontSize: 12 }}>{k}</div>
-        </div>
-      ))}
-    </Modal>
-  );
-}
-
-function TeamView({ user, users, onClose }) {
-  const members = (user.referrals || []).map(id => users[id]).filter(Boolean);
-  const totalBonus = members.reduce((s, m) => s + Math.floor((m.totalEarnings || 0) * 0.05), 0);
-  return (
-    <Modal title="👥 فريقي" color="#3b82f6" onClose={onClose}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
-        {[["عدد الفريق", members.length, "#f59e0b"], ["عمولتي الكلية", `${fmtNum(totalBonus)} DZD`, "#10b981"]].map(([l, v, c]) => (
-          <div key={l} style={{ background: "#1f2937", borderRadius: 12, padding: "14px 10px", textAlign: "center", border: "1px solid #374151" }}>
-            <div style={{ color: c, fontSize: 20, fontWeight: "bold" }}>{v}</div>
-            <div style={{ color: "#9ca3af", fontSize: 11, marginTop: 4 }}>{l}</div>
-          </div>
-        ))}
-      </div>
-      {members.length === 0
-        ? <div style={{ textAlign: "center", color: "#6b7280", padding: "30px 20px", fontSize: 14, background: "#111827", borderRadius: 12, border: "1px dashed #374151" }}>
-            لا يوجد أعضاء بعد<br /><span style={{ color: "#f59e0b", fontSize: 12 }}>شارك رابطك لتبدأ بناء فريقك</span>
-          </div>
-        : members.map((m, i) => (
-          <div key={i} style={{ background: "#111827", borderRadius: 12, padding: "12px 14px", marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center", border: "1px solid #1f2937", direction: "rtl" }}>
-            <div style={{ color: "#10b981", fontSize: 12, fontWeight: "bold" }}>+{Math.floor((m.totalEarnings || 0) * 0.05)} DZD</div>
-            <div>
-              <div style={{ color: "#e5e7eb", fontWeight: "bold" }}>{m.name}</div>
-              <div style={{ color: "#6b7280", fontSize: 11 }}>{getLevelConfig(m.level).name} • {new Date(m.joinDate).toLocaleDateString("ar-DZ")}</div>
-            </div>
-            <div style={{ width: 36, height: 36, background: "#1f2937", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "#f59e0b", fontWeight: "bold", fontSize: 16, border: "1px solid #374151" }}>{m.name[0].toUpperCase()}</div>
-          </div>
-        ))}
-    </Modal>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════
-// MAIN APPLICATION
-// ═══════════════════════════════════════════════════════════════
-export default function App() {
-  const [db, setDbState] = useState(null); // { users:{}, uid:null }
-  const [screen, setScreen] = useState("splash"); // splash | login | register | app
-  const [tab, setTab] = useState("home");
-  const [modal, setModal] = useState(null);
-  const [toast, setToast] = useState(null);
-  const [showSpin, setShowSpin] = useState(false);
-  const [timers, setTimers] = useState({});
-  const [chatHistory, setChatHistory] = useState([{ role: "assistant", content: "مرحباً! أنا مساعد BlackRock الذكي.\nيمكنني إخبارك عن مستويات الاستثمار، أرباحك، مهامك، وكل ما يخص المنصة.\nكيف أساعدك اليوم؟" }]);
-  const [chatInput, setChatInput] = useState("");
-  const [chatLoading, setChatLoading] = useState(false);
-  const [lPhone, setLPhone] = useState(""); const [lPass, setLPass] = useState("");
-  const [rName, setRName] = useState(""); const [rPhone, setRPhone] = useState(""); const [rPass, setRPass] = useState(""); const [rRef, setRRef] = useState("");
-  const [formErr, setFormErr] = useState("");
-  const [copied, setCopied] = useState(false);
-  const timerRefs = useRef({});
-  const chatEndRef = useRef(null);
-  const saveTimeout = useRef(null);
-
-  const currentUser = db?.uid && db?.users?.[db.uid] ? db.users[db.uid] : null;
-
-  // ── INIT ──
-  useEffect(() => {
-    setTimeout(() => {
-      const saved = dbRead();
-      if (saved) {
-        // Reset daily tasks if needed
-        if (saved.uid && saved.users?.[saved.uid]) {
-          const u = saved.users[saved.uid];
-          if (u.dailyTasksDate !== today()) {
-            const cfg = getLevelConfig(u.level);
-            saved.users[saved.uid] = { ...u, dailyTasksDate: today(), dailyTasks: genTasks(u.level) };
-          }
-        }
-        setDbState(saved);
-        if (saved.uid && saved.users?.[saved.uid]) {
-          setScreen("app");
-          if (saved.users[saved.uid].spinAvailable) setShowSpin(true);
-        } else { setScreen("login"); }
-      } else { setScreen("login"); }
-    }, 1800);
-    // URL param
-    const p = new URLSearchParams(window.location.search).get("ref");
-    if (p) { setRRef(p); }
-  }, []);
-
-  // ── PERSISTENT SAVE ──
-  function saveDb(newDb) {
-    setDbState(newDb);
-    if (saveTimeout.current) clearTimeout(saveTimeout.current);
-    saveTimeout.current = setTimeout(() => { dbWrite(newDb); }, 50);
-  }
-
-  function updUser(u, extra) {
-    const newDb = { ...db, users: { ...db.users, [u.id]: u } };
-    if (extra) Object.entries(extra).forEach(([k, v]) => { newDb.users[k] = v; });
-    saveDb(newDb);
-  }
-
-  function showToast(msg, type = "success") { setToast({ msg, type }); }
-
-  // ── AUTH ──
-  function doLogin() {
-    setFormErr("");
-    if (!lPhone || !lPass) { setFormErr("يرجى ملء جميع الحقول"); return; }
-    const u = Object.values(db?.users || {}).find(x => x.phone === lPhone && x.password === lPass);
-    if (!u) { setFormErr("رقم الهاتف أو كلمة المرور غير صحيحة"); return; }
-    let final = u;
-    if (u.dailyTasksDate !== today()) {
-      final = { ...u, dailyTasksDate: today(), dailyTasks: genTasks(u.level) };
-    }
-    const newDb = { ...(db || { users: {} }), users: { ...(db?.users || {}), [final.id]: final }, uid: final.id };
-    saveDb(newDb);
-    setScreen("app");
-    if (final.spinAvailable) setShowSpin(true);
-    showToast(`مرحباً ${final.name}!`);
-  }
-
-  function doRegister() {
-    setFormErr("");
-    if (!rName || !rPhone || !rPass) { setFormErr("يرجى ملء جميع الحقول"); return; }
-    if (rPass.length < 6) { setFormErr("كلمة المرور يجب أن تكون 6 أحرف على الأقل"); return; }
-    const users = db?.users || {};
-    if (Object.values(users).find(u => u.phone === rPhone)) { setFormErr("رقم الهاتف مستخدم مسبقاً"); return; }
-    let refUser = null;
-    if (rRef) {
-      refUser = Object.values(users).find(u => u.referralCode === rRef.toUpperCase());
-      if (!refUser) { setFormErr("كود الدعوة غير صحيح"); return; }
-    }
-    const id = genId(), code = genCode();
-    const nu = { id, phone: rPhone, password: rPass, name: rName, balance: 0, totalEarnings: 0, referralCode: code, referredBy: refUser?.id || null, referrals: [], level: "تجريبي", joinDate: new Date().toISOString(), transactions: [], dailyTasksDate: today(), dailyTasks: genTasks("تجريبي"), spinAvailable: !!refUser };
-    const newUsers = { ...users, [id]: nu };
-    if (refUser) {
-      newUsers[refUser.id] = { ...refUser, referrals: [...(refUser.referrals || []), id], spinAvailable: true };
-    }
-    const newDb = { users: newUsers, uid: id };
-    saveDb(newDb);
-    setScreen("app");
-    if (refUser) setShowSpin(true);
-    showToast("تم إنشاء الحساب بنجاح! 🎉");
-  }
-
-  function doLogout() {
-    const newDb = { ...db, uid: null };
-    saveDb(newDb);
-    setScreen("login"); setTab("home");
-    setLPhone(""); setLPass("");
-    showToast("تم تسجيل الخروج", "info");
-  }
-
-  // ── SPIN ──
-  function onSpinResult(val) {
-    if (!currentUser) return;
-    let u = { ...currentUser, spinAvailable: false };
-    if (val.type === "money") {
-      u.balance = (u.balance || 0) + val.n;
-      u.totalEarnings = (u.totalEarnings || 0) + val.n;
-      u.transactions = [{ id: genId(), type: "عجلة الحظ", amount: val.n, date: new Date().toISOString() }, ...(u.transactions || [])];
-      showToast(`ربحت ${val.n} DZD من عجلة الحظ! 🎉`);
-    } else if (val.type === "pts") { showToast(`ربحت ${val.n} نقطة! 🌟`); }
-    else { showToast("لا توجد جائزة هذه المرة 😔", "info"); }
-    updUser(u);
-  }
-
-  // ── TASKS ──
-  function startTask(tid) {
-    if (timerRefs.current[tid]) return;
-    setTimers(p => ({ ...p, [tid]: 40 }));
-    timerRefs.current[tid] = setInterval(() => {
-      setTimers(p => {
-        const v = (p[tid] || 40) - 1;
-        if (v <= 0) {
-          clearInterval(timerRefs.current[tid]);
-          delete timerRefs.current[tid];
-          completeTask(tid);
-          return { ...p, [tid]: 0 };
-        }
-        return { ...p, [tid]: v };
-      });
-    }, 1000);
-  }
-
-  function completeTask(tid) {
-    setDbState(prev => {
-      if (!prev?.uid || !prev.users?.[prev.uid]) return prev;
-      const u = { ...prev.users[prev.uid] };
-      const tasks = [...(u.dailyTasks || [])];
-      const idx = tasks.findIndex(t => t.id === tid);
-      if (idx === -1 || tasks[idx].status !== "pending") return prev;
-      tasks[idx] = { ...tasks[idx], status: "completed" };
-      const rw = tasks[idx].reward;
-      u.dailyTasks = tasks;
-      u.balance = (u.balance || 0) + rw;
-      u.totalEarnings = (u.totalEarnings || 0) + rw;
-      u.transactions = [{ id: genId(), type: "مهمة يومية", amount: rw, date: new Date().toISOString() }, ...(u.transactions || [])];
-      const newUsers = { ...prev.users, [u.id]: u };
-      // Referral bonus
-      if (u.referredBy && newUsers[u.referredBy]) {
-        const ref = { ...newUsers[u.referredBy] }, bonus = Math.floor(rw * 0.05);
-        if (bonus > 0) {
-          ref.balance = (ref.balance || 0) + bonus;
-          ref.totalEarnings = (ref.totalEarnings || 0) + bonus;
-          ref.transactions = [{ id: genId(), type: "عمولة إحالة", amount: bonus, date: new Date().toISOString() }, ...(ref.transactions || [])];
-          newUsers[ref.id] = ref;
-        }
-      }
-      const nd = { ...prev, users: newUsers };
-      dbWrite(nd);
-      return nd;
-    });
-    showToast("مهمة مكتملة! +DZD 🎯");
-  }
-
-  function cancelTask(tid) {
-    if (timerRefs.current[tid]) { clearInterval(timerRefs.current[tid]); delete timerRefs.current[tid]; }
-    setTimers(p => ({ ...p, [tid]: 0 }));
-    setDbState(prev => {
-      if (!prev?.uid || !prev.users?.[prev.uid]) return prev;
-      const u = { ...prev.users[prev.uid] };
-      const tasks = [...(u.dailyTasks || [])];
-      const idx = tasks.findIndex(t => t.id === tid);
-      if (idx !== -1) tasks[idx] = { ...tasks[idx], status: "cancelled" };
-      u.dailyTasks = tasks;
-      const nd = { ...prev, users: { ...prev.users, [u.id]: u } };
-      dbWrite(nd);
-      return nd;
-    });
-  }
-
-  // ── CHAT ──
-  async function sendChat(text) {
-    if (!text.trim() || chatLoading) return;
-    const nm = [...chatHistory, { role: "user", content: text }];
-    setChatHistory(nm); setChatInput(""); setChatLoading(true);
-    try {
-      const reply = await callAI(nm.map(m => ({ role: m.role, content: m.content })), currentUser);
-      setChatHistory(p => [...p, { role: "assistant", content: reply }]);
-    } catch { setChatHistory(p => [...p, { role: "assistant", content: "حدث خطأ في الاتصال، أعد المحاولة." }]); }
-    setChatLoading(false);
-  }
-
-  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [chatHistory]);
-
-  function getRefLink() { return `${window.location.href.split("?")[0]}?ref=${currentUser?.referralCode}`; }
-
-  function copyLink() {
-    const link = getRefLink();
-    navigator.clipboard.writeText(link).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2500); showToast("تم نسخ الرابط!"); }).catch(() => { setModal("reflink"); });
-  }
-
-  // ── COMPUTED ──
-  const done = (currentUser?.dailyTasks || []).filter(t => t.status === "completed").length;
-  const pending = (currentUser?.dailyTasks || []).filter(t => t.status === "pending").length;
-  const levelCfg = getLevelConfig(currentUser?.level || "تجريبي");
-  const nextLevel = LEVELS[LEVELS.findIndex(l => l.id === (currentUser?.level || "تجريبي")) + 1];
-
-  // ══════════════════════════════════════════════════
-  // DESIGN TOKENS
-  // ══════════════════════════════════════════════════
-  const C = {
-    bg: "#080c14", card: "#0f1623", card2: "#111827",
-    border: "#1a2332", borderHover: "#2a3a52",
-    gold: "#f59e0b", green: "#10b981", blue: "#3b82f6", red: "#ef4444", purple: "#8b5cf6",
-    text: "#e2e8f0", muted: "#64748b", faint: "#1e293b",
-  };
-
-  const css = {
-    wrap: { background: C.bg, minHeight: "100vh", color: C.text, fontFamily: "'Segoe UI', Arial, sans-serif", maxWidth: 430, margin: "0 auto", paddingBottom: 80, direction: "rtl", position: "relative" },
-    card: (b, bg) => ({ background: bg || C.card, borderRadius: 16, padding: 16, marginBottom: 12, border: `1px solid ${b || C.border}` }),
-    btn: (v, sm) => ({
-      background: v === "gold" ? `linear-gradient(135deg,#f59e0b,#d97706)` : v === "green" ? `linear-gradient(135deg,#10b981,#059669)` : v === "red" ? "#7f1d1d" : v === "blue" ? `linear-gradient(135deg,#3b82f6,#2563eb)` : "#1e293b",
-      color: v === "gold" ? "#000" : "#fff",
-      border: "none", borderRadius: sm ? 8 : 12, padding: sm ? "7px 14px" : "12px 20px",
-      fontWeight: "bold", cursor: "pointer", fontSize: sm ? 13 : 14, width: "100%",
-      boxShadow: v === "gold" ? "0 2px 12px rgba(245,158,11,0.3)" : "none"
-    }),
-    input: { background: C.faint, border: `1px solid ${C.border}`, borderRadius: 12, padding: "13px 14px", color: C.text, fontSize: 14, width: "100%", outline: "none", direction: "rtl", boxSizing: "border-box", transition: "border 0.2s" },
-    navBar: { position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 430, background: C.card, borderTop: `1px solid ${C.border}`, display: "flex", justifyContent: "space-around", padding: "6px 0 8px", zIndex: 50 },
-    hdr: { background: C.card, padding: "10px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${C.border}`, position: "sticky", top: 0, zIndex: 40 },
-    sectionTitle: { color: C.text, fontSize: 17, fontWeight: "bold", textAlign: "right", marginBottom: 12 },
-    label: { color: C.muted, fontSize: 12, display: "block", marginBottom: 5, textAlign: "right" },
-    row: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: `1px solid ${C.border}` },
-  };
-
-  // ══════════════════════════════════════════════════
-  // SPLASH SCREEN
-  // ══════════════════════════════════════════════════
-  if (screen === "splash") {
-    return (
-      <div style={{ ...css.wrap, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ width: 80, height: 80, background: "linear-gradient(135deg,#f59e0b,#d97706)", borderRadius: 24, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, margin: "0 auto 20px", boxShadow: "0 0 40px rgba(245,158,11,0.4)" }}>🏦</div>
-          <div style={{ color: C.gold, fontSize: 36, fontWeight: "900", letterSpacing: 5 }}>BLACKROCK</div>
-          <div style={{ color: C.muted, fontSize: 13, marginTop: 6 }}>BlackRock, Inc — Investment Platform</div>
-          <div style={{ marginTop: 40, display: "flex", gap: 8, justifyContent: "center" }}>
-            {[0, 1, 2].map(i => <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: i === 0 ? C.gold : C.border, animation: `pulse ${1 + i * 0.3}s infinite` }} />)}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ══════════════════════════════════════════════════
-  // AUTH SCREENS
-  // ══════════════════════════════════════════════════
-  if (screen === "login" || screen === "register") {
-    return (
-      <div style={{ ...css.wrap, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: 20 }}>
-        {toast && <Toast msg={toast.msg} type={toast.type} onDone={() => setToast(null)} />}
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <div style={{ color: C.gold, fontSize: 34, fontWeight: "900", letterSpacing: 4 }}>BLACKROCK</div>
-          <div style={{ color: C.muted, fontSize: 13 }}>BlackRock, Inc — منصة الاستثمار</div>
-          <div style={{ background: "#064e3b", color: C.green, border: `1px solid ${C.green}`, borderRadius: 20, padding: "4px 16px", fontSize: 12, fontWeight: "bold", display: "inline-block", marginTop: 10 }}>🔒 SECURE V3</div>
-        </div>
-        <div style={{ ...css.card(), width: "100%", maxWidth: 400 }}>
-          <div style={{ color: C.text, fontWeight: "bold", fontSize: 20, textAlign: "center", marginBottom: 20 }}>
-            {screen === "login" ? "تسجيل الدخول" : "إنشاء حساب جديد"}
-          </div>
-          {formErr && <div style={{ background: "#1a0a0a", border: "1px solid #7f1d1d", color: "#fca5a5", borderRadius: 10, padding: "10px 14px", marginBottom: 14, fontSize: 13, textAlign: "right" }}>{formErr}</div>}
-
-          {screen === "login" ? (
-            <>
-              {[["رقم الهاتف", lPhone, setLPhone, "0xxxxxxxxx", "tel"], ["كلمة المرور", lPass, setLPass, "••••••••", "password"]].map(([l, v, s, p, t]) => (
-                <div key={l} style={{ marginBottom: 14 }}>
-                  <label style={css.label}>{l}</label>
-                  <input style={css.input} type={t} value={v} onChange={e => s(e.target.value)} placeholder={p} onKeyDown={e => e.key === "Enter" && doLogin()} />
-                </div>
-              ))}
-              <button style={css.btn("gold")} onClick={doLogin}>دخول</button>
-              <div style={{ textAlign: "center", marginTop: 16, color: C.muted, fontSize: 14 }}>
-                ليس لديك حساب؟ <span style={{ color: C.gold, cursor: "pointer", fontWeight: "bold" }} onClick={() => { setScreen("register"); setFormErr(""); }}>إنشاء حساب</span>
-              </div>
-            </>
-          ) : (
-            <>
-              {[["الاسم الكامل", rName, setRName, "اسمك", "text"], ["رقم الهاتف", rPhone, setRPhone, "0xxxxxxxxx", "tel"], ["كلمة المرور (6+ أحرف)", rPass, setRPass, "••••••••", "password"]].map(([l, v, s, p, t]) => (
-                <div key={l} style={{ marginBottom: 12 }}>
-                  <label style={css.label}>{l}</label>
-                  <input style={css.input} type={t} value={v} onChange={e => s(e.target.value)} placeholder={p} />
-                </div>
-              ))}
-              <div style={{ marginBottom: 18 }}>
-                <label style={css.label}>كود الدعوة (اختياري)</label>
-                <input style={{ ...css.input, borderColor: rRef ? C.gold : C.border }} value={rRef} onChange={e => setRRef(e.target.value)} placeholder="XXXXXX" />
-                {rRef && <div style={{ color: C.gold, fontSize: 11, marginTop: 5, textAlign: "right" }}>✓ سيتم ربطك بصاحب الكود</div>}
-              </div>
-              <button style={css.btn("gold")} onClick={doRegister}>إنشاء الحساب</button>
-              <div style={{ textAlign: "center", marginTop: 16, color: C.muted, fontSize: 14 }}>
-                لديك حساب؟ <span style={{ color: C.gold, cursor: "pointer", fontWeight: "bold" }} onClick={() => { setScreen("login"); setFormErr(""); }}>تسجيل الدخول</span>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  if (!currentUser) return null;
-
-  // ══════════════════════════════════════════════════
-  // TAB: HOME
-  // ══════════════════════════════════════════════════
-  const TabHome = () => (
-    <div style={{ padding: "14px 14px" }}>
-      {/* Balance Card */}
-      <div style={{ background: "linear-gradient(135deg,#0d1f12,#0a1a2e,#1a0d00)", border: `1px solid ${C.border}`, borderRadius: 20, padding: "20px 18px", marginBottom: 14, position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -20, left: -20, width: 120, height: 120, background: "rgba(245,158,11,0.05)", borderRadius: "50%" }} />
-        <div style={{ color: C.muted, fontSize: 12, textAlign: "right", marginBottom: 4 }}>رصيدك الإجمالي</div>
-        <div style={{ color: C.gold, fontSize: 44, fontWeight: "900", textAlign: "right", lineHeight: 1 }}>{fmtNum(currentUser.balance || 0)}</div>
-        <div style={{ color: C.muted, fontSize: 14, textAlign: "right", marginBottom: 16 }}>دينار جزائري (DZD)</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-          {[["الأرباح الكلية", fmtNum(currentUser.totalEarnings || 0), C.gold], ["يومي", fmtNum(levelCfg.daily), C.green], ["الفريق", (currentUser.referrals || []).length, C.blue]].map(([l, v, c]) => (
-            <div key={l} style={{ background: "rgba(255,255,255,0.04)", borderRadius: 10, padding: "8px 6px", textAlign: "center", border: "1px solid rgba(255,255,255,0.06)" }}>
-              <div style={{ color: c, fontWeight: "bold", fontSize: 14 }}>{v}</div>
-              <div style={{ color: C.muted, fontSize: 10, marginTop: 2 }}>{l}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginBottom: 14 }}>
-        {[
-          { ic: "⬇", lb: "سحب", fn: () => { if (currentUser.level === "تجريبي") showToast("السحب متاح من مستوى M1", "error"); else setModal("withdraw"); } },
-          { ic: "🔄", lb: "تحويل", fn: () => showToast("قريباً", "info") },
-          { ic: "👥", lb: "فريقي", fn: () => setModal("team") },
-          { ic: "🔗", lb: "رابطي", fn: () => setTab("account") },
-        ].map(x => (
-          <button key={x.lb} onClick={x.fn} style={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 14, padding: "12px 4px", color: C.text, cursor: "pointer", fontSize: 10, display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
-            <span style={{ fontSize: 24 }}>{x.ic}</span>{x.lb}
-          </button>
-        ))}
-      </div>
-
-      {/* Level Progress */}
-      {nextLevel && (
-        <div style={css.card(C.border)}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-            <div style={{ color: nextLevel.color, fontSize: 12, fontWeight: "bold" }}>الهدف: {nextLevel.name}</div>
-            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-              <div style={{ color: levelCfg.color, fontSize: 13, fontWeight: "bold" }}>{currentUser.level}</div>
-              <div style={{ color: C.muted, fontSize: 11 }}>المستوى</div>
-            </div>
-          </div>
-          <div style={{ background: C.faint, borderRadius: 99, height: 8, overflow: "hidden" }}>
-            <div style={{ background: `linear-gradient(90deg,${levelCfg.color},${nextLevel.color})`, width: `${Math.min(((currentUser.balance || 0) / nextLevel.invest) * 100, 100)}%`, height: "100%", borderRadius: 99, transition: "width 0.8s ease" }} />
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
-            <div style={{ color: C.muted, fontSize: 11 }}>{fmtNum(nextLevel.invest)} DZD</div>
-            <div style={{ color: C.muted, fontSize: 11 }}>{Math.min(Math.round(((currentUser.balance || 0) / nextLevel.invest) * 100), 100)}%</div>
-          </div>
-        </div>
-      )}
-
-      {/* Recent Transactions */}
-      {(currentUser.transactions || []).length > 0 && (
-        <>
-          <div style={css.sectionTitle}>آخر العمليات</div>
-          {(currentUser.transactions || []).slice(0, 5).map((tx, i) => (
-            <div key={i} style={{ ...css.card(), padding: "11px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ color: C.green, fontWeight: "bold", fontSize: 14 }}>+{fmtNum(tx.amount)} DZD</div>
-              <div style={{ textAlign: "right" }}>
-                <div style={{ color: C.text, fontSize: 13 }}>{tx.type}</div>
-                <div style={{ color: C.muted, fontSize: 11 }}>{new Date(tx.date).toLocaleDateString("ar-DZ")}</div>
-              </div>
-            </div>
-          ))}
-        </>
-      )}
+    <div class="pb-out"><div class="pb-in" id="pb-in" style="width:0%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text2);">
+      <span id="pb-pct">0% مكتمل</span><span id="pb-nxt">M1</span>
     </div>
-  );
+  </div>
 
-  // ══════════════════════════════════════════════════
-  // TAB: TASKS
-  // ══════════════════════════════════════════════════
-  const TabTasks = () => (
-    <div style={{ padding: "14px 14px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-        <div style={{ background: C.faint, borderRadius: 20, padding: "4px 12px", color: done === levelCfg.tasks ? C.green : C.gold, fontSize: 12, fontWeight: "bold" }}>{done}/{levelCfg.tasks}</div>
-        <div style={css.sectionTitle}>المهام اليومية ⚡</div>
-      </div>
-      <div style={{ ...css.card("#78350f", "#1c1200"), marginBottom: 14 }}>
-        <div style={{ color: "#fbbf24", fontSize: 12, textAlign: "right", lineHeight: 1.7 }}>
-          كل مهمة تستغرق 40 ثانية للاكتمال. إذا ضغطت إلغاء أو غادرت الصفحة، تُلغى المهمة وتعود في اليوم التالي فقط.
-        </div>
-      </div>
-      {(currentUser.dailyTasks || []).map(task => {
-        const t = timers[task.id] || 0, running = t > 0 && task.status === "pending";
-        const pct = ((40 - t) / 40) * 100;
-        return (
-          <div key={task.id} style={{ ...css.card(task.status === "completed" ? "#064e3b" : task.status === "cancelled" ? "#450a0a" : C.border), marginBottom: 10 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div>
-                {task.status === "pending" && !running && (
-                  <button onClick={() => startTask(task.id)} style={{ ...css.btn("gold", true), width: "auto" }}>▶ ابدأ</button>
-                )}
-                {running && (
-                  <button onClick={() => cancelTask(task.id)} style={{ ...css.btn("red", true), width: "auto" }}>✕ إلغاء</button>
-                )}
-                {task.status === "completed" && <div style={{ color: C.green, fontSize: 22 }}>✅</div>}
-                {task.status === "cancelled" && <div style={{ color: "#ef4444", fontSize: 22 }}>✕</div>}
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <div style={{ color: C.text, fontWeight: "bold", fontSize: 14 }}>مهمة يومية {task.id}</div>
-                <div style={{ color: task.status === "completed" ? C.green : task.status === "cancelled" ? "#ef4444" : running ? C.gold : C.muted, fontSize: 12, marginTop: 2 }}>
-                  {task.status === "completed" ? "مكتملة بنجاح" : task.status === "cancelled" ? "ملغاة — تعود غداً" : running ? `⏱ ${t} ثانية` : "في الانتظار"}
-                </div>
-                <div style={{ color: C.gold, fontSize: 13, fontWeight: "bold", marginTop: 2 }}>{fmtNum(task.reward)} DZD</div>
-              </div>
-            </div>
-            {running && (
-              <div style={{ background: C.faint, borderRadius: 99, height: 5, marginTop: 12, overflow: "hidden" }}>
-                <div style={{ background: `linear-gradient(90deg,${C.gold},#fbbf24)`, width: `${pct}%`, height: "100%", borderRadius: 99, transition: "width 1s linear" }} />
-              </div>
-            )}
-          </div>
-        );
-      })}
-      <div style={{ ...css.card(C.blue, "#0a1628"), textAlign: "center", padding: "12px 14px" }}>
-        <div style={{ color: C.blue, fontSize: 12 }}>الأرباح اليومية المتوقعة</div>
-        <div style={{ color: C.text, fontSize: 20, fontWeight: "bold", marginTop: 4 }}>{fmtNum(levelCfg.daily)} DZD</div>
-        <div style={{ color: C.muted, fontSize: 11, marginTop: 2 }}>= {levelCfg.tasks} مهمة × {fmtNum(levelCfg.reward)} DZD</div>
-      </div>
+  <div class="ms-row">
+    <div class="ms-cell" onclick="switchPage('tasks')"><div class="ms-i">⚡</div><div class="ms-v" id="h-tasks">0</div><div class="ms-l">المهام</div></div>
+    <div class="ms-cell" onclick="switchPage('referral')"><div class="ms-i">👥</div><div class="ms-v">0</div><div class="ms-l">الإحالات</div></div>
+    <div class="ms-cell"><div class="ms-i">📅</div><div class="ms-v" id="h-days">1</div><div class="ms-l">الأيام</div></div>
+  </div>
+
+  <div class="st">آخر المعاملات</div>
+  <div class="card" id="tx-list"><div style="padding:10px 0;text-align:center;color:var(--text2);font-size:12px;">🔍 لا توجد معاملات بعد</div></div>
+</div>
+
+<!-- LEVELS -->
+<div class="pg" id="pg-levels">
+  <div class="st" style="margin-bottom:16px;">🏆 مستويات الاستثمار</div>
+  <div class="lvc act-lv">
+    <div class="lvc-hd"><div class="lvc-name" style="font-size:13px;font-family:'Cairo',sans-serif;font-weight:900;">تدريب المكتتب</div><div class="lv-bdg bdg-a">✓ مفعل</div></div>
+    <div class="lvc-info">
+      <div class="lv-it"><div class="lt">💰 الاستثمار</div><div class="lv">0 DZD</div></div>
+      <div class="lv-it"><div class="lt">📋 المهام</div><div class="lv">5</div></div>
+      <div class="lv-it"><div class="lt">💵 للمهمة</div><div class="lv" style="color:var(--gold)">43</div></div>
+      <div class="lv-it"><div class="lt">📈 يومي</div><div class="lv" style="color:var(--green)">215</div></div>
     </div>
-  );
+    <div class="lock-n">🔒 السحب مقفل — يتطلب الترقية إلى M1 على الأقل</div>
+  </div>
+  <div id="lvl-list"></div>
+</div>
 
-  // ══════════════════════════════════════════════════
-  // TAB: UPGRADE — Full level table
-  // ══════════════════════════════════════════════════
-  const TabUpgrade = () => (
-    <div style={{ padding: "14px 14px" }}>
-      <div style={css.sectionTitle}>مستويات الاستثمار 🏆</div>
-      {LEVELS.map(lvl => {
-        const active = currentUser.level === lvl.id;
-        const canUpgrade = !active && lvl.invest > 0;
-        return (
-          <div key={lvl.id} style={{ ...css.card(active ? lvl.color : C.border), marginBottom: 10, position: "relative", overflow: "hidden" }}>
-            {active && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: `linear-gradient(90deg,${lvl.color},transparent)` }} />}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              {active
-                ? <span style={{ background: "#064e3b", color: C.green, border: `1px solid ${C.green}`, borderRadius: 20, padding: "3px 12px", fontSize: 11, fontWeight: "bold" }}>✓ مفعّل</span>
-                : <span style={{ color: C.muted, fontSize: 11 }}>{lvl.invest > 0 ? fmtNum(lvl.invest) + " DZD" : "مجاني"}</span>}
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <div style={{ color: lvl.color, fontWeight: "bold", fontSize: 18 }}>{lvl.name}</div>
-              </div>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6, marginBottom: canUpgrade ? 12 : 0 }}>
-              {[["📈 يومي", fmtNum(lvl.daily)], [`📋 ${lvl.tasks} مهمة`, fmtNum(lvl.reward)], ["📅 شهري", lvl.monthly ? fmtNum(lvl.monthly) : "—"], ["📆 سنوي", lvl.yearly ? fmtNum(lvl.yearly) : "—"]].map(([k, v]) => (
-                <div key={k} style={{ background: C.faint, borderRadius: 8, padding: "8px 4px", textAlign: "center" }}>
-                  <div style={{ color: C.muted, fontSize: 9 }}>{k}</div>
-                  <div style={{ color: lvl.color, fontWeight: "bold", fontSize: 10, marginTop: 2 }}>{v}</div>
-                </div>
-              ))}
-            </div>
-            {active && lvl.invest === 0 && (
-              <div style={{ background: "#450a0a", border: "1px solid #7f1d1d", borderRadius: 10, padding: "8px 12px", textAlign: "center", color: "#fca5a5", fontSize: 12 }}>
-                🔒 السحب مقفل — ترقّ إلى M1 لفتح السحب
-              </div>
-            )}
-            {canUpgrade && (
-              <button onClick={() => showToast("تواصل مع الإدارة لطلب الترقية", "info")} style={css.btn("gold")}>
-                ⬆ ترقية إلى {lvl.name} — {fmtNum(lvl.invest)} DZD
-              </button>
-            )}
-          </div>
-        );
-      })}
+<!-- TASKS -->
+<div class="pg" id="pg-tasks">
+  <div class="st">⚡ المهام اليومية <span id="tasks-ctr">0/5 مكتملة</span></div>
+  <div style="background:rgba(255,184,0,0.05);border:1px solid rgba(255,184,0,0.13);border-radius:11px;padding:11px 13px;margin-bottom:13px;font-size:11px;color:var(--text2);line-height:1.75;">
+    ⏱️ كل مهمة تحتاج <b style="color:var(--gold)">40 ثانية</b>. إذا ضغطت ✕ أو غادرت الصفحة <b style="color:var(--red)">تُلغى وتعود غداً فقط</b>.
+  </div>
+  <div id="tasks-list"></div>
+</div>
+
+<!-- ACCOUNT -->
+<div class="pg" id="pg-account">
+  <div class="av-sect">
+    <div class="av">A</div>
+    <div>
+      <div class="u-name">المستخدم</div>
+      <div class="u-id">ID: #00001 | BlackRock, Inc</div>
+      <div class="u-lv-badge">⭐ <span id="acc-lv-nm">المستوى التجريبي</span></div>
     </div>
-  );
+  </div>
+  <div class="acc-sts">
+    <div class="ac-st"><div class="v">0</div><div class="l">الإحالات</div></div>
+    <div class="ac-st"><div class="v" id="acc-tasks-v">0</div><div class="l">المهام</div></div>
+    <div class="ac-st"><div class="v" id="acc-bal-v" style="font-size:12px">0</div><div class="l">DZD</div></div>
+  </div>
 
-  // ══════════════════════════════════════════════════
-  // TAB: ACCOUNT
-  // ══════════════════════════════════════════════════
-  const TabAccount = () => (
-    <div style={{ padding: "14px 14px" }}>
-      {/* Profile */}
-      <div style={{ ...css.card(), textAlign: "center", padding: "20px 16px" }}>
-        <div style={{ width: 68, height: 68, background: `linear-gradient(135deg,${levelCfg.color},${C.gold})`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, fontWeight: "bold", color: "#000", margin: "0 auto 12px", boxShadow: `0 0 20px ${levelCfg.color}44` }}>
-          {(currentUser.name || "U")[0].toUpperCase()}
-        </div>
-        <div style={{ color: C.text, fontWeight: "bold", fontSize: 18 }}>{currentUser.name}</div>
-        <div style={{ color: C.muted, fontSize: 12, marginTop: 4 }}>ID: #{currentUser.id.slice(-6).toUpperCase()} | BlackRock, Inc</div>
-        <div style={{ background: C.faint, borderRadius: 20, padding: "5px 18px", display: "inline-block", marginTop: 10, color: levelCfg.color, fontSize: 13, fontWeight: "bold", border: `1px solid ${levelCfg.color}44` }}>
-          {levelCfg.name}
-        </div>
-      </div>
+  <div class="st">العمليات المالية</div>
+  <div class="menu-s">
+    <div class="mi"><div class="mi-ico" style="background:rgba(255,184,0,0.1)">💰</div><div class="mi-txt"><div class="mi-ttl">رصيدي</div><div class="mi-sub" id="acc-bal-show">0.00 DZD</div></div><div class="mi-arr">←</div></div>
+    <div class="mi" onclick="openMod('deposit')"><div class="mi-ico" style="background:rgba(0,230,118,0.09)">⬆️</div><div class="mi-txt"><div class="mi-ttl">إيداع</div><div class="mi-sub">أضف رصيداً لحسابك</div></div><div class="mi-arr">←</div></div>
+    <div class="mi" onclick="openMod('withdraw')"><div class="mi-ico" style="background:rgba(68,138,255,0.09)">⬇️</div><div class="mi-txt"><div class="mi-ttl">سحب</div><div class="mi-sub" id="wd-sub-acc">متاح من مستوى M1</div></div><div class="mi-arr">←</div></div>
+    <div class="mi" onclick="openMod('transfer')"><div class="mi-ico" style="background:rgba(68,138,255,0.07)">🔄</div><div class="mi-txt"><div class="mi-ttl">تحويل</div><div class="mi-sub">حوّل لمستخدم آخر</div></div><div class="mi-arr">←</div></div>
+  </div>
+  <div id="acc-lock-notice" style="background:rgba(255,23,68,0.07);border:1px solid rgba(255,23,68,0.18);border-radius:11px;padding:11px 14px;margin-bottom:13px;font-size:11px;color:#FF7090;text-align:center;">⚠️ المستوى التجريبي: لا يمكن سحب الأموال حتى الترقية إلى M1</div>
 
-      {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 14 }}>
-        {[[fmtNum(currentUser.balance || 0), "الرصيد", C.gold], [done, "مهام اليوم", C.green], [(currentUser.referrals || []).length, "الفريق", C.blue]].map(([v, l, c]) => (
-          <div key={l} style={{ ...css.card(), textAlign: "center", padding: "13px 6px" }}>
-            <div style={{ color: c, fontWeight: "bold", fontSize: 14 }}>{v}</div>
-            <div style={{ color: C.muted, fontSize: 11, marginTop: 3 }}>{l}</div>
-          </div>
-        ))}
-      </div>
+  <div class="st">الشركة والمزيد</div>
+  <div class="menu-s">
+    <div class="mi" onclick="switchPage('security')"><div class="mi-ico" style="background:rgba(0,230,118,0.07)">🔒</div><div class="mi-txt"><div class="mi-ttl">وثيقة الأمان</div><div class="mi-sub">SECURE V3 — BlackRock, Inc</div></div><div class="mi-arr">←</div></div>
+    <div class="mi" onclick="switchPage('about')"><div class="mi-ico" style="background:rgba(255,184,0,0.07)">🏢</div><div class="mi-txt"><div class="mi-ttl">عن الشركة</div><div class="mi-sub">BlackRock, Inc — أمريكا 2020</div></div><div class="mi-arr">←</div></div>
+    <div class="mi" onclick="switchPage('referral')"><div class="mi-ico" style="background:rgba(255,23,68,0.07)">👥</div><div class="mi-txt"><div class="mi-ttl">الإحالات</div><div class="mi-sub">ادعُ أصدقاءك واربح</div></div><div class="mi-arr">←</div></div>
+    <div class="mi" onclick="doLogout()"><div class="mi-ico" style="background:rgba(255,23,68,0.07)">🚪</div><div class="mi-txt"><div class="mi-ttl" style="color:var(--red)">تسجيل الخروج</div></div><div class="mi-arr">←</div></div>
+  </div>
 
-      {/* Referral Link */}
-      <div style={css.card(C.gold)}>
-        <div style={{ color: C.text, fontWeight: "bold", fontSize: 15, textAlign: "right", marginBottom: 10 }}>🔗 رابط دعوتك الشخصي</div>
-        <div style={{ background: C.faint, borderRadius: 10, padding: "10px 12px", color: C.muted, fontSize: 11, wordBreak: "break-all", textAlign: "right", marginBottom: 8, lineHeight: 1.8 }}>
-          {window.location.href.split("?")[0]}?ref=<span style={{ color: C.gold, fontWeight: "bold" }}>{currentUser.referralCode}</span>
-        </div>
-        <div style={{ color: C.muted, fontSize: 12, textAlign: "right", marginBottom: 10, lineHeight: 1.7 }}>
-          كل شخص يسجل عبر رابطك يُربط بك تلقائياً. تحصل على 5% من أرباح مهامه اليومية + لفة عجلة الحظ لكليكما.
-        </div>
-        <button onClick={copyLink} style={css.btn(copied ? "green" : "gold")}>{copied ? "✓ تم النسخ!" : "📋 نسخ الرابط"}</button>
-      </div>
+  <div class="st">جدول المستويات</div>
+  <div class="card" style="overflow-x:auto;padding:11px;">
+    <table class="inf-tbl">
+      <tr><th>المستوى</th><th>الاستثمار</th><th>المهام</th><th>للمهمة</th><th>يومي</th><th>شهري</th></tr>
+      <tr><td style="color:var(--blue)">تجريبي</td><td>—</td><td>5</td><td>43</td><td>215</td><td style="color:var(--text2)">3 أيام</td></tr>
+      <tr><td style="color:var(--gold)">M1</td><td>7,000</td><td>5</td><td>43</td><td style="color:var(--green)">215</td><td style="color:var(--green)">6,450</td></tr>
+      <tr><td style="color:var(--gold)">M2</td><td>26,600</td><td>10</td><td>86</td><td style="color:var(--green)">860</td><td style="color:var(--green)">25,800</td></tr>
+      <tr><td style="color:var(--gold)">M3</td><td>95,000</td><td>25</td><td>131</td><td style="color:var(--green)">3,275</td><td style="color:var(--green)">98,250</td></tr>
+      <tr><td style="color:var(--gold)">M4</td><td>300,000</td><td>50</td><td>222</td><td style="color:var(--green)">11,100</td><td style="color:var(--green)">333,000</td></tr>
+      <tr><td style="color:var(--gold)">M5</td><td>780,000</td><td>80</td><td>390</td><td style="color:var(--green)">31,200</td><td style="color:var(--green)">936,000</td></tr>
+      <tr><td style="color:var(--gold)">M6</td><td>1,950,000</td><td>130</td><td>652</td><td style="color:var(--green)">84,760</td><td style="color:var(--green)">2,542,800</td></tr>
+      <tr><td style="color:#FF6090">G7</td><td>4,485,000</td><td>200</td><td>1,068</td><td style="color:var(--green)">213,600</td><td style="color:var(--green)">6,408,000</td></tr>
+    </table>
+  </div>
+</div>
 
-      {/* Menu */}
-      <div style={css.card()}>
-        <div style={{ color: C.text, fontWeight: "bold", fontSize: 15, textAlign: "right", marginBottom: 12 }}>الشركة والمزيد</div>
-        {[
-          { ic: "🔒", t: "وثيقة الأمان", s: "SECURE V3 — BlackRock, Inc", fn: () => setModal("security") },
-          { ic: "🏢", t: "عن الشركة", s: "BlackRock, Inc — تأسست 1988", fn: () => setModal("company") },
-          { ic: "👥", t: "فريقي والإحالات", s: `${(currentUser.referrals || []).length} عضو في فريقك`, fn: () => setModal("team") },
-          { ic: "📊", t: "سجل العمليات", s: `${(currentUser.transactions || []).length} عملية`, fn: () => setModal("history") },
-        ].map(item => (
-          <div key={item.t} onClick={item.fn} style={{ ...css.row, cursor: "pointer" }}>
-            <span style={{ color: C.gold, fontSize: 16 }}>‹</span>
-            <div style={{ flex: 1, textAlign: "right", margin: "0 10px" }}>
-              <div style={{ color: C.text, fontSize: 14 }}>{item.t}</div>
-              <div style={{ color: C.muted, fontSize: 11, marginTop: 2 }}>{item.s}</div>
-            </div>
-            <span style={{ fontSize: 22 }}>{item.ic}</span>
-          </div>
-        ))}
-        <div onClick={doLogout} style={{ ...css.row, cursor: "pointer", border: "none", paddingTop: 14, marginTop: 4 }}>
-          <span style={{ color: "#ef4444", fontSize: 16 }}>‹</span>
-          <div style={{ flex: 1, textAlign: "right", margin: "0 10px" }}>
-            <div style={{ color: "#ef4444", fontSize: 15, fontWeight: "bold" }}>تسجيل الخروج</div>
-          </div>
-          <span style={{ fontSize: 22 }}>🚪</span>
-        </div>
-      </div>
-    </div>
-  );
+<!-- REFERRAL -->
+<div class="pg" id="pg-referral">
+  <div class="st" style="margin-bottom:14px;">👥 الإحالات</div>
+  <div class="ref-card">
+    <div style="font-size:40px;margin-bottom:7px;">🎁</div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:5px;">ادعُ صديقاً واربح معه</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:13px;">احصل على مكافأة عند كل إحالة ناجحة</div>
+    <div class="ref-code" onclick="copyCode()">BG-00001</div>
+    <div style="font-size:11px;color:var(--text2);">اضغط للنسخ 📋</div>
+  </div>
+  <div class="acc-sts">
+    <div class="ac-st"><div class="v">0</div><div class="l">الإحالات</div></div>
+    <div class="ac-st"><div class="v">0</div><div class="l">المكافآت</div></div>
+    <div class="ac-st"><div class="v">0</div><div class="l">DZD</div></div>
+  </div>
+  <div class="card" style="text-align:center;color:var(--text2);font-size:12px;padding:22px;">لا توجد إحالات بعد.<br>شارك كودك مع أصدقائك!</div>
+</div>
 
-  // ══════════════════════════════════════════════════
-  // TAB: CHAT
-  // ══════════════════════════════════════════════════
-  const TabChat = () => (
-    <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 128px)" }}>
-      <div style={{ padding: "10px 16px", background: C.card, borderBottom: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ background: "#064e3b", borderRadius: 20, padding: "3px 12px", color: C.green, fontSize: 11, border: `1px solid ${C.green}40` }}>● متصل — AI</div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ color: C.text, fontWeight: "bold", fontSize: 14 }}>مساعد BlackRock</div>
-            <div style={{ color: C.muted, fontSize: 11 }}>مدعوم بالذكاء الاصطناعي</div>
-          </div>
-          <div style={{ width: 40, height: 40, background: `linear-gradient(135deg,${C.gold},#d97706)`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>🤖</div>
-        </div>
-      </div>
-
-      <div style={{ flex: 1, overflowY: "auto", padding: "12px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
-        {chatHistory.map((m, i) => (
-          <div key={i} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-start" : "flex-end", gap: 8, alignItems: "flex-end" }}>
-            {m.role === "assistant" && <div style={{ width: 30, height: 30, background: `linear-gradient(135deg,${C.gold},#d97706)`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>🤖</div>}
-            <div style={{ background: m.role === "user" ? C.faint : "#0b2318", border: `1px solid ${m.role === "user" ? C.border : "#064e3b"}`, borderRadius: m.role === "user" ? "14px 14px 14px 2px" : "14px 14px 2px 14px", padding: "11px 14px", maxWidth: "80%", color: C.text, fontSize: 13, textAlign: "right", lineHeight: 1.75, whiteSpace: "pre-wrap" }}>
-              {m.content}
-            </div>
-          </div>
-        ))}
-        {chatLoading && (
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, alignItems: "flex-end" }}>
-            <div style={{ width: 30, height: 30, background: `linear-gradient(135deg,${C.gold},#d97706)`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>🤖</div>
-            <div style={{ background: "#0b2318", border: "1px solid #064e3b", borderRadius: "14px 14px 2px 14px", padding: "12px 16px", color: "#6ee7b7", fontSize: 13 }}>
-              <span style={{ animation: "pulse 1s infinite" }}>يكتب...</span>
-            </div>
-          </div>
-        )}
-        <div ref={chatEndRef} />
-      </div>
-
-      <div style={{ padding: "8px 12px", background: C.card, borderTop: `1px solid ${C.border}` }}>
-        <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 8 }}>
-          {["رصيدي", "المهام", "مستويات الاستثمار", "رابطي", "عمولة الفريق", "جدول الأرباح"].map(q => (
-            <button key={q} onClick={() => sendChat(q)} style={{ background: C.faint, border: `1px solid ${C.border}`, borderRadius: 20, padding: "4px 10px", color: C.muted, fontSize: 11, cursor: "pointer" }}>{q}</button>
-          ))}
-        </div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={() => sendChat(chatInput)} disabled={chatLoading} style={{ background: chatLoading ? C.faint : `linear-gradient(135deg,${C.gold},#d97706)`, border: "none", borderRadius: 12, padding: "10px 16px", cursor: chatLoading ? "not-allowed" : "pointer", color: "#000", fontSize: 18, fontWeight: "bold" }}>✈</button>
-          <input style={{ ...css.input, flex: 1, fontSize: 13 }} value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === "Enter" && sendChat(chatInput)} placeholder="اكتب سؤالك..." />
-        </div>
-      </div>
-    </div>
-  );
-
-  // ══════════════════════════════════════════════════
-  // RENDER
-  // ══════════════════════════════════════════════════
-  return (
-    <div style={css.wrap}>
-      {toast && <Toast msg={toast.msg} type={toast.type} onDone={() => setToast(null)} />}
-      {showSpin && <SpinWheel onResult={onSpinResult} onClose={() => setShowSpin(false)} />}
-      {modal === "security" && <SecurityDoc onClose={() => setModal(null)} />}
-      {modal === "company" && <CompanyInfo onClose={() => setModal(null)} />}
-      {modal === "team" && <TeamView user={currentUser} users={db.users} onClose={() => setModal(null)} />}
-      {modal === "history" && (
-        <Modal title="📊 سجل العمليات" color={C.blue} onClose={() => setModal(null)}>
-          {(currentUser.transactions || []).length === 0
-            ? <div style={{ textAlign: "center", color: C.muted, padding: 30 }}>لا توجد عمليات بعد</div>
-            : (currentUser.transactions || []).slice(0, 30).map((tx, i) => (
-              <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: `1px solid ${C.border}`, direction: "rtl" }}>
-                <div style={{ color: C.green, fontWeight: "bold" }}>+{fmtNum(tx.amount)} DZD</div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ color: C.text, fontSize: 13 }}>{tx.type}</div>
-                  <div style={{ color: C.muted, fontSize: 11 }}>{new Date(tx.date).toLocaleString("ar-DZ")}</div>
-                </div>
-              </div>
-            ))}
-        </Modal>
-      )}
-      {modal === "withdraw" && (
-        <Modal title="💸 طلب سحب" color={C.green} onClose={() => setModal(null)}>
-          <div style={{ textAlign: "center", padding: "10px 0" }}>
-            <div style={{ color: C.gold, fontSize: 28, fontWeight: "bold", marginBottom: 6 }}>{fmtNum(currentUser.balance)} DZD</div>
-            <div style={{ color: C.muted, fontSize: 13, marginBottom: 20 }}>رصيدك المتاح للسحب</div>
-            <div style={{ background: "#0d1f12", border: `1px solid ${C.green}`, borderRadius: 12, padding: 14, color: C.green, fontSize: 13, lineHeight: 1.7 }}>
-              لطلب السحب تواصل مع الإدارة عبر القناة الرسمية مع ذكر ID حسابك: #{currentUser.id.slice(-6).toUpperCase()}
-            </div>
-          </div>
-        </Modal>
-      )}
-      {modal === "reflink" && (
-        <Modal title="🔗 رابط الدعوة" color={C.gold} onClose={() => setModal(null)}>
-          <div style={{ background: C.faint, borderRadius: 10, padding: 14, color: C.gold, fontSize: 13, wordBreak: "break-all", textAlign: "center", lineHeight: 1.9, userSelect: "all" }}>
-            {getRefLink()}
-          </div>
-          <div style={{ color: C.muted, fontSize: 12, textAlign: "center", marginTop: 10 }}>انسخ هذا الرابط يدوياً</div>
-        </Modal>
-      )}
-
-      {/* Header */}
-      <div style={css.hdr}>
-        <div style={{ background: "#064e3b", color: C.green, border: `1px solid ${C.green}40`, borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: "bold" }}>🔒 V3</div>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ color: C.gold, fontWeight: "900", fontSize: 18, letterSpacing: 2 }}>BLACKROCK</div>
-          <div style={{ color: C.muted, fontSize: 10 }}>Investment Platform</div>
-        </div>
-        <div style={{ position: "relative", cursor: "pointer" }} onClick={() => showToast("لا توجد إشعارات جديدة", "info")}>
-          <div style={{ width: 36, height: 36, background: C.faint, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", border: `1px solid ${C.border}` }}>🔔</div>
-          {pending > 0 && <div style={{ position: "absolute", top: -2, right: -2, background: "#ef4444", color: "#fff", borderRadius: "50%", width: 16, height: 16, fontSize: 9, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>{pending}</div>}
-        </div>
-      </div>
-
-      {/* Content */}
+<!-- SECURITY DOC -->
+<div class="pg" id="pg-security">
+  <div class="st" style="margin-bottom:14px;">🔒 وثيقة الأمان الرسمية</div>
+  <div class="sec-doc">
+    <div class="sec-wm">VERIFIED SECURE</div>
+    <div style="display:flex;align-items:center;gap:13px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(0,230,118,0.12);">
+      <div class="sec-seal">🛡️</div>
       <div>
-        {tab === "home" && <TabHome />}
-        {tab === "tasks" && <TabTasks />}
-        {tab === "upgrade" && <TabUpgrade />}
-        {tab === "account" && <TabAccount />}
-        {tab === "chat" && <TabChat />}
-      </div>
-
-      {/* Nav Bar */}
-      <div style={css.navBar}>
-        {[
-          { id: "account", ic: "👤", lb: "حسابي" },
-          { id: "upgrade", ic: "💎", lb: "الترقية" },
-          { id: "tasks", ic: "⚡", lb: "المهام", badge: pending },
-          { id: "home", ic: "🏠", lb: "الرئيسية" },
-          { id: "chat", ic: "🤖", lb: "مساعد" },
-        ].map(x => (
-          <button key={x.id} onClick={() => setTab(x.id)} style={{ background: "none", border: "none", color: tab === x.id ? C.gold : C.muted, cursor: "pointer", fontSize: 10, display: "flex", flexDirection: "column", alignItems: "center", gap: 2, padding: "4px 12px", position: "relative" }}>
-            <span style={{ fontSize: 22, filter: tab === x.id ? `drop-shadow(0 0 6px ${C.gold})` : "none" }}>{x.ic}</span>
-            <span style={{ fontWeight: tab === x.id ? "bold" : "normal" }}>{x.lb}</span>
-            {x.badge > 0 && <div style={{ position: "absolute", top: 0, right: 4, background: "#ef4444", color: "#fff", borderRadius: "50%", width: 15, height: 15, fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>{x.badge}</div>}
-            {tab === x.id && <div style={{ position: "absolute", bottom: -8, width: 20, height: 2, background: C.gold, borderRadius: 99 }} />}
-          </button>
-        ))}
+        <div style="font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:var(--green);letter-spacing:1px;">SECURE V3 CERTIFICATE</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:3px;">رقم الوثيقة: BRI-2025-DZ-001</div>
+        <div style="font-size:10px;color:var(--green);margin-top:2px;">✅ صالحة حتى: ديسمبر 2028</div>
       </div>
     </div>
-  );
+    <div class="sec-row"><span style="color:var(--text2)">الشركة المُصدِرة</span><span style="font-weight:700;color:var(--green)">BlackRock, Inc</span></div>
+    <div class="sec-row"><span style="color:var(--text2)">دولة التسجيل</span><span style="font-weight:700;">🇺🇸 New York, USA</span></div>
+    <div class="sec-row"><span style="color:var(--text2)">رقم التسجيل</span><span style="font-weight:700;color:var(--gold)">NYSE: BLK — EIN: 32-0174431</span></div>
+    <div class="sec-row"><span style="color:var(--text2)">بروتوكول التشفير</span><span style="font-weight:700;color:var(--green)">SSL/TLS 3.0 — AES-256</span></div>
+    <div class="sec-row"><span style="color:var(--text2)">عقد الجزائر</span><span style="font-weight:700;color:var(--green)">✅ يناير 2025 — ديسمبر 2028</span></div>
+    <div class="sec-row"><span style="color:var(--text2)">حماية الأموال</span><span style="font-weight:700;color:var(--green)">✅ مضمونة 100%</span></div>
+    <div style="margin-top:14px;padding:13px;background:rgba(0,230,118,0.05);border:1px solid rgba(0,230,118,0.12);border-radius:11px;font-size:11px;color:var(--text2);line-height:1.85;text-align:center;">
+      تُقرّ شركة <b style="color:var(--green)">BlackRock, Inc</b> المسجلة في نيويورك بالولايات المتحدة الأمريكية عام <b style="color:var(--gold)">2020</b>، بأنها أبرمت عقداً رسمياً مع الجانب الجزائري في <b style="color:var(--gold)">يناير 2025</b> لمدة <b style="color:var(--gold)">3 سنوات</b> (تنتهي ديسمبر 2028)، يضمن حقوق المستثمرين الجزائريين وأموالهم وفق أعلى معايير الأمان الدولية.
+    </div>
+  </div>
+  <div class="card">
+    <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:12px;">🔐 ضمانات الأمان</div>
+    <div style="display:flex;flex-direction:column;gap:9px;font-size:12px;">
+      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>تشفير بيانات المستخدمين بمعيار AES-256</span></div>
+      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>حماية المعاملات بـ SSL V3</span></div>
+      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>السحب مقفل في المستوى التجريبي لحماية أموالك</span></div>
+      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>مراقبة أمنية 24/7</span></div>
+      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>ضمان استرداد الأموال في حالات الطوارئ</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="pg" id="pg-about">
+  <div class="st" style="margin-bottom:14px;">🏢 عن الشركة</div>
+  <div class="card" style="background:linear-gradient(135deg,#180E00,#0A0700);border-color:rgba(255,184,0,0.3);text-align:center;padding:22px;margin-bottom:12px;">
+    <div style="font-size:34px;margin-bottom:7px;">🇺🇸</div>
+    <div style="font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:var(--gold);letter-spacing:2px;margin-bottom:5px;">BLACKROCK, INC</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.7;">أكبر شركة لإدارة الأصول في العالم — مقرها نيويورك، الولايات المتحدة الأمريكية</div>
+  </div>
+  <div class="card" style="margin-bottom:11px;">
+    <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:13px;">📋 معلومات الشركة</div>
+    <div style="display:flex;flex-direction:column;gap:9px;font-size:12px;">
+      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">الاسم القانوني</span><span style="font-weight:700;">BlackRock, Inc</span></div>
+      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">المقر الرئيسي</span><span style="font-weight:700;">🇺🇸 New York, USA</span></div>
+      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">سنة التأسيس</span><span style="font-weight:700;color:var(--gold)">2020 (منصة DZ)</span></div>
+      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">المجال</span><span style="font-weight:700;">إدارة الأصول والاستثمار</span></div>
+      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">عقد الجزائر</span><span style="font-weight:700;color:var(--green)">✅ يناير 2025</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2)">انتهاء العقد</span><span style="font-weight:700;color:var(--gold)">ديسمبر 2028</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bnav">
+  <div class="ni active" id="ni-home" onclick="switchPage('home')"><div class="ni-ico">🏠</div><div class="ni-lbl">الرئيسية</div></div>
+  <div class="ni" id="ni-tasks" onclick="switchPage('tasks')"><div class="ni-ico">⚡<div class="ni-dot" id="ni-tb">5</div></div><div class="ni-lbl">المهام</div></div>
+  <div class="ni" id="ni-levels" onclick="switchPage('levels')"><div class="ni-ico">💎</div><div class="ni-lbl">الترقية</div></div>
+  <div class="ni" id="ni-account" onclick="switchPage('account')"><div class="ni-ico">👤</div><div class="ni-lbl">حسابي</div></div>
+</div>
+
+<!-- AI FAB -->
+<button class="ai-fab" onclick="openChat()">🤖<div class="ai-dot"></div></button>
+
+<!-- NOTIFICATIONS -->
+<div class="notif-ov" id="notif-ov" onclick="if(event.target===this)closeNotif()">
+  <div class="notif-sh">
+    <div class="notif-hd"><div style="font-size:15px;font-weight:700;">🔔 الإشعارات</div><div style="width:31px;height:31px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;" onclick="closeNotif()">✕</div></div>
+    <div class="n-it"><div class="n-ico" style="background:rgba(255,184,0,0.11)">⚡</div><div class="n-tx"><div class="n-ttl">مهام جديدة متاحة!</div><div class="n-sub">لديك 5 مهام يومية لكسب 215 DZD</div><div class="n-time">منذ دقيقة</div></div></div>
+    <div class="n-it"><div class="n-ico" style="background:rgba(0,230,118,0.11)">🎁</div><div class="n-tx"><div class="n-ttl">مرحباً بك في BlackRock, Inc</div><div class="n-sub">ابدأ رحلتك نحو الثروة واكسب يومياً</div><div class="n-time">منذ ساعة</div></div></div>
+    <div class="n-it"><div class="n-ico" style="background:rgba(68,138,255,0.11)">💎</div><div class="n-tx"><div class="n-ttl">ترقية متاحة!</div><div class="n-sub">ارقِ إلى M1 بإيداع 7,000 DZD</div><div class="n-time">منذ يوم</div></div></div>
+  </div>
+</div>
+
+<!-- AI CHAT with real Anthropic API -->
+<div class="chat-ov" id="chat-ov" onclick="if(event.target===this)closeChat()">
+  <div class="chat-sh">
+    <div class="chat-hd">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="bot-av">🤖</div>
+        <div><div style="font-size:14px;font-weight:700;">مساعد BlackRock الذكي</div><div class="bot-on">متصل — مدعوم بـ AI</div></div>
+      </div>
+      <div class="chat-cls" onclick="closeChat()">✕</div>
+    </div>
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="cm bot"><div class="cm-av">🤖</div><div class="cm-bbl">👋 مرحباً! أنا المساعد الذكي لمنصة <b>BlackRock, Inc</b>. يمكنني الإجابة على أي سؤال حول الاستثمار والمنصة. كيف يمكنني مساعدتك؟</div></div>
+    </div>
+    <div class="chat-qk">
+      <button class="qk-b" onclick="quickMsg('رصيدي')">رصيدي</button>
+      <button class="qk-b" onclick="quickMsg('المهام المتاحة')">المهام المتاحة</button>
+      <button class="qk-b" onclick="quickMsg('كيف أرقي؟')">كيف أرقي؟</button>
+      <button class="qk-b" onclick="quickMsg('نصيحة استثمارية')">نصيحة</button>
+      <button class="qk-b" onclick="quickMsg('عن الشركة')">عن الشركة</button>
+      <button class="qk-b" onclick="quickMsg('كيف أسحب المال؟')">السحب</button>
+    </div>
+    <div class="chat-ir">
+      <input class="chat-in" id="chat-in" placeholder="اكتب سؤالك..." onkeydown="if(event.key==='Enter')sendMsg()"/>
+      <button class="chat-snd" onclick="sendMsg()">✈️</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="mod-ov" id="mod-ov" onclick="if(event.target===this)closeMod()">
+  <div class="mod-sh">
+    <div class="mod-hnd"></div>
+    <div class="mod-ttl" id="mod-ttl"></div>
+    <div id="mod-cnt"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+// DATA
+// ══════════════════════════════════════
+const LVL_DATA = [
+  {id:'M1',price:7000,    str:'7,000',    tasks:5,  pt:43,   daily:215,    monthly:6450},
+  {id:'M2',price:26600,   str:'26,600',   tasks:10, pt:86,   daily:860,    monthly:25800},
+  {id:'M3',price:95000,   str:'95,000',   tasks:25, pt:131,  daily:3275,   monthly:98250},
+  {id:'M4',price:300000,  str:'300,000',  tasks:50, pt:222,  daily:11100,  monthly:333000},
+  {id:'M5',price:780000,  str:'780,000',  tasks:80, pt:390,  daily:31200,  monthly:936000},
+  {id:'M6',price:1950000, str:'1,950,000',tasks:130,pt:652,  daily:84760,  monthly:2542800},
+  {id:'G7',price:4485000, str:'4,485,000',tasks:200,pt:1068, daily:213600, monthly:6408000}
+];
+const TK_ICONS = ['📱','💎','🎯','🚀','⭐','🔥','💫','🏆','⚡','🌟','💰','🎖️','📊','🌐','🔑'];
+const TASK_DUR = 40;
+
+// ══════════════════════════════════════
+// STATE — localStorage brain
+// ══════════════════════════════════════
+function defState() {
+  return {balance:0,txList:[],currentLevel:'trial',currentTasks:5,taskReward:43,taskStatus:{},lastDate:'',days:1,tasksDone:0};
 }
+function loadState() {
+  try { const s = JSON.parse(localStorage.getItem('bri_state')||'{}'); return Object.assign(defState(), s); }
+  catch(e) { return defState(); }
+}
+function save() { try { localStorage.setItem('bri_state', JSON.stringify(S)); } catch(e){} }
+
+let S = loadState();
+
+// Day reset — reset ALL statuses each new day
+(function checkDay(){
+  const today = new Date().toDateString();
+  if (S.lastDate !== today) {
+    S.taskStatus = {};
+    S.tasksDone = 0;
+    S.lastDate = today;
+    if (S.lastDate) S.days = (S.days || 1) + 1;
+    save();
+  }
+})();
+
+let tkTimers = {};
+
+// ══════════════════════════════════════
+// BUILD LEVELS
+// ══════════════════════════════════════
+(function(){
+  const el = document.getElementById('lvl-list');
+  LVL_DATA.forEach(v => {
+    el.innerHTML += `
+      <div class="lvc" onclick="openUpgMod('${v.id}','${v.str}',${v.daily},${v.pt},${v.tasks},${v.monthly})">
+        <div class="lvc-hd"><div class="lvc-name">${v.id}</div><div class="lv-bdg bdg-u">ترقية الآن</div></div>
+        <div class="lvc-info">
+          <div class="lv-it"><div class="lt">💰 الاستثمار</div><div class="lv" style="color:var(--gold)">${v.str}</div></div>
+          <div class="lv-it"><div class="lt">📋 المهام</div><div class="lv">${v.tasks}</div></div>
+          <div class="lv-it"><div class="lt">💵 للمهمة</div><div class="lv" style="color:var(--gold)">${v.pt}</div></div>
+          <div class="lv-it"><div class="lt">📈 يومي</div><div class="lv" style="color:var(--green)">${v.daily.toLocaleString()}</div></div>
+        </div>
+        <button class="upbtn">⬆️ ترقية إلى ${v.id} — ${v.str} DZD</button>
+      </div>`;
+  });
+})();
+
+// ══════════════════════════════════════
+// BUILD TASKS
+// ══════════════════════════════════════
+function buildTasks() {
+  const el = document.getElementById('tasks-list');
+  el.innerHTML = '';
+  let done = 0;
+  for (let i = 1; i <= S.currentTasks; i++) {
+    const st = S.taskStatus[i];
+    if (st === 'done') done++;
+    const isDone = st === 'done';
+    const isCancelled = st === 'cancelled';
+    el.innerHTML += `
+      <div class="tkc ${isDone?'done':isCancelled?'cancelled':''}" id="tkc-${i}">
+        <div class="tk-top">
+          <div class="tk-ico" id="tki-${i}">${isDone?'✅':isCancelled?'❌':TK_ICONS[(i-1)%TK_ICONS.length]}</div>
+          <div class="tk-inf">
+            <div class="tk-ttl">مهمة يومية ${i}</div>
+            <div class="tk-sub" id="tks-${i}" style="color:${isDone?'var(--green)':isCancelled?'var(--red)':''}">${isDone?'✅ مكتملة':isCancelled?'❌ ملغاة — تعود غداً':'انتظر 40 ثانية واحصل على +'+S.taskReward+' DZD'}</div>
+          </div>
+          <div class="tk-rew"><div class="tk-amt">+${S.taskReward}</div><div class="tk-lbl">DZD</div></div>
+        </div>
+        <div class="tk-pb"><div id="tkb-${i}" style="height:100%;border-radius:4px;width:${isDone||isCancelled?'100':'0'}%;background:${isDone?'var(--green)':isCancelled?'var(--red)':'linear-gradient(90deg,var(--gold),#E68000)'};transition:width 0.4s;"></div></div>
+        <div id="tka-${i}">
+          ${isDone||isCancelled?'':` <div class="tk-acts"><button class="tk-start" onclick="startTask(${i})">▶ ابدأ المهمة</button></div>`}
+        </div>
+      </div>`;
+  }
+  S.tasksDone = done;
+  document.getElementById('tasks-ctr').textContent = done + '/' + S.currentTasks + ' مكتملة';
+  const rem = S.currentTasks - done;
+  const nb = document.getElementById('ni-tb');
+  nb.textContent = rem; nb.style.display = rem > 0 ? 'flex' : 'none';
+  document.getElementById('h-tasks').textContent = done;
+  document.getElementById('acc-tasks-v').textContent = done;
+}
+buildTasks();
+
+// ══════════════════════════════════════
+// TASK START
+// ══════════════════════════════════════
+function startTask(i) {
+  if (S.taskStatus[i] || tkTimers[i]) return;
+  const card = document.getElementById('tkc-'+i);
+  const bar = document.getElementById('tkb-'+i);
+  const sub = document.getElementById('tks-'+i);
+  const acts = document.getElementById('tka-'+i);
+  card.classList.add('run');
+  sub.textContent = '⏱️ جاري التنفيذ... لا تغادر!';
+  sub.style.color = 'var(--gold)';
+  acts.innerHTML = `<div class="tk-acts"><button class="tk-x" onclick="cancelTask(${i})">✕</button><div class="tk-timer" id="tkt-${i}">40</div></div>`;
+  let elapsed = 0;
+  tkTimers[i] = setInterval(() => {
+    elapsed++;
+    bar.style.width = (elapsed/TASK_DUR*100) + '%';
+    const rem = TASK_DUR - elapsed;
+    const te = document.getElementById('tkt-'+i);
+    if(te) te.textContent = rem;
+    if(elapsed >= TASK_DUR) { clearInterval(tkTimers[i]); tkTimers[i]=null; completeTask(i); }
+  }, 1000);
+}
+
+// ══════════════════════════════════════
+// TASK CANCEL
+// ══════════════════════════════════════
+function cancelTask(i) {
+  if (!tkTimers[i]) return;
+  clearInterval(tkTimers[i]); tkTimers[i] = null;
+  S.taskStatus[i] = 'cancelled'; save();
+  const card=document.getElementById('tkc-'+i);
+  const bar=document.getElementById('tkb-'+i);
+  const sub=document.getElementById('tks-'+i);
+  const ico=document.getElementById('tki-'+i);
+  const acts=document.getElementById('tka-'+i);
+  card.classList.remove('run'); card.classList.add('cancelled');
+  bar.style.width='100%'; bar.style.background='var(--red)';
+  ico.textContent='❌';
+  sub.textContent='❌ ملغاة — تعود غداً'; sub.style.color='var(--red)';
+  acts.innerHTML='';
+  showToast('❌ تم إلغاء المهمة — تعود غداً', true);
+}
+
+function cancelAll() {
+  for (let i=1; i<=S.currentTasks; i++) if(tkTimers[i]) cancelTask(i);
+}
+
+// ══════════════════════════════════════
+// TASK COMPLETE
+// ══════════════════════════════════════
+function completeTask(i) {
+  S.taskStatus[i] = 'done';
+  S.balance += S.taskReward;
+  S.tasksDone++;
+  addTx('مهمة يومية '+i, S.taskReward, true, '⚡');
+  save();
+  const card=document.getElementById('tkc-'+i);
+  const bar=document.getElementById('tkb-'+i);
+  const sub=document.getElementById('tks-'+i);
+  const ico=document.getElementById('tki-'+i);
+  const acts=document.getElementById('tka-'+i);
+  card.classList.remove('run'); card.classList.add('done');
+  bar.style.width='100%'; bar.style.background='var(--green)';
+  ico.textContent='✅';
+  sub.textContent='✅ مكتملة'; sub.style.color='var(--green)';
+  acts.innerHTML=`<div class="tk-done-row">✅ تمت! +${S.taskReward} DZD أُضيفت لرصيدك</div>`;
+  updateUI();
+  const done = Object.values(S.taskStatus).filter(v=>v==='done').length;
+  document.getElementById('tasks-ctr').textContent = done+'/'+S.currentTasks+' مكتملة';
+  document.getElementById('h-tasks').textContent = done;
+  document.getElementById('acc-tasks-v').textContent = done;
+  const rem = S.currentTasks - done;
+  const nb = document.getElementById('ni-tb');
+  nb.textContent = rem; nb.style.display = rem > 0 ? 'flex' : 'none';
+  showToast('✅ +'+S.taskReward+' DZD تمت إضافتها!');
+}
+
+// Cancel tasks when leaving tasks page or hiding
+document.addEventListener('visibilitychange', () => { if(document.hidden) cancelAll(); });
+
+// ══════════════════════════════════════
+// PAGE SWITCH
+// ══════════════════════════════════════
+function switchPage(pg) {
+  if(pg !== 'tasks') cancelAll();
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  document.getElementById('pg-'+pg).classList.add('active');
+  const ni = document.getElementById('ni-'+pg);
+  if(ni) ni.classList.add('active');
+}
+
+// ══════════════════════════════════════
+// UPDATE UI
+// ══════════════════════════════════════
+function updateUI() {
+  const fmt = S.balance.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('bal-num').textContent = fmt;
+  document.getElementById('total-v').textContent = S.balance.toLocaleString() + ' DZD';
+  document.getElementById('acc-bal-show').textContent = fmt + ' DZD';
+  document.getElementById('acc-bal-v').textContent = S.balance.toLocaleString();
+  document.getElementById('pb-bal').textContent = S.balance.toLocaleString() + ' DZD';
+  document.getElementById('h-days').textContent = S.days;
+  const np = 7000;
+  const pct = Math.min((S.balance/np)*100, 100);
+  document.getElementById('pb-in').style.width = pct + '%';
+  document.getElementById('pb-pct').textContent = Math.round(pct) + '% مكتمل';
+}
+
+// ══════════════════════════════════════
+// TRANSACTIONS
+// ══════════════════════════════════════
+function addTx(title, amount, isPos, ico) {
+  const now = new Date();
+  const t = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+  S.txList.unshift({title,amount,isPos,ico:ico||'💰',time:'اليوم '+t});
+  if(S.txList.length > 30) S.txList.pop();
+  save(); renderTx();
+}
+function renderTx() {
+  const el = document.getElementById('tx-list');
+  if(!S.txList.length){ el.innerHTML='<div style="padding:10px 0;text-align:center;color:var(--text2);font-size:12px;">🔍 لا توجد معاملات بعد</div>'; return; }
+  el.innerHTML = S.txList.slice(0,6).map(tx=>`
+    <div class="txi">
+      <div class="txi-i" style="background:${tx.isPos?'rgba(0,230,118,0.09)':'rgba(255,23,68,0.09)'}">${tx.ico}</div>
+      <div class="txi-inf"><div class="txi-t">${tx.title}</div><div class="txi-d">${tx.time}</div></div>
+      <div class="txi-a" style="color:${tx.isPos?'var(--green)':'var(--red)'}">${tx.isPos?'+':''}${tx.amount.toLocaleString()} DZD</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════
+function openMod(type) {
+  const ttl = document.getElementById('mod-ttl');
+  const cnt = document.getElementById('mod-cnt');
+  if(type==='deposit') {
+    ttl.textContent='⬆️ إيداع رصيد';
+    cnt.innerHTML=`
+      <p style="font-size:12px;color:var(--text2);text-align:center;margin-bottom:14px">أدخل المبلغ المراد إيداعه</p>
+      <input class="mod-inp" type="number" placeholder="المبلغ (DZD)" id="dep-v" min="1"/>
+      <button class="mod-btn" onclick="doDeposit()">✅ تأكيد الإيداع</button>
+      <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
+  } else if(type==='withdraw') {
+    const can = S.currentLevel !== 'trial';
+    ttl.textContent='⬇️ سحب رصيد';
+    if(!can) {
+      cnt.innerHTML=`
+        <div style="background:rgba(255,23,68,0.09);border:1px solid rgba(255,23,68,0.2);border-radius:13px;padding:16px;margin-bottom:14px;text-align:center;">
+          <div style="font-size:32px;margin-bottom:9px">🔒</div>
+          <div style="font-size:14px;font-weight:700;color:#FF7090;margin-bottom:7px">السحب مقفل</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;">وفقاً لسياسة الأمان وعقد <b style="color:var(--gold)">BlackRock, Inc</b>، ميزة السحب مفعلة فقط للأعضاء من رتبة <b style="color:var(--gold)">M1 فأعلى</b>. يرجى ترقية حسابك لفتح ميزة السحب.</div>
+        </div>
+        <button class="mod-btn" onclick="switchPage('levels');closeMod()">🚀 ترقية الآن</button>
+        <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
+    } else {
+      cnt.innerHTML=`
+        <p style="font-size:12px;color:var(--text2);text-align:center;margin-bottom:14px">رصيدك: <b style="color:var(--gold)">${S.balance.toLocaleString()} DZD</b></p>
+        <input class="mod-inp" type="number" placeholder="المبلغ (DZD)" id="wd-v" min="1"/>
+        <button class="mod-btn" onclick="doWithdraw()">✅ تأكيد السحب</button>
+        <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
+    }
+  } else if(type==='transfer') {
+    ttl.textContent='🔄 تحويل رصيد';
+    cnt.innerHTML=`
+      <input class="mod-inp" placeholder="ID المستخدم (BG-XXXXX)" id="tr-id"/>
+      <input class="mod-inp" type="number" placeholder="المبلغ (DZD)" id="tr-v" min="1"/>
+      <button class="mod-btn" onclick="doTransfer()">✅ تأكيد التحويل</button>
+      <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
+  }
+  document.getElementById('mod-ov').classList.add('open');
+}
+
+function doDeposit() {
+  const v = parseFloat(document.getElementById('dep-v')?.value||0);
+  if(v<=0){showToast('⚠️ أدخل مبلغاً صحيحاً',true);return;}
+  S.balance+=v; addTx('إيداع رصيد',v,true,'⬆️'); save(); updateUI();
+  showToast('✅ تم الإيداع: +'+v.toLocaleString()+' DZD'); closeMod();
+}
+function doWithdraw() {
+  const v = parseFloat(document.getElementById('wd-v')?.value||0);
+  if(v<=0){showToast('⚠️ أدخل مبلغاً صحيحاً',true);return;}
+  if(v>S.balance){showToast('❌ رصيد غير كافٍ',true);return;}
+  S.balance-=v; addTx('سحب رصيد',v,false,'⬇️'); save(); updateUI();
+  showToast('✅ تم السحب: '+v.toLocaleString()+' DZD'); closeMod();
+}
+function doTransfer() {
+  const id = document.getElementById('tr-id')?.value||'';
+  const v = parseFloat(document.getElementById('tr-v')?.value||0);
+  if(!id||v<=0){showToast('⚠️ أدخل بيانات صحيحة',true);return;}
+  if(v>S.balance){showToast('❌ رصيد غير كافٍ',true);return;}
+  S.balance-=v; addTx('تحويل إلى '+id,v,false,'🔄'); save(); updateUI();
+  showToast('✅ تم التحويل إلى '+id); closeMod();
+}
+
+function openUpgMod(id,price,daily,pt,tasks,monthly) {
+  document.getElementById('mod-ttl').textContent='⬆️ الترقية إلى '+id;
+  document.getElementById('mod-cnt').innerHTML=`
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-size:46px;margin-bottom:9px">💎</div>
+      <div style="font-size:24px;font-weight:900;color:var(--gold)">${price} DZD</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:5px">مبلغ الاستثمار المطلوب</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px">
+      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:11px;text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px">📈 يومي</div><div style="font-size:15px;font-weight:700;color:var(--green)">${daily.toLocaleString()} DZD</div></div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:11px;text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px">📅 شهري</div><div style="font-size:15px;font-weight:700;color:var(--gold)">${monthly.toLocaleString()} DZD</div></div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:11px;text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px">📋 المهام</div><div style="font-size:15px;font-weight:700">${tasks}</div></div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:11px;text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px">💵 للمهمة</div><div style="font-size:15px;font-weight:700;color:var(--gold)">${pt} DZD</div></div>
+    </div>
+    <button class="mod-btn" onclick="showToast('✅ تم إرسال طلب الترقية إلى ${id}');closeMod()">✅ تأكيد الترقية إلى ${id}</button>
+    <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
+  document.getElementById('mod-ov').classList.add('open');
+}
+function closeMod() { document.getElementById('mod-ov').classList.remove('open'); }
+
+// ══════════════════════════════════════
+// NOTIFICATIONS
+// ══════════════════════════════════════
+function openNotif() { document.getElementById('notif-ov').classList.add('open'); document.getElementById('hdr-nb').style.display='none'; }
+function closeNotif() { document.getElementById('notif-ov').classList.remove('open'); }
+
+// ══════════════════════════════════════
+// AI CHAT — Anthropic API
+// ══════════════════════════════════════
+let chatHistory = [];
+
+const SYSTEM_PROMPT = `أنت مساعد ذكي ومفيد لمنصة استثمار تابعة لشركة BlackRock, Inc الأمريكية.
+اسم المنصة: BlackRock Investment Platform
+الشركة: BlackRock, Inc — مقرها نيويورك، أمريكا — تأسست 2020
+عقد الجزائر: يناير 2025 — ديسمبر 2028 (3 سنوات)
+المستويات: تجريبي (مجاني، 5 مهام، 43 DZD/مهمة، 215 DZD/يوم)، M1 (7000 DZD)، M2 (26600 DZD)، M3 (95000 DZD)، M4 (300000 DZD)، M5 (780000 DZD)، M6 (1950000 DZD)، G7 (4485000 DZD)
+السحب: مقفل في المستوى التجريبي — يفتح من M1
+المهام: كل مهمة تحتاج 40 ثانية — إذا غادرت تُلغى
+أجب دائماً بالعربية بشكل ودود ومختصر ومفيد. إذا سأل عن رصيده أو مهامه قل له أنك لا تملك وصول مباشر للبيانات لكن يمكنه رؤيتها في التطبيق.`;
+
+async function callAI(userMsg) {
+  chatHistory.push({role:'user', content:userMsg});
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system: SYSTEM_PROMPT,
+        messages: chatHistory.slice(-10)
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'عذراً، حدث خطأ. حاول مرة أخرى.';
+    chatHistory.push({role:'assistant', content:reply});
+    if(chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+    return reply;
+  } catch(e) {
+    // Fallback smart responses
+    return getFallback(userMsg);
+  }
+}
+
+function getFallback(msg) {
+  const m = msg.toLowerCase();
+  if(m.includes('رصيد')) return `💰 يمكنك رؤية رصيدك في الصفحة الرئيسية بالضبط. حالياً المستوى التجريبي يعطيك 215 DZD/يوم من 5 مهام يومية.`;
+  if(m.includes('سحب')) return `🔒 السحب مقفل في المستوى التجريبي. يفتح من مستوى M1 (7,000 DZD استثمار). اذهب إلى تبويب الترقية.`;
+  if(m.includes('مهم')) return `⚡ لديك 5 مهام يومية. كل مهمة = 40 ثانية انتظار = 43 DZD. إذا غادرت أثناء المهمة تُلغى وتعود غداً.`;
+  if(m.includes('رقي')||m.includes('ترقي')) return `💎 للترقية اضغط تبويب "الترقية". M1 تحتاج 7,000 DZD وتعطيك 215 DZD/يوم. M2 تحتاج 26,600 DZD وتعطيك 860 DZD/يوم.`;
+  if(m.includes('شركة')) return `🏢 BlackRock, Inc — أمريكا — تأسست 2020. عقد مع الجزائر 2025-2028. وثيقة الأمان SECURE V3 متاحة في حسابي.`;
+  return `🤖 يمكنني مساعدتك في:\n• معلومات المستويات والأرباح\n• كيفية الترقية والسحب\n• المهام اليومية\n• معلومات الشركة\n\nاكتب سؤالك!`;
+}
+
+function addChatMsg(text, isBot, isTyping) {
+  const msgs = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.className = 'cm ' + (isBot?'bot':'usr');
+  if(isTyping) {
+    d.id = 'typing-ind';
+    d.innerHTML = `<div class="cm-av">🤖</div><div class="cm-bbl"><div class="cm-typing"><span></span><span></span><span></span></div></div>`;
+  } else {
+    d.innerHTML = isBot
+      ? `<div class="cm-av">🤖</div><div class="cm-bbl">${text.replace(/\n/g,'<br>')}</div>`
+      : `<div class="cm-bbl">${text}</div>`;
+  }
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+
+async function sendMsg() {
+  const inp = document.getElementById('chat-in');
+  const t = inp.value.trim();
+  if(!t) return;
+  addChatMsg(t, false);
+  inp.value = '';
+  const typingEl = addChatMsg('', true, true);
+  const reply = await callAI(t);
+  typingEl.remove();
+  addChatMsg(reply, true);
+}
+
+async function quickMsg(t) {
+  addChatMsg(t, false);
+  const typingEl = addChatMsg('', true, true);
+  const reply = await callAI(t);
+  typingEl.remove();
+  addChatMsg(reply, true);
+}
+
+function openChat() { document.getElementById('chat-ov').classList.add('open'); }
+function closeChat() { document.getElementById('chat-ov').classList.remove('open'); }
+
+// ══════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════
+let toastT;
+function showToast(msg, isErr) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isErr?' err':'');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ══════════════════════════════════════
+// MISC
+// ══════════════════════════════════════
+function copyCode() { navigator.clipboard?.writeText('BG-00001').catch(()=>{}); showToast('تم نسخ كود الإحالة 📋'); }
+function doLogout() { if(confirm('هل تريد تسجيل الخروج؟')) { cancelAll(); localStorage.removeItem('bri_state'); location.reload(); } }
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+updateUI();
+renderTx();
+</script>
+</body>
+          </html>
