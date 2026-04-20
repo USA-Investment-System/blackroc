@@ -1,299 +1,196 @@
 import React, { useState, useEffect, useRef } from "react";
 
-// ══════════════════════════════════════════════
-// STORAGE — Triple-layer persistence
-// ══════════════════════════════════════════════
-const KEY = "blk_v4";
-function dbRead() {
-  try { const d = localStorage.getItem(KEY); if (d) return JSON.parse(d); } catch (e) {}
-  try { const d = sessionStorage.getItem(KEY); if (d) return JSON.parse(d); } catch (e) {}
-  return { users: {}, uid: null };
-}
-function dbSave(data) {
-  const s = JSON.stringify(data);
-  try { localStorage.setItem(KEY, s); } catch (e) {}
-  try { sessionStorage.setItem(KEY, s); } catch (e) {}
+// --- نظام التخزين المحلي لبيانات المستخدمين ---
+const STORAGE_KEY = "blackrock_v3_data";
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : { users: {}, currentUser: null };
+  } catch (e) {
+    return { users: {}, currentUser: null };
+  }
 }
 
-// ══════════════════════════════════════════════
-// LEVELS
-// ══════════════════════════════════════════════
+function saveData(data) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (e) {
+    console.error("Storage failed", e);
+  }
+}
+
+// --- إعدادات المستويات (Levels) ---
 const LEVELS = [
-  { id: "تجريبي", label: "تجريبي", invest: 0, tasks: 5, reward: 43, daily: 215, monthly: null, yearly: null, color: "#9ca3af", next: "M1" },
-  { id: "M1", label: "M1", invest: 7000, tasks: 5, reward: 43, daily: 215, monthly: 6450, yearly: 77400, color: "#f59e0b", next: "M2" },
-  { id: "M2", label: "M2", invest: 26600, tasks: 10, reward: 86, daily: 860, monthly: 25800, yearly: 309600, color: "#10b981", next: "M3" },
-  { id: "M3", label: "M3", invest: 95000, tasks: 25, reward: 131, daily: 3275, monthly: 98250, yearly: 1179000, color: "#3b82f6", next: "M4" },
-  { id: "M4", label: "M4", invest: 300000, tasks: 50, reward: 222, daily: 11100, monthly: 333000, yearly: 3996000, color: "#8b5cf6", next: "M5" },
-  { id: "M5", label: "M5", invest: 780000, tasks: 80, reward: 390, daily: 31200, monthly: 936000, yearly: 11232000, color: "#ec4899", next: "M6" },
-  { id: "M6", label: "M6", invest: 1950000, tasks: 130, reward: 652, daily: 84760, monthly: 2542800, yearly: 30513600, color: "#ef4444", next: "G7" },
-  { id: "G7", label: "G7", invest: 4485000, tasks: 200, reward: 1068, daily: 213600, monthly: 6408000, yearly: 76896000, color: "#fbbf24", next: null },
+  { id: "تجريبي", label: "تجريبي", investment: 0, dailyTasks: 5, rewardPerTask: 43, dailyIncome: 215, monthlyIncome: null, yearlyIncome: null, color: "#9ca3af", next: "M1" },
+  { id: "M1", label: "M1", investment: 7000, dailyTasks: 5, rewardPerTask: 43, dailyIncome: 215, monthlyIncome: 6450, yearlyIncome: 77400, color: "#f59e0b", next: "M2" },
+  { id: "M2", label: "M2", investment: 26600, dailyTasks: 10, rewardPerTask: 86, dailyIncome: 860, monthlyIncome: 25800, yearlyIncome: 309600, color: "#10b981", next: "M3" },
+  { id: "M3", label: "M3", investment: 95000, dailyTasks: 25, rewardPerTask: 131, dailyIncome: 3275, monthlyIncome: 98250, yearlyIncome: 1179000, color: "#3b82f6", next: "M4" },
+  { id: "M4", label: "M4", investment: 300000, dailyTasks: 50, rewardPerTask: 222, dailyIncome: 11100, monthlyIncome: 333000, yearlyIncome: 3996000, color: "#8b5cf6", next: "M5" },
+  { id: "M5", label: "M5", investment: 780000, dailyTasks: 80, rewardPerTask: 390, dailyIncome: 31200, monthlyIncome: 936000, yearlyIncome: 11232000, color: "#ec4899", next: "M6" },
+  { id: "M6", label: "M6", investment: 1950000, dailyTasks: 130, rewardPerTask: 652, dailyIncome: 84760, monthlyIncome: 2542800, yearlyIncome: 30513600, color: "#ef4444", next: "G7" },
+  { id: "G7", label: "G7", investment: 4485000, dailyTasks: 200, rewardPerTask: 1068, dailyIncome: 213600, monthlyIncome: 6408000, yearlyIncome: 76896000, color: "#fbbf24", next: null },
 ];
-const getLevel = (id) => LEVELS.find(l => l.id === id) || LEVELS[0];
-const getNextLevel = (id) => { const cur = getLevel(id); return cur.next ? LEVELS.find(l => l.id === cur.next) : null; };
 
-// ══════════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════════
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
-const refCode = () => Math.random().toString(36).slice(2, 8).toUpperCase();
-const todayStr = () => new Date().toDateString();
-const fmt = (n) => {
-  const num = Number(n) || 0;
-  if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
-  if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
-  if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
-  return num.toLocaleString();
-};
-const fmtFull = (n) => (Number(n) || 0).toLocaleString("fr-DZ");
-const makeTasks = (levelId) => {
-  const cfg = getLevel(levelId);
-  return Array.from({ length: cfg.tasks }, (_, i) => ({ id: i + 1, reward: cfg.reward, status: "pending" }));
+const getLevelData = (id) => LEVELS.find(l => l.id === id) || LEVELS[0];
+
+// --- المساعدات التقنية ---
+const generateUID = () => Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+const generateRefCode = () => Math.random().toString(36).substr(2, 6).toUpperCase();
+const getTodayString = () => new Date().toDateString();
+
+const formatMoney = (val) => {
+  const n = Number(val) || 0;
+  return n.toLocaleString("fr-DZ");
 };
 
-// ══════════════════════════════════════════════
-// DESIGN SYSTEM
-// ══════════════════════════════════════════════
-const C = { bg: "#080c14", card: "#0f1623", card2: "#111827", border: "#1a2332", gold: "#f59e0b", green: "#10b981", blue: "#3b82f6", red: "#ef4444", text: "#e2e8f0", muted: "#64748b", faint: "#0d1424" };
+const createTasksForLevel = (levelId) => {
+  const level = getLevelData(levelId);
+  return Array.from({ length: level.dailyTasks }, (_, i) => ({
+    id: i + 1,
+    reward: level.rewardPerTask,
+    status: "pending", // pending, loading, completed
+    progress: 0
+  }));
+};
 
-const btnStyle = (v, sm) => ({
-  background: v === "gold" ? "linear-gradient(135deg,#f59e0b,#d97706)" : v === "green" ? "linear-gradient(135deg,#10b981,#059669)" : v === "red" ? "#450a0a" : v === "blue" ? "linear-gradient(135deg,#3b82f6,#2563eb)" : "#1e293b",
-  color: v === "gold" ? "#000" : "#fff",
-  border: v === "red" ? "1px solid #7f1d1d" : "none",
-  borderRadius: sm ? 10 : 14, padding: sm ? "8px 16px" : "13px 20px",
-  fontWeight: "bold", cursor: "pointer", fontSize: sm ? 13 : 15, width: "100%",
-  boxShadow: v === "gold" ? "0 3px 16px rgba(245,158,11,0.35)" : "none",
-});
-const inputStyle = { background: C.faint, border: `1px solid ${C.border}`, borderRadius: 12, padding: "13px 14px", color: C.text, fontSize: 14, width: "100%", outline: "none", direction: "rtl", boxSizing: "border-box" };
-const cardStyle = (b, bg) => ({ background: bg || C.card, borderRadius: 16, padding: 16, marginBottom: 12, border: `1px solid ${b || C.border}` });
-const rowStyle = { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 0", borderBottom: `1px solid ${C.border}` };
+// --- الألوان والتصميم (UI) ---
+const THEME = {
+  bg: "#080c14",
+  card: "#0f1623",
+  cardSecondary: "#111827",
+  border: "#1a2332",
+  gold: "#f59e0b",
+  green: "#10b981",
+  blue: "#3b82f6",
+  red: "#ef4444",
+  text: "#e2e8f0",
+  textMuted: "#64748b",
+  faint: "#0d1424"
+};
 
-// ══════════════════════════════════════════════
-// COMPONENTS (SpinWheel, Toast, Modals...)
-// ══════════════════════════════════════════════
+// مكون التنبيهات (Toast)
+function Toast({ message, type, onClose }) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 3000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
 
-function Toast({ msg, type, onDone }) {
-  useEffect(() => { const t = setTimeout(onDone, 3200); return () => clearTimeout(t); }, []);
-  const bg = type === "error" ? "#7f1d1d" : type === "info" ? "#1e3a5f" : "#064e3b";
-  const border = type === "error" ? "#ef4444" : type === "info" ? "#3b82f6" : "#10b981";
+  const bgColor = type === "error" ? "#7f1d1d" : type === "info" ? "#1e3a5f" : "#064e3b";
+  
   return (
-    <div style={{ position: "fixed", top: 72, left: "50%", transform: "translateX(-50%)", zIndex: 888, background: bg, color: "#fff", borderRadius: 12, padding: "10px 20px", fontSize: 13, fontWeight: "bold", border: `1px solid ${border}`, boxShadow: "0 8px 30px rgba(0,0,0,0.6)", maxWidth: 340, textAlign: "center", direction: "rtl", whiteSpace: "pre-line" }}>
-      {msg}
-    </div>
-  );
-}
-
-function SpinWheel({ onResult, onClose }) {
-  const cRef = useRef(null);
-  const [spinning, setSpin] = useState(false);
-  const [result, setResult] = useState(null);
-  const angRef = useRef(0);
-  const rafRef = useRef(null);
-  const SEGS = [
-    { txt: "43 DZD", bg: "#d97706", val: { t: "money", n: 43 } },
-    { txt: "لا شيء", bg: "#1e293b", val: { t: "none" } },
-    { txt: "86 DZD", bg: "#059669", val: { t: "money", n: 86 } },
-    { txt: "50 نقطة", bg: "#2563eb", val: { t: "pts", n: 50 } },
-    { txt: "لا شيء", bg: "#374151", val: { t: "none" } },
-    { txt: "215 DZD", bg: "#dc2626", val: { t: "money", n: 215 } },
-    { txt: "100 نقطة", bg: "#7c3aed", val: { t: "pts", n: 100 } },
-    { txt: "21 DZD", bg: "#b45309", val: { t: "money", n: 21 } },
-  ];
-  useEffect(() => { draw(0); }, []);
-  const draw = (rot) => {
-    const c = cRef.current; if (!c) return;
-    const ctx = c.getContext("2d"), cx = c.width / 2, r = cx - 6, arc = (2 * Math.PI) / SEGS.length;
-    ctx.clearRect(0, 0, c.width, c.height);
-    SEGS.forEach((s, i) => {
-      const a = rot + i * arc;
-      ctx.beginPath(); ctx.moveTo(cx, cx); ctx.arc(cx, cx, r, a, a + arc); ctx.closePath();
-      ctx.fillStyle = s.bg; ctx.fill(); ctx.strokeStyle = "#080c14"; ctx.lineWidth = 2; ctx.stroke();
-      ctx.save(); ctx.translate(cx, cx); ctx.rotate(a + arc / 2);
-      ctx.textAlign = "right"; ctx.fillStyle = "#fff"; ctx.font = "bold 11px Arial";
-      ctx.fillText(s.txt, r - 6, 4); ctx.restore();
-    });
-    ctx.beginPath(); ctx.arc(cx, cx, 14, 0, Math.PI * 2); ctx.fillStyle = "#f59e0b"; ctx.fill();
-  };
-  const spin = () => {
-    if (spinning) return; setSpin(true); setResult(null);
-    const tot = (5 + Math.random() * 4) * 2 * Math.PI, dur = 4000, t0 = performance.now(), a0 = angRef.current;
-    const go = (now) => {
-      const p = Math.min((now - t0) / dur, 1), e = 1 - Math.pow(1 - p, 4);
-      angRef.current = a0 + tot * e; draw(angRef.current);
-      if (p < 1) rafRef.current = requestAnimationFrame(go);
-      else {
-        setSpin(false);
-        const arc = (2 * Math.PI) / SEGS.length, na = ((angRef.current % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-        const idx = Math.floor(((2 * Math.PI - na) % (2 * Math.PI)) / arc) % SEGS.length;
-        setResult(SEGS[idx]); onResult(SEGS[idx].val);
-      }
-    };
-    rafRef.current = requestAnimationFrame(go);
-  };
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.96)", zIndex: 999, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 18 }}>
-      <div style={{ color: "#f59e0b", fontSize: 24, fontWeight: "bold" }}>🎡 عجلة الحظ</div>
-      <canvas ref={cRef} width={280} height={280} style={{ borderRadius: "50%", boxShadow: "0 0 60px rgba(245,158,11,0.5)" }} />
-      {result && <div style={{ color: result.val.t === "none" ? "#6b7280" : "#10b981", fontSize: 22, fontWeight: "bold" }}>{result.val.t === "none" ? "حظ أوفر" : "مبروك!"}</div>}
-      {!spinning && !result && <button onClick={spin} style={btnStyle("gold")}>ابدأ اللف</button>}
-      {result && <button onClick={onClose} style={btnStyle()}>إغلاق</button>}
+    <div style={{
+      position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)",
+      zIndex: 9999, background: bgColor, color: "#fff", padding: "12px 24px",
+      borderRadius: 12, boxShadow: "0 10px 25px rgba(0,0,0,0.5)", direction: "rtl",
+      minWidth: "250px", textAlign: "center", fontWeight: "bold", border: `1px solid ${type === 'error' ? '#ef4444' : '#10b981'}`
+    }}>
+      {message}
     </div>
   );
 }
 
 // ══════════════════════════════════════════════
-// MAIN APPLICATION COMPONENT
+// المكون الرئيسي للتطبيق
 // ══════════════════════════════════════════════
-export default function App() {
-  const [db, setDb] = useState({ users: {}, uid: null });
-  const [screen, setScreen] = useState("splash"); 
-  const [tab, setTab] = useState("home");
+export default function BlackRockApp() {
+  const [db, setDb] = useState({ users: {}, currentUser: null });
+  const [view, setView] = useState("splash");
+  const [activeTab, setActiveTab] = useState("home");
   const [toast, setToast] = useState(null);
-  const [showSpin, setShowSpin] = useState(false);
-  const [timers, setTimers] = useState({});
-  const timerRefs = useRef({});
 
-  // Auth States
-  const [lPhone, setLPhone] = useState(""); const [lPass, setLPass] = useState("");
-  const [rName, setRName] = useState(""); const [rPhone, setRPhone] = useState(""); const [rPass, setRPass] = useState("");
-
-  const cur = db.uid ? db.users[db.uid] : null;
-  const lv = cur ? getLevel(cur.level) : LEVELS[0];
+  // مراجع الصوت
+  const soundSuccess = useRef(new Audio("https://www.soundjay.com/buttons/sounds/button-3.mp3"));
+  const soundClick = useRef(new Audio("https://www.soundjay.com/buttons/sounds/button-4.mp3"));
 
   useEffect(() => {
-    const saved = dbRead();
+    const data = loadData();
+    setDb(data);
     setTimeout(() => {
-      if (saved?.uid) {
-        setDb(saved);
-        setScreen("app");
-      } else {
-        setScreen("login");
-      }
-    }, 2000);
+      if (data.currentUser) setView("main");
+      else setView("login");
+    }, 2500);
   }, []);
 
-  const notify = (msg, type = "success") => setToast({ msg, type });
+  const showToast = (msg, type = "success") => setToast({ msg, type });
+
+  // منطق الدخول والتسجيل (مبسط)
+  const [phone, setPhone] = useState("");
+  const [pass, setPass] = useState("");
 
   const handleLogin = () => {
-    const user = Object.values(db.users).find(u => u.phone === lPhone && u.password === lPass);
+    const user = Object.values(db.users).find(u => u.phone === phone && u.password === pass);
     if (user) {
-      const newDb = { ...db, uid: user.id };
+      const newDb = { ...db, currentUser: user.id };
       setDb(newDb);
-      dbSave(newDb);
-      setScreen("app");
+      saveData(newDb);
+      setView("main");
     } else {
-      notify("بيانات الدخول غير صحيحة", "error");
+      showToast("خطأ في البيانات", "error");
     }
   };
 
-  const handleRegister = () => {
-    if (!rName || !rPhone || !rPass) return notify("يرجى ملء البيانات", "error");
-    const id = uid();
-    const newUser = {
-      id, name: rName, phone: rPhone, password: rPass,
-      balance: 0, totalEarnings: 0, level: "تجريبي",
-      joinDate: new Date().toISOString(), referralCode: refCode(),
-      dailyTasks: makeTasks("تجريبي"), transactions: []
-    };
-    const newDb = { users: { ...db.users, [id]: newUser }, uid: id };
-    setDb(newDb);
-    dbSave(newDb);
-    setScreen("app");
-    notify("تم إنشاء الحساب بنجاح");
-  };
+  const user = db.currentUser ? db.users[db.currentUser] : null;
 
-  // ── Render Screens ──
-  if (screen === "splash") return (
-    <div style={{ background: C.bg, height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ width: 80, height: 80, background: C.gold, borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40 }}>🏦</div>
-      <h1 style={{ color: C.gold, marginTop: 20, letterSpacing: 4 }}>BLACKROCK</h1>
-    </div>
-  );
+  // شاشة التحميل (Splash)
+  if (view === "splash") {
+    return (
+      <div style={{ background: THEME.bg, height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <img src="107567.jpg" alt="Logo" style={{ width: 100, borderRadius: 20, marginBottom: 20 }} />
+        <h1 style={{ color: THEME.gold, letterSpacing: 2 }}>BLACKROCK V3</h1>
+        <div style={{ color: THEME.textMuted, marginTop: 10 }}>جاري التحميل...</div>
+      </div>
+    );
+  }
 
-  if (screen === "login") return (
-    <div style={{ background: C.bg, height: "100vh", padding: 20, display: "flex", flexDirection: "column", justifyContent: "center", direction: "rtl" }}>
-      {toast && <Toast msg={toast.msg} type={toast.type} onDone={() => setToast(null)} />}
-      <h2 style={{ color: C.text, textAlign: "center" }}>تسجيل الدخول</h2>
-      <input style={{ ...inputStyle, marginTop: 20 }} placeholder="رقم الهاتف" value={lPhone} onChange={e => setLPhone(e.target.value)} />
-      <input style={{ ...inputStyle, marginTop: 10 }} type="password" placeholder="كلمة المرور" value={lPass} onChange={e => setLPass(e.target.value)} />
-      <button style={{ ...btnStyle("gold"), marginTop: 20 }} onClick={handleLogin}>دخول</button>
-      <p style={{ color: C.muted, textAlign: "center", marginTop: 15 }} onClick={() => setScreen("reg")}>ليس لديك حساب؟ سجل الآن</p>
-    </div>
-  );
+  // شاشة الدخول
+  if (view === "login") {
+    return (
+      <div style={{ background: THEME.bg, height: "100vh", padding: 30, direction: "rtl" }}>
+        {toast && <Toast message={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
+        <h2 style={{ color: THEME.text, textAlign: "center", marginTop: 50 }}>تسجيل الدخول</h2>
+        <input style={{ width: "100%", padding: 15, marginTop: 30, background: THEME.card, border: "1px solid #333", color: "#fff", borderRadius: 10 }} 
+          placeholder="رقم الهاتف" value={phone} onChange={e => setPhone(e.target.value)} />
+        <input type="password" style={{ width: "100%", padding: 15, marginTop: 15, background: THEME.card, border: "1px solid #333", color: "#fff", borderRadius: 10 }} 
+          placeholder="كلمة السر" value={pass} onChange={e => setPass(e.target.value)} />
+        <button onClick={handleLogin} style={{ width: "100%", padding: 15, marginTop: 30, background: THEME.gold, border: "none", borderRadius: 10, fontWeight: "bold" }}>دخول</button>
+      </div>
+    );
+  }
 
-  if (screen === "reg") return (
-    <div style={{ background: C.bg, height: "100vh", padding: 20, display: "flex", flexDirection: "column", justifyContent: "center", direction: "rtl" }}>
-      <h2 style={{ color: C.text, textAlign: "center" }}>حساب جديد</h2>
-      <input style={{ ...inputStyle, marginTop: 20 }} placeholder="الاسم الكامل" value={rName} onChange={e => setRName(e.target.value)} />
-      <input style={{ ...inputStyle, marginTop: 10 }} placeholder="رقم الهاتف" value={rPhone} onChange={e => setRPhone(e.target.value)} />
-      <input style={{ ...inputStyle, marginTop: 10 }} type="password" placeholder="كلمة المرور" value={rPass} onChange={e => setRPass(e.target.value)} />
-      <button style={{ ...btnStyle("gold"), marginTop: 20 }} onClick={handleRegister}>إنشاء حساب</button>
-      <p style={{ color: C.muted, textAlign: "center", marginTop: 15 }} onClick={() => setScreen("login")}>لديك حساب بالفعل؟ دخول</p>
-    </div>
-  );
-
+  // الواجهة الرئيسية
   return (
-    <div style={{ background: C.bg, minHeight: "100vh", paddingBottom: 80, direction: "rtl", maxWidth: 450, margin: "0 auto" }}>
-      {toast && <Toast msg={toast.msg} type={toast.type} onDone={() => setToast(null)} />}
-      
-      {/* Header */}
-      <div style={{ background: C.card, padding: 15, display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${C.border}` }}>
-        <div style={{ color: C.gold, fontWeight: "bold" }}>BLACKROCK V3</div>
-        <div style={{ fontSize: 20 }}>🔔</div>
-      </div>
+    <div style={{ background: THEME.bg, minHeight: "100vh", color: THEME.text, direction: "rtl", paddingBottom: 80 }}>
+       {toast && <Toast message={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
+       
+       {/* الهيدر */}
+       <div style={{ padding: 20, background: THEME.card, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <img src="107567.jpg" style={{ width: 40, borderRadius: 8 }} alt="logo" />
+          <div style={{ fontWeight: "bold" }}>مرحباً، {user?.name || "المستخدم"}</div>
+       </div>
 
-      {/* Main Content Tabs */}
-      <div style={{ padding: 15 }}>
-        {tab === "home" && (
-          <>
-            <div style={{ ...cardStyle(), background: "linear-gradient(135deg, #1a2332, #080c14)" }}>
-              <p style={{ color: C.muted, fontSize: 12 }}>الرصيد الإجمالي</p>
-              <h1 style={{ color: C.gold }}>{fmtFull(cur.balance)} DZD</h1>
-              <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-                <button style={btnStyle("green", true)} onClick={() => notify("السحب متاح من M1", "info")}>سحب</button>
-                <button style={btnStyle("blue", true)} onClick={() => setTab("tasks")}>المهام</button>
+       {/* المحتوى */}
+       <div style={{ padding: 20 }}>
+          {activeTab === "home" && (
+            <div style={{ background: "linear-gradient(135deg, #1a2332, #080c14)", padding: 25, borderRadius: 20, border: `1px solid ${THEME.gold}` }}>
+              <div style={{ fontSize: 14, color: THEME.textMuted }}>الرصيد القابل للسحب</div>
+              <div style={{ fontSize: 32, fontWeight: "bold", color: THEME.gold, margin: "10px 0" }}>{formatMoney(user?.balance || 0)} DZD</div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <button style={{ flex: 1, padding: 12, borderRadius: 10, border: "none", background: THEME.gold }}>إيداع</button>
+                <button style={{ flex: 1, padding: 12, borderRadius: 10, border: "none", background: "#222", color: "#fff" }}>سحب</button>
               </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 10 }}>
-              <div style={cardStyle()}><p style={{ fontSize: 12 }}>أرباح اليوم</p><h3 style={{ color: C.green }}>{lv.daily}</h3></div>
-              <div style={cardStyle()}><p style={{ fontSize: 12 }}>المستوى</p><h3 style={{ color: lv.color }}>{lv.label}</h3></div>
-            </div>
-          </>
-        )}
+          )}
+          
+          {/* هنا يمكنك إضافة باقي التبويبات بنفس الطريقة */}
+       </div>
 
-        {tab === "tasks" && (
-          <div>
-            <h3 style={{ color: C.text, marginBottom: 15 }}>مهام اليوم ({lv.tasks})</h3>
-            {cur.dailyTasks.map(t => (
-              <div key={t.id} style={cardStyle()}>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span>مهمة #{t.id}</span>
-                  <span style={{ color: C.gold }}>+{t.reward} DZD</span>
-                </div>
-                <button style={{ ...btnStyle("gold", true), marginTop: 10, width: "100px" }} onClick={() => notify("انتظر 40 ثانية...", "info")}>ابدأ</button>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {tab === "account" && (
-          <div style={{ textAlign: "center" }}>
-            <div style={{ width: 80, height: 80, background: C.card2, borderRadius: "50%", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40 }}>👤</div>
-            <h2 style={{ color: C.text, marginTop: 10 }}>{cur.name}</h2>
-            <p style={{ color: C.muted }}>{cur.phone}</p>
-            <div style={{ ...cardStyle(), marginTop: 20, textAlign: "right" }}>
-              <p>رابط الإحالة: <br/><small style={{ color: C.gold }}>{window.location.origin}?ref={cur.referralCode}</small></p>
-            </div>
-            <button style={{ ...btnStyle("red"), marginTop: 20 }} onClick={() => setScreen("login")}>تسجيل الخروج</button>
-          </div>
-        )}
-      </div>
-
-      {/* Navigation */}
-      <div style={{ position: "fixed", bottom: 0, width: "100%", maxWidth: 450, background: C.card, display: "flex", justifyContent: "space-around", padding: "10px 0", borderTop: `1px solid ${C.border}` }}>
-        <div onClick={() => setTab("home")} style={{ color: tab === "home" ? C.gold : C.muted, cursor: "pointer" }}>🏠<br/><small>الرئيسية</small></div>
-        <div onClick={() => setTab("tasks")} style={{ color: tab === "tasks" ? C.gold : C.muted, cursor: "pointer" }}>⚡<br/><small>المهام</small></div>
-        <div onClick={() => setTab("account")} style={{ color: tab === "account" ? C.gold : C.muted, cursor: "pointer" }}>👤<br/><small>حسابي</small></div>
-      </div>
+       {/* الشريط السفلي */}
+       <div style={{ position: "fixed", bottom: 0, width: "100%", background: THEME.card, display: "flex", justifyContent: "space-around", padding: 15, borderTop: "1px solid #222" }}>
+          <div onClick={() => setActiveTab("home")} style={{ color: activeTab === "home" ? THEME.gold : "#666" }}>الرئيسية</div>
+          <div onClick={() => setActiveTab("tasks")} style={{ color: activeTab === "tasks" ? THEME.gold : "#666" }}>المهام</div>
+          <div onClick={() => setActiveTab("profile")} style={{ color: activeTab === "profile" ? THEME.gold : "#666" }}>حسابي</div>
+       </div>
     </div>
   );
 }
