@@ -2,93 +2,104 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>الملهم - أعظم تطبيق اجتماعي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>سوشال إكس - أعظم تطبيق</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            background: #000000;
-            color: white;
+            background: #000;
+            color: #fff;
             direction: rtl;
         }
 
-        /* شريط التطبيق السفلي */
-        .bottom-nav {
+        /* التطبيق الرئيسي */
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #000;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        }
+
+        /* شاشات */
+        .screen {
+            display: none;
+            padding: 20px 16px 80px;
+            animation: slideUp 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        /* شريط سفلي */
+        .bottom-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(10, 10, 20, 0.95);
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(10,10,15,0.96);
             backdrop-filter: blur(20px);
             display: flex;
             justify-content: space-around;
-            padding: 12px 16px 20px;
-            border-top: 0.5px solid #2c2c3e;
+            padding: 12px 16px 22px;
+            border-top: 0.5px solid #2a2a3a;
             z-index: 100;
         }
 
-        .nav-item {
+        .bottom-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             font-size: 12px;
-            color: #8e8e9e;
+            color: #888;
             cursor: pointer;
             transition: 0.2s;
         }
 
-        .nav-item.active {
+        .bottom-item.active {
             color: #3b82f6;
-            font-weight: bold;
+            font-weight: 600;
         }
 
-        .nav-icon {
+        .bottom-icon {
             font-size: 24px;
         }
 
-        /* المحتوى الرئيسي */
-        .screen {
-            display: none;
-            padding: 20px 16px 90px;
-            animation: fade 0.25s ease;
-        }
-
-        .screen.active-screen {
-            display: block;
-        }
-
-        @keyframes fade {
-            from { opacity: 0; transform: translateY(10px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
-
-        /* بطاقات المنشورات */
-        .post-card {
-            background: #12121c;
+        /* بطاقة المنشور */
+        .post {
+            background: #111116;
             border-radius: 28px;
-            padding: 16px;
             margin-bottom: 16px;
-            border: 1px solid #28283a;
+            padding: 16px;
+            border: 0.5px solid #22222a;
         }
 
         .post-header {
             display: flex;
             gap: 12px;
-            align-items: center;
             margin-bottom: 12px;
         }
 
         .avatar {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(145deg, #3b82f6, #a855f7);
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6, #ec489a);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -98,68 +109,68 @@
         }
 
         .post-name {
-            font-weight: bold;
+            font-weight: 700;
         }
 
         .post-time {
             font-size: 11px;
-            color: #8e8e9e;
+            color: #aaa;
         }
 
         .post-content {
-            font-size: 16px;
             margin: 12px 0;
             line-height: 1.5;
         }
 
-        .post-actions {
+        .post-stats {
             display: flex;
-            gap: 24px;
+            gap: 20px;
             margin-top: 12px;
-            color: #8e8e9e;
+            color: #aaa;
         }
 
-        .action-btn {
+        .stat-btn {
             background: none;
             border: none;
-            color: inherit;
-            cursor: pointer;
+            color: #aaa;
             display: flex;
             align-items: center;
             gap: 6px;
+            cursor: pointer;
         }
 
-        /* فيديوهات تيك توك */
-        .video-container {
+        /* فيديو شورتس */
+        .shorts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .short-card {
             background: #0a0a0a;
             border-radius: 32px;
             overflow: hidden;
-            margin-bottom: 24px;
-            position: relative;
+            margin-bottom: 20px;
         }
 
-        video {
+        .short-card video {
             width: 100%;
             max-height: 500px;
             border-radius: 28px;
-            background: black;
+            background: #000;
         }
 
         /* شات */
-        .chat-message {
-            background: #1e1e2c;
+        .chat-bubble {
+            background: #1c1c26;
             border-radius: 24px;
             padding: 12px 16px;
             margin-bottom: 12px;
         }
 
-        .chat-sender {
-            font-weight: bold;
+        .chat-name {
             color: #3b82f6;
-        }
-
-        .chat-text {
-            margin-top: 6px;
+            font-weight: bold;
         }
 
         .chat-input-area {
@@ -169,12 +180,12 @@
             position: sticky;
             bottom: 80px;
             background: #000;
-            padding: 8px 0;
+            padding: 10px 0;
         }
 
         .chat-input {
             flex: 1;
-            background: #1e1e2c;
+            background: #1c1c26;
             border: none;
             padding: 14px;
             border-radius: 40px;
@@ -185,14 +196,14 @@
             background: #3b82f6;
             border: none;
             border-radius: 40px;
-            padding: 0 20px;
+            padding: 0 24px;
             color: white;
             font-weight: bold;
         }
 
-        /* إضافة فيديو */
+        /* أزرار عامة */
         .input-field {
-            background: #1e1e2c;
+            background: #1c1c26;
             border: none;
             padding: 14px;
             border-radius: 40px;
@@ -213,141 +224,146 @@
             cursor: pointer;
         }
 
-        h3 {
-            margin: 20px 0 12px;
+        h2 {
+            margin-bottom: 16px;
+            font-size: 24px;
         }
     </style>
 </head>
 <body>
+<div class="app">
+    <!-- شاشة المنشورات (فيسبوك + تويتر) -->
+    <div id="feedScreen" class="screen active">
+        <h2>✨ الخلاصة</h2>
+        <div id="feedList"></div>
+        <div style="margin-top: 20px;">
+            <textarea id="postInput" class="input-field" rows="2" placeholder="ما الذي تفكر فيه؟"></textarea>
+            <button id="postBtn" class="btn-primary">انشر</button>
+        </div>
+    </div>
 
-<!-- شاشات التطبيق -->
-<div id="feedScreen" class="screen active-screen">
-    <h2 style="margin-bottom: 16px;">🌍 الأحداث</h2>
-    <div id="postsContainer"></div>
-    <div style="background: #12121c; border-radius: 28px; padding: 16px; margin-top: 16px;">
-        <textarea id="newPostText" class="input-field" rows="2" placeholder="اكتب منشوراً ..."></textarea>
-        <button id="publishPostBtn" class="btn-primary">➕ انشر الآن</button>
+    <!-- شاشة الفيديوهات (تيك توك) -->
+    <div id="shortsScreen" class="screen">
+        <h2>🎬 شورتس</h2>
+        <div id="shortsList" class="shorts-container"></div>
+        <div>
+            <input type="text" id="videoUrl" class="input-field" placeholder="رابط فيديو MP4">
+            <button id="addShortBtn" class="btn-primary">إضافة فيديو</button>
+        </div>
     </div>
-</div>
 
-<div id="videosScreen" class="screen">
-    <h2>🎬 فيديوهات قصيرة</h2>
-    <div id="videosList"></div>
-    <div style="margin-top: 20px;">
-        <input type="text" id="videoUrlInput" class="input-field" placeholder="رابط فيديو (mp4)">
-        <button id="addVideoBtn" class="btn-primary">➕ إضافة فيديو</button>
+    <!-- شاشة الشات (مسنجر + تلغرام) -->
+    <div id="chatScreen" class="screen">
+        <h2>💬 الدردشة</h2>
+        <div id="chatList" style="max-height: 60vh; overflow-y: auto;"></div>
+        <div class="chat-input-area">
+            <input type="text" id="chatUser" class="chat-input" placeholder="اسمك" value="مستخدم">
+            <input type="text" id="chatMsg" class="chat-input" placeholder="رسالة...">
+            <button id="sendChat" class="chat-send">إرسال</button>
+        </div>
     </div>
-</div>
 
-<div id="chatScreen" class="screen">
-    <h2>💬 مسنجر + تلغرام</h2>
-    <div id="chatMessages" style="max-height: 60vh; overflow-y: auto;"></div>
-    <div class="chat-input-area">
-        <input type="text" id="chatNameInput" class="chat-input" placeholder="اسمك" value="مستخدم_ثوري">
-        <input type="text" id="chatMsgInput" class="chat-input" placeholder="اكتب رسالة...">
-        <button id="sendChatBtn" class="chat-send">إرسال</button>
+    <!-- شاشة الملف الشخصي -->
+    <div id="profileScreen" class="screen">
+        <h2>👤 الإمبراطورية</h2>
+        <div style="background:#111116; border-radius:32px; padding:20px;">
+            <p>🔥 إجمالي التفاعلات: <span id="totalCount">0</span></p>
+            <p>📝 منشورات: <span id="postCount">0</span></p>
+            <p>🎥 فيديوهات: <span id="videoCount">0</span></p>
+            <p>💬 رسائل: <span id="msgCount">0</span></p>
+            <button id="resetBtn" style="background:#e11d48; margin-top:20px;">إعادة ضبط</button>
+        </div>
     </div>
-</div>
 
-<div id="profileScreen" class="screen">
-    <h2>👤 إحصائيات السيطرة</h2>
-    <div style="background: #12121c; border-radius: 32px; padding: 20px;">
-        <p>🔥 إجمالي التفاعلات: <span id="totalStats">0</span></p>
-        <p>🚀 عدد المنشورات: <span id="postCount">0</span></p>
-        <p>📹 عدد الفيديوهات: <span id="videoCount">0</span></p>
-        <p>💬 رسائل الشات: <span id="msgCount">0</span></p>
-        <button id="resetDataBtn" style="background:#ef4444; margin-top:20px;">إعادة تعيين تجريبي</button>
-    </div>
-</div>
-
-<!-- القائمة السفلية -->
-<div class="bottom-nav">
-    <div class="nav-item active" data-screen="feed">
-        <span class="nav-icon">📱</span>
-        <span>رئيسي</span>
-    </div>
-    <div class="nav-item" data-screen="videos">
-        <span class="nav-icon">🎥</span>
-        <span>فيديوهات</span>
-    </div>
-    <div class="nav-item" data-screen="chat">
-        <span class="nav-icon">💬</span>
-        <span>شات</span>
-    </div>
-    <div class="nav-item" data-screen="profile">
-        <span class="nav-icon">⚡</span>
-        <span>سيطرة</span>
+    <!-- القائمة السفلية -->
+    <div class="bottom-bar">
+        <div class="bottom-item active" data-screen="feed">
+            <span class="bottom-icon">🏠</span>
+            <span>الرئيسية</span>
+        </div>
+        <div class="bottom-item" data-screen="shorts">
+            <span class="bottom-icon">🎵</span>
+            <span>شورتس</span>
+        </div>
+        <div class="bottom-item" data-screen="chat">
+            <span class="bottom-icon">💬</span>
+            <span>شات</span>
+        </div>
+        <div class="bottom-item" data-screen="profile">
+            <span class="bottom-icon">👤</span>
+            <span>أنا</span>
+        </div>
     </div>
 </div>
 
 <script>
-    // ---------- قاعدة بيانات وهمية لكن قوية ----------
+    // === بيانات التطبيق مع حفظ في localStorage ===
     let posts = [];
-    let videos = [];
-    let chatMessages = [];
+    let shorts = [];
+    let chats = [];
 
-    // بيانات أولية تجعل التطبيق حياً
-    function loadInitialData() {
-        if(localStorage.getItem("super_app_posts")) {
-            posts = JSON.parse(localStorage.getItem("super_app_posts"));
-            videos = JSON.parse(localStorage.getItem("super_app_videos"));
-            chatMessages = JSON.parse(localStorage.getItem("super_app_chat"));
+    // تحميل بيانات اولية
+    function loadData() {
+        if(localStorage.getItem('socialx_posts')) {
+            posts = JSON.parse(localStorage.getItem('socialx_posts'));
+            shorts = JSON.parse(localStorage.getItem('socialx_shorts'));
+            chats = JSON.parse(localStorage.getItem('socialx_chats'));
         } else {
             posts = [
-                { id: 1, author: "مبرمج ملهم", content: "تطبيقنا سيتفوق على تيك توك وفيسبوك. هذه البداية 🔥", time: "الآن", likes: 45, comments: 12 },
-                { id: 2, author: "ثورة التواصل", content: "شات آمن + فيديوهات بدون حدود", time: "منذ ساعة", likes: 89, comments: 23 }
+                { id: 1, author: "المطور الأسطوري", content: "تطبيقنا سيتفوق على الجميع 💪", time: "الآن", likes: 120, comments: 34 },
+                { id: 2, author: "ثائر تقني", content: "شات آمن + فيديوهات لا نهائية", time: "منذ ساعة", likes: 89, comments: 12 }
             ];
-            videos = [
-                { id: 101, url: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4", title: "فيديو تجريبي رهيب" },
-                { id: 102, url: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4", title: "تيك توك لكن أفضل" }
+            shorts = [
+                { id: 101, url: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4", title: "فيديو تجريبي 1" },
+                { id: 102, url: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4", title: "فيديو تجريبي 2" }
             ];
-            chatMessages = [
-                { id: 1001, sender: "المؤسس", text: "مرحباً بكم في أعظم تطبيق", time: "الآن" },
-                { id: 1002, sender: "مستخدم1", text: "هذا سيهزم الجميع", time: "منذ 5 دقائق" }
+            chats = [
+                { id: 1, sender: "النظام", text: "مرحباً بك في أعظم تطبيق", time: "الآن" },
+                { id: 2, sender: "مستخدم", text: "هذا سيهزم فيسبوك", time: "منذ 5 د" }
             ];
-            saveToLocal();
+            saveAll();
         }
-        updateAllStats();
-        renderPosts();
-        renderVideos();
+        updateStats();
+        renderFeed();
+        renderShorts();
         renderChat();
     }
 
-    function saveToLocal() {
-        localStorage.setItem("super_app_posts", JSON.stringify(posts));
-        localStorage.setItem("super_app_videos", JSON.stringify(videos));
-        localStorage.setItem("super_app_chat", JSON.stringify(chatMessages));
+    function saveAll() {
+        localStorage.setItem('socialx_posts', JSON.stringify(posts));
+        localStorage.setItem('socialx_shorts', JSON.stringify(shorts));
+        localStorage.setItem('socialx_chats', JSON.stringify(chats));
     }
 
-    function updateAllStats() {
-        document.getElementById("totalStats").innerText = posts.length + videos.length + chatMessages.length;
-        document.getElementById("postCount").innerText = posts.length;
-        document.getElementById("videoCount").innerText = videos.length;
-        document.getElementById("msgCount").innerText = chatMessages.length;
+    function updateStats() {
+        document.getElementById('totalCount').innerText = posts.length + shorts.length + chats.length;
+        document.getElementById('postCount').innerText = posts.length;
+        document.getElementById('videoCount').innerText = shorts.length;
+        document.getElementById('msgCount').innerText = chats.length;
     }
 
-    // عرض المنشورات (فيسبوك + تويتر)
-    function renderPosts() {
-        const container = document.getElementById("postsContainer");
+    // عرض المنشورات
+    function renderFeed() {
+        const container = document.getElementById('feedList');
         if(!container) return;
         if(posts.length === 0) {
-            container.innerHTML = `<div class="post-card">✨ كن أول من ينشر في عصر السيطرة ✨</div>`;
+            container.innerHTML = '<div class="post" style="text-align:center;">لا منشورات بعد، كن الأول!</div>';
             return;
         }
-        container.innerHTML = posts.map(post => `
-            <div class="post-card">
+        container.innerHTML = posts.map(p => `
+            <div class="post">
                 <div class="post-header">
                     <div class="avatar">👤</div>
                     <div>
-                        <div class="post-name">${escapeHtml(post.author)}</div>
-                        <div class="post-time">${post.time}</div>
+                        <div class="post-name">${escapeHtml(p.author)}</div>
+                        <div class="post-time">${p.time}</div>
                     </div>
                 </div>
-                <div class="post-content">${escapeHtml(post.content)}</div>
-                <div class="post-actions">
-                    <button class="action-btn" onclick="likePost(${post.id})">❤️ ${post.likes}</button>
-                    <button class="action-btn">💬 ${post.comments}</button>
-                    <button class="action-btn">🔁 مشاركة</button>
+                <div class="post-content">${escapeHtml(p.content)}</div>
+                <div class="post-stats">
+                    <button class="stat-btn" onclick="likePost(${p.id})">❤️ ${p.likes}</button>
+                    <button class="stat-btn">💬 ${p.comments}</button>
+                    <button class="stat-btn">🔁 مشاركة</button>
                 </div>
             </div>
         `).join('');
@@ -356,81 +372,80 @@
     window.likePost = function(id) {
         const post = posts.find(p => p.id === id);
         if(post) {
-            post.likes += 1;
-            saveToLocal();
-            renderPosts();
-            updateAllStats();
+            post.likes++;
+            saveAll();
+            renderFeed();
+            updateStats();
         }
     }
 
-    function addPost(content, author = "ثائر رقمي") {
+    function addPost(content, author = "ثائر") {
         if(!content.trim()) return;
-        const newPost = {
+        posts.unshift({
             id: Date.now(),
             author: author,
             content: content,
             time: "الآن",
             likes: 0,
             comments: 0
-        };
-        posts.unshift(newPost);
-        saveToLocal();
-        renderPosts();
-        updateAllStats();
+        });
+        saveAll();
+        renderFeed();
+        updateStats();
     }
 
-    // عرض الفيديوهات (نسخة تيك توك)
-    function renderVideos() {
-        const container = document.getElementById("videosList");
+    // عرض الفيديوهات
+    function renderShorts() {
+        const container = document.getElementById('shortsList');
         if(!container) return;
-        if(videos.length === 0) {
-            container.innerHTML = `<div class="post-card">🎬 أضف فيديو لتنطلق المنافسة</div>`;
+        if(shorts.length === 0) {
+            container.innerHTML = '<div class="short-card" style="text-align:center;">أضف فيديو لبدء الشورتس</div>';
             return;
         }
-        container.innerHTML = videos.map(v => `
-            <div class="video-container">
-                <video controls src="${escapeHtml(v.url)}" style="width:100%"></video>
-                <div style="padding:12px"><b>${escapeHtml(v.title)}</b></div>
+        container.innerHTML = shorts.map(s => `
+            <div class="short-card">
+                <video controls src="${escapeHtml(s.url)}" playsinline></video>
+                <div style="padding:12px;">${escapeHtml(s.title)}</div>
             </div>
         `).join('');
     }
 
-    function addVideo(url, title) {
+    function addShort(url, title) {
         if(!url.trim()) return;
-        videos.push({ id: Date.now(), url: url, title: title || "فيديو جديد" });
-        saveToLocal();
-        renderVideos();
-        updateAllStats();
+        shorts.push({ id: Date.now(), url: url, title: title || "شورت جديد" });
+        saveAll();
+        renderShorts();
+        updateStats();
     }
 
-    // عرض الشات (مسنجر + تلغرام)
+    // عرض الشات
     function renderChat() {
-        const container = document.getElementById("chatMessages");
+        const container = document.getElementById('chatList');
         if(!container) return;
-        if(chatMessages.length === 0) {
-            container.innerHTML = `<div class="chat-message">💬 ابدأ المحادثة العالمية الآن</div>`;
+        if(chats.length === 0) {
+            container.innerHTML = '<div class="chat-bubble">لا رسائل بعد</div>';
             return;
         }
-        container.innerHTML = chatMessages.map(m => `
-            <div class="chat-message">
-                <div class="chat-sender">${escapeHtml(m.sender)} <span style="font-size:10px; color:#8e8e9e">${m.time}</span></div>
-                <div class="chat-text">${escapeHtml(m.text)}</div>
+        container.innerHTML = chats.map(c => `
+            <div class="chat-bubble">
+                <span class="chat-name">${escapeHtml(c.sender)}</span> <span style="font-size:10px; color:#888">${c.time}</span>
+                <div style="margin-top:6px;">${escapeHtml(c.text)}</div>
             </div>
         `).join('');
         container.scrollTop = container.scrollHeight;
     }
 
-    function sendChatMessage(sender, text) {
+    function addChat(sender, text) {
         if(!text.trim()) return;
-        chatMessages.push({
+        chats.push({
             id: Date.now(),
             sender: sender || "مجهول",
             text: text,
             time: "الآن"
         });
-        saveToLocal();
+        saveAll();
         renderChat();
-        updateAllStats();
+        updateStats();
     }
 
     function escapeHtml(str) {
@@ -443,57 +458,53 @@
         });
     }
 
-    // --- أحداث الأزرار ---
-    document.getElementById("publishPostBtn")?.addEventListener("click", () => {
-        const txt = document.getElementById("newPostText")?.value;
-        if(txt) addPost(txt, "مستخدم_خارق");
-        document.getElementById("newPostText").value = "";
+    // أحداث الأزرار
+    document.getElementById('postBtn')?.addEventListener('click', () => {
+        const txt = document.getElementById('postInput')?.value;
+        if(txt) addPost(txt, "مستخدم خارق");
+        document.getElementById('postInput').value = '';
     });
 
-    document.getElementById("addVideoBtn")?.addEventListener("click", () => {
-        const url = document.getElementById("videoUrlInput")?.value;
-        if(url) addVideo(url, "فيديو تم إضافته");
-        document.getElementById("videoUrlInput").value = "";
+    document.getElementById('addShortBtn')?.addEventListener('click', () => {
+        const url = document.getElementById('videoUrl')?.value;
+        if(url) addShort(url, "فيديو جديد");
+        document.getElementById('videoUrl').value = '';
     });
 
-    document.getElementById("sendChatBtn")?.addEventListener("click", () => {
-        const msg = document.getElementById("chatMsgInput")?.value;
-        const name = document.getElementById("chatNameInput")?.value;
-        if(msg) sendChatMessage(name, msg);
-        document.getElementById("chatMsgInput").value = "";
+    document.getElementById('sendChat')?.addEventListener('click', () => {
+        const msg = document.getElementById('chatMsg')?.value;
+        const name = document.getElementById('chatUser')?.value;
+        if(msg) addChat(name, msg);
+        document.getElementById('chatMsg').value = '';
     });
 
-    document.getElementById("resetDataBtn")?.addEventListener("click", () => {
+    document.getElementById('resetBtn')?.addEventListener('click', () => {
         localStorage.clear();
         posts = [];
-        videos = [];
-        chatMessages = [];
-        loadInitialData();
+        shorts = [];
+        chats = [];
+        loadData();
     });
 
     // التنقل بين الشاشات
-    const navItems = document.querySelectorAll(".nav-item");
     const screens = {
-        feed: document.getElementById("feedScreen"),
-        videos: document.getElementById("videosScreen"),
-        chat: document.getElementById("chatScreen"),
-        profile: document.getElementById("profileScreen")
+        feed: document.getElementById('feedScreen'),
+        shorts: document.getElementById('shortsScreen'),
+        chat: document.getElementById('chatScreen'),
+        profile: document.getElementById('profileScreen')
     };
-
-    navItems.forEach(item => {
-        item.addEventListener("click", () => {
-            const screenId = item.getAttribute("data-screen");
-            Object.keys(screens).forEach(id => {
-                screens[id].classList.remove("active-screen");
-            });
-            screens[screenId].classList.add("active-screen");
-            navItems.forEach(nav => nav.classList.remove("active"));
-            item.classList.add("active");
+    const bottomItems = document.querySelectorAll('.bottom-item');
+    bottomItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const screenId = item.getAttribute('data-screen');
+            Object.keys(screens).forEach(id => screens[id].classList.remove('active'));
+            screens[screenId].classList.add('active');
+            bottomItems.forEach(bi => bi.classList.remove('active'));
+            item.classList.add('active');
         });
     });
 
-    // بدء التطبيق
-    loadInitialData();
+    loadData();
 </script>
 </body>
 </html>
