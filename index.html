@@ -1,42 +1,224 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
-    <title>تطبيق فيديوهاتي</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق السيطرة - الجيل القادم</title>
     <style>
-        body { font-family: Arial; text-align: center; background: black; color: white; }
-        video { width: 100%; max-width: 400px; border-radius: 20px; margin-top: 20px; }
-        button { padding: 10px 20px; margin: 10px; font-size: 18px; }
+        * { box-sizing: border-box; font-family: system-ui, 'Segoe UI', sans-serif; }
+        body { background: linear-gradient(145deg, #0a0f1e 0%, #0a0a1a 100%); margin: 0; padding: 20px; color: white; display: flex; justify-content: center; }
+        .app-container { max-width: 500px; width: 100%; background: rgba(20,25,45,0.7); backdrop-filter: blur(10px); border-radius: 48px; padding: 20px; box-shadow: 0 25px 50px -12px black; border: 1px solid rgba(255,255,255,0.15); }
+        .tab-bar { display: flex; gap: 10px; margin-bottom: 25px; background: #0f1322; padding: 8px; border-radius: 60px; }
+        .tab { flex: 1; text-align: center; padding: 12px 0; border-radius: 40px; font-weight: bold; cursor: pointer; background: transparent; transition: 0.2s; color: #aaa; }
+        .tab.active { background: #2563eb; color: white; box-shadow: 0 5px 15px #2563eb60; }
+        .post-area, .chat-area, .video-area { display: none; animation: fade 0.3s ease; }
+        .active-tab { display: block; }
+        textarea, input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 32px; border: none; background: #1e243f; color: white; font-size: 16px; }
+        button { background: #3b82f6; border: none; padding: 12px 20px; border-radius: 40px; color: white; font-weight: bold; width: 100%; margin: 8px 0; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #2563eb; transform: scale(0.98); }
+        .post-card, .message-card { background: #1e243f; border-radius: 28px; padding: 16px; margin: 12px 0; border: 1px solid #2d3458; }
+        .video-player { width: 100%; border-radius: 32px; margin: 15px 0; background: black; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .small-text { font-size: 12px; color: #8b92b0; }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        .stats { background: #0f1322; padding: 12px; border-radius: 32px; text-align: center; margin-top: 20px; font-size: 13px; }
     </style>
 </head>
 <body>
-    <h1>🎬 تطبيق فيديوهات قصيرة</h1>
-    <video id="myVideo" controls autoplay></video>
-    <br>
-    <button onclick="nextVideo()">▶️ فيديو التالي</button>
-    <button onclick="shareVideo()">📤 مشاركة</button>
+<div class="app-container">
+    <h2 style="margin:0 0 5px 0;">🌍 مشروع السيطرة</h2>
+    <p class="small-text" style="margin-bottom: 20px;">💡 افضل من تيك توك + فيسبوك + مسنجر + تويتر + تلغرام</p>
 
-    <script>
-        let videos = [
-            "https://www.w3schools.com/html/mov_bbb.mp4",
-            "https://www.w3schools.com/html/movie.mp4"
-        ];
-        let index = 0;
-        let videoElement = document.getElementById("myVideo");
+    <div class="tab-bar">
+        <div class="tab active" data-tab="feed">📱 منشورات</div>
+        <div class="tab" data-tab="chat">💬 مسنجر خارق</div>
+        <div class="tab" data-tab="videos">🎬 فيديوهات</div>
+    </div>
 
-        function loadVideo() {
-            videoElement.src = videos[index];
+    <!-- feed section -->
+    <div id="feed" class="post-area active-tab">
+        <textarea id="postText" placeholder="اكتب ما يخطر ببالك... نص، فكرة، هجوم ذكي 🔥"></textarea>
+        <button id="publishBtn">🚀 انشر واهز العالم</button>
+        <div id="postsContainer"></div>
+    </div>
+
+    <!-- chat section -->
+    <div id="chat" class="chat-area">
+        <input type="text" id="chatUsername" placeholder="اسمك في الدردشة" value="مستخدم_سري">
+        <input type="text" id="chatMessage" placeholder="رسالتك...">
+        <button id="sendMsgBtn">💬 أرسل رسالة (خاصية تيليجرام+مسنجر)</button>
+        <div id="chatMessages" style="max-height: 350px; overflow-y: auto;"></div>
+    </div>
+
+    <!-- videos section -->
+    <div id="videos" class="video-area">
+        <p>🎥 خوارزمية تيك توك لكن بدون تجسس</p>
+        <input type="text" id="videoUrl" placeholder="رابط فيديو (MP4) أو استخدم العينات" value="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4">
+        <button id="addVideoBtn">➕ إضافة فيديو</button>
+        <div id="videosList"></div>
+    </div>
+
+    <div class="stats">
+        ⚡ إحصائيات الثورة: <span id="statCounter">0</span> تفاعل | ذكاء اصطناعي مدمج ✅
+    </div>
+</div>
+
+<script>
+    // ------------------- بيانات محاكاة التطبيق العملاق -------------------
+    let posts = [];
+    let messages = [];
+    let videos = [
+        { id: 1, url: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4", title: "فيديو تجريبي 1" },
+        { id: 2, url: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4", title: "فيديو رهيب 🔥" }
+    ];
+    let statCount = 0;
+
+    // تحديث الاحصائيات
+    function updateStats() {
+        document.getElementById('statCounter').innerText = statCount + posts.length + messages.length;
+    }
+
+    // عرض المنشورات (شبيه فيسبوك + تويتر)
+    function renderPosts() {
+        const container = document.getElementById('postsContainer');
+        if(!container) return;
+        if(posts.length === 0) {
+            container.innerHTML = `<div class="post-card">✨ لا منشورات بعد... كن أول من يسيطر! ✨</div>`;
+            return;
         }
+        container.innerHTML = posts.map(p => `
+            <div class="post-card">
+                <div class="flex-between"><b>${escapeHtml(p.author)}</b> <span class="small-text">${p.time}</span></div>
+                <p>${escapeHtml(p.content)}</p>
+                <div class="flex-between"><span>❤️ ${p.likes || 0} إعجاب</span> <button style="width:auto; padding:6px 15px; margin:0;" onclick="likePost(${p.id})">👍 اعجبني</button></div>
+            </div>
+        `).join('');
+    }
 
-        function nextVideo() {
-            index = (index + 1) % videos.length;
-            loadVideo();
+    window.likePost = function(id) {
+        const post = posts.find(p => p.id === id);
+        if(post) { post.likes = (post.likes || 0) + 1; statCount++; renderPosts(); updateStats(); }
+    }
+
+    function addPost(content, author = "ثائر تقني") {
+        if(!content.trim()) return;
+        const newPost = {
+            id: Date.now(),
+            author: author,
+            content: content,
+            time: new Date().toLocaleTimeString(),
+            likes: 0
+        };
+        posts.unshift(newPost);
+        renderPosts();
+        updateStats();
+    }
+
+    // عرض الدردشة (مثل مسنجر + تليجرام مع خاصية سريعة)
+    function renderMessages() {
+        const container = document.getElementById('chatMessages');
+        if(!container) return;
+        if(messages.length === 0) {
+            container.innerHTML = `<div class="message-card">💎 لا رسائل بعد... ابدأ محادثة عالمية</div>`;
+            return;
         }
+        container.innerHTML = messages.map(m => `
+            <div class="message-card">
+                <b>${escapeHtml(m.sender)}</b> <span class="small-text">${m.time}</span>
+                <p>${escapeHtml(m.text)}</p>
+            </div>
+        `).join('');
+        container.scrollTop = container.scrollHeight;
+    }
 
-        function shareVideo() {
-            alert("تمت المشاركة (يمكنك ربطها بـ API حقيقي لاحقًا)");
+    function sendMessage(text, sender) {
+        if(!text.trim()) return;
+        messages.push({
+            id: Date.now(),
+            sender: sender || "مجهول",
+            text: text,
+            time: new Date().toLocaleTimeString()
+        });
+        renderMessages();
+        updateStats();
+    }
+
+    // عرض الفيديوهات (نسخة تيك توك)
+    function renderVideos() {
+        const container = document.getElementById('videosList');
+        if(!container) return;
+        if(videos.length === 0) {
+            container.innerHTML = `<div class="post-card">🎬 أضف فيديو لبدء السيطرة البصرية</div>`;
+            return;
         }
+        container.innerHTML = videos.map(v => `
+            <div class="post-card">
+                <b>🎥 ${escapeHtml(v.title)}</b>
+                <video class="video-player" controls src="${v.url}"></video>
+                <button onclick="shareVideo('${v.url}')">📢 مشاركة الفيديو</button>
+            </div>
+        `).join('');
+    }
 
-        loadVideo();
-    </script>
+    window.shareVideo = function(url) {
+        alert("📱 تمت المشاركة إلى المنصات الأخرى (وهمي لكن يثبت الفكرة)\nالرابط: " + url);
+        addPost("شاهدوا هذا الفيديو الرهيب 🔥 " + url, "مشارك فيديوهات");
+    }
+
+    function addVideo(url, title) {
+        if(!url.trim()) return;
+        videos.push({ id: Date.now(), url: url, title: title || "فيديو جديد" });
+        renderVideos();
+        updateStats();
+    }
+
+    // مساعد HTML
+    function escapeHtml(str) {
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // ---- احداثيات وهمية لكن قوية ----
+    document.getElementById('publishBtn')?.addEventListener('click', () => {
+        const txt = document.getElementById('postText')?.value;
+        if(txt) addPost(txt, "ثائر سايبر");
+        document.getElementById('postText').value = '';
+    });
+
+    document.getElementById('sendMsgBtn')?.addEventListener('click', () => {
+        const msg = document.getElementById('chatMessage')?.value;
+        const name = document.getElementById('chatUsername')?.value || "ثوري";
+        if(msg) sendMessage(msg, name);
+        document.getElementById('chatMessage').value = '';
+    });
+
+    document.getElementById('addVideoBtn')?.addEventListener('click', () => {
+        const url = document.getElementById('videoUrl')?.value;
+        if(url) addVideo(url, "فيديو تم الرفع");
+    });
+
+    // التنقل بين التبويبات
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const targetId = tab.getAttribute('data-tab');
+            document.querySelectorAll('.post-area, .chat-area, .video-area').forEach(el => el.classList.remove('active-tab'));
+            document.getElementById(targetId)?.classList.add('active-tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+        });
+    });
+
+    // بيانات أولية لتكون حية
+    addPost("🔥 أول منشور في تطبيق السيطرة العالمي. نحن أقوى من تويتر وفيسبوك مجتمعين!", "مؤسس التطبيق");
+    sendMessage("السلام عليكم.. هذا المسنجر الجديد سيدمر المنافسة", "مدير التطبيق");
+    renderVideos();
+    updateStats();
+</script>
 </body>
 </html>
