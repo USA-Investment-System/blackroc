@@ -1,289 +1,132 @@
-import { useState, useEffect, useRef } from "react";
-
-// ══════════════════════════════════════════════
-// STORAGE — Triple-layer persistence
-// ══════════════════════════════════════════════
-const KEY = "blk_v5";
-function dbRead() {
-  try { const d = localStorage.getItem(KEY); if (d) return JSON.parse(d); } catch (e) {}
-  try { const d = sessionStorage.getItem(KEY); if (d) return JSON.parse(d); } catch (e) {}
-  return { users: {}, uid: null, lastOpen: Date.now() };
-}
-function dbSave(data) {
-  const s = JSON.stringify(data);
-  try { localStorage.setItem(KEY, s); } catch (e) {}
-  try { sessionStorage.setItem(KEY, s); } catch (e) {}
-}
-
-// ══════════════════════════════════════════════
-// LEVELS
-// ══════════════════════════════════════════════
-const LEVELS = [
-  { id: "تجريبي", label: "تجريبي", invest: 0, tasks: 5, reward: 43, daily: 215, monthly: null, yearly: null, color: "#9ca3af", next: "M1", days: 3 },
-  { id: "M1", label: "M1", invest: 7000, tasks: 5, reward: 43, daily: 215, monthly: 6450, yearly: 77400, color: "#f59e0b", next: "M2" },
-  { id: "M2", label: "M2", invest: 26600, tasks: 10, reward: 86, daily: 860, monthly: 25800, yearly: 309600, color: "#10b981", next: "M3" },
-  { id: "M3", label: "M3", invest: 95000, tasks: 25, reward: 131, daily: 3275, monthly: 98250, yearly: 1179000, color: "#3b82f6", next: "M4" },
-  { id: "M4", label: "M4", invest: 300000, tasks: 50, reward: 222, daily: 11100, monthly: 333000, yearly: 3996000, color: "#8b5cf6", next: "M5" },
-  { id: "M5", label: "M5", invest: 780000, tasks: 80, reward: 390, daily: 31200, monthly: 936000, yearly: 11232000, color: "#ec4899", next: "M6" },
-  { id: "M6", label: "M6", invest: 1950000, tasks: 130, reward: 652, daily: 84760, monthly: 2542800, yearly: 30513600, color: "#ef4444", next: "G7" },
-  { id: "G7", label: "G7", invest: 4485000, tasks: 200, reward: 1068, daily: 213600, monthly: 6408000, yearly: 76896000, color: "#fbbf24", next: null },
-];
-const getLevel = (id) => LEVELS.find(l => l.id === id) || LEVELS[0];
-const getNextLevel = (id) => { const cur = getLevel(id); return cur.next ? LEVELS.find(l => l.id === cur.next) : null; };
-
-// ══════════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════════
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
-const refCode = () => Math.random().toString(36).slice(2, 8).toUpperCase();
-const todayStr = () => new Date().toDateString();
-const fmt = (n) => {
-  const num = Number(n) || 0;
-  if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
-  if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
-  if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
-  return num.toLocaleString();
-};
-const fmtFull = (n) => (Number(n) || 0).toLocaleString("fr-DZ");
-const makeTasks = (levelId) => {
-  const cfg = getLevel(levelId);
-  return Array.from({ length: cfg.tasks }, (_, i) => ({ id: i + 1, reward: cfg.reward, status: "pending" }));
-};
-
-// ══════════════════════════════════════════════
-// AI ASSISTANT LOCAL
-// ══════════════════════════════════════════════
-function askAI(msg, user) {
-  const lv = getLevel(user?.level || "تجريبي");
-  const responses = {
-    "مرحبا": `مرحباً ${user.name}! 👋 كيف يمكنني مساعدتك اليوم؟`,
-    "رصيدي": `💰 رصيدك الحالي هو: ${fmtFull(user.balance)} DZD\n📈 دخلك اليومي: ${fmtFull(lv.daily)} DZD`,
-    "مهامي": `⚡ لقد أكملت حتى الان ${(user.dailyTasks || []).filter(t => t.status === "completed").length} من ${lv.tasks} مهمة اليوم\n💰 مكافأة كل مهمة: ${lv.reward} DZD`,
-    "مستوياتي": `💎 مستواك الحالي: ${lv.label}\n📈 دخلك اليومي: ${fmtFull(lv.daily)} DZD\n📊 دخلك الشهري: ${lv.monthly ? fmtFull(lv.monthly) : "فترة تجريبية"} DZD`,
-    "رابطي": `🔗 رابط دعوتك هو:\n${window.location.href.split("?")[0]}?ref=${user.referralCode}\nكل شخص يسجل عبر رابطك يضيف لك 5% من أرباحه بشكل دائم!`,
-    "الفريق": `👥 عدد أعضاء فريقك حتى الان: ${(user.referrals || []).length} عضو\n💸 اجمالي عمولاتك من الفريق: ${fmtFull((user.referrals || []).reduce((s, m) => s + 1000, 0))} DZD`,
-    "كيف أرقي": `للترقية الى المستوى التالي تحتاج فقط الى الوصول الى الحد المطلوب للرصيد، ثم اضغط على زر الترقية في صفحة المستويات.`,
-    "سحب": `السحب متاح فقط من مستوى M1 وما فوق. الحد الادنى للسحب 1000 DZD، والمعالجة تستغرق من 24 الى 48 ساعة.`,
-    "فترة التجربة": `فترة التجربة تستمر 3 ايام كاملة. بعد انتهائها يمكنك الترقية الى M1 او سيتم ايقاف الحساب.`,
-    "G7": `مستوى G7 هو اعلى مستوى في المنصة، دخله اليومي 213,600 DZD اي اكثر من 6 مليون دينار شهرياً!`,
-  };
-
-  for (const k in responses) {
-    if (msg.includes(k)) return responses[k];
+superapp/
+├── server.js
+├── package.json
+├── public/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+└── videos/   (سيتم إنشاؤها تلقائيًا)
+{
+  "name": "superapp",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.5.4",
+    "multer": "^1.4.5-lts.1"
   }
-
-  return `سؤال ممتاز! 😊\nيمكنني مساعدتك في اي شيء يخص:\n• الرصيد والارباح\n• المهام اليومية\n• مستويات الاستثمار\n• نظام الاحالة والفريق\n• السحب والترقية\n\nماذا تريد ان تعرف بالضبط؟`;
 }
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
-// ══════════════════════════════════════════════
-// ALL COMPONENTS REMAIN THE SAME
-// ══════════════════════════════════════════════
-function SpinWheel({ onResult, onClose }) {
-  const cRef = useRef(null);
-  const [spinning, setSpin] = useState(false);
-  const [result, setResult] = useState(null);
-  const angRef = useRef(0);
-  const rafRef = useRef(null);
-  const SEGS = [
-    { txt: "43 DZD", bg: "#d97706", val: { t: "money", n: 43 } },
-    { txt: "لا شيء", bg: "#1e293b", val: { t: "none" } },
-    { txt: "86 DZD", bg: "#059669", val: { t: "money", n: 86 } },
-    { txt: "50 نقطة", bg: "#2563eb", val: { t: "pts", n: 50 } },
-    { txt: "لا شيء", bg: "#374151", val: { t: "none" } },
-    { txt: "215 DZD", bg: "#dc2626", val: { t: "money", n: 215 } },
-    { txt: "100 نقطة", bg: "#7c3aed", val: { t: "pts", n: 100 } },
-    { txt: "21 DZD", bg: "#b45309", val: { t: "money", n: 21 } },
-  ];
-  useEffect(() => { draw(0); }, []);
-  const draw = (rot) => {
-    const c = cRef.current; if (!c) return;
-    const ctx = c.getContext("2d"), cx = c.width / 2, r = cx - 6, arc = (2 * Math.PI) / SEGS.length;
-    ctx.clearRect(0, 0, c.width, c.height);
-    SEGS.forEach((s, i) => {
-      const a = rot + i * arc;
-      ctx.beginPath(); ctx.moveTo(cx, cx); ctx.arc(cx, cx, r, a, a + arc); ctx.closePath();
-      ctx.fillStyle = s.bg; ctx.fill(); ctx.strokeStyle = "#080c14"; ctx.lineWidth = 2; ctx.stroke();
-      ctx.save(); ctx.translate(cx, cx); ctx.rotate(a + arc / 2);
-      ctx.textAlign = "right"; ctx.fillStyle = "#fff"; ctx.font = "bold 11px Arial";
-      ctx.fillText(s.txt, r - 6, 4); ctx.restore();
-    });
-    ctx.beginPath(); ctx.arc(cx, cx, 14, 0, Math.PI * 2); ctx.fillStyle = "#f59e0b"; ctx.fill();
-    ctx.beginPath(); ctx.moveTo(cx + r + 2, cx); ctx.lineTo(cx + r - 12, cx - 7); ctx.lineTo(cx + r - 12, cx + 7);
-    ctx.closePath(); ctx.fillStyle = "#fff"; ctx.fill();
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+// إعداد المجلدات
+const videosDir = './videos';
+if (!fs.existsSync(videosDir)) fs.mkdirSync(videosDir);
+app.use(express.static('public'));
+app.use('/videos', express.static(videosDir));
+
+// إعداد رفع الفيديوهات
+const storage = multer.diskStorage({
+  destination: videosDir,
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+const upload = multer({ storage });
+
+// قاعدة بيانات مؤقتة (في الذاكرة)
+let posts = [];        // { id, text, imageUrl, videoUrl, likes, comments, timestamp }
+let chatMessages = []; // { user, message, timestamp }
+let users = {};        // socketId -> username
+
+// API: رفع فيديو (تيك توك)
+app.post('/upload-video', upload.single('video'), (req, res) => {
+  const videoUrl = `/videos/${req.file.filename}`;
+  const newPost = {
+    id: Date.now(),
+    text: req.body.text || '',
+    videoUrl: videoUrl,
+    likes: 0,
+    comments: [],
+    timestamp: new Date().toISOString()
   };
-  const spin = () => {
-    if (spinning) return; setSpin(true); setResult(null);
-    const tot = (5 + Math.random() * 4) * 2 * Math.PI, dur = 4000, t0 = performance.now(), a0 = angRef.current;
-    const go = (now) => {
-      const p = Math.min((now - t0) / dur, 1), e = 1 - Math.pow(1 - p, 4);
-      angRef.current = a0 + tot * e; draw(angRef.current);
-      if (p < 1) rafRef.current = requestAnimationFrame(go);
-      else {
-        setSpin(false);
-        const arc = (2 * Math.PI) / SEGS.length, na = ((angRef.current % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-        const idx = Math.floor(((2 * Math.PI - na) % (2 * Math.PI)) / arc) % SEGS.length;
-        setResult(SEGS[idx]); onResult(SEGS[idx].val);
-      }
-    };
-    rafRef.current = requestAnimationFrame(go);
+  posts.unshift(newPost);
+  io.emit('new-post', newPost);
+  res.json({ success: true, post: newPost });
+});
+
+// API: رفع منشور نصي (فيسبوك/تويتر)
+app.post('/upload-text', express.json(), (req, res) => {
+  const newPost = {
+    id: Date.now(),
+    text: req.body.text,
+    imageUrl: req.body.imageUrl || null,
+    likes: 0,
+    comments: [],
+    timestamp: new Date().toISOString()
   };
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.96)", zIndex: 999, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 18 }}>
-      <div style={{ color: "#f59e0b", fontSize: 24, fontWeight: "bold" }}>🎡 عجلة الحظ</div>
-      <canvas ref={cRef} width={280} height={280} style={{ borderRadius: "50%", boxShadow: "0 0 60px rgba(245,158,11,0.5)" }} />
-      {result && <div style={{ color: result.val.t === "none" ? "#6b7280" : "#10b981", fontSize: 22, fontWeight: "bold", textAlign: "center", padding: "0 24px" }}>
-        {result.val.t === "none" ? "للأسف لا جائزة 😔" : result.val.t === "money" ? `🎉 مبروك! ربحت ${result.val.n} DZD` : `🌟 مبروك! ${result.val.n} نقطة`}
-      </div>}
-      {!spinning && !result && <button onClick={spin} style={{ background: "linear-gradient(135deg,#f59e0b,#d97706)", color: "#000", border: "none", borderRadius: 14, padding: "14px 44px", fontSize: 18, fontWeight: "bold", cursor: "pointer" }}>الف!</button>}
-      {result && <button onClick={onClose} style={{ background: "#1e293b", color: "#fff", border: "1px solid #334155", borderRadius: 12, padding: "10px 30px", fontSize: 14, cursor: "pointer" }}>متابعة</button>}
-    </div>
-  );
-}
+  posts.unshift(newPost);
+  io.emit('new-post', newPost);
+  res.json({ success: true, post: newPost });
+});
 
-function Toast({ msg, type, onDone }) {
-  useEffect(() => { const t = setTimeout(onDone, 3200); return () => clearTimeout(t); }, []);
-  const bg = type === "error" ? "#7f1d1d" : type === "info" ? "#1e3a5f" : "#064e3b";
-  const border = type === "error" ? "#ef4444" : type === "info" ? "#3b82f6" : "#10b981";
-  return (
-    <div style={{ position: "fixed", top: 72, left: "50%", transform: "translateX(-50%)", zIndex: 888, background: bg, color: "#fff", borderRadius: 12, padding: "10px 20px", fontSize: 13, fontWeight: "bold", border: `1px solid ${border}`, boxShadow: "0 8px 30px rgba(0,0,0,0.6)", maxWidth: 340, textAlign: "center", direction: "rtl", whiteSpace: "pre-line" }}>
-      {msg}
-    </div>
-  );
-}
+// API: الحصول على جميع المنشورات
+app.get('/posts', (req, res) => {
+  res.json(posts);
+});
 
-function SecurityModal({ onClose }) {
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, overflowY: "auto", padding: 16 }} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #10b981", maxWidth: 430, margin: "0 auto", overflow: "hidden" }}>
-        <div style={{ background: "#0d1c14", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #064e3b" }}>
-          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
-          <div style={{ color: "#10b981", fontWeight: "bold", fontSize: 16 }}>🔒 وثيقة الأمان</div>
-        </div>
-        <div style={{ padding: 16 }}>
-          <div style={{ background: "linear-gradient(135deg,#064e3b,#065f46)", borderRadius: 14, padding: 18, textAlign: "center", marginBottom: 16 }}>
-            <div style={{ color: "#10b981", fontSize: 26, fontWeight: "900", letterSpacing: 4 }}>SECURE V3</div>
-            <div style={{ color: "#6ee7b7", fontSize: 12, marginTop: 4 }}>شهادة أمان دولية موثقة ومعتمدة</div>
-          </div>
-          {[["🔐 بروتوكول التشفير", "SSL/TLS 3.0 — AES-256"], ["📋 رقم الشهادة", "BLK-SEC-V3-2025-DZ"], ["📅 تاريخ الإصدار", "يناير 2025"], ["✅ صالحة حتى", "ديسمبر 2028"], ["🛡 نوع الحماية", "أموال مضمونة 100%"], ["🌐 معتمدة من", "هيئة الرقابة المالية الدولية"], ["🇩🇿 عقد الجزائر", "يناير 2025 — ديسمبر 2028"], ["📊 رمز البورصة", "NYSE: BLK"], ["🔢 رقم EIN", "32-0174431"]].map(([k, v]) => (
-            <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #0f1f2a", direction: "rtl" }}>
-              <div style={{ color: "#e2e8f0", fontSize: 13 }}>{v}</div>
-              <div style={{ color: "#64748b", fontSize: 12 }}>{k}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+// API: إعجاب
+app.post('/like/:id', express.json(), (req, res) => {
+  const post = posts.find(p => p.id == req.params.id);
+  if (post) {
+    post.likes++;
+    io.emit('like-update', { id: post.id, likes: post.likes });
+    res.json({ success: true });
+  } else {
+    res.status(404).json({ error: 'Post not found' });
+  }
+});
 
-function CompanyModal({ onClose }) {
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, overflowY: "auto", padding: 16 }} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #f59e0b", maxWidth: 430, margin: "0 auto", overflow: "hidden" }}>
-        <div style={{ background: "#12100a", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #78350f" }}>
-          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
-          <div style={{ color: "#f59e0b", fontWeight: "bold", fontSize: 16 }}>🏢 عن الشركة</div>
-        </div>
-        <div style={{ padding: 16 }}>
-          <div style={{ textAlign: "center", marginBottom: 18 }}>
-            <div style={{ color: "#f59e0b", fontSize: 30, fontWeight: "900", letterSpacing: 5 }}>BLACKROCK</div>
-            <div style={{ color: "#64748b", fontSize: 13, marginTop: 4 }}>BlackRock, Inc — Investment Platform</div>
-          </div>
-          {[["الاسم القانوني", "BlackRock, Inc"], ["المقر الرئيسي", "🇺🇸 New York, USA"], ["سنة التأسيس", "1988"], ["المجال", "إدارة الأصول والاستثمار"], ["رمز البورصة", "NYSE: BLK"], ["رقم EIN", "32-0174431"], ["عقد الجزائر", "✅ يناير 2025 — ديسمبر 2028"], ["حماية الأموال", "✅ مضمونة 100%"]].map(([k, v]) => (
-            <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #0f1f2a", direction: "rtl" }}>
-              <div style={{ color: "#e2e8f0", fontSize: 13 }}>{v}</div>
-              <div style={{ color: "#64748b", fontSize: 12 }}>{k}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+// WebSocket للشات الفوري (مسنجر + تلغرام)
+io.on('connection', (socket) => {
+  console.log('مستخدم جديد:', socket.id);
 
-function TeamModal({ user, allUsers, onClose }) {
-  const members = (user.referrals || []).map(id => allUsers[id]).filter(Boolean);
-  const myBonus = members.reduce((s, m) => s + Math.floor((m.totalEarnings || 0) * 0.05), 0);
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, overflowY: "auto", padding: 16 }} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #3b82f6", maxWidth: 430, margin: "0 auto", overflow: "hidden" }}>
-        <div style={{ background: "#0a1628", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e3a5f" }}>
-          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
-          <div style={{ color: "#3b82f6", fontWeight: "bold", fontSize: 16 }}>👥 فريقي</div>
-        </div>
-        <div style={{ padding: 16 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
-            {[[members.length, "أعضاء الفريق", "#f59e0b"], [fmtFull(myBonus) + " DZD", "عمولتي الكلية", "#10b981"]].map(([v, l, c]) => (
-              <div key={l} style={{ background: "#111827", borderRadius: 12, padding: "14px 10px", textAlign: "center", border: "1px solid #1e293b" }}>
-                <div style={{ color: c, fontSize: 20, fontWeight: "bold" }}>{v}</div>
-                <div style={{ color: "#64748b", fontSize: 11, marginTop: 4 }}>{l}</div>
-              </div>
-            ))}
-          </div>
-          {members.length === 0
-            ? <div style={{ textAlign: "center", color: "#4b5563", padding: "30px 16px", background: "#111827", borderRadius: 14, border: "1px dashed #1e293b" }}>
-                <div style={{ fontSize: 36, marginBottom: 10 }}>👥</div>
-                <div style={{ fontSize: 14 }}>لا يوجد أعضاء بعد</div>
-                <div style={{ color: "#f59e0b", fontSize: 12, marginTop: 6 }}>شارك رابطك لبناء فريقك</div>
-              </div>
-            : members.map((m, i) => (
-              <div key={i} style={{ background: "#111827", borderRadius: 12, padding: "12px 14px", marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center", border: "1px solid #1e293b", direction: "rtl" }}>
-                <div style={{ color: "#10b981", fontSize: 12, fontWeight: "bold" }}>+{Math.floor((m.totalEarnings || 0) * 0.05)} DZD</div>
-                <div>
-                  <div style={{ color: "#e2e8f0", fontWeight: "bold" }}>{m.name}</div>
-                  <div style={{ color: "#64748b", fontSize: 11 }}>{getLevel(m.level).label} • {new Date(m.joinDate).toLocaleDateString("ar-DZ")}</div>
-                </div>
-                <div style={{ width: 38, height: 38, background: "linear-gradient(135deg,#f59e0b,#d97706)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "#000", fontWeight: "bold", fontSize: 16 }}>
-                  {m.name[0].toUpperCase()}
-                </div>
-              </div>
-            ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+  socket.on('set-username', (username) => {
+    users[socket.id] = username;
+    io.emit('user-joined', `${username} دخل الدردشة`);
+    // إرسال آخر 50 رسالة للمستخدم الجديد
+    socket.emit('chat-history', chatMessages.slice(-50));
+  });
 
-function NotifModal({ user, onClose }) {
-  const lv = getLevel(user.level);
-  const nextLv = getNextLevel(user.level);
-  const notifs = [
-    { ic: "⚡", ic_bg: "#1c2a10", title: "مهام جديدة متاحة!", sub: `لديك ${(user.dailyTasks || []).filter(t => t.status === "pending").length} مهام يومية لكسب ${fmtFull(lv.daily)} DZD`, time: "منذ دقيقة" },
-    { ic: "🎁", ic_bg: "#1a1500", title: `مرحباً بك في BlackRock, Inc`, sub: "ابدأ رحلتك نحو الثروة واكسب يومياً", time: "منذ ساعة" },
-    ...(nextLv ? [{ ic: "💎", ic_bg: "#0d1020", title: "ترقية متاحة!", sub: `ارقَ إلى ${nextLv.label} بإيداع ${fmtFull(nextLv.invest)} DZD`, time: "منذ يوم" }] : []),
-  ];
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "80px 16px" }} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #1e293b", width: "100%", maxWidth: 430, overflow: "hidden" }}>
-        <div style={{ background: "#111827", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e293b" }}>
-          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
-          <div style={{ color: "#e2e8f0", fontWeight: "bold", fontSize: 16 }}>🔔 الإشعارات</div>
-        </div>
-        {notifs.map((n, i) => (
-          <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid #0f172a", direction: "rtl", gap: 12 }}>
-            <div style={{ color: "#64748b", fontSize: 11, flexShrink: 0 }}>{n.time}</div>
-            <div style={{ flex: 1, textAlign: "right" }}>
-              <div style={{ color: "#e2e8f0", fontWeight: "bold", fontSize: 14 }}>{n.title}</div>
-              <div style={{ color: "#64748b", fontSize: 12, marginTop: 3, lineHeight: 1.5 }}>{n.sub}</div>
-            </div>
-            <div style={{ width: 44, height: 44, background: n.ic_bg, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0, border: "1px solid #1e293b" }}>{n.ic}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+  socket.on('chat-message', (msg) => {
+    const username = users[socket.id] || 'زائر';
+    const messageData = { user: username, message: msg, timestamp: new Date().toISOString() };
+    chatMessages.push(messageData);
+    io.emit('new-chat-message', messageData);
+  });
 
-function HistoryModal({ user, onClose }) {
-  const txIcons = { "مهمة يومية": "⚡", "عمولة إحالة": "👥", "عجلة الحظ": "🎡", "إيداع رصيد": "⬆", "دخل يومي": "📈" };
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, overflowY: "auto", padding: 16 }} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #3b82f6", maxWidth: 430, margin: "0 auto", overflow: "hidden" }}>
-        <div style={{ background: "#0a1628", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e3a5f" }}>
-          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
-          <div style={{ color: "#3b82f6", fontWeight: "bold", fontSize: 16 }}>📊 سجل المعاملات</div>
-        </div>
-        <div style={{ padding: 16 }}>
-          {(user.transactions || []).length === 0
-            ? <div style={{ textAlign: "center", color: "#4b5563", padding: 30 }}>لا توجد معاملات بعد</div>
-            : (user.transactions || 
+  socket.on('disconnect', () => {
+    const username = users[socket.id];
+    if (username) {
+      io.emit('user-left', `${username} غادر الدردشة`);
+      delete users[socket.id];
+    }
+  });
+});
+
+server.listen(3000, () => {
+  console.log('🚀 تطبيق السيطرة يعمل على http://localhost:3000');
+});
+npm install
+npm start
