@@ -1,127 +1,42 @@
-superapp/
-├── server.js
-├── package.json
-├── public/
-│   ├── index.html
-│   ├── style.css
-│   └── script.js
-└── videos/   (سيتم إنشاؤها تلقائيًا)
-{
-  "name": "superapp",
-  "version": "1.0.0",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "express": "^4.18.2",
-    "socket.io": "^4.5.4",
-    "multer": "^1.4.5-lts.1"
-  }
-}
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+<!DOCTYPE html>
+<html>
+<head>
+    <title>تطبيق فيديوهاتي</title>
+    <style>
+        body { font-family: Arial; text-align: center; background: black; color: white; }
+        video { width: 100%; max-width: 400px; border-radius: 20px; margin-top: 20px; }
+        button { padding: 10px 20px; margin: 10px; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <h1>🎬 تطبيق فيديوهات قصيرة</h1>
+    <video id="myVideo" controls autoplay></video>
+    <br>
+    <button onclick="nextVideo()">▶️ فيديو التالي</button>
+    <button onclick="shareVideo()">📤 مشاركة</button>
 
-const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
+    <script>
+        let videos = [
+            "https://www.w3schools.com/html/mov_bbb.mp4",
+            "https://www.w3schools.com/html/movie.mp4"
+        ];
+        let index = 0;
+        let videoElement = document.getElementById("myVideo");
 
-// إعداد المجلدات
-const videosDir = './videos';
-if (!fs.existsSync(videosDir)) fs.mkdirSync(videosDir);
-app.use(express.static('public'));
-app.use('/videos', express.static(videosDir));
+        function loadVideo() {
+            videoElement.src = videos[index];
+        }
 
-// إعداد رفع الفيديوهات
-const storage = multer.diskStorage({
-  destination: videosDir,
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
-});
-const upload = multer({ storage });
+        function nextVideo() {
+            index = (index + 1) % videos.length;
+            loadVideo();
+        }
 
-// قاعدة بيانات مؤقتة (في الذاكرة)
-let posts = [];        // { id, text, imageUrl, videoUrl, likes, comments, timestamp }
-let chatMessages = []; // { user, message, timestamp }
-let users = {};        // socketId -> username
+        function shareVideo() {
+            alert("تمت المشاركة (يمكنك ربطها بـ API حقيقي لاحقًا)");
+        }
 
-// API: رفع فيديو (تيك توك)
-app.post('/upload-video', upload.single('video'), (req, res) => {
-  const videoUrl = `/videos/${req.file.filename}`;
-  const newPost = {
-    id: Date.now(),
-    text: req.body.text || '',
-    videoUrl: videoUrl,
-    likes: 0,
-    comments: [],
-    timestamp: new Date().toISOString()
-  };
-  posts.unshift(newPost);
-  io.emit('new-post', newPost);
-  res.json({ success: true, post: newPost });
-});
-
-// API: رفع منشور نصي (فيسبوك/تويتر)
-app.post('/upload-text', express.json(), (req, res) => {
-  const newPost = {
-    id: Date.now(),
-    text: req.body.text,
-    imageUrl: req.body.imageUrl || null,
-    likes: 0,
-    comments: [],
-    timestamp: new Date().toISOString()
-  };
-  posts.unshift(newPost);
-  io.emit('new-post', newPost);
-  res.json({ success: true, post: newPost });
-});
-
-// API: الحصول على جميع المنشورات
-app.get('/posts', (req, res) => {
-  res.json(posts);
-});
-
-// API: إعجاب
-app.post('/like/:id', express.json(), (req, res) => {
-  const post = posts.find(p => p.id == req.params.id);
-  if (post) {
-    post.likes++;
-    io.emit('like-update', { id: post.id, likes: post.likes });
-    res.json({ success: true });
-  } else {
-    res.status(404).json({ error: 'Post not found' });
-  }
-});
-
-// WebSocket للشات الفوري (مسنجر + تلغرام)
-io.on('connection', (socket) => {
-  console.log('مستخدم جديد:', socket.id);
-
-  socket.on('set-username', (username) => {
-    users[socket.id] = username;
-    io.emit('user-joined', `${username} دخل الدردشة`);
-    // إرسال آخر 50 رسالة للمستخدم الجديد
-    socket.emit('chat-history', chatMessages.slice(-50));
-  });
-
-  socket.on('chat-message', (msg) => {
-    const username = users[socket.id] || 'زائر';
-    const messageData = { user: username, message: msg, timestamp: new Date().toISOString() };
-    chatMessages.push(messageData);
-    io.emit('new-chat-message', messageData);
-  });
-
-  socket.on('disconnect', () => {
-    const username = users[socket.id];
-    if (username) {
-      io.emit('user-left', `${username} غادر الدردشة`);
-      delete users[socket.id];
-    }
-  });
-});
-
+        loadVideo();
+    </script>
+</body>
+</html>
