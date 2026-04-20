@@ -1,401 +1,947 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>سوشال إكس - مثل فيسبوك ولكن أفضل</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SocialVibe - منصة التواصل الاجتماعي</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        * { font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: #000; overflow: hidden; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .video-container { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+        .video-item { scroll-snap-align: start; }
+        @keyframes heart-burst {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0; }
         }
-
-        body {
-            background: #f0f2f5;
-            direction: rtl;
-        }
-
-        /* الوضع الليلي */
-        body.dark-mode {
-            background: #18191a;
-            color: #e4e6eb;
-        }
-
-        /* الحاوية الرئيسية */
-        .app-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-            display: flex;
-            gap: 20px;
-            position: relative;
-        }
-
-        /* الشريط الجانبي الأيمن (فيسبوك عربي) */
-        .sidebar {
-            width: 280px;
-            position: sticky;
-            top: 20px;
-            height: fit-content;
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        body.dark-mode .sidebar {
-            background: #242526;
-        }
-
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-bottom: 4px;
-        }
-
-        .sidebar-item:hover {
-            background: #e4e6eb;
-        }
-
-        body.dark-mode .sidebar-item:hover {
-            background: #3a3b3c;
-        }
-
-        /* المحتوى الرئيسي */
-        .main-content {
-            flex: 1;
-            max-width: 680px;
-        }
-
-        /* شريط القصص */
-        .stories-bar {
-            background: white;
-            border-radius: 16px;
-            padding: 12px;
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            margin-bottom: 20px;
-        }
-
-        body.dark-mode .stories-bar {
-            background: #242526;
-        }
-
-        .story {
-            min-width: 100px;
-            height: 180px;
-            background: linear-gradient(145deg, #3b82f6, #a855f7);
-            border-radius: 16px;
-            display: flex;
-            align-items: flex-end;
-            padding: 10px;
-            color: white;
-            font-weight: bold;
-        }
-
-        /* صندوق إنشاء منشور */
-        .create-post {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 20px;
-        }
-
-        body.dark-mode .create-post {
-            background: #242526;
-        }
-
-        .post-input-area {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .avatar {
-            width: 48px;
-            height: 48px;
-            background: #3b82f6;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 20px;
-        }
-
-        .post-input {
-            flex: 1;
-            background: #f0f2f5;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 40px;
-            font-size: 16px;
-        }
-
-        body.dark-mode .post-input {
-            background: #3a3b3c;
-            color: white;
-        }
-
-        /* المنشور */
-        .post-card {
-            background: white;
-            border-radius: 16px;
-            margin-bottom: 16px;
-            padding: 16px;
-        }
-
-        body.dark-mode .post-card {
-            background: #242526;
-        }
-
-        .post-header {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .post-name {
-            font-weight: bold;
-        }
-
-        .post-time {
-            font-size: 12px;
-            color: #65676b;
-        }
-
-        .post-content {
-            margin: 12px 0;
-            line-height: 1.5;
-        }
-
-        .post-stats {
-            display: flex;
-            gap: 20px;
-            border-top: 1px solid #e4e6eb;
-            padding-top: 12px;
-            margin-top: 8px;
-        }
-
-        .post-action {
-            flex: 1;
-            text-align: center;
-            padding: 8px;
-            cursor: pointer;
-            border-radius: 8px;
-        }
-
-        .post-action:hover {
-            background: #e4e6eb;
-        }
-
-        /* شريط الأصدقاء (جانب أيسر) */
-        .friends-sidebar {
-            width: 280px;
-            position: sticky;
-            top: 20px;
-            height: fit-content;
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-        }
-
-        body.dark-mode .friends-sidebar {
-            background: #242526;
-        }
-
-        .friend-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px;
-            border-radius: 12px;
-            margin-bottom: 4px;
-        }
-
-        /* أزرار */
-        .btn-primary {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        /* الوضع الليلي */
-        .dark-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #3b82f6;
-            border: none;
-            border-radius: 40px;
-            padding: 12px;
-            cursor: pointer;
-            z-index: 1000;
-        }
+        .heart-animation { animation: heart-burst 0.8s ease-out forwards; }
+        @keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .slide-up { animation: slide-up 0.3s ease-out; }
+        .gradient-text { background: linear-gradient(45deg, #ff0050, #ff6b6b, #ffd93d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
+        .story-ring { background: linear-gradient(45deg, #ff0050, #ff6b6b, #ffd93d); padding: 2px; border-radius: 50%; }
+        .progress-bar { transition: width 0.1s linear; }
+        .like-active { color: #ff0050; transform: scale(1.2); transition: all 0.2s; }
     </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff0050',
+                        secondary: '#00f2ea',
+                        dark: '#0f0f0f',
+                        darker: '#050505'
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 <body>
-    <div class="app-container">
-        <!-- شريط جانبي أيمن -->
-        <div class="sidebar">
-            <div class="sidebar-item">🏠 الرئيسية</div>
-            <div class="sidebar-item">👥 الأصدقاء</div>
-            <div class="sidebar-item">📽️ فيديوهات</div>
-            <div class="sidebar-item">💬 مسنجر</div>
-            <div class="sidebar-item">🔔 إشعارات</div>
-            <div class="sidebar-item">⚙️ إعدادات</div>
-        </div>
+    <div id="root"></div>
 
-        <!-- المحتوى الرئيسي -->
-        <div class="main-content">
-            <!-- شريط القصص -->
-            <div class="stories-bar">
-                <div class="story">قصتك</div>
-                <div class="story">أحمد</div>
-                <div class="story">سارة</div>
-                <div class="story">محمد</div>
-            </div>
-
-            <!-- صندوق إنشاء منشور -->
-            <div class="create-post">
-                <div class="post-input-area">
-                    <div class="avatar">👤</div>
-                    <input type="text" id="postInput" class="post-input" placeholder="ما الذي يدور في ذهنك؟">
-                </div>
-                <div style="display: flex; gap: 12px; margin-top: 12px;">
-                    <button id="publishBtn" class="btn-primary" style="flex:1">انشر</button>
-                </div>
-            </div>
-
-            <!-- حاوية المنشورات -->
-            <div id="postsContainer"></div>
-        </div>
-
-        <!-- شريط الأصدقاء -->
-        <div class="friends-sidebar">
-            <h3>الأصدقاء النشطون</h3>
-            <div class="friend-item">🟢 أحمد</div>
-            <div class="friend-item">🟢 سارة</div>
-            <div class="friend-item">🟡 محمد</div>
-            <div class="friend-item">⚫ علي</div>
-        </div>
-    </div>
-
-    <button class="dark-toggle" id="darkModeBtn">🌙</button>
-
-    <script>
-        // بيانات المنشورات (محاكاة)
-        let posts = [
-            { id: 1, author: "أحمد", content: "فيسبوك قديم، هذا التطبيق سيتفوق عليه بمراحل!", time: "منذ ساعة", likes: 45, comments: 12 },
-            { id: 2, author: "سارة", content: "أحب الواجهة الجديدة والمنظمة مثل فيسبوك ولكن أسرع", time: "منذ ساعتين", likes: 89, comments: 23 }
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
+        
+        // بيانات تجريبية واقعية
+        const MOCK_USERS = [
+            { id: 1, name: 'أحمد محمد', username: '@ahmed.tech', avatar: 'https://i.pravatar.cc/150?img=11', verified: true },
+            { id: 2, name: 'سارة علي', username: '@sara.design', avatar: 'https://i.pravatar.cc/150?img=5', verified: true },
+            { id: 3, name: 'خالد عمر', username: '@khaled.dev', avatar: 'https://i.pravatar.cc/150?img=3', verified: false },
+            { id: 4, name: 'نورا أحمد', username: '@nora.art', avatar: 'https://i.pravatar.cc/150?img=9', verified: true },
+            { id: 5, name: 'محمد سامي', username: '@mohammed.vlogs', avatar: 'https://i.pravatar.cc/150?img=12', verified: false },
         ];
 
-        // حفظ في localStorage
-        function savePosts() {
-            localStorage.setItem("fb_clone_posts", JSON.stringify(posts));
-        }
+        const MOCK_STORIES = [
+            { id: 1, user: MOCK_USERS[0], image: 'https://picsum.photos/seed/story1/400/700', viewed: false },
+            { id: 2, user: MOCK_USERS[1], image: 'https://picsum.photos/seed/story2/400/700', viewed: false },
+            { id: 3, user: MOCK_USERS[2], image: 'https://picsum.photos/seed/story3/400/700', viewed: true },
+            { id: 4, user: MOCK_USERS[3], image: 'https://picsum.photos/seed/story4/400/700', viewed: false },
+            { id: 5, user: MOCK_USERS[4], image: 'https://picsum.photos/seed/story5/400/700', viewed: true },
+        ];
 
-        function loadPosts() {
-            const stored = localStorage.getItem("fb_clone_posts");
-            if(stored) {
-                posts = JSON.parse(stored);
-            } else {
-                savePosts();
-            }
-            renderPosts();
-        }
+        const MOCK_VIDEOS = [
+            {
+                id: 1,
+                user: MOCK_USERS[0],
+                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+                thumbnail: 'https://picsum.photos/seed/vid1/600/1000',
+                caption: 'تجربة مذهلة في دبي اليوم! 🌆✨ #دبي #سفر #مغامرة',
+                likes: 45200,
+                comments: 1234,
+                shares: 890,
+                liked: false,
+                saved: false,
+            },
+            {
+                id: 2,
+                user: MOCK_USERS[1],
+                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+                thumbnail: 'https://picsum.photos/seed/vid2/600/1000',
+                caption: 'وصفة اليوم: باستا بالصلصة الحمراء 🍝👩‍🍳 #طبخ #وصفات #food',
+                likes: 89100,
+                comments: 3456,
+                shares: 2100,
+                liked: true,
+                saved: false,
+            },
+            {
+                id: 3,
+                user: MOCK_USERS[2],
+                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+                thumbnail: 'https://picsum.photos/seed/vid3/600/1000',
+                caption: 'شرح مبسط لـ React.js في 60 ثانية! 💻⚡ #برمجة #تقنية #تعلم',
+                likes: 128000,
+                comments: 5678,
+                shares: 4500,
+                liked: false,
+                saved: true,
+            },
+            {
+                id: 4,
+                user: MOCK_USERS[3],
+                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+                thumbnail: 'https://picsum.photos/seed/vid4/600/1000',
+                caption: 'رسمتي الجديدة بالألوان المائية 🎨🖌️ #فن #رسم #إبداع',
+                likes: 34500,
+                comments: 890,
+                shares: 560,
+                liked: false,
+                saved: false,
+            },
+            {
+                id: 5,
+                user: MOCK_USERS[4],
+                videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
+                thumbnail: 'https://picsum.photos/seed/vid5/600/1000',
+                caption: 'يوم في حياتي كمطور برمجيات ☕💻 #يوميات #تطوير #عمل',
+                likes: 67000,
+                comments: 2345,
+                shares: 1200,
+                liked: true,
+                saved: true,
+            },
+        ];
 
-        function renderPosts() {
-            const container = document.getElementById("postsContainer");
-            if(!container) return;
-            if(posts.length === 0) {
-                container.innerHTML = `<div class="post-card" style="text-align:center;">لا منشورات، كن أول من يكتب!</div>`;
-                return;
-            }
-            container.innerHTML = posts.map(post => `
-                <div class="post-card">
-                    <div class="post-header">
-                        <div class="avatar">${post.author.charAt(0)}</div>
-                        <div>
-                            <div class="post-name">${escapeHtml(post.author)}</div>
-                            <div class="post-time">${post.time}</div>
+        const MOCK_POSTS = [
+            {
+                id: 1,
+                user: MOCK_USERS[0],
+                content: 'سعيد جداً بإنجاز مشروعي الجديد! 🚀 بعد 6 أشهر من العمل المتواصل، أخيراً انطلق الموقع الرسمي. شكراً لكل من دعمني في هذه الرحلة ❤️',
+                image: 'https://picsum.photos/seed/post1/600/400',
+                likes: 2341,
+                comments: 156,
+                shares: 89,
+                time: 'منذ 2 ساعة',
+                liked: false,
+            },
+            {
+                id: 2,
+                user: MOCK_USERS[1],
+                content: 'صورة من جلسة تصوير اليوم 📸✨ الطبيعة الخلابة في شمال لبنان تستحق الزيارة!',
+                image: 'https://picsum.photos/seed/post2/600/400',
+                likes: 5678,
+                comments: 423,
+                shares: 234,
+                time: 'منذ 5 ساعات',
+                liked: true,
+            },
+            {
+                id: 3,
+                user: MOCK_USERS[3],
+                content: 'اقتباس اليوم: "الإبداع هو ذكاء يحتفل" - ألبير أينشتاين 🧠💡',
+                image: null,
+                likes: 1234,
+                comments: 67,
+                shares: 445,
+                time: 'منذ 8 ساعات',
+                liked: false,
+            },
+        ];
+
+        // مكون الأيقونات
+        const Icon = ({ name, size = 24, className = '', fill = 'none' }) => {
+            const icons = {
+                home: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+                search: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
+                plus: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"/><path d="M12 5v14"/></svg>,
+                message: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+                user: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+                heart: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>,
+                heartFill: <svg width={size} height={size} viewBox="0 0 24 24" fill="#ff0050" stroke="#ff0050" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>,
+                share: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>,
+                comment: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+                bookmark: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>,
+                bookmarkFill: <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>,
+                more: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>,
+                play: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="6 3 20 12 6 21 6 3"/></svg>,
+                pause: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>,
+                music: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>,
+                volume: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>,
+                mute: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" x2="17" y1="9" y2="15"/><line x1="17" x2="23" y1="9" y2="15"/></svg>,
+                verified: <svg width={size} height={size} viewBox="0 0 24 24" fill="#00f2ea" stroke="none" className={className}><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+                close: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
+                camera: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>,
+                bell: <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>,
+            };
+            return icons[name] || null;
+        };
+
+        // تنسيق الأرقام
+        const formatNumber = (num) => {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        };
+
+        // شاشة القصص
+        const StoryViewer = ({ story, onClose }) => {
+            const [progress, setProgress] = useState(0);
+            const [isPaused, setIsPaused] = useState(false);
+
+            useEffect(() => {
+                if (isPaused) return;
+                const interval = setInterval(() => {
+                    setProgress(p => {
+                        if (p >= 100) { onClose(); return 100; }
+                        return p + 2;
+                    });
+                }, 100);
+                return () => clearInterval(interval);
+            }, [isPaused, onClose]);
+
+            return (
+                <div className="fixed inset-0 z-50 bg-black" onClick={() => setIsPaused(!isPaused)}>
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-white/20 z-10">
+                        <div className="h-full bg-white progress-bar" style={{ width: `${progress}%` }}></div>
+                    </div>
+                    <img src={story.image} className="w-full h-full object-cover" alt="story" />
+                    <div className="absolute top-8 right-4 left-4 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <div className="story-ring">
+                                <img src={story.user.avatar} className="w-10 h-10 rounded-full border-2 border-black" alt="" />
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-1">
+                                    <span className="text-white font-bold text-sm">{story.user.name}</span>
+                                    {story.user.verified && <Icon name="verified" size={14} />}
+                                </div>
+                                <span className="text-white/70 text-xs">{story.user.username}</span>
+                            </div>
+                        </div>
+                        <button onClick={(e) => { e.stopPropagation(); onClose(); }} className="text-white p-2">
+                            <Icon name="close" size={24} />
+                        </button>
+                    </div>
+                    {isPaused && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <Icon name="play" size={64} className="text-white/80" />
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // مكون الفيديو
+        const VideoItem = ({ video, isActive }) => {
+            const videoRef = useRef(null);
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [isMuted, setIsMuted] = useState(true);
+            const [liked, setLiked] = useState(video.liked);
+            const [saved, setSaved] = useState(video.saved);
+            const [likeCount, setLikeCount] = useState(video.likes);
+            const [showHeart, setShowHeart] = useState(false);
+            const [isFollowing, setIsFollowing] = useState(false);
+
+            useEffect(() => {
+                if (videoRef.current) {
+                    if (isActive) {
+                        videoRef.current.play().catch(() => {});
+                        setIsPlaying(true);
+                    } else {
+                        videoRef.current.pause();
+                        videoRef.current.currentTime = 0;
+                        setIsPlaying(false);
+                    }
+                }
+            }, [isActive]);
+
+            const togglePlay = () => {
+                if (videoRef.current) {
+                    if (isPlaying) {
+                        videoRef.current.pause();
+                        setIsPlaying(false);
+                    } else {
+                        videoRef.current.play();
+                        setIsPlaying(true);
+                    }
+                }
+            };
+
+            const handleDoubleTap = () => {
+                if (!liked) {
+                    setLiked(true);
+                    setLikeCount(c => c + 1);
+                }
+                setShowHeart(true);
+                setTimeout(() => setShowHeart(false), 800);
+            };
+
+            const toggleLike = () => {
+                setLiked(!liked);
+                setLikeCount(c => liked ? c - 1 : c + 1);
+            };
+
+            return (
+                <div className="video-item relative w-full h-screen bg-black overflow-hidden">
+                    <video
+                        ref={videoRef}
+                        src={video.videoUrl}
+                        className="w-full h-full object-cover"
+                        loop
+                        muted={isMuted}
+                        playsInline
+                        poster={video.thumbnail}
+                        onClick={togglePlay}
+                    />
+                    
+                    {/* طبقة التعتيم السفلية */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none"></div>
+
+                    {/* أيقونة القلب المتحركة */}
+                    {showHeart && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+                            <Icon name="heartFill" size={120} className="heart-animation" />
+                        </div>
+                    )}
+
+                    {/* زر التشغيل/الإيقاف */}
+                    {!isPlaying && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                            <div className="w-20 h-20 bg-black/50 rounded-full flex items-center justify-center backdrop-blur-sm">
+                                <Icon name="play" size={40} className="text-white mr-1" />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* معلومات الفيديو - الجانب الأيمن */}
+                    <div className="absolute right-4 bottom-24 flex flex-col items-center gap-6 z-10">
+                        <div className="flex flex-col items-center gap-1">
+                            <button onClick={toggleLike} className={`p-2 rounded-full transition-all ${liked ? 'like-active' : 'text-white'}`}>
+                                {liked ? <Icon name="heartFill" size={32} /> : <Icon name="heart" size={32} />}
+                            </button>
+                            <span className="text-white text-xs font-bold">{formatNumber(likeCount)}</span>
+                        </div>
+                        
+                        <div className="flex flex-col items-center gap-1">
+                            <button className="p-2 text-white">
+                                <Icon name="comment" size={32} />
+                            </button>
+                            <span className="text-white text-xs font-bold">{formatNumber(video.comments)}</span>
+                        </div>
+                        
+                        <div className="flex flex-col items-center gap-1">
+                            <button className="p-2 text-white">
+                                <Icon name="share" size={32} />
+                            </button>
+                            <span className="text-white text-xs font-bold">{formatNumber(video.shares)}</span>
+                        </div>
+                        
+                        <div className="flex flex-col items-center gap-1">
+                            <button onClick={() => setSaved(!saved)} className={`p-2 transition-all ${saved ? 'text-primary' : 'text-white'}`}>
+                                {saved ? <Icon name="bookmarkFill" size={32} /> : <Icon name="bookmark" size={32} />}
+                            </button>
+                        </div>
+
+                        <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center animate-spin-slow">
+                            <Icon name="music" size={20} className="text-white" />
                         </div>
                     </div>
-                    <div class="post-content">${escapeHtml(post.content)}</div>
-                    <div class="post-stats">
-                        <div class="post-action" onclick="likePost(${post.id})">👍 ${post.likes}</div>
-                        <div class="post-action">💬 ${post.comments}</div>
-                        <div class="post-action">🔁 مشاركة</div>
+
+                    {/* معلومات الفيديو - الجانب الأيسر السفلي */}
+                    <div className="absolute left-4 right-20 bottom-8 z-10" onDoubleClick={handleDoubleTap}>
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className="relative">
+                                <img src={video.user.avatar} className="w-10 h-10 rounded-full border border-white/30" alt="" />
+                                {video.user.verified && (
+                                    <div className="absolute -bottom-1 -right-1 bg-black rounded-full">
+                                        <Icon name="verified" size={14} />
+                                    </div>
+                                )}
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-1">
+                                    <span className="text-white font-bold text-sm">{video.user.name}</span>
+                                    <span className="text-white/60 text-xs">{video.user.username}</span>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => setIsFollowing(!isFollowing)}
+                                className={`px-4 py-1 rounded-full text-xs font-bold transition-all ${isFollowing ? 'bg-white/20 text-white' : 'bg-white text-black'}`}
+                            >
+                                {isFollowing ? 'متابَع' : 'متابعة'}
+                            </button>
+                        </div>
+                        
+                        <p className="text-white text-sm mb-3 leading-relaxed line-clamp-2">{video.caption}</p>
+                        
+                        <div className="flex items-center gap-2 text-white/80 text-xs">
+                            <Icon name="music" size={14} />
+                            <span className="truncate">Original Sound - {video.user.name}</span>
+                        </div>
+                    </div>
+
+                    {/* زر الصوت */}
+                    <button 
+                        onClick={() => setIsMuted(!isMuted)}
+                        className="absolute top-24 left-4 z-10 p-2 bg-black/30 rounded-full backdrop-blur-sm"
+                    >
+                        <Icon name={isMuted ? "mute" : "volume"} size={20} className="text-white" />
+                    </button>
+                </div>
+            );
+        };
+
+        // تبويب الفيديوهات (تيك توك)
+        const VideoFeed = () => {
+            const [activeIndex, setActiveIndex] = useState(0);
+            const containerRef = useRef(null);
+
+            const handleScroll = useCallback(() => {
+                if (containerRef.current) {
+                    const scrollTop = containerRef.current.scrollTop;
+                    const height = window.innerHeight;
+                    const index = Math.round(scrollTop / height);
+                    setActiveIndex(index);
+                }
+            }, []);
+
+            useEffect(() => {
+                const container = containerRef.current;
+                if (container) {
+                    container.addEventListener('scroll', handleScroll);
+                    return () => container.removeEventListener('scroll', handleScroll);
+                }
+            }, [handleScroll]);
+
+            return (
+                <div ref={containerRef} className="video-container h-screen overflow-y-scroll hide-scrollbar">
+                    {MOCK_VIDEOS.map((video, index) => (
+                        <VideoItem key={video.id} video={video} isActive={index === activeIndex} />
+                    ))}
+                </div>
+            );
+        };
+
+        // تبويب الصفحة الرئيسية (فيسبوك)
+        const HomeFeed = () => {
+            const [posts, setPosts] = useState(MOCK_POSTS);
+            const [stories, setStories] = useState(MOCK_STORIES);
+            const [activeStory, setActiveStory] = useState(null);
+            const [newPostText, setNewPostText] = useState('');
+
+            const togglePostLike = (postId) => {
+                setPosts(posts.map(post => {
+                    if (post.id === postId) {
+                        return { ...post, liked: !post.liked, likes: post.liked ? post.likes - 1 : post.likes + 1 };
+                    }
+                    return post;
+                }));
+            };
+
+            const handleStoryClick = (story) => {
+                setActiveStory(story);
+                setStories(stories.map(s => s.id === story.id ? { ...s, viewed: true } : s));
+            };
+
+            return (
+                <div className="h-screen overflow-y-auto hide-scrollbar bg-dark pb-20">
+                    {/* شريط البحث */}
+                    <div className="sticky top-0 z-40 bg-dark/95 backdrop-blur-md border-b border-white/10 px-4 py-3">
+                        <div className="flex items-center gap-3">
+                            <div className="flex-1 relative">
+                                <input 
+                                    type="text" 
+                                    placeholder="ابحث في SocialVibe..." 
+                                    className="w-full bg-white/10 rounded-full py-2 px-4 pr-10 text-white text-sm placeholder-white/50 focus:outline-none focus:bg-white/20 transition-all"
+                                />
+                                <Icon name="search" size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50" />
+                            </div>
+                            <button className="relative p-2">
+                                <Icon name="bell" size={24} className="text-white" />
+                                <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
+                            </button>
+                            <button className="p-2">
+                                <Icon name="message" size={24} className="text-white" />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* القصص */}
+                    <div className="flex gap-3 p-4 overflow-x-auto hide-scrollbar border-b border-white/10">
+                        <div className="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer">
+                            <div className="relative w-16 h-16">
+                                <img src="https://i.pravatar.cc/150?img=68" className="w-full h-full rounded-full object-cover" alt="" />
+                                <div className="absolute bottom-0 left-0 w-5 h-5 bg-primary rounded-full flex items-center justify-center border-2 border-dark">
+                                    <Icon name="plus" size={12} className="text-white" />
+                                </div>
+                            </div>
+                            <span className="text-white text-xs">قصتك</span>
+                        </div>
+                        {stories.map(story => (
+                            <div key={story.id} className="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer" onClick={() => handleStoryClick(story)}>
+                                <div className={`p-[2px] rounded-full ${story.viewed ? 'bg-white/30' : 'story-ring'}`}>
+                                    <img src={story.user.avatar} className="w-[60px] h-[60px] rounded-full object-cover border-2 border-dark" alt="" />
+                                </div>
+                                <span className="text-white text-xs truncate w-16 text-center">{story.user.name.split(' ')[0]}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* إنشاء منشور */}
+                    <div className="p-4 border-b border-white/10">
+                        <div className="flex gap-3">
+                            <img src="https://i.pravatar.cc/150?img=68" className="w-10 h-10 rounded-full" alt="" />
+                            <div className="flex-1">
+                                <input 
+                                    type="text" 
+                                    value={newPostText}
+                                    onChange={(e) => setNewPostText(e.target.value)}
+                                    placeholder="بماذا تفكر؟" 
+                                    className="w-full bg-white/10 rounded-full py-2 px-4 text-white text-sm placeholder-white/50 focus:outline-none focus:bg-white/20 transition-all mb-3"
+                                />
+                                <div className="flex justify-between items-center">
+                                    <div className="flex gap-4">
+                                        <button className="flex items-center gap-1 text-white/70 text-xs hover:text-primary transition-colors">
+                                            <Icon name="camera" size={18} />
+                                            <span>صورة/فيديو</span>
+                                        </button>
+                                    </div>
+                                    <button className="bg-primary text-white px-4 py-1 rounded-full text-xs font-bold hover:bg-primary/80 transition-colors">
+                                        نشر
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* المنشورات */}
+                    {posts.map(post => (
+                        <div key={post.id} className="border-b border-white/10 p-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-3">
+                                    <img src={post.user.avatar} className="w-10 h-10 rounded-full" alt="" />
+                                    <div>
+                                        <div className="flex items-center gap-1">
+                                            <span className="text-white font-bold text-sm">{post.user.name}</span>
+                                            {post.user.verified && <Icon name="verified" size={14} />}
+                                        </div>
+                                        <span className="text-white/50 text-xs">{post.time}</span>
+                                    </div>
+                                </div>
+                                <button className="text-white/50 hover:text-white">
+                                    <Icon name="more" size={20} />
+                                </button>
+                            </div>
+                            
+                            <p className="text-white text-sm mb-3 leading-relaxed">{post.content}</p>
+                            
+                            {post.image && (
+                                <div className="rounded-xl overflow-hidden mb-3">
+                                    <img src={post.image} className="w-full h-64 object-cover" alt="" />
+                                </div>
+                            )}
+                            
+                            <div className="flex items-center justify-between pt-3 border-t border-white/10">
+                                <button 
+                                    onClick={() => togglePostLike(post.id)}
+                                    className={`flex items-center gap-2 text-sm transition-all ${post.liked ? 'text-primary' : 'text-white/70'}`}
+                                >
+                                    {post.liked ? <Icon name="heartFill" size={20} /> : <Icon name="heart" size={20} />}
+                                    <span>{formatNumber(post.likes)}</span>
+                                </button>
+                                <button className="flex items-center gap-2 text-white/70 text-sm">
+                                    <Icon name="comment" size={20} />
+                                    <span>{formatNumber(post.comments)}</span>
+                                </button>
+                                <button className="flex items-center gap-2 text-white/70 text-sm">
+                                    <Icon name="share" size={20} />
+                                    <span>{formatNumber(post.shares)}</span>
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+
+                    {activeStory && <StoryViewer story={activeStory} onClose={() => setActiveStory(null)} />}
+                </div>
+            );
+        };
+
+        // تبويب البحث
+        const SearchTab = () => {
+            const [searchQuery, setSearchQuery] = useState('');
+            const [activeCategory, setActiveCategory] = useState('الكل');
+
+            const categories = ['الكل', 'ترفيه', 'رياضة', 'تعليم', 'موسيقى', 'ألعاب', 'أخبار'];
+            const trending = ['#تحدي_الرقص', '#وصفات_سريعة', '#تعلم_البرمجة', '#سفر_واستكشاف', '#فن_رقمي'];
+
+            return (
+                <div className="h-screen overflow-y-auto hide-scrollbar bg-dark pb-20">
+                    <div className="sticky top-0 z-40 bg-dark/95 backdrop-blur-md p-4">
+                        <div className="relative mb-4">
+                            <input 
+                                type="text" 
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="ابحث عن أشخاص، فيديوهات، مواضيع..." 
+                                className="w-full bg-white/10 rounded-full py-3 px-4 pr-10 text-white text-sm placeholder-white/50 focus:outline-none focus:bg-white/20 transition-all"
+                            />
+                            <Icon name="search" size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50" />
+                        </div>
+                        <div className="flex gap-2 overflow-x-auto hide-scrollbar">
+                            {categories.map(cat => (
+                                <button 
+                                    key={cat}
+                                    onClick={() => setActiveCategory(cat)}
+                                    className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${activeCategory === cat ? 'bg-primary text-white' : 'bg-white/10 text-white/70'}`}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="p-4">
+                        <h3 className="text-white font-bold mb-3">الأكثر تداولاً 🔥</h3>
+                        <div className="space-y-3">
+                            {trending.map((tag, i) => (
+                                <div key={i} className="flex items-center justify-between p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer">
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-primary font-bold text-lg">{i + 1}</span>
+                                        <div>
+                                            <p className="text-white text-sm font-bold">{tag}</p>
+                                            <p className="text-white/50 text-xs">{formatNumber(Math.floor(Math.random() * 500000))} مشاهدة</p>
+                                        </div>
+                                    </div>
+                                    <Icon name="search" size={16} className="text-white/30" />
+                                </div>
+                            ))}
+                        </div>
+
+                        <h3 className="text-white font-bold mt-6 mb-3">اقتراحات لك</h3>
+                        <div className="grid grid-cols-2 gap-2">
+                            {[1,2,3,4,5,6].map(i => (
+                                <div key={i} className="relative aspect-[3/4] rounded-xl overflow-hidden group cursor-pointer">
+                                    <img src={`https://picsum.photos/seed/search${i}/300/400`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                                    <div className="absolute bottom-2 right-2 left-2">
+                                        <p className="text-white text-xs font-bold truncate">فيديو مميز #{i}</p>
+                                        <p className="text-white/70 text-[10px]">{formatNumber(Math.floor(Math.random() * 100000))} مشاهدة</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
-            `).join('');
-        }
+            );
+        };
 
-        window.likePost = function(id) {
-            const post = posts.find(p => p.id === id);
-            if(post) {
-                post.likes += 1;
-                savePosts();
-                renderPosts();
+        // تبويب الإنشاء
+        const CreateTab = () => (
+            <div className="h-screen bg-dark flex flex-col items-center justify-center p-8">
+                <div className="w-full max-w-md">
+                    <h2 className="text-2xl font-bold text-white mb-8 text-center">إنشاء محتوى جديد</h2>
+                    <div className="space-y-4">
+                        <button className="w-full bg-gradient-to-r from-primary to-orange-500 p-6 rounded-2xl flex items-center gap-4 hover:scale-105 transition-transform">
+                            <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center">
+                                <Icon name="camera" size={28} className="text-white" />
+                            </div>
+                            <div className="text-right">
+                                <h3 className="text-white font-bold text-lg">فيديو قصير</h3>
+                                <p className="text-white/70 text-sm">سجل فيديو حتى 3 دقائق</p>
+                            </div>
+                        </button>
+                        
+                        <button className="w-full bg-white/10 p-6 rounded-2xl flex items-center gap-4 hover:bg-white/20 transition-all">
+                            <div className="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center">
+                                <Icon name="plus" size={28} className="text-white" />
+                            </div>
+                            <div className="text-right">
+                                <h3 className="text-white font-bold text-lg">منشور نصي</h3>
+                                <p className="text-white/70 text-sm">شارك أفكارك مع الجميع</p>
+                            </div>
+                        </button>
+                        
+                        <button className="w-full bg-white/10 p-6 rounded-2xl flex items-center gap-4 hover:bg-white/20 transition-all">
+                            <div className="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center">
+                                <Icon name="music" size={28} className="text-white" />
+                            </div>
+                            <div className="text-right">
+                                <h3 className="text-white font-bold text-lg">بث مباشر</h3>
+                                <p className="text-white/70 text-sm">تواصل مع متابعيك مباشرة</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // تبويب الرسائل
+        const MessagesTab = () => {
+            const [selectedChat, setSelectedChat] = useState(null);
+            const [messageText, setMessageText] = useState('');
+
+            const chats = [
+                { id: 1, user: MOCK_USERS[0], lastMessage: 'مرحباً! كيف حالك؟', time: 'الآن', unread: 2 },
+                { id: 2, user: MOCK_USERS[1], lastMessage: 'شكراً على المشاركة!', time: 'منذ 5 دق', unread: 0 },
+                { id: 3, user: MOCK_USERS[2], lastMessage: 'هل رأيت الفيديو الجديد؟', time: 'منذ ساعة', unread: 1 },
+                { id: 4, user: MOCK_USERS[3], lastMessage: 'موعدنا غداً الساعة ٣', time: 'أمس', unread: 0 },
+            ];
+
+            if (selectedChat) {
+                return (
+                    <div className="h-screen bg-dark flex flex-col">
+                        <div className="flex items-center gap-3 p-4 border-b border-white/10 bg-dark/95 backdrop-blur-md">
+                            <button onClick={() => setSelectedChat(null)} className="text-white p-2">
+                                <Icon name="close" size={24} />
+                            </button>
+                            <img src={selectedChat.user.avatar} className="w-10 h-10 rounded-full" alt="" />
+                            <div className="flex-1">
+                                <div className="flex items-center gap-1">
+                                    <span className="text-white font-bold">{selectedChat.user.name}</span>
+                                    {selectedChat.user.verified && <Icon name="verified" size={14} />}
+                                </div>
+                                <span className="text-green-400 text-xs">متصل الآن</span>
+                            </div>
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                            <div className="flex justify-start">
+                                <div className="bg-white/10 rounded-2xl rounded-tr-sm px-4 py-2 max-w-[80%]">
+                                    <p className="text-white text-sm">مرحباً! 👋</p>
+                                </div>
+                            </div>
+                            <div className="flex justify-end">
+                                <div className="bg-primary rounded-2xl rounded-tl-sm px-4 py-2 max-w-[80%]">
+                                    <p className="text-white text-sm">أهلاً! كيف يمكنني مساعدتك؟</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-4 border-t border-white/10">
+                            <div className="flex gap-2">
+                                <input 
+                                    type="text" 
+                                    value={messageText}
+                                    onChange={(e) => setMessageText(e.target.value)}
+                                    placeholder="اكتب رسالة..." 
+                                    className="flex-1 bg-white/10 rounded-full py-2 px-4 text-white text-sm placeholder-white/50 focus:outline-none focus:bg-white/20"
+                                />
+                                <button className="bg-primary p-2 rounded-full">
+                                    <Icon name="share" size={20} className="text-white rotate-[-90deg]" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
             }
-        }
 
-        function addPost(content) {
-            if(!content.trim()) return;
-            const newPost = {
-                id: Date.now(),
-                author: "أنت",
-                content: content,
-                time: "الآن",
-                likes: 0,
-                comments: 0
+            return (
+                <div className="h-screen overflow-y-auto hide-scrollbar bg-dark pb-20">
+                    <div className="sticky top-0 z-40 bg-dark/95 backdrop-blur-md p-4 border-b border-white/10">
+                        <h2 className="text-white font-bold text-xl mb-4">الرسائل</h2>
+                        <div className="relative">
+                            <input 
+                                type="text" 
+                                placeholder="ابحث في المحادثات..." 
+                                className="w-full bg-white/10 rounded-full py-2 px-4 pr-10 text-white text-sm placeholder-white/50 focus:outline-none focus:bg-white/20"
+                            />
+                            <Icon name="search" size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50" />
+                        </div>
+                    </div>
+                    <div className="divide-y divide-white/10">
+                        {chats.map(chat => (
+                            <div key={chat.id} className="flex items-center gap-3 p-4 hover:bg-white/5 cursor-pointer transition-colors" onClick={() => setSelectedChat(chat)}>
+                                <div className="relative">
+                                    <img src={chat.user.avatar} className="w-14 h-14 rounded-full" alt="" />
+                                    <div className="absolute bottom-0 left-0 w-3 h-3 bg-green-500 rounded-full border-2 border-dark"></div>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between mb-1">
+                                        <span className="text-white font-bold text-sm">{chat.user.name}</span>
+                                        <span className="text-white/50 text-xs">{chat.time}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-white/70 text-sm truncate">{chat.lastMessage}</p>
+                                        {chat.unread > 0 && (
+                                            <span className="bg-primary text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center mr-2">
+                                                {chat.unread}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // تبويب الملف الشخصي
+        const ProfileTab = () => {
+            const [activeTab, setActiveTab] = useState('videos');
+            const stats = { followers: '1.2M', following: '384', likes: '45.6M' };
+
+            return (
+                <div className="h-screen overflow-y-auto hide-scrollbar bg-dark pb-20">
+                    {/* الغلاف */}
+                    <div className="relative h-48 bg-gradient-to-br from-primary via-purple-600 to-blue-600">
+                        <div className="absolute inset-0 bg-black/20"></div>
+                    </div>
+                    
+                    {/* المعلومات */}
+                    <div className="px-4 -mt-16 relative z-10">
+                        <div className="flex justify-between items-end mb-4">
+                            <img src="https://i.pravatar.cc/150?img=68" className="w-32 h-32 rounded-full border-4 border-dark object-cover" alt="" />
+                            <button className="bg-white/10 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-white/20 transition-colors mb-4">
+                                تعديل الملف
+                            </button>
+                        </div>
+                        
+                        <div className="mb-4">
+                            <div className="flex items-center gap-2 mb-1">
+                                <h1 className="text-white font-bold text-xl">أنت</h1>
+                                <Icon name="verified" size={18} />
+                            </div>
+                            <p className="text-white/60 text-sm">@your.username</p>
+                            <p className="text-white/80 text-sm mt-2">🎥 صانع محتوى | 💻 مطور | 🌍 مستكشف</p>
+                        </div>
+
+                        {/* الإحصائيات */}
+                        <div className="flex justify-around py-4 border-y border-white/10 mb-4">
+                            <div className="text-center">
+                                <p className="text-white font-bold text-lg">{stats.following}</p>
+                                <p className="text-white/60 text-xs">يتابعون</p>
+                            </div>
+                            <div className="text-center">
+                                <p className="text-white font-bold text-lg">{stats.followers}</p>
+                                <p className="text-white/60 text-xs">متابعين</p>
+                            </div>
+                            <div className="text-center">
+                                <p className="text-white font-bold text-lg">{stats.likes}</p>
+                                <p className="text-white/60 text-xs">إعجاب</p>
+                            </div>
+                        </div>
+
+                        {/* التبويبات */}
+                        <div className="flex border-b border-white/10 mb-4">
+                            <button 
+                                onClick={() => setActiveTab('videos')}
+                                className={`flex-1 py-3 text-sm font-bold transition-colors ${activeTab === 'videos' ? 'text-primary border-b-2 border-primary' : 'text-white/60'}`}
+                            >
+                                الفيديوهات
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('liked')}
+                                className={`flex-1 py-3 text-sm font-bold transition-colors ${activeTab === 'liked' ? 'text-primary border-b-2 border-primary' : 'text-white/60'}`}
+                            >
+                                المفضلة
+                            </button>
+                        </div>
+
+                        {/* الشبكة */}
+                        <div className="grid grid-cols-3 gap-1 pb-4">
+                            {[1,2,3,4,5,6,7,8,9].map(i => (
+                                <div key={i} className="relative aspect-[3/4] bg-white/5 overflow-hidden group cursor-pointer">
+                                    <img src={`https://picsum.photos/seed/profile${i}/300/400`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="" />
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                        <div className="flex items-center gap-1 text-white">
+                                            <Icon name="heartFill" size={14} />
+                                            <span className="text-xs font-bold">{formatNumber(Math.floor(Math.random() * 100000))}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // التطبيق الرئيسي
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('home');
+
+            const tabs = [
+                { id: 'home', icon: 'home', label: 'الرئيسية' },
+                { id: 'search', icon: 'search', label: 'اكتشف' },
+                { id: 'create', icon: 'plus', label: 'إنشاء' },
+                { id: 'messages', icon: 'message', label: 'رسائل' },
+                { id: 'profile', icon: 'user', label: 'أنا' },
+            ];
+
+            const renderContent = () => {
+                switch(activeTab) {
+                    case 'home': return <HomeFeed />;
+                    case 'search': return <SearchTab />;
+                    case 'create': return <CreateTab />;
+                    case 'messages': return <MessagesTab />;
+                    case 'profile': return <ProfileTab />;
+                    default: return <HomeFeed />;
+                }
             };
-            posts.unshift(newPost);
-            savePosts();
-            renderPosts();
-        }
 
-        function escapeHtml(str) {
-            if(!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if(m === '&') return '&amp;';
-                if(m === '<') return '&lt;';
-                if(m === '>') return '&gt;';
-                return m;
-            });
-        }
+            return (
+                <div className="relative h-screen w-full max-w-md mx-auto bg-dark overflow-hidden shadow-2xl">
+                    {/* المحتوى الرئيسي */}
+                    <div className="h-full pb-16">
+                        {renderContent()}
+                    </div>
 
-        // نشر منشور
-        document.getElementById("publishBtn")?.addEventListener("click", () => {
-            const input = document.getElementById("postInput");
-            if(input.value) {
-                addPost(input.value);
-                input.value = '';
-            }
-        });
+                    {/* شريط التنقل السفلي */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-dark/95 backdrop-blur-md border-t border-white/10 z-50">
+                        <div className="flex justify-around items-center py-2">
+                            {tabs.map(tab => (
+                                <button 
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`flex flex-col items-center gap-1 p-2 transition-all ${activeTab === tab.id ? 'text-primary scale-110' : 'text-white/60 hover:text-white/80'}`}
+                                >
+                                    {tab.id === 'create' ? (
+                                        <div className="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-xl flex items-center justify-center">
+                                            <Icon name="plus" size={24} className="text-white" />
+                                        </div>
+                                    ) : (
+                                        <Icon name={tab.icon} size={24} />
+                                    )}
+                                    {tab.id !== 'create' && <span className="text-[10px] font-medium">{tab.label}</span>}
+                                </button>
+                            ))}
+                        </div>
+                        {/* شريط الأمان للأيفون */}
+                        <div className="h-2 bg-dark"></div>
+                    </div>
 
-        // الوضع الليلي
-        const darkBtn = document.getElementById("darkModeBtn");
-        darkBtn?.addEventListener("click", () => {
-            document.body.classList.toggle("dark-mode");
-            localStorage.setItem("fb_dark_mode", document.body.classList.contains("dark-mode"));
-        });
-        if(localStorage.getItem("fb_dark_mode") === "true") {
-            document.body.classList.add("dark-mode");
-        }
+                    {/* زر الفيديوهات العائمة */}
+                    <button 
+                        onClick={() => setActiveTab('home')}
+                        className={`absolute top-4 right-4 z-30 p-3 rounded-full backdrop-blur-md transition-all ${activeTab === 'home' ? 'bg-primary/80 text-white' : 'bg-black/50 text-white/80'}`}
+                    >
+                        <Icon name="play" size={20} />
+                    </button>
+                </div>
+            );
+        };
 
-        loadPosts();
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
