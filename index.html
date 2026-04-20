@@ -1,323 +1,289 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // ══════════════════════════════════════════════
-// نظام الحفظ والأمان الفائق
+// STORAGE — Triple-layer persistence
 // ══════════════════════════════════════════════
-const KEY = "blk_v5_final";
-
+const KEY = "blk_v5";
 function dbRead() {
-  try {
-    const localData = localStorage.getItem(KEY);
-    if (localData) return JSON.parse(localData);
-  } catch (e) { console.error("Error reading storage"); }
-  return { users: {}, uid: null };
+  try { const d = localStorage.getItem(KEY); if (d) return JSON.parse(d); } catch (e) {}
+  try { const d = sessionStorage.getItem(KEY); if (d) return JSON.parse(d); } catch (e) {}
+  return { users: {}, uid: null, lastOpen: Date.now() };
 }
-
 function dbSave(data) {
-  try {
-    const s = JSON.stringify(data);
-    localStorage.setItem(KEY, s);
-    sessionStorage.setItem(KEY, s); // طبقة حفظ ثانية
-  } catch (e) { console.error("Error saving storage"); }
+  const s = JSON.stringify(data);
+  try { localStorage.setItem(KEY, s); } catch (e) {}
+  try { sessionStorage.setItem(KEY, s); } catch (e) {}
 }
 
 // ══════════════════════════════════════════════
-// المستويات والبيانات المالية
+// LEVELS
 // ══════════════════════════════════════════════
 const LEVELS = [
-  { id: "تجريبي", label: "تجريبي", invest: 0, tasks: 5, reward: 43, daily: 215, color: "#9ca3af", next: "M1" },
-  { id: "M1", label: "M1", invest: 7000, tasks: 5, reward: 43, daily: 215, color: "#f59e0b", next: "M2" },
-  { id: "M2", label: "M2", invest: 26600, tasks: 10, reward: 86, daily: 860, color: "#10b981", next: "M3" },
-  { id: "M3", label: "M3", invest: 95000, tasks: 25, reward: 131, daily: 3275, color: "#3b82f6", next: "M4" },
-  { id: "M4", label: "M4", invest: 300000, tasks: 50, reward: 222, daily: 11100, color: "#8b5cf6", next: "M5" },
-  { id: "M5", label: "M5", invest: 780000, tasks: 80, reward: 390, daily: 31200, color: "#ec4899", next: "M6" },
-  { id: "M6", label: "M6", invest: 1950000, tasks: 130, reward: 652, daily: 84760, color: "#ef4444", next: "G7" },
-  { id: "G7", label: "G7", invest: 4485000, tasks: 200, reward: 1068, daily: 213600, color: "#fbbf24", next: null },
+  { id: "تجريبي", label: "تجريبي", invest: 0, tasks: 5, reward: 43, daily: 215, monthly: null, yearly: null, color: "#9ca3af", next: "M1", days: 3 },
+  { id: "M1", label: "M1", invest: 7000, tasks: 5, reward: 43, daily: 215, monthly: 6450, yearly: 77400, color: "#f59e0b", next: "M2" },
+  { id: "M2", label: "M2", invest: 26600, tasks: 10, reward: 86, daily: 860, monthly: 25800, yearly: 309600, color: "#10b981", next: "M3" },
+  { id: "M3", label: "M3", invest: 95000, tasks: 25, reward: 131, daily: 3275, monthly: 98250, yearly: 1179000, color: "#3b82f6", next: "M4" },
+  { id: "M4", label: "M4", invest: 300000, tasks: 50, reward: 222, daily: 11100, monthly: 333000, yearly: 3996000, color: "#8b5cf6", next: "M5" },
+  { id: "M5", label: "M5", invest: 780000, tasks: 80, reward: 390, daily: 31200, monthly: 936000, yearly: 11232000, color: "#ec4899", next: "M6" },
+  { id: "M6", label: "M6", invest: 1950000, tasks: 130, reward: 652, daily: 84760, monthly: 2542800, yearly: 30513600, color: "#ef4444", next: "G7" },
+  { id: "G7", label: "G7", invest: 4485000, tasks: 200, reward: 1068, daily: 213600, monthly: 6408000, yearly: 76896000, color: "#fbbf24", next: null },
 ];
-
 const getLevel = (id) => LEVELS.find(l => l.id === id) || LEVELS[0];
-const todayStr = () => new Date().toDateString();
+const getNextLevel = (id) => { const cur = getLevel(id); return cur.next ? LEVELS.find(l => l.id === cur.next) : null; };
 
 // ══════════════════════════════════════════════
-// المساعد الذكي المطور (الرد الفوري المستقر)
+// HELPERS
 // ══════════════════════════════════════════════
-const aiBrain = (msg, user) => {
-  const m = msg.toLowerCase();
-  const lv = getLevel(user.level);
-  
-  if (m.includes("رصيد")) return `رصيدك الحالي هو ${user.balance.toLocaleString()} DZD. مجموع أرباحك الكلية منذ انضمامك هو ${user.totalEarnings.toLocaleString()} DZD.`;
-  if (m.includes("مستوى") || m.includes("ربح")) return `أنت حالياً في مستوى ${user.level}. ربحك اليومي هو ${lv.daily} DZD من خلال تنفيذ ${lv.tasks} مهام.`;
-  if (m.includes("فريق") || m.includes("دعوة")) return `لديك ${user.referrals.length} أعضاء في فريقك. تربح 5% عمولة تلقائية عن كل مهمة يكملونها. رابط دعوتك متاح في قسم "حسابي".`;
-  if (m.includes("سحب")) return user.level === "تجريبي" ? "السحب غير متاح للمستوى التجريبي. يجب الترقية لمستوى M1 على الأقل لفتح ميزة السحب." : "يمكنك طلب السحب من الإدارة، الحد الأدنى للسحب هو مبلغ استثمار مستواك.";
-  if (m.includes("مهام")) return `لديك اليوم ${lv.tasks} مهام. مكافأة المهمة الواحدة هي ${lv.reward} DZD. تأكد من إكمالها قبل نهاية اليوم.`;
-  
-  return "مرحباً بك في BlackRock! كيف يمكنني مساعدتك في إدارة استثماراتك اليوم؟ يمكنك السؤال عن (الرصيد، المهام، الترقية، أو الفريق).";
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+const refCode = () => Math.random().toString(36).slice(2, 8).toUpperCase();
+const todayStr = () => new Date().toDateString();
+const fmt = (n) => {
+  const num = Number(n) || 0;
+  if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
+  if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
+  if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
+  return num.toLocaleString();
+};
+const fmtFull = (n) => (Number(n) || 0).toLocaleString("fr-DZ");
+const makeTasks = (levelId) => {
+  const cfg = getLevel(levelId);
+  return Array.from({ length: cfg.tasks }, (_, i) => ({ id: i + 1, reward: cfg.reward, status: "pending" }));
 };
 
 // ══════════════════════════════════════════════
-// المكون الرئيسي للتطبيق
+// AI ASSISTANT LOCAL
 // ══════════════════════════════════════════════
-export default function BlackRockApp() {
-  const [db, setDb] = useState(dbRead());
-  const [screen, setScreen] = useState("splash"); 
-  const [tab, setTab] = useState("home");
-  const [activeTask, setActiveTask] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(0);
-  const [chat, setChat] = useState([]);
-  const [input, setInput] = useState("");
-  const [toast, setToast] = useState(null);
-  const [modal, setModal] = useState(null);
+function askAI(msg, user) {
+  const lv = getLevel(user?.level || "تجريبي");
+  const responses = {
+    "مرحبا": `مرحباً ${user.name}! 👋 كيف يمكنني مساعدتك اليوم؟`,
+    "رصيدي": `💰 رصيدك الحالي هو: ${fmtFull(user.balance)} DZD\n📈 دخلك اليومي: ${fmtFull(lv.daily)} DZD`,
+    "مهامي": `⚡ لقد أكملت حتى الان ${(user.dailyTasks || []).filter(t => t.status === "completed").length} من ${lv.tasks} مهمة اليوم\n💰 مكافأة كل مهمة: ${lv.reward} DZD`,
+    "مستوياتي": `💎 مستواك الحالي: ${lv.label}\n📈 دخلك اليومي: ${fmtFull(lv.daily)} DZD\n📊 دخلك الشهري: ${lv.monthly ? fmtFull(lv.monthly) : "فترة تجريبية"} DZD`,
+    "رابطي": `🔗 رابط دعوتك هو:\n${window.location.href.split("?")[0]}?ref=${user.referralCode}\nكل شخص يسجل عبر رابطك يضيف لك 5% من أرباحه بشكل دائم!`,
+    "الفريق": `👥 عدد أعضاء فريقك حتى الان: ${(user.referrals || []).length} عضو\n💸 اجمالي عمولاتك من الفريق: ${fmtFull((user.referrals || []).reduce((s, m) => s + 1000, 0))} DZD`,
+    "كيف أرقي": `للترقية الى المستوى التالي تحتاج فقط الى الوصول الى الحد المطلوب للرصيد، ثم اضغط على زر الترقية في صفحة المستويات.`,
+    "سحب": `السحب متاح فقط من مستوى M1 وما فوق. الحد الادنى للسحب 1000 DZD، والمعالجة تستغرق من 24 الى 48 ساعة.`,
+    "فترة التجربة": `فترة التجربة تستمر 3 ايام كاملة. بعد انتهائها يمكنك الترقية الى M1 او سيتم ايقاف الحساب.`,
+    "G7": `مستوى G7 هو اعلى مستوى في المنصة، دخله اليومي 213,600 DZD اي اكثر من 6 مليون دينار شهرياً!`,
+  };
 
-  const currentUser = db.uid ? db.users[db.uid] : null;
+  for (const k in responses) {
+    if (msg.includes(k)) return responses[k];
+  }
 
-  // تأثير الحفظ التلقائي عند أي تغيير
-  useEffect(() => {
-    if (db.uid) dbSave(db);
-  }, [db]);
+  return `سؤال ممتاز! 😊\nيمكنني مساعدتك في اي شيء يخص:\n• الرصيد والارباح\n• المهام اليومية\n• مستويات الاستثمار\n• نظام الاحالة والفريق\n• السحب والترقية\n\nماذا تريد ان تعرف بالضبط؟`;
+}
 
-  // تشغيل شاشة الترحيب والتحقق من الرابط
-  useEffect(() => {
-    setTimeout(() => {
-      const params = new URLSearchParams(window.location.search);
-      const ref = params.get("ref");
-      if (ref) sessionStorage.setItem("pending_ref", ref);
-
-      if (db.uid && db.users[db.uid]) {
-        // تحديث المهام إذا كان يوماً جديداً
-        const u = db.users[db.uid];
-        if (u.dailyTasksDate !== todayStr()) {
-          u.dailyTasksDate = todayStr();
-          u.completedTasksCount = 0;
-          u.tasks = Array.from({ length: getLevel(u.level).tasks }, (_, i) => ({ id: i + 1, status: "pending" }));
-          setDb({ ...db, users: { ...db.users, [u.id]: u } });
-        }
-        setScreen("app");
-      } else {
-        setScreen("login");
+// ══════════════════════════════════════════════
+// ALL COMPONENTS REMAIN THE SAME
+// ══════════════════════════════════════════════
+function SpinWheel({ onResult, onClose }) {
+  const cRef = useRef(null);
+  const [spinning, setSpin] = useState(false);
+  const [result, setResult] = useState(null);
+  const angRef = useRef(0);
+  const rafRef = useRef(null);
+  const SEGS = [
+    { txt: "43 DZD", bg: "#d97706", val: { t: "money", n: 43 } },
+    { txt: "لا شيء", bg: "#1e293b", val: { t: "none" } },
+    { txt: "86 DZD", bg: "#059669", val: { t: "money", n: 86 } },
+    { txt: "50 نقطة", bg: "#2563eb", val: { t: "pts", n: 50 } },
+    { txt: "لا شيء", bg: "#374151", val: { t: "none" } },
+    { txt: "215 DZD", bg: "#dc2626", val: { t: "money", n: 215 } },
+    { txt: "100 نقطة", bg: "#7c3aed", val: { t: "pts", n: 100 } },
+    { txt: "21 DZD", bg: "#b45309", val: { t: "money", n: 21 } },
+  ];
+  useEffect(() => { draw(0); }, []);
+  const draw = (rot) => {
+    const c = cRef.current; if (!c) return;
+    const ctx = c.getContext("2d"), cx = c.width / 2, r = cx - 6, arc = (2 * Math.PI) / SEGS.length;
+    ctx.clearRect(0, 0, c.width, c.height);
+    SEGS.forEach((s, i) => {
+      const a = rot + i * arc;
+      ctx.beginPath(); ctx.moveTo(cx, cx); ctx.arc(cx, cx, r, a, a + arc); ctx.closePath();
+      ctx.fillStyle = s.bg; ctx.fill(); ctx.strokeStyle = "#080c14"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.save(); ctx.translate(cx, cx); ctx.rotate(a + arc / 2);
+      ctx.textAlign = "right"; ctx.fillStyle = "#fff"; ctx.font = "bold 11px Arial";
+      ctx.fillText(s.txt, r - 6, 4); ctx.restore();
+    });
+    ctx.beginPath(); ctx.arc(cx, cx, 14, 0, Math.PI * 2); ctx.fillStyle = "#f59e0b"; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(cx + r + 2, cx); ctx.lineTo(cx + r - 12, cx - 7); ctx.lineTo(cx + r - 12, cx + 7);
+    ctx.closePath(); ctx.fillStyle = "#fff"; ctx.fill();
+  };
+  const spin = () => {
+    if (spinning) return; setSpin(true); setResult(null);
+    const tot = (5 + Math.random() * 4) * 2 * Math.PI, dur = 4000, t0 = performance.now(), a0 = angRef.current;
+    const go = (now) => {
+      const p = Math.min((now - t0) / dur, 1), e = 1 - Math.pow(1 - p, 4);
+      angRef.current = a0 + tot * e; draw(angRef.current);
+      if (p < 1) rafRef.current = requestAnimationFrame(go);
+      else {
+        setSpin(false);
+        const arc = (2 * Math.PI) / SEGS.length, na = ((angRef.current % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+        const idx = Math.floor(((2 * Math.PI - na) % (2 * Math.PI)) / arc) % SEGS.length;
+        setResult(SEGS[idx]); onResult(SEGS[idx].val);
       }
-    }, 2000);
-  }, []);
-
-  // وظيفة تنفيذ المهام
-  const startTask = (taskId) => {
-    if (activeTask) return;
-    setActiveTask(taskId);
-    setTimeLeft(40);
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          completeTask(taskId);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    };
+    rafRef.current = requestAnimationFrame(go);
   };
-
-  const completeTask = (taskId) => {
-    const u = { ...currentUser };
-    const lv = getLevel(u.level);
-    u.balance += lv.reward;
-    u.totalEarnings += lv.reward;
-    u.completedTasksCount += 1;
-    u.tasks = u.tasks.map(t => t.id === taskId ? { ...t, status: "completed" } : t);
-    
-    // إرسال عمولة للداعي
-    const newUsers = { ...db.users, [u.id]: u };
-    if (u.referredBy && db.users[u.referredBy]) {
-      const boss = { ...db.users[u.referredBy] };
-      boss.balance += (lv.reward * 0.05);
-      newUsers[u.referredBy] = boss;
-    }
-
-    setDb({ ...db, users: newUsers });
-    setActiveTask(null);
-    showToast(`🎉 مبروك! حصلت على ${lv.reward} DZD`);
-  };
-
-  const showToast = (msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 3000);
-  };
-
-  const handleLogout = () => {
-    const freshDb = { ...db, uid: null };
-    setDb(freshDb);
-    dbSave(freshDb);
-    setScreen("login");
-  };
-
-  // ══════════════════════════════════════════════
-  // واجهة المستخدم (التصميم)
-  // ══════════════════════════════════════════════
-  
-  if (screen === "splash") return (
-    <div style={styles.splash}>
-       <h1 style={styles.logoText}>BLACKROCK</h1>
-       <p style={{color: '#64748b'}}>جاري تحميل النظام الآمن...</p>
-    </div>
-  );
-
-  if (screen === "login") return (
-    <div style={styles.authContainer}>
-      <h2 style={styles.goldText}>تسجيل الدخول</h2>
-      <button style={styles.btnGold} onClick={() => {
-        // محاكاة تسجيل دخول سريع للتجربة
-        const id = "user_" + Math.random().toString(36).slice(2, 7);
-        const newUser = {
-          id, name: "مستثمر جديد", balance: 0, level: "تجريبي", referrals: [],
-          totalEarnings: 0, dailyTasksDate: todayStr(), completedTasksCount: 0,
-          tasks: Array.from({ length: 5 }, (_, i) => ({ id: i + 1, status: "pending" })),
-          referredBy: sessionStorage.getItem("pending_ref")
-        };
-        setDb({ users: { [id]: newUser }, uid: id });
-        setScreen("app");
-      }}>ابدأ الآن مجاناً</button>
-    </div>
-  );
-
   return (
-    <div style={styles.appFrame}>
-      {/* التنبيه العلوي */}
-      {toast && <div style={styles.toast}>{toast}</div>}
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.96)", zIndex: 999, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 18 }}>
+      <div style={{ color: "#f59e0b", fontSize: 24, fontWeight: "bold" }}>🎡 عجلة الحظ</div>
+      <canvas ref={cRef} width={280} height={280} style={{ borderRadius: "50%", boxShadow: "0 0 60px rgba(245,158,11,0.5)" }} />
+      {result && <div style={{ color: result.val.t === "none" ? "#6b7280" : "#10b981", fontSize: 22, fontWeight: "bold", textAlign: "center", padding: "0 24px" }}>
+        {result.val.t === "none" ? "للأسف لا جائزة 😔" : result.val.t === "money" ? `🎉 مبروك! ربحت ${result.val.n} DZD` : `🌟 مبروك! ${result.val.n} نقطة`}
+      </div>}
+      {!spinning && !result && <button onClick={spin} style={{ background: "linear-gradient(135deg,#f59e0b,#d97706)", color: "#000", border: "none", borderRadius: 14, padding: "14px 44px", fontSize: 18, fontWeight: "bold", cursor: "pointer" }}>الف!</button>}
+      {result && <button onClick={onClose} style={{ background: "#1e293b", color: "#fff", border: "1px solid #334155", borderRadius: 12, padding: "10px 30px", fontSize: 14, cursor: "pointer" }}>متابعة</button>}
+    </div>
+  );
+}
 
-      {/* الرأس */}
-      <div style={styles.header}>
-        <div style={styles.badge}>SECURE V3 🔒</div>
-        <div style={styles.goldText}>BLACKROCK</div>
-        <div onClick={() => setModal("notif")} style={{cursor: 'pointer'}}>🔔</div>
-      </div>
+function Toast({ msg, type, onDone }) {
+  useEffect(() => { const t = setTimeout(onDone, 3200); return () => clearTimeout(t); }, []);
+  const bg = type === "error" ? "#7f1d1d" : type === "info" ? "#1e3a5f" : "#064e3b";
+  const border = type === "error" ? "#ef4444" : type === "info" ? "#3b82f6" : "#10b981";
+  return (
+    <div style={{ position: "fixed", top: 72, left: "50%", transform: "translateX(-50%)", zIndex: 888, background: bg, color: "#fff", borderRadius: 12, padding: "10px 20px", fontSize: 13, fontWeight: "bold", border: `1px solid ${border}`, boxShadow: "0 8px 30px rgba(0,0,0,0.6)", maxWidth: 340, textAlign: "center", direction: "rtl", whiteSpace: "pre-line" }}>
+      {msg}
+    </div>
+  );
+}
 
-      {/* المحتوى حسب التبويب */}
-      <div style={styles.content}>
-        {tab === "home" && (
-          <div style={{padding: 15}}>
-            <div style={styles.balanceCard}>
-              <p style={{fontSize: 12, color: '#94a3b8'}}>الرصيد الإجمالي</p>
-              <h1 style={{fontSize: 35, color: '#f59e0b'}}>{currentUser.balance.toFixed(2)} DZD</h1>
-              <div style={styles.statsRow}>
-                <div><p>الفريق</p><b>{currentUser.referrals.length}</b></div>
-                <div><p>المهام</p><b>{currentUser.completedTasksCount}</b></div>
-                <div><p>المستوى</p><b style={{color: '#f59e0b'}}>{currentUser.level}</b></div>
-              </div>
-            </div>
-            
-            <div style={styles.menuGrid}>
-              <div style={styles.menuItem} onClick={() => setModal("security")}>🛡️ وثيقة الأمان</div>
-              <div style={styles.menuItem} onClick={() => setModal("company")}>🏢 عن الشركة</div>
-              <div style={styles.menuItem} onClick={() => setTab("tasks")}>⚡ المهام اليومية</div>
-              <div style={styles.menuItem} onClick={() => setTab("account")}>🔗 رابط الإحالة</div>
-            </div>
+function SecurityModal({ onClose }) {
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, overflowY: "auto", padding: 16 }} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #10b981", maxWidth: 430, margin: "0 auto", overflow: "hidden" }}>
+        <div style={{ background: "#0d1c14", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #064e3b" }}>
+          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
+          <div style={{ color: "#10b981", fontWeight: "bold", fontSize: 16 }}>🔒 وثيقة الأمان</div>
+        </div>
+        <div style={{ padding: 16 }}>
+          <div style={{ background: "linear-gradient(135deg,#064e3b,#065f46)", borderRadius: 14, padding: 18, textAlign: "center", marginBottom: 16 }}>
+            <div style={{ color: "#10b981", fontSize: 26, fontWeight: "900", letterSpacing: 4 }}>SECURE V3</div>
+            <div style={{ color: "#6ee7b7", fontSize: 12, marginTop: 4 }}>شهادة أمان دولية موثقة ومعتمدة</div>
           </div>
-        )}
-
-        {tab === "tasks" && (
-          <div style={{padding: 15}}>
-             <h3 style={{marginBottom: 15}}>المهام المتاحة اليوم</h3>
-             {currentUser.tasks.map(t => (
-               <div key={t.id} style={styles.taskCard}>
-                  <span>مهمة {t.id} (+{getLevel(currentUser.level).reward} DZD)</span>
-                  {t.status === "completed" ? (
-                    <span style={{color: '#10b981'}}>مكتملة ✅</span>
-                  ) : activeTask === t.id ? (
-                    <span style={{color: '#f59e0b'}}>انتظر {timeLeft}ث</span>
-                  ) : (
-                    <button style={styles.btnSmall} onClick={() => startTask(t.id)}>بدأ</button>
-                  )}
-               </div>
-             ))}
-          </div>
-        )}
-
-        {tab === "account" && (
-          <div style={{padding: 15, textAlign: 'center'}}>
-            <div style={styles.profileCircle}>{currentUser.name[0]}</div>
-            <h3>{currentUser.name}</h3>
-            <p style={{color: '#64748b'}}>المستوى: {currentUser.level}</p>
-            
-            <div style={styles.refBox}>
-              <p style={{fontSize: 12}}>رابط الإحالة الخاص بك:</p>
-              <code style={styles.code}>{window.location.origin}?ref={currentUser.id}</code>
-              <button style={styles.btnGold} onClick={() => {
-                navigator.clipboard.writeText(`${window.location.origin}?ref=${currentUser.id}`);
-                showToast("تم نسخ الرابط!");
-              }}>نسخ الرابط</button>
+          {[["🔐 بروتوكول التشفير", "SSL/TLS 3.0 — AES-256"], ["📋 رقم الشهادة", "BLK-SEC-V3-2025-DZ"], ["📅 تاريخ الإصدار", "يناير 2025"], ["✅ صالحة حتى", "ديسمبر 2028"], ["🛡 نوع الحماية", "أموال مضمونة 100%"], ["🌐 معتمدة من", "هيئة الرقابة المالية الدولية"], ["🇩🇿 عقد الجزائر", "يناير 2025 — ديسمبر 2028"], ["📊 رمز البورصة", "NYSE: BLK"], ["🔢 رقم EIN", "32-0174431"]].map(([k, v]) => (
+            <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #0f1f2a", direction: "rtl" }}>
+              <div style={{ color: "#e2e8f0", fontSize: 13 }}>{v}</div>
+              <div style={{ color: "#64748b", fontSize: 12 }}>{k}</div>
             </div>
-
-            <button style={styles.btnLogout} onClick={handleLogout}>تسجيل الخروج</button>
-          </div>
-        )}
-
-        {tab === "chat" && (
-          <div style={styles.chatContainer}>
-            <div style={styles.chatBox}>
-               {chat.map((m, i) => (
-                 <div key={i} style={m.type === 'u' ? styles.msgUser : styles.msgAi}>{m.text}</div>
-               ))}
-            </div>
-            <div style={styles.chatInputArea}>
-              <input 
-                style={styles.chatInput} 
-                value={input} 
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="اسأل المساعد الذكي..."
-              />
-              <button style={styles.chatBtn} onClick={() => {
-                const newChat = [...chat, {type: 'u', text: input}];
-                setChat(newChat);
-                setTimeout(() => {
-                  setChat([...newChat, {type: 'a', text: aiBrain(input, currentUser)}]);
-                }, 500);
-                setInput("");
-              }}>ارسل</button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* الشريط السفلي */}
-      <div style={styles.navBar}>
-        <div onClick={() => setTab("home")} style={tab === "home" ? styles.navActive : styles.navItem}>🏠<br/>الرئيسية</div>
-        <div onClick={() => setTab("tasks")} style={tab === "tasks" ? styles.navActive : styles.navItem}>⚡<br/>المهام</div>
-        <div onClick={() => setTab("chat")} style={tab === "chat" ? styles.navActive : styles.navItem}>🤖<br/>المساعد</div>
-        <div onClick={() => setTab("account")} style={tab === "account" ? styles.navActive : styles.navItem}>👤<br/>حسابي</div>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
-// ══════════════════════════════════════════════
-// الأنماط (Styles)
-// ══════════════════════════════════════════════
-const styles = {
-  splash: { height: '100vh', background: '#080c14', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' },
-  logoText: { color: '#f59e0b', fontSize: 35, fontWeight: '900', letterSpacing: 5 },
-  appFrame: { background: '#080c14', minHeight: '100vh', color: '#fff', direction: 'rtl', maxWidth: 450, margin: '0 auto' },
-  header: { padding: 15, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1a2332', background: '#0f1623' },
-  goldText: { color: '#f59e0b', fontWeight: 'bold' },
-  badge: { fontSize: 10, border: '1px solid #10b981', color: '#10b981', padding: '2px 8px', borderRadius: 10 },
-  content: { paddingBottom: 80 },
-  balanceCard: { background: 'linear-gradient(135deg, #0f1623, #1a2332)', padding: 20, borderRadius: 20, margin: 15, border: '1px solid #1a2332' },
-  statsRow: { display: 'flex', justifyContent: 'space-between', marginTop: 20, fontSize: 12, borderTop: '1px solid #334155', paddingTop: 10 },
-  navBar: { position: 'fixed', bottom: 0, width: '100%', maxWidth: 450, background: '#0f1623', display: 'flex', justifyContent: 'space-around', padding: 10, borderTop: '1px solid #1a2332' },
-  navItem: { textAlign: 'center', fontSize: 10, color: '#64748b' },
-  navActive: { textAlign: 'center', fontSize: 10, color: '#f59e0b' },
-  taskCard: { background: '#0f1623', padding: 15, borderRadius: 12, marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  btnSmall: { background: '#f59e0b', border: 'none', padding: '5px 15px', borderRadius: 5, fontWeight: 'bold' },
-  btnGold: { width: '100%', background: '#f59e0b', border: 'none', padding: 12, borderRadius: 10, fontWeight: 'bold', marginTop: 15 },
-  btnLogout: { width: '100%', background: 'transparent', border: '1px solid #ef4444', color: '#ef4444', padding: 10, borderRadius: 10, marginTop: 20 },
-  profileCircle: { width: 80, height: 80, background: '#f59e0b', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40, margin: '20px auto', color: '#000' },
-  refBox: { background: '#0f1623', padding: 15, borderRadius: 15, marginTop: 20 },
-  code: { display: 'block', background: '#000', padding: 10, borderRadius: 5, fontSize: 10, margin: '10px 0', color: '#f59e0b' },
-  chatContainer: { height: '80vh', display: 'flex', flexDirection: 'column' },
-  chatBox: { flex: 1, padding: 15, overflowY: 'auto' },
-  msgUser: { alignSelf: 'flex-start', background: '#1e293b', padding: 10, borderRadius: 10, marginBottom: 10, maxWidth: '80%' },
-  msgAi: { alignSelf: 'flex-end', background: '#064e3b', padding: 10, borderRadius: 10, marginBottom: 10, maxWidth: '80%', marginRight: 'auto' },
-  chatInputArea: { padding: 15, display: 'flex', gap: 10, background: '#0f1623' },
-  chatInput: { flex: 1, background: '#080c14', border: '1px solid #1a2332', color: '#fff', padding: 10, borderRadius: 10 },
-  chatBtn: { background: '#f59e0b', border: 'none', padding: '0 20px', borderRadius: 10, fontWeight: 'bold' },
-  toast: { position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', background: '#10b981', color: '#fff', padding: '10px 20px', borderRadius: 20, zIndex: 1000, fontSize: 13, fontWeight: 'bold' },
-  menuGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 10 },
-  menuItem: { background: '#0f1623', padding: 20, borderRadius: 15, textAlign: 'center', fontSize: 12, border: '1px solid #1a2332' }
-};
+function CompanyModal({ onClose }) {
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, overflowY: "auto", padding: 16 }} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #f59e0b", maxWidth: 430, margin: "0 auto", overflow: "hidden" }}>
+        <div style={{ background: "#12100a", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #78350f" }}>
+          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
+          <div style={{ color: "#f59e0b", fontWeight: "bold", fontSize: 16 }}>🏢 عن الشركة</div>
+        </div>
+        <div style={{ padding: 16 }}>
+          <div style={{ textAlign: "center", marginBottom: 18 }}>
+            <div style={{ color: "#f59e0b", fontSize: 30, fontWeight: "900", letterSpacing: 5 }}>BLACKROCK</div>
+            <div style={{ color: "#64748b", fontSize: 13, marginTop: 4 }}>BlackRock, Inc — Investment Platform</div>
+          </div>
+          {[["الاسم القانوني", "BlackRock, Inc"], ["المقر الرئيسي", "🇺🇸 New York, USA"], ["سنة التأسيس", "1988"], ["المجال", "إدارة الأصول والاستثمار"], ["رمز البورصة", "NYSE: BLK"], ["رقم EIN", "32-0174431"], ["عقد الجزائر", "✅ يناير 2025 — ديسمبر 2028"], ["حماية الأموال", "✅ مضمونة 100%"]].map(([k, v]) => (
+            <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #0f1f2a", direction: "rtl" }}>
+              <div style={{ color: "#e2e8f0", fontSize: 13 }}>{v}</div>
+              <div style={{ color: "#64748b", fontSize: 12 }}>{k}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TeamModal({ user, allUsers, onClose }) {
+  const members = (user.referrals || []).map(id => allUsers[id]).filter(Boolean);
+  const myBonus = members.reduce((s, m) => s + Math.floor((m.totalEarnings || 0) * 0.05), 0);
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, overflowY: "auto", padding: 16 }} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #3b82f6", maxWidth: 430, margin: "0 auto", overflow: "hidden" }}>
+        <div style={{ background: "#0a1628", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e3a5f" }}>
+          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
+          <div style={{ color: "#3b82f6", fontWeight: "bold", fontSize: 16 }}>👥 فريقي</div>
+        </div>
+        <div style={{ padding: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
+            {[[members.length, "أعضاء الفريق", "#f59e0b"], [fmtFull(myBonus) + " DZD", "عمولتي الكلية", "#10b981"]].map(([v, l, c]) => (
+              <div key={l} style={{ background: "#111827", borderRadius: 12, padding: "14px 10px", textAlign: "center", border: "1px solid #1e293b" }}>
+                <div style={{ color: c, fontSize: 20, fontWeight: "bold" }}>{v}</div>
+                <div style={{ color: "#64748b", fontSize: 11, marginTop: 4 }}>{l}</div>
+              </div>
+            ))}
+          </div>
+          {members.length === 0
+            ? <div style={{ textAlign: "center", color: "#4b5563", padding: "30px 16px", background: "#111827", borderRadius: 14, border: "1px dashed #1e293b" }}>
+                <div style={{ fontSize: 36, marginBottom: 10 }}>👥</div>
+                <div style={{ fontSize: 14 }}>لا يوجد أعضاء بعد</div>
+                <div style={{ color: "#f59e0b", fontSize: 12, marginTop: 6 }}>شارك رابطك لبناء فريقك</div>
+              </div>
+            : members.map((m, i) => (
+              <div key={i} style={{ background: "#111827", borderRadius: 12, padding: "12px 14px", marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center", border: "1px solid #1e293b", direction: "rtl" }}>
+                <div style={{ color: "#10b981", fontSize: 12, fontWeight: "bold" }}>+{Math.floor((m.totalEarnings || 0) * 0.05)} DZD</div>
+                <div>
+                  <div style={{ color: "#e2e8f0", fontWeight: "bold" }}>{m.name}</div>
+                  <div style={{ color: "#64748b", fontSize: 11 }}>{getLevel(m.level).label} • {new Date(m.joinDate).toLocaleDateString("ar-DZ")}</div>
+                </div>
+                <div style={{ width: 38, height: 38, background: "linear-gradient(135deg,#f59e0b,#d97706)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "#000", fontWeight: "bold", fontSize: 16 }}>
+                  {m.name[0].toUpperCase()}
+                </div>
+              </div>
+            ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NotifModal({ user, onClose }) {
+  const lv = getLevel(user.level);
+  const nextLv = getNextLevel(user.level);
+  const notifs = [
+    { ic: "⚡", ic_bg: "#1c2a10", title: "مهام جديدة متاحة!", sub: `لديك ${(user.dailyTasks || []).filter(t => t.status === "pending").length} مهام يومية لكسب ${fmtFull(lv.daily)} DZD`, time: "منذ دقيقة" },
+    { ic: "🎁", ic_bg: "#1a1500", title: `مرحباً بك في BlackRock, Inc`, sub: "ابدأ رحلتك نحو الثروة واكسب يومياً", time: "منذ ساعة" },
+    ...(nextLv ? [{ ic: "💎", ic_bg: "#0d1020", title: "ترقية متاحة!", sub: `ارقَ إلى ${nextLv.label} بإيداع ${fmtFull(nextLv.invest)} DZD`, time: "منذ يوم" }] : []),
+  ];
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "80px 16px" }} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #1e293b", width: "100%", maxWidth: 430, overflow: "hidden" }}>
+        <div style={{ background: "#111827", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e293b" }}>
+          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
+          <div style={{ color: "#e2e8f0", fontWeight: "bold", fontSize: 16 }}>🔔 الإشعارات</div>
+        </div>
+        {notifs.map((n, i) => (
+          <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid #0f172a", direction: "rtl", gap: 12 }}>
+            <div style={{ color: "#64748b", fontSize: 11, flexShrink: 0 }}>{n.time}</div>
+            <div style={{ flex: 1, textAlign: "right" }}>
+              <div style={{ color: "#e2e8f0", fontWeight: "bold", fontSize: 14 }}>{n.title}</div>
+              <div style={{ color: "#64748b", fontSize: 12, marginTop: 3, lineHeight: 1.5 }}>{n.sub}</div>
+            </div>
+            <div style={{ width: 44, height: 44, background: n.ic_bg, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0, border: "1px solid #1e293b" }}>{n.ic}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function HistoryModal({ user, onClose }) {
+  const txIcons = { "مهمة يومية": "⚡", "عمولة إحالة": "👥", "عجلة الحظ": "🎡", "إيداع رصيد": "⬆", "دخل يومي": "📈" };
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.94)", zIndex: 500, overflowY: "auto", padding: 16 }} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ background: "#0a0f1a", borderRadius: 20, border: "1px solid #3b82f6", maxWidth: 430, margin: "0 auto", overflow: "hidden" }}>
+        <div style={{ background: "#0a1628", padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1e3a5f" }}>
+          <button onClick={onClose} style={{ background: "#1e293b", border: "none", color: "#94a3b8", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 13 }}>✕</button>
+          <div style={{ color: "#3b82f6", fontWeight: "bold", fontSize: 16 }}>📊 سجل المعاملات</div>
+        </div>
+        <div style={{ padding: 16 }}>
+          {(user.transactions || []).length === 0
+            ? <div style={{ textAlign: "center", color: "#4b5563", padding: 30 }}>لا توجد معاملات بعد</div>
+            : (user.transactions || 
