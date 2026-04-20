@@ -3,946 +3,288 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>BlackRock, Inc — منصة الاستثمار</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<title>BlackRock — Investment Platform</title>
 <style>
-:root{
-  --gold:#FFB800;--bg:#070710;--bg2:#0D0D1A;--card:#111120;--card2:#181830;
-  --border:rgba(255,184,0,0.13);--text:#EEF0FF;--text2:#8888AA;
-  --green:#00E676;--red:#FF1744;--blue:#448AFF;--purple:#9C27B0;
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+:root {
+  --bg: #0a0a0f;
+  --card: #12121a;
+  --card2: #1a1a25;
+  --gold: #f5a623;
+  --green: #00e676;
+  --red: #ff1744;
+  --blue: #2979ff;
+  --text: #ffffff;
+  --sub: #8888aa;
+  --border: #2a2a3a;
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;max-width:500px;margin:0 auto;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 85% 15%,rgba(255,184,0,0.07) 0%,transparent 60%),radial-gradient(ellipse 50% 70% at 15% 85%,rgba(68,138,255,0.05) 0%,transparent 60%);pointer-events:none;z-index:0;}
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; overflow-x: hidden; }
 
-/* SCROLLBAR */
-::-webkit-scrollbar{width:0;height:0;}
+/* SCREENS */
+.screen { display: none; min-height: 100vh; padding-bottom: 80px; }
+.screen.active { display: block; }
+
+/* AUTH SCREENS */
+.auth-screen { display: none; min-height: 100vh; background: linear-gradient(135deg, #0a0a0f 0%, #12121a 50%, #0a0a1f 100%); justify-content: center; align-items: center; flex-direction: column; padding: 20px; }
+.auth-screen.active { display: flex; }
+.auth-logo { text-align: center; margin-bottom: 40px; }
+.auth-logo h1 { font-size: 36px; font-weight: 900; color: var(--gold); letter-spacing: 3px; }
+.auth-logo p { color: var(--sub); font-size: 14px; margin-top: 5px; }
+.auth-card { background: var(--card); border-radius: 20px; padding: 30px; width: 100%; max-width: 400px; border: 1px solid var(--border); }
+.auth-card h2 { text-align: center; margin-bottom: 25px; font-size: 22px; }
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; color: var(--sub); font-size: 13px; margin-bottom: 8px; }
+.form-group input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; color: var(--text); font-size: 15px; outline: none; transition: border 0.3s; }
+.form-group input:focus { border-color: var(--gold); }
+.btn-primary { width: 100%; background: linear-gradient(135deg, var(--gold), #e8940a); border: none; border-radius: 12px; padding: 16px; color: #000; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; margin-top: 5px; }
+.btn-primary:active { transform: scale(0.97); opacity: 0.9; }
+.auth-switch { text-align: center; margin-top: 20px; color: var(--sub); font-size: 14px; }
+.auth-switch span { color: var(--gold); cursor: pointer; font-weight: 600; }
+.ref-input-group { display: flex; gap: 10px; align-items: center; }
+.ref-input-group input { flex: 1; }
 
 /* HEADER */
-.hdr{position:sticky;top:0;z-index:100;background:rgba(7,7,16,0.97);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;}
-.hdr-logo{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:var(--gold);letter-spacing:1.5px;cursor:pointer;}
-.hdr-logo span{color:var(--text2);font-size:10px;font-family:'Cairo',sans-serif;display:block;font-weight:400;letter-spacing:0;}
-.hdr-left{display:flex;align-items:center;gap:10px;}
-.hdr-secure{font-size:10px;color:var(--green);border:1px solid rgba(0,230,118,0.35);padding:3px 10px;border-radius:20px;font-weight:700;cursor:pointer;}
-.hdr-bell{width:38px;height:38px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:17px;}
-.hdr-badge{position:absolute;top:-3px;left:-3px;background:var(--red);color:#fff;font-size:9px;font-weight:900;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);}
+.header { background: var(--card); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
+.header-logo { font-size: 20px; font-weight: 900; color: var(--gold); letter-spacing: 2px; }
+.header-sub { font-size: 10px; color: var(--sub); }
+.header-left { display: flex; align-items: center; gap: 12px; }
+.bell-btn { position: relative; background: none; border: none; cursor: pointer; padding: 5px; }
+.bell-btn .bell-icon { font-size: 24px; }
+.bell-badge { position: absolute; top: 0; right: 0; background: var(--red); color: white; font-size: 10px; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.secure-badge { background: linear-gradient(135deg, #1a2a1a, #0d1f0d); border: 1px solid var(--green); border-radius: 20px; padding: 5px 12px; font-size: 11px; color: var(--green); font-weight: 700; display: flex; align-items: center; gap: 5px; }
 
-/* PAGES */
-.pg{display:none;padding:14px 14px 88px;position:relative;z-index:1;min-height:calc(100vh - 60px);}
-.pg.active{display:block;animation:pgIn 0.25s ease;}
-@keyframes pgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+/* BOTTOM NAV */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); display: flex; z-index: 200; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 5px; cursor: pointer; transition: all 0.3s; position: relative; border: none; background: none; color: var(--sub); }
+.nav-item.active { color: var(--gold); }
+.nav-item .nav-icon { font-size: 22px; margin-bottom: 3px; }
+.nav-item .nav-label { font-size: 11px; }
+.nav-badge { position: absolute; top: 5px; right: 50%; transform: translateX(8px); background: var(--red); color: white; font-size: 10px; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-/* NAV */
-.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;z-index:100;background:rgba(7,7,16,0.97);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;padding:7px 0 14px;}
-.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:5px 0;position:relative;}
-.ni.active .ni-ico,.ni.active .ni-lbl{color:var(--gold);}
-.ni.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:36px;height:2px;background:var(--gold);border-radius:0 0 3px 3px;}
-.ni-ico{font-size:21px;color:var(--text2);position:relative;}
-.ni-lbl{font-size:10px;color:var(--text2);font-weight:600;}
-.ni-dot{position:absolute;top:-4px;left:-4px;background:var(--red);color:#fff;font-size:8px;font-weight:900;min-width:15px;height:15px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;border:2px solid var(--bg);}
+/* HOME */
+.home-banner { background: linear-gradient(135deg, #1a1a2e, #16213e); margin: 12px; border-radius: 16px; padding: 20px; border: 1px solid var(--border); }
+.home-balance { font-size: 28px; font-weight: 900; color: var(--gold); margin: 5px 0; }
+.home-balance-label { color: var(--sub); font-size: 13px; }
+.home-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px; }
+.stat-card { background: var(--card); border-radius: 12px; padding: 12px 8px; text-align: center; border: 1px solid var(--border); }
+.stat-value { font-size: 16px; font-weight: 700; color: var(--green); }
+.stat-label { font-size: 10px; color: var(--sub); margin-top: 3px; }
+.section-title { font-size: 16px; font-weight: 700; padding: 8px 12px; color: var(--gold); }
+.info-card { background: var(--card); margin: 8px 12px; border-radius: 16px; padding: 18px; border: 1px solid var(--border); }
+.info-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: all 0.2s; }
+.info-row:last-child { border-bottom: none; }
+.info-row:active { opacity: 0.7; }
+.info-row-right { display: flex; align-items: center; gap: 10px; }
+.info-row-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.info-row-text h4 { font-size: 15px; font-weight: 600; }
+.info-row-text p { font-size: 12px; color: var(--sub); margin-top: 2px; }
+.arrow-left { color: var(--sub); font-size: 18px; }
 
-/* BALANCE CARD */
-.bal-card{background:linear-gradient(145deg,#15100000,#0A0800,#12100000);border:1px solid rgba(255,184,0,0.4);border-radius:22px;padding:22px;margin-bottom:14px;position:relative;overflow:hidden;}
-.bal-card::before{content:'';position:absolute;top:-60px;left:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(255,184,0,0.15) 0%,transparent 65%);}
-.bal-card::after{content:'BRI';position:absolute;bottom:-30px;left:-15px;font-family:'Orbitron',monospace;font-size:100px;font-weight:900;color:rgba(255,184,0,0.035);pointer-events:none;letter-spacing:-5px;}
-.bal-lbl{font-size:11px;color:var(--text2);letter-spacing:1px;margin-bottom:5px;}
-.bal-num{font-size:42px;font-weight:900;color:var(--gold);letter-spacing:-2px;line-height:1.05;text-shadow:0 0 40px rgba(255,184,0,0.45);}
-.bal-currency{font-size:13px;color:var(--text2);margin-bottom:16px;}
-.bal-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.bal-box{background:rgba(255,255,255,0.045);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:11px 13px;}
-.bal-box .bb-l{font-size:10px;color:var(--text2);margin-bottom:2px;}
-.bal-box .bb-v{font-size:14px;font-weight:700;}
+/* TASKS */
+.task-card { background: var(--card); margin: 8px 12px; border-radius: 16px; padding: 18px; border: 1px solid var(--border); position: relative; overflow: hidden; }
+.task-card.completed { border-color: #1a3a1a; }
+.task-card.locked { opacity: 0.7; }
+.task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.task-name { font-size: 16px; font-weight: 700; }
+.task-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.task-reward { font-size: 18px; font-weight: 700; color: var(--green); }
+.task-reward-label { font-size: 11px; color: var(--sub); }
+.task-status { font-size: 12px; margin-top: 5px; }
+.task-status.done { color: var(--green); }
+.task-status.locked { color: var(--red); }
+.task-status.available { color: var(--gold); }
+.btn-task { background: linear-gradient(135deg, var(--gold), #e8940a); border: none; border-radius: 12px; padding: 14px; color: #000; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 12px; transition: all 0.3s; }
+.btn-task:active { transform: scale(0.97); }
+.task-progress { height: 4px; background: var(--border); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+.task-progress-bar { height: 100%; background: var(--red); border-radius: 2px; transition: width 1s; }
+.task-progress-bar.full { background: var(--green); }
+.countdown { font-size: 24px; font-weight: 900; color: var(--gold); text-align: center; padding: 10px; }
 
-/* ACTIONS */
-.act-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
-.ab{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;}
-.ab:active .ab-i{transform:scale(0.87);}
-.ab-i{width:56px;height:56px;border-radius:17px;display:flex;align-items:center;justify-content:center;font-size:23px;transition:transform 0.15s;border:1px solid;}
-.ab-i.g{background:rgba(0,230,118,0.11);border-color:rgba(0,230,118,0.28);}
-.ab-i.o{background:rgba(255,184,0,0.11);border-color:rgba(255,184,0,0.28);}
-.ab-i.b{background:rgba(68,138,255,0.11);border-color:rgba(68,138,255,0.28);}
-.ab-i.r{background:rgba(255,23,68,0.11);border-color:rgba(255,23,68,0.28);}
-.ab-l{font-size:11px;color:var(--text2);font-weight:700;}
-
-/* LEVEL PROGRESS */
-.lvl-bar-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px;margin-bottom:14px;}
-.pb-out{height:7px;background:rgba(255,255,255,0.06);border-radius:7px;overflow:hidden;margin:9px 0 5px;}
-.pb-in{height:100%;border-radius:7px;background:linear-gradient(90deg,var(--gold),#FF8F00);transition:width 0.6s ease;}
-
-/* MINI STATS */
-.ms-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
-.ms-cell{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:13px 8px;text-align:center;cursor:pointer;transition:border-color 0.2s;}
-.ms-cell:active{border-color:rgba(255,184,0,0.4);}
-.ms-cell .ms-i{font-size:20px;margin-bottom:3px;}
-.ms-cell .ms-v{font-size:20px;font-weight:900;color:var(--gold);}
-.ms-cell .ms-l{font-size:10px;color:var(--text2);}
-
-/* SEC TITLE */
-.st{font-size:14px;font-weight:700;margin-bottom:11px;display:flex;justify-content:space-between;align-items:center;}
-.st span{font-size:11px;color:var(--text2);font-weight:400;}
-
-/* CARD */
-.card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:15px;margin-bottom:12px;}
-
-/* LEVEL CARDS */
-.lvc{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:15px;margin-bottom:11px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
-.lvc:active{transform:scale(0.985);}
-.lvc.act-lv{border-color:rgba(255,184,0,0.5);background:linear-gradient(135deg,rgba(255,184,0,0.07),var(--card));}
-.lvc-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;}
-.lvc-name{font-size:17px;font-weight:900;font-family:'Orbitron',monospace;color:var(--gold);}
-.lv-bdg{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;}
-.bdg-a{background:rgba(0,230,118,0.14);color:var(--green);border:1px solid rgba(0,230,118,0.3);}
-.bdg-u{background:rgba(255,184,0,0.14);color:var(--gold);border:1px solid rgba(255,184,0,0.3);}
-.lvc-info{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:11px;}
-.lv-it{text-align:center;background:rgba(255,255,255,0.03);border-radius:8px;padding:7px 3px;}
-.lv-it .lt{font-size:8px;color:var(--text2);margin-bottom:2px;}
-.lv-it .lv{font-size:11px;font-weight:700;}
-.upbtn{width:100%;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--gold),#E68000);color:#000;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
-.upbtn:active{opacity:0.88;}
-.lock-n{background:rgba(255,23,68,0.07);border:1px solid rgba(255,23,68,0.2);border-radius:9px;padding:9px 12px;font-size:11px;color:#FF7090;display:flex;align-items:center;gap:7px;margin-top:9px;}
-
-/* TASK CARDS */
-.tkc{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:13px;margin-bottom:11px;transition:border-color 0.3s;}
-.tkc.run{border-color:rgba(255,184,0,0.6);box-shadow:0 0 18px rgba(255,184,0,0.07);}
-.tkc.done{border-color:rgba(0,230,118,0.3);}
-.tkc.cancelled{border-color:rgba(255,23,68,0.25);opacity:0.6;}
-.tk-top{display:flex;align-items:center;gap:11px;}
-.tk-ico{width:46px;height:46px;border-radius:13px;background:rgba(255,184,0,0.09);border:1px solid rgba(255,184,0,0.18);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;}
-.tk-inf{flex:1;}
-.tk-ttl{font-size:13px;font-weight:700;margin-bottom:2px;}
-.tk-sub{font-size:11px;color:var(--text2);}
-.tk-rew{text-align:left;flex-shrink:0;}
-.tk-amt{font-size:14px;font-weight:700;color:var(--gold);}
-.tk-lbl{font-size:9px;color:var(--text2);}
-.tk-pb{height:4px;background:rgba(255,255,255,0.05);border-radius:4px;margin-top:9px;overflow:hidden;}
-.tk-pb-in{height:100%;border-radius:4px;transition:width 0.4s;}
-.tk-acts{display:flex;align-items:center;gap:9px;margin-top:9px;}
-.tk-start{flex:1;padding:10px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),#E68000);color:#000;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
-.tk-x{width:40px;height:40px;border-radius:9px;border:1px solid rgba(255,23,68,0.3);background:rgba(255,23,68,0.07);color:var(--red);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.tk-timer{width:44px;height:44px;border-radius:50%;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--gold);flex-shrink:0;animation:tglow 1s infinite;}
-@keyframes tglow{0%,100%{box-shadow:0 0 7px rgba(255,184,0,0.3)}50%{box-shadow:0 0 22px rgba(255,184,0,0.65)}}
-.tk-done-row{background:rgba(0,230,118,0.09);border:1px solid rgba(0,230,118,0.22);border-radius:9px;padding:9px;text-align:center;color:var(--green);font-size:12px;font-weight:700;margin-top:9px;}
-.tk-cancel-row{background:rgba(255,23,68,0.07);border:1px solid rgba(255,23,68,0.2);border-radius:9px;padding:8px;text-align:center;color:#FF7090;font-size:11px;margin-top:9px;}
+/* UPGRADE */
+.upgrade-card { background: var(--card); margin: 8px 12px; border-radius: 16px; padding: 18px; border: 1px solid var(--border); }
+.upgrade-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.upgrade-level { font-size: 22px; font-weight: 900; color: var(--gold); }
+.upgrade-badge { background: #2a1f0a; border: 1px solid var(--gold); border-radius: 8px; padding: 4px 12px; font-size: 12px; color: var(--gold); }
+.upgrade-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
+.upgrade-stat { text-align: center; }
+.upgrade-stat-value { font-size: 16px; font-weight: 700; color: var(--green); }
+.upgrade-stat-label { font-size: 10px; color: var(--sub); }
+.upgrade-stat-icon { font-size: 14px; margin-bottom: 2px; }
+.btn-upgrade { background: linear-gradient(135deg, var(--gold), #e8940a); border: none; border-radius: 12px; padding: 16px; color: #000; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.3s; }
+.btn-upgrade:active { transform: scale(0.97); }
+.btn-upgrade:disabled { background: var(--border); color: var(--sub); cursor: not-allowed; }
+.current-level-card { background: linear-gradient(135deg, #1a1f2e, #12192e); border: 1px solid var(--blue); border-radius: 16px; margin: 8px 12px; padding: 18px; }
+.locked-msg { background: #1f0a0a; border: 1px solid var(--red); border-radius: 10px; padding: 12px; text-align: center; font-size: 13px; color: var(--red); margin-top: 10px; }
 
 /* ACCOUNT */
-.av-sect{display:flex;align-items:center;gap:14px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:18px;margin-bottom:14px;}
-.av{width:65px;height:65px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#E68000);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#000;border:3px solid rgba(255,184,0,0.45);flex-shrink:0;}
-.u-name{font-size:16px;font-weight:700;margin-bottom:3px;}
-.u-id{font-size:11px;color:var(--text2);margin-bottom:6px;}
-.u-lv-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,184,0,0.11);border:1px solid rgba(255,184,0,0.28);border-radius:20px;padding:3px 11px;font-size:10px;color:var(--gold);font-weight:700;}
-.acc-sts{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px;}
-.ac-st{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:13px 7px;text-align:center;}
-.ac-st .v{font-size:19px;font-weight:900;color:var(--gold);margin-bottom:3px;}
-.ac-st .l{font-size:10px;color:var(--text2);}
-
-/* MENU */
-.menu-s{background:var(--card);border:1px solid var(--border);border-radius:15px;overflow:hidden;margin-bottom:13px;}
-.mi{display:flex;align-items:center;gap:13px;padding:14px 15px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background 0.15s;}
-.mi:last-child{border-bottom:none;}
-.mi:active{background:rgba(255,255,255,0.025);}
-.mi-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.mi-txt{flex:1;}
-.mi-ttl{font-size:13px;font-weight:600;margin-bottom:1px;}
-.mi-sub{font-size:11px;color:var(--text2);}
-.mi-arr{color:var(--text2);font-size:13px;}
-
-/* REF */
-.ref-card{background:linear-gradient(135deg,rgba(255,184,0,0.09),rgba(255,120,0,0.04));border:1px solid rgba(255,184,0,0.22);border-radius:17px;padding:20px;text-align:center;margin-bottom:14px;}
-.ref-code{background:rgba(0,0,0,0.35);border:1px solid rgba(255,184,0,0.35);border-radius:11px;padding:13px;font-family:'Orbitron',monospace;font-size:20px;font-weight:700;color:var(--gold);letter-spacing:4px;margin:11px 0;cursor:pointer;}
-.ref-code:active{transform:scale(0.97);}
-
-/* NOTIF */
-.notif-ov{position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(10px);z-index:300;display:flex;align-items:flex-start;justify-content:center;padding-top:62px;opacity:0;pointer-events:none;transition:opacity 0.25s;}
-.notif-ov.open{opacity:1;pointer-events:all;}
-.notif-sh{width:calc(100% - 28px);max-width:465px;background:var(--bg2);border:1px solid var(--border);border-radius:18px;overflow:hidden;transform:translateY(-14px);transition:transform 0.25s;}
-.notif-ov.open .notif-sh{transform:translateY(0);}
-.notif-hd{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border);}
-.n-it{display:flex;align-items:flex-start;gap:13px;padding:13px 18px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;}
-.n-it:last-child{border-bottom:none;}
-.n-ico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
-.n-tx{flex:1;}
-.n-ttl{font-size:12px;font-weight:700;margin-bottom:2px;}
-.n-sub{font-size:11px;color:var(--text2);}
-.n-time{font-size:10px;color:var(--text2);margin-top:3px;}
-
-/* AI CHAT */
-.ai-fab{position:fixed;bottom:88px;left:14px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#E68000,var(--gold));display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;z-index:50;box-shadow:0 4px 20px rgba(255,184,0,0.4);border:none;transition:transform 0.15s;}
-.ai-fab:active{transform:scale(0.88);}
-.ai-dot{position:absolute;top:-2px;right:-2px;background:var(--green);width:13px;height:13px;border-radius:50%;border:2px solid var(--bg);}
-
-.chat-ov{position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(10px);z-index:300;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.25s;}
-.chat-ov.open{opacity:1;pointer-events:all;}
-.chat-sh{width:100%;max-width:500px;margin:0 auto;background:var(--bg2);border-radius:22px 22px 0 0;border-top:1px solid var(--border);height:80vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform 0.32s cubic-bezier(0.34,1.3,0.64,1);}
-.chat-ov.open .chat-sh{transform:translateY(0);}
-.chat-hd{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.bot-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#E68000,var(--gold));display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
-.bot-on{font-size:10px;color:var(--green);display:flex;align-items:center;gap:4px;}
-.bot-on::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;display:inline-block;animation:blink 2s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-.chat-cls{width:33px;height:33px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;}
-.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:11px;}
-.cm{max-width:85%;display:flex;gap:7px;align-items:flex-end;}
-.cm.bot{align-self:flex-start;}
-.cm.usr{align-self:flex-end;flex-direction:row-reverse;}
-.cm-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#E68000,var(--gold));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
-.cm-bbl{padding:11px 13px;border-radius:15px;font-size:12px;line-height:1.65;}
-.cm.bot .cm-bbl{background:var(--card2);border:1px solid var(--border);border-bottom-right-radius:3px;}
-.cm.usr .cm-bbl{background:rgba(255,184,0,0.13);border:1px solid rgba(255,184,0,0.23);border-bottom-left-radius:3px;}
-.cm-typing{display:flex;gap:4px;align-items:center;padding:11px 14px;}
-.cm-typing span{width:7px;height:7px;background:var(--gold);border-radius:50%;animation:typ 1.2s infinite;}
-.cm-typing span:nth-child(2){animation-delay:0.2s;}
-.cm-typing span:nth-child(3){animation-delay:0.4s;}
-@keyframes typ{0%,60%,100%{transform:translateY(0);opacity:0.4}30%{transform:translateY(-5px);opacity:1}}
-.chat-qk{display:flex;gap:7px;padding:9px 14px;overflow-x:auto;flex-shrink:0;border-top:1px solid rgba(255,255,255,0.04);}
-.qk-b{flex-shrink:0;padding:6px 13px;border-radius:20px;background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.09);color:var(--text2);font-size:11px;font-family:'Cairo',sans-serif;cursor:pointer;}
-.qk-b:active{background:rgba(255,184,0,0.11);border-color:rgba(255,184,0,0.28);color:var(--gold);}
-.chat-ir{display:flex;gap:9px;padding:11px 14px 18px;flex-shrink:0;border-top:1px solid var(--border);}
-.chat-in{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:21px;padding:11px 16px;color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none;}
-.chat-in:focus{border-color:rgba(255,184,0,0.4);}
-.chat-snd{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#E68000);border:none;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;flex-shrink:0;}
-
-/* SECURITY */
-.sec-doc{background:linear-gradient(145deg,#030A03,#020602);border:2px solid rgba(0,230,118,0.28);border-radius:18px;padding:18px;margin-bottom:13px;position:relative;overflow:hidden;}
-.sec-wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-family:'Orbitron',monospace;font-size:38px;font-weight:900;color:rgba(0,230,118,0.04);pointer-events:none;white-space:nowrap;letter-spacing:3px;}
-.sec-seal{width:56px;height:56px;border-radius:50%;background:rgba(0,230,118,0.09);border:2px solid rgba(0,230,118,0.28);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
-.sec-row{display:flex;justify-content:space-between;padding:9px 12px;background:rgba(0,230,118,0.04);border-radius:9px;border:1px solid rgba(0,230,118,0.09);font-size:12px;margin-bottom:7px;}
-.sec-row:last-child{margin-bottom:0;}
-
-/* INFO TABLE */
-.inf-tbl{width:100%;border-collapse:collapse;font-size:11px;}
-.inf-tbl th{background:rgba(255,184,0,0.1);color:var(--gold);padding:8px 5px;text-align:center;font-size:10px;border:1px solid rgba(255,184,0,0.14);}
-.inf-tbl td{padding:8px 5px;text-align:center;border:1px solid rgba(255,255,255,0.05);color:var(--text2);}
-.inf-tbl tr:nth-child(even) td{background:rgba(255,255,255,0.015);}
+.account-hero { background: var(--card); margin: 12px; border-radius: 16px; padding: 20px; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px; }
+.avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), #e8940a); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; color: #000; flex-shrink: 0; }
+.account-name { font-size: 18px; font-weight: 700; }
+.account-id { font-size: 12px; color: var(--sub); margin-top: 3px; }
+.account-level { display: inline-block; background: #2a1f0a; border: 1px solid var(--gold); border-radius: 20px; padding: 4px 14px; font-size: 12px; color: var(--gold); margin-top: 8px; }
+.balance-cards { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; margin: 0 12px 12px; }
+.balance-main { background: var(--card); border-radius: 14px; padding: 16px; border: 1px solid var(--border); }
+.balance-main-value { font-size: 18px; font-weight: 700; color: var(--gold); word-break: break-all; }
+.balance-main-label { font-size: 11px; color: var(--sub); margin-top: 5px; }
+.balance-mini { background: var(--card); border-radius: 14px; padding: 16px; border: 1px solid var(--border); text-align: center; }
+.balance-mini-value { font-size: 20px; font-weight: 700; }
+.balance-mini-label { font-size: 11px; color: var(--sub); margin-top: 5px; }
+.finance-section { margin: 0 12px 12px; }
+.finance-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 12px; text-align: right; }
+.finance-card { background: var(--card); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; }
 
 /* MODAL */
-.mod-ov{position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s;}
-.mod-ov.open{opacity:1;pointer-events:all;}
-.mod-sh{width:100%;max-width:500px;background:var(--bg2);border-radius:22px 22px 0 0;border-top:1px solid var(--border);padding:18px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.34,1.5,0.64,1);}
-.mod-ov.open .mod-sh{transform:translateY(0);}
-.mod-hnd{width:38px;height:4px;background:rgba(255,255,255,0.14);border-radius:4px;margin:0 auto 16px;}
-.mod-ttl{font-size:17px;font-weight:700;text-align:center;margin-bottom:16px;color:var(--gold);}
-.mod-inp{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px 15px;color:var(--text);font-family:'Cairo',sans-serif;font-size:14px;outline:none;margin-bottom:11px;text-align:right;}
-.mod-inp:focus{border-color:rgba(255,184,0,0.45);}
-.mod-btn{width:100%;padding:13px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--gold),#E68000);color:#000;font-family:'Cairo',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:9px;}
-.mod-btn.out{background:transparent;border:1px solid var(--border);color:var(--text2);}
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 1000; display: none; justify-content: center; align-items: flex-end; }
+.modal-overlay.active { display: flex; }
+.modal { background: var(--card); border-radius: 24px 24px 0 0; width: 100%; max-height: 90vh; overflow-y: auto; padding: 24px; animation: slideUp 0.3s ease; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+.modal-close { background: var(--bg); border: none; color: var(--text); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
 
-/* TX */
-.txi{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
-.txi:last-child{border-bottom:none;}
-.txi-i{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.txi-inf{flex:1;}
-.txi-t{font-size:12px;font-weight:600;margin-bottom:2px;}
-.txi-d{font-size:10px;color:var(--text2);}
-.txi-a{font-size:13px;font-weight:700;}
+/* NOTIFICATIONS MODAL */
+.notif-item { display: flex; align-items: center; gap: 14px; padding: 14px; background: var(--card2); border-radius: 14px; margin-bottom: 10px; }
+.notif-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+.notif-text h4 { font-size: 15px; font-weight: 600; text-align: right; }
+.notif-text p { font-size: 12px; color: var(--sub); margin-top: 3px; text-align: right; }
+.notif-time { font-size: 11px; color: var(--sub); margin-top: 4px; text-align: right; }
+
+/* AI ASSISTANT */
+.ai-btn { position: fixed; bottom: 90px; left: 16px; width: 60px; height: 60px; background: linear-gradient(135deg, var(--gold), #e8940a); border-radius: 50%; border: none; cursor: pointer; font-size: 28px; display: flex; align-items: center; justify-content: center; z-index: 300; box-shadow: 0 4px 20px rgba(245,166,35,0.4); animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 4px 20px rgba(245,166,35,0.4); } 50% { box-shadow: 0 4px 30px rgba(245,166,35,0.7); } }
+.ai-dot { position: absolute; top: 2px; right: 2px; width: 12px; height: 12px; background: var(--green); border-radius: 50%; border: 2px solid var(--card); }
+.ai-modal { position: fixed; bottom: 160px; left: 12px; right: 12px; background: var(--card); border-radius: 20px; border: 1px solid var(--border); z-index: 400; display: none; flex-direction: column; max-height: 70vh; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+.ai-modal.active { display: flex; }
+.ai-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.ai-header-left { display: flex; align-items: center; gap: 10px; }
+.ai-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--gold), #e8940a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.ai-header-text h4 { font-size: 16px; font-weight: 700; }
+.ai-header-text p { font-size: 11px; color: var(--green); }
+.ai-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.ai-msg { max-width: 85%; }
+.ai-msg.bot { align-self: flex-end; }
+.ai-msg.user { align-self: flex-start; }
+.ai-msg-bubble { padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.6; }
+.ai-msg.bot .ai-msg-bubble { background: var(--card2); border-bottom-right-radius: 4px; text-align: right; }
+.ai-msg.user .ai-msg-bubble { background: linear-gradient(135deg, var(--gold), #e8940a); color: #000; border-bottom-left-radius: 4px; text-align: left; }
+.ai-quick-btns { display: flex; gap: 8px; padding: 8px 12px; overflow-x: auto; scrollbar-width: none; }
+.ai-quick-btns::-webkit-scrollbar { display: none; }
+.ai-quick-btn { background: var(--card2); border: 1px solid var(--border); border-radius: 20px; padding: 8px 14px; color: var(--text); font-size: 12px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+.ai-input-row { padding: 12px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+.ai-input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 24px; padding: 10px 16px; color: var(--text); font-size: 14px; outline: none; }
+.ai-send { background: linear-gradient(135deg, var(--gold), #e8940a); border: none; border-radius: 50%; width: 40px; height: 40px; color: #000; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* REFERRAL SECTION */
+.ref-code-card { background: var(--card2); border-radius: 14px; padding: 20px; margin-bottom: 16px; text-align: center; border: 1px solid var(--border); }
+.ref-code-label { font-size: 14px; color: var(--sub); margin-bottom: 10px; }
+.ref-code-value { font-size: 32px; font-weight: 900; color: var(--gold); letter-spacing: 5px; background: var(--bg); border-radius: 10px; padding: 12px 20px; margin: 10px 0; cursor: pointer; }
+.ref-code-desc { font-size: 12px; color: var(--sub); }
+
+/* LINK SHARE */
+.ref-link-card { background: var(--card2); border-radius: 14px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
+.ref-link-label { font-size: 14px; color: var(--sub); margin-bottom: 10px; text-align: right; }
+.ref-link-value { background: var(--bg); border-radius: 10px; padding: 12px; font-size: 13px; color: var(--gold); word-break: break-all; margin-bottom: 10px; text-align: left; direction: ltr; }
+.btn-share { background: linear-gradient(135deg, #1a4a1a, #0d2f0d); border: 1px solid var(--green); border-radius: 12px; padding: 12px; color: var(--green); font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; }
+.btn-share:active { transform: scale(0.97); }
+
+/* LEVELS TABLE */
+.levels-table { margin: 8px 12px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+.levels-table table { width: 100%; border-collapse: collapse; }
+.levels-table th { background: var(--card2); padding: 10px 8px; font-size: 11px; color: var(--gold); text-align: center; border-bottom: 1px solid var(--border); }
+.levels-table td { padding: 10px 8px; font-size: 11px; text-align: center; border-bottom: 1px solid var(--border); background: var(--card); }
+.levels-table tr:last-child td { border-bottom: none; }
+.level-name { font-weight: 700; }
+.level-name.trial { color: var(--blue); }
+.level-name.m1 { color: var(--green); }
+.level-name.m2 { color: #69f0ae; }
+.level-name.m3 { color: #ffd740; }
+.level-name.m4 { color: #ff6d00; }
+.level-name.m5 { color: #e040fb; }
+.level-name.m6 { color: #ff1744; }
+.level-name.g7 { color: #e8940a; }
+.value-green { color: var(--green); font-weight: 700; }
+.value-gold { color: var(--gold); }
+
+/* DETAIL PAGES */
+.detail-page { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 500; overflow-y: auto; display: none; transform: translateX(100%); transition: transform 0.3s ease; }
+.detail-page.active { display: block; transform: translateX(0); }
+.detail-header { background: var(--card); padding: 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+.back-btn { background: none; border: none; color: var(--text); font-size: 24px; cursor: pointer; }
+.detail-header h2 { font-size: 18px; font-weight: 700; }
+
+/* DEPOSIT/WITHDRAW */
+.dw-card { background: var(--card); margin: 12px; border-radius: 16px; padding: 20px; border: 1px solid var(--border); }
+.dw-label { font-size: 14px; color: var(--sub); margin-bottom: 8px; text-align: right; }
+.dw-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; color: var(--text); font-size: 18px; outline: none; text-align: right; }
+.dw-input:focus { border-color: var(--gold); }
+.dw-methods { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 12px 0; }
+.dw-method { background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; cursor: pointer; transition: all 0.3s; }
+.dw-method.selected { border-color: var(--gold); background: #2a1f0a; }
+.dw-method .method-icon { font-size: 24px; margin-bottom: 6px; }
+.dw-method .method-name { font-size: 13px; font-weight: 600; }
 
 /* TOAST */
-.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:rgba(0,230,118,0.14);border:1px solid rgba(0,230,118,0.3);color:var(--green);padding:9px 22px;border-radius:28px;font-size:12px;font-weight:600;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;}
-.toast.show{opacity:1;}
-.toast.err{background:rgba(255,23,68,0.14);border-color:rgba(255,23,68,0.3);color:var(--red);}
-</style>
-</head>
-<body>
+.toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--card2); border: 1px solid var(--border); border-radius: 14px; padding: 14px 20px; font-size: 14px; z-index: 9999; transition: transform 0.3s; white-space: nowrap; max-width: 90vw; text-align: center; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { border-color: var(--green); color: var(--green); }
+.toast.error { border-color: var(--red); color: var(--red); }
+.toast.info { border-color: var(--gold); color: var(--gold); }
 
-<!-- HEADER -->
-<div class="hdr">
-  <div class="hdr-secure" onclick="switchPage('security')">🔒 SECURE V3</div>
-  <div class="hdr-logo" onclick="switchPage('home')">
-    BLACKROCK
-    <span>BlackRock, Inc — Investment Platform</span>
-  </div>
-  <div class="hdr-left">
-    <div class="hdr-bell" onclick="openNotif()">🔔<div class="hdr-badge" id="hdr-nb">3</div></div>
-  </div>
-</div>
+/* SECURITY PAGE */
+.security-card { background: var(--card); margin: 12px; border-radius: 16px; padding: 20px; border: 1px solid var(--green); }
+.security-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+.security-badge-icon { font-size: 36px; }
+.security-title { font-size: 20px; font-weight: 900; color: var(--green); }
+.security-subtitle { font-size: 12px; color: var(--sub); }
+.security-items { display: flex; flex-direction: column; gap: 10px; }
+.security-item { display: flex; align-items: center; gap: 10px; background: var(--card2); border-radius: 10px; padding: 12px; }
+.security-item-icon { font-size: 20px; }
+.security-item-text { font-size: 13px; }
 
-<!-- HOME -->
-<div class="pg active" id="pg-home">
-  <div class="bal-card">
-    <div class="bal-lbl">💼 رصيدك الإجمالي</div>
-    <div class="bal-num" id="bal-num">0.00</div>
-    <div class="bal-currency">دينار جزائري (DZD)</div>
-    <div class="bal-row">
-      <div class="bal-box"><div class="bb-l">الربح اليومي</div><div class="bb-v" style="color:var(--green)" id="daily-v">+215 DZD</div></div>
-      <div class="bal-box"><div class="bb-l">إجمالي الأرباح</div><div class="bb-v" style="color:var(--gold)" id="total-v">0 DZD</div></div>
-    </div>
-  </div>
+/* COMPANY PAGE */
+.company-info-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.company-info-row:last-child { border-bottom: none; }
+.company-info-label { color: var(--sub); font-size: 14px; }
+.company-info-value { font-size: 14px; font-weight: 600; }
 
-  <div class="act-row">
-    <div class="ab" onclick="openMod('deposit')"><div class="ab-i g">⬆️</div><div class="ab-l">إيداع</div></div>
-    <div class="ab" onclick="openMod('withdraw')"><div class="ab-i o">⬇️</div><div class="ab-l">سحب</div></div>
-    <div class="ab" onclick="openMod('transfer')"><div class="ab-i b">🔄</div><div class="ab-l">تحويل</div></div>
-    <div class="ab" onclick="switchPage('referral')"><div class="ab-i r">👥</div><div class="ab-l">إحالة</div></div>
-  </div>
+/* TRANSFER */
+.transfer-card { background: var(--card); margin: 12px; border-radius: 16px; padding: 20px; border: 1px solid var(--border); }
 
-  <div class="lvl-bar-card">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-size:12px;font-weight:700;">المستوى: <span style="color:var(--blue)" id="curr-lv-txt">تجريبي</span></div>
-      <div style="font-size:11px;color:var(--gold);font-weight:600;" id="next-lv-txt">الترقية لـ M1</div>
-    </div>
-    <div style="display:flex;justify-content:space-between;margin-top:5px;">
-      <span style="font-size:11px;color:var(--text2);">رصيدك: <span style="color:var(--gold)" id="pb-bal">0 DZD</span></span>
-      <span style="font-size:11px;color:var(--text2);" id="pb-need">7,000 DZD</span>
-    </div>
-    <div class="pb-out"><div class="pb-in" id="pb-in" style="width:0%"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text2);">
-      <span id="pb-pct">0% مكتمل</span><span id="pb-nxt">M1</span>
-    </div>
-  </div>
+/* REFERRALS LIST */
+.ref-member { display: flex; align-items: center; gap: 12px; background: var(--card2); border-radius: 12px; padding: 12px; margin-bottom: 8px; }
+.ref-member-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), #1a50dd); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+.ref-member-info { flex: 1; }
+.ref-member-name { font-size: 14px; font-weight: 600; }
+.ref-member-date { font-size: 11px; color: var(--sub); }
+.ref-member-earnings { font-size: 13px; color: var(--green); font-weight: 700; }
 
-  <div class="ms-row">
-    <div class="ms-cell" onclick="switchPage('tasks')"><div class="ms-i">⚡</div><div class="ms-v" id="h-tasks">0</div><div class="ms-l">المهام</div></div>
-    <div class="ms-cell" onclick="switchPage('referral')"><div class="ms-i">👥</div><div class="ms-v">0</div><div class="ms-l">الإحالات</div></div>
-    <div class="ms-cell"><div class="ms-i">📅</div><div class="ms-v" id="h-days">1</div><div class="ms-l">الأيام</div></div>
-  </div>
+/* LOGOUT */
+.logout-btn { background: linear-gradient(135deg, #2a0a0a, #1f0505); border: 1px solid var(--red); border-radius: 12px; padding: 16px; color: var(--red); font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; text-align: center; margin: 12px; width: calc(100% - 24px); }
+.logout-btn:active { transform: scale(0.97); }
 
-  <div class="st">آخر المعاملات</div>
-  <div class="card" id="tx-list"><div style="padding:10px 0;text-align:center;color:var(--text2);font-size:12px;">🔍 لا توجد معاملات بعد</div></div>
-</div>
+/* TIMER MODAL */
+.timer-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 800; display: none; justify-content: center; align-items: center; flex-direction: column; }
+.timer-modal.active { display: flex; }
+.timer-circle { width: 180px; height: 180px; border-radius: 50%; border: 6px solid var(--gold); display: flex; align-items: center; justify-content: center; flex-direction: column; margin: 30px auto; background: var(--card); }
+.timer-seconds { font-size: 60px; font-weight: 900; color: var(--gold); }
+.timer-label { font-size: 14px; color: var(--sub); }
+.timer-task-name { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 10px; }
+.timer-reward { font-size: 16px; color: var(--green); text-align: center; }
 
-<!-- LEVELS -->
-<div class="pg" id="pg-levels">
-  <div class="st" style="margin-bottom:16px;">🏆 مستويات الاستثمار</div>
-  <div class="lvc act-lv">
-    <div class="lvc-hd"><div class="lvc-name" style="font-size:13px;font-family:'Cairo',sans-serif;font-weight:900;">تدريب المكتتب</div><div class="lv-bdg bdg-a">✓ مفعل</div></div>
-    <div class="lvc-info">
-      <div class="lv-it"><div class="lt">💰 الاستثمار</div><div class="lv">0 DZD</div></div>
-      <div class="lv-it"><div class="lt">📋 المهام</div><div class="lv">5</div></div>
-      <div class="lv-it"><div class="lt">💵 للمهمة</div><div class="lv" style="color:var(--gold)">43</div></div>
-      <div class="lv-it"><div class="lt">📈 يومي</div><div class="lv" style="color:var(--green)">215</div></div>
-    </div>
-    <div class="lock-n">🔒 السحب مقفل — يتطلب الترقية إلى M1 على الأقل</div>
-  </div>
-  <div id="lvl-list"></div>
-</div>
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-<!-- TASKS -->
-<div class="pg" id="pg-tasks">
-  <div class="st">⚡ المهام اليومية <span id="tasks-ctr">0/5 مكتملة</span></div>
-  <div style="background:rgba(255,184,0,0.05);border:1px solid rgba(255,184,0,0.13);border-radius:11px;padding:11px 13px;margin-bottom:13px;font-size:11px;color:var(--text2);line-height:1.75;">
-    ⏱️ كل مهمة تحتاج <b style="color:var(--gold)">40 ثانية</b>. إذا ضغطت ✕ أو غادرت الصفحة <b style="color:var(--red)">تُلغى وتعود غداً فقط</b>.
-  </div>
-  <div id="tasks-list"></div>
-</div>
+/* USER LEVEL COLORS */
+.user-level-trial { color: var(--blue); }
+.user-level-m1 { color: var(--green); }
+.user-level-m2 { color: #69f0ae; }
+.user-level-m3 { color: #ffd740; }
 
-<!-- ACCOUNT -->
-<div class="pg" id="pg-account">
-  <div class="av-sect">
-    <div class="av">A</div>
-    <div>
-      <div class="u-name">المستخدم</div>
-      <div class="u-id">ID: #00001 | BlackRock, Inc</div>
-      <div class="u-lv-badge">⭐ <span id="acc-lv-nm">المستوى التجريبي</span></div>
-    </div>
-  </div>
-  <div class="acc-sts">
-    <div class="ac-st"><div class="v">0</div><div class="l">الإحالات</div></div>
-    <div class="ac-st"><div class="v" id="acc-tasks-v">0</div><div class="l">المهام</div></div>
-    <div class="ac-st"><div class="v" id="acc-bal-v" style="font-size:12px">0</div><div class="l">DZD</div></div>
-  </div>
+.empty-state { text-align: center; padding: 40px 20px; color: var(--sub); }
+.empty-icon { font-size: 48px; margin-bottom: 10px; }
 
-  <div class="st">العمليات المالية</div>
-  <div class="menu-s">
-    <div class="mi"><div class="mi-ico" style="background:rgba(255,184,0,0.1)">💰</div><div class="mi-txt"><div class="mi-ttl">رصيدي</div><div class="mi-sub" id="acc-bal-show">0.00 DZD</div></div><div class="mi-arr">←</div></div>
-    <div class="mi" onclick="openMod('deposit')"><div class="mi-ico" style="background:rgba(0,230,118,0.09)">⬆️</div><div class="mi-txt"><div class="mi-ttl">إيداع</div><div class="mi-sub">أضف رصيداً لحسابك</div></div><div class="mi-arr">←</div></div>
-    <div class="mi" onclick="openMod('withdraw')"><div class="mi-ico" style="background:rgba(68,138,255,0.09)">⬇️</div><div class="mi-txt"><div class="mi-ttl">سحب</div><div class="mi-sub" id="wd-sub-acc">متاح من مستوى M1</div></div><div class="mi-arr">←</div></div>
-    <div class="mi" onclick="openMod('transfer')"><div class="mi-ico" style="background:rgba(68,138,255,0.07)">🔄</div><div class="mi-txt"><div class="mi-ttl">تحويل</div><div class="mi-sub">حوّل لمستخدم آخر</div></div><div class="mi-arr">←</div></div>
-  </div>
-  <div id="acc-lock-notice" style="background:rgba(255,23,68,0.07);border:1px solid rgba(255,23,68,0.18);border-radius:11px;padding:11px 14px;margin-bottom:13px;font-size:11px;color:#FF7090;text-align:center;">⚠️ المستوى التجريبي: لا يمكن سحب الأموال حتى الترقية إلى M1</div>
+.withdraw-locked { background: #1f0a0a; border: 1px solid var(--red); border-radius: 12px; padding: 16px; text-align: center; margin: 12px; }
+.withdraw-locked p { color: var(--red); font-size: 14px; font-weight: 600; }
 
-  <div class="st">الشركة والمزيد</div>
-  <div class="menu-s">
-    <div class="mi" onclick="switchPage('security')"><div class="mi-ico" style="background:rgba(0,230,118,0.07)">🔒</div><div class="mi-txt"><div class="mi-ttl">وثيقة الأمان</div><div class="mi-sub">SECURE V3 — BlackRock, Inc</div></div><div class="mi-arr">←</div></div>
-    <div class="mi" onclick="switchPage('about')"><div class="mi-ico" style="background:rgba(255,184,0,0.07)">🏢</div><div class="mi-txt"><div class="mi-ttl">عن الشركة</div><div class="mi-sub">BlackRock, Inc — أمريكا 2020</div></div><div class="mi-arr">←</div></div>
-    <div class="mi" onclick="switchPage('referral')"><div class="mi-ico" style="background:rgba(255,23,68,0.07)">👥</div><div class="mi-txt"><div class="mi-ttl">الإحالات</div><div class="mi-sub">ادعُ أصدقاءك واربح</div></div><div class="mi-arr">←</div></div>
-    <div class="mi" onclick="doLogout()"><div class="mi-ico" style="background:rgba(255,23,68,0.07)">🚪</div><div class="mi-txt"><div class="mi-ttl" style="color:var(--red)">تسجيل الخروج</div></div><div class="mi-arr">←</div></div>
-  </div>
-
-  <div class="st">جدول المستويات</div>
-  <div class="card" style="overflow-x:auto;padding:11px;">
-    <table class="inf-tbl">
-      <tr><th>المستوى</th><th>الاستثمار</th><th>المهام</th><th>للمهمة</th><th>يومي</th><th>شهري</th></tr>
-      <tr><td style="color:var(--blue)">تجريبي</td><td>—</td><td>5</td><td>43</td><td>215</td><td style="color:var(--text2)">3 أيام</td></tr>
-      <tr><td style="color:var(--gold)">M1</td><td>7,000</td><td>5</td><td>43</td><td style="color:var(--green)">215</td><td style="color:var(--green)">6,450</td></tr>
-      <tr><td style="color:var(--gold)">M2</td><td>26,600</td><td>10</td><td>86</td><td style="color:var(--green)">860</td><td style="color:var(--green)">25,800</td></tr>
-      <tr><td style="color:var(--gold)">M3</td><td>95,000</td><td>25</td><td>131</td><td style="color:var(--green)">3,275</td><td style="color:var(--green)">98,250</td></tr>
-      <tr><td style="color:var(--gold)">M4</td><td>300,000</td><td>50</td><td>222</td><td style="color:var(--green)">11,100</td><td style="color:var(--green)">333,000</td></tr>
-      <tr><td style="color:var(--gold)">M5</td><td>780,000</td><td>80</td><td>390</td><td style="color:var(--green)">31,200</td><td style="color:var(--green)">936,000</td></tr>
-      <tr><td style="color:var(--gold)">M6</td><td>1,950,000</td><td>130</td><td>652</td><td style="color:var(--green)">84,760</td><td style="color:var(--green)">2,542,800</td></tr>
-      <tr><td style="color:#FF6090">G7</td><td>4,485,000</td><td>200</td><td>1,068</td><td style="color:var(--green)">213,600</td><td style="color:var(--green)">6,408,000</td></tr>
-    </table>
-  </div>
-</div>
-
-<!-- REFERRAL -->
-<div class="pg" id="pg-referral">
-  <div class="st" style="margin-bottom:14px;">👥 الإحالات</div>
-  <div class="ref-card">
-    <div style="font-size:40px;margin-bottom:7px;">🎁</div>
-    <div style="font-size:15px;font-weight:700;margin-bottom:5px;">ادعُ صديقاً واربح معه</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:13px;">احصل على مكافأة عند كل إحالة ناجحة</div>
-    <div class="ref-code" onclick="copyCode()">BG-00001</div>
-    <div style="font-size:11px;color:var(--text2);">اضغط للنسخ 📋</div>
-  </div>
-  <div class="acc-sts">
-    <div class="ac-st"><div class="v">0</div><div class="l">الإحالات</div></div>
-    <div class="ac-st"><div class="v">0</div><div class="l">المكافآت</div></div>
-    <div class="ac-st"><div class="v">0</div><div class="l">DZD</div></div>
-  </div>
-  <div class="card" style="text-align:center;color:var(--text2);font-size:12px;padding:22px;">لا توجد إحالات بعد.<br>شارك كودك مع أصدقائك!</div>
-</div>
-
-<!-- SECURITY DOC -->
-<div class="pg" id="pg-security">
-  <div class="st" style="margin-bottom:14px;">🔒 وثيقة الأمان الرسمية</div>
-  <div class="sec-doc">
-    <div class="sec-wm">VERIFIED SECURE</div>
-    <div style="display:flex;align-items:center;gap:13px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(0,230,118,0.12);">
-      <div class="sec-seal">🛡️</div>
-      <div>
-        <div style="font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:var(--green);letter-spacing:1px;">SECURE V3 CERTIFICATE</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:3px;">رقم الوثيقة: BRI-2025-DZ-001</div>
-        <div style="font-size:10px;color:var(--green);margin-top:2px;">✅ صالحة حتى: ديسمبر 2028</div>
-      </div>
-    </div>
-    <div class="sec-row"><span style="color:var(--text2)">الشركة المُصدِرة</span><span style="font-weight:700;color:var(--green)">BlackRock, Inc</span></div>
-    <div class="sec-row"><span style="color:var(--text2)">دولة التسجيل</span><span style="font-weight:700;">🇺🇸 New York, USA</span></div>
-    <div class="sec-row"><span style="color:var(--text2)">رقم التسجيل</span><span style="font-weight:700;color:var(--gold)">NYSE: BLK — EIN: 32-0174431</span></div>
-    <div class="sec-row"><span style="color:var(--text2)">بروتوكول التشفير</span><span style="font-weight:700;color:var(--green)">SSL/TLS 3.0 — AES-256</span></div>
-    <div class="sec-row"><span style="color:var(--text2)">عقد الجزائر</span><span style="font-weight:700;color:var(--green)">✅ يناير 2025 — ديسمبر 2028</span></div>
-    <div class="sec-row"><span style="color:var(--text2)">حماية الأموال</span><span style="font-weight:700;color:var(--green)">✅ مضمونة 100%</span></div>
-    <div style="margin-top:14px;padding:13px;background:rgba(0,230,118,0.05);border:1px solid rgba(0,230,118,0.12);border-radius:11px;font-size:11px;color:var(--text2);line-height:1.85;text-align:center;">
-      تُقرّ شركة <b style="color:var(--green)">BlackRock, Inc</b> المسجلة في نيويورك بالولايات المتحدة الأمريكية عام <b style="color:var(--gold)">2020</b>، بأنها أبرمت عقداً رسمياً مع الجانب الجزائري في <b style="color:var(--gold)">يناير 2025</b> لمدة <b style="color:var(--gold)">3 سنوات</b> (تنتهي ديسمبر 2028)، يضمن حقوق المستثمرين الجزائريين وأموالهم وفق أعلى معايير الأمان الدولية.
-    </div>
-  </div>
-  <div class="card">
-    <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:12px;">🔐 ضمانات الأمان</div>
-    <div style="display:flex;flex-direction:column;gap:9px;font-size:12px;">
-      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>تشفير بيانات المستخدمين بمعيار AES-256</span></div>
-      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>حماية المعاملات بـ SSL V3</span></div>
-      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>السحب مقفل في المستوى التجريبي لحماية أموالك</span></div>
-      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>مراقبة أمنية 24/7</span></div>
-      <div style="display:flex;align-items:center;gap:9px;"><span style="color:var(--green)">✅</span><span>ضمان استرداد الأموال في حالات الطوارئ</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- ABOUT -->
-<div class="pg" id="pg-about">
-  <div class="st" style="margin-bottom:14px;">🏢 عن الشركة</div>
-  <div class="card" style="background:linear-gradient(135deg,#180E00,#0A0700);border-color:rgba(255,184,0,0.3);text-align:center;padding:22px;margin-bottom:12px;">
-    <div style="font-size:34px;margin-bottom:7px;">🇺🇸</div>
-    <div style="font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:var(--gold);letter-spacing:2px;margin-bottom:5px;">BLACKROCK, INC</div>
-    <div style="font-size:12px;color:var(--text2);line-height:1.7;">أكبر شركة لإدارة الأصول في العالم — مقرها نيويورك، الولايات المتحدة الأمريكية</div>
-  </div>
-  <div class="card" style="margin-bottom:11px;">
-    <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:13px;">📋 معلومات الشركة</div>
-    <div style="display:flex;flex-direction:column;gap:9px;font-size:12px;">
-      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">الاسم القانوني</span><span style="font-weight:700;">BlackRock, Inc</span></div>
-      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">المقر الرئيسي</span><span style="font-weight:700;">🇺🇸 New York, USA</span></div>
-      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">سنة التأسيس</span><span style="font-weight:700;color:var(--gold)">2020 (منصة DZ)</span></div>
-      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">المجال</span><span style="font-weight:700;">إدارة الأصول والاستثمار</span></div>
-      <div style="display:flex;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text2)">عقد الجزائر</span><span style="font-weight:700;color:var(--green)">✅ يناير 2025</span></div>
-      <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2)">انتهاء العقد</span><span style="font-weight:700;color:var(--gold)">ديسمبر 2028</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- BOTTOM NAV -->
-<div class="bnav">
-  <div class="ni active" id="ni-home" onclick="switchPage('home')"><div class="ni-ico">🏠</div><div class="ni-lbl">الرئيسية</div></div>
-  <div class="ni" id="ni-tasks" onclick="switchPage('tasks')"><div class="ni-ico">⚡<div class="ni-dot" id="ni-tb">5</div></div><div class="ni-lbl">المهام</div></div>
-  <div class="ni" id="ni-levels" onclick="switchPage('levels')"><div class="ni-ico">💎</div><div class="ni-lbl">الترقية</div></div>
-  <div class="ni" id="ni-account" onclick="switchPage('account')"><div class="ni-ico">👤</div><div class="ni-lbl">حسابي</div></div>
-</div>
-
-<!-- AI FAB -->
-<button class="ai-fab" onclick="openChat()">🤖<div class="ai-dot"></div></button>
-
-<!-- NOTIFICATIONS -->
-<div class="notif-ov" id="notif-ov" onclick="if(event.target===this)closeNotif()">
-  <div class="notif-sh">
-    <div class="notif-hd"><div style="font-size:15px;font-weight:700;">🔔 الإشعارات</div><div style="width:31px;height:31px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;" onclick="closeNotif()">✕</div></div>
-    <div class="n-it"><div class="n-ico" style="background:rgba(255,184,0,0.11)">⚡</div><div class="n-tx"><div class="n-ttl">مهام جديدة متاحة!</div><div class="n-sub">لديك 5 مهام يومية لكسب 215 DZD</div><div class="n-time">منذ دقيقة</div></div></div>
-    <div class="n-it"><div class="n-ico" style="background:rgba(0,230,118,0.11)">🎁</div><div class="n-tx"><div class="n-ttl">مرحباً بك في BlackRock, Inc</div><div class="n-sub">ابدأ رحلتك نحو الثروة واكسب يومياً</div><div class="n-time">منذ ساعة</div></div></div>
-    <div class="n-it"><div class="n-ico" style="background:rgba(68,138,255,0.11)">💎</div><div class="n-tx"><div class="n-ttl">ترقية متاحة!</div><div class="n-sub">ارقِ إلى M1 بإيداع 7,000 DZD</div><div class="n-time">منذ يوم</div></div></div>
-  </div>
-</div>
-
-<!-- AI CHAT with real Anthropic API -->
-<div class="chat-ov" id="chat-ov" onclick="if(event.target===this)closeChat()">
-  <div class="chat-sh">
-    <div class="chat-hd">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div class="bot-av">🤖</div>
-        <div><div style="font-size:14px;font-weight:700;">مساعد BlackRock الذكي</div><div class="bot-on">متصل — مدعوم بـ AI</div></div>
-      </div>
-      <div class="chat-cls" onclick="closeChat()">✕</div>
-    </div>
-    <div class="chat-msgs" id="chat-msgs">
-      <div class="cm bot"><div class="cm-av">🤖</div><div class="cm-bbl">👋 مرحباً! أنا المساعد الذكي لمنصة <b>BlackRock, Inc</b>. يمكنني الإجابة على أي سؤال حول الاستثمار والمنصة. كيف يمكنني مساعدتك؟</div></div>
-    </div>
-    <div class="chat-qk">
-      <button class="qk-b" onclick="quickMsg('رصيدي')">رصيدي</button>
-      <button class="qk-b" onclick="quickMsg('المهام المتاحة')">المهام المتاحة</button>
-      <button class="qk-b" onclick="quickMsg('كيف أرقي؟')">كيف أرقي؟</button>
-      <button class="qk-b" onclick="quickMsg('نصيحة استثمارية')">نصيحة</button>
-      <button class="qk-b" onclick="quickMsg('عن الشركة')">عن الشركة</button>
-      <button class="qk-b" onclick="quickMsg('كيف أسحب المال؟')">السحب</button>
-    </div>
-    <div class="chat-ir">
-      <input class="chat-in" id="chat-in" placeholder="اكتب سؤالك..." onkeydown="if(event.key==='Enter')sendMsg()"/>
-      <button class="chat-snd" onclick="sendMsg()">✈️</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL -->
-<div class="mod-ov" id="mod-ov" onclick="if(event.target===this)closeMod()">
-  <div class="mod-sh">
-    <div class="mod-hnd"></div>
-    <div class="mod-ttl" id="mod-ttl"></div>
-    <div id="mod-cnt"></div>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<script>
-// ══════════════════════════════════════
-// DATA
-// ══════════════════════════════════════
-const LVL_DATA = [
-  {id:'M1',price:7000,    str:'7,000',    tasks:5,  pt:43,   daily:215,    monthly:6450},
-  {id:'M2',price:26600,   str:'26,600',   tasks:10, pt:86,   daily:860,    monthly:25800},
-  {id:'M3',price:95000,   str:'95,000',   tasks:25, pt:131,  daily:3275,   monthly:98250},
-  {id:'M4',price:300000,  str:'300,000',  tasks:50, pt:222,  daily:11100,  monthly:333000},
-  {id:'M5',price:780000,  str:'780,000',  tasks:80, pt:390,  daily:31200,  monthly:936000},
-  {id:'M6',price:1950000, str:'1,950,000',tasks:130,pt:652,  daily:84760,  monthly:2542800},
-  {id:'G7',price:4485000, str:'4,485,000',tasks:200,pt:1068, daily:213600, monthly:6408000}
-];
-const TK_ICONS = ['📱','💎','🎯','🚀','⭐','🔥','💫','🏆','⚡','🌟','💰','🎖️','📊','🌐','🔑'];
-const TASK_DUR = 40;
-
-// ══════════════════════════════════════
-// STATE — localStorage brain
-// ══════════════════════════════════════
-function defState() {
-  return {balance:0,txList:[],currentLevel:'trial',currentTasks:5,taskReward:43,taskStatus:{},lastDate:'',days:1,tasksDone:0};
-}
-function loadState() {
-  try { const s = JSON.parse(localStorage.getItem('bri_state')||'{}'); return Object.assign(defState(), s); }
-  catch(e) { return defState(); }
-}
-function save() { try { localStorage.setItem('bri_state', JSON.stringify(S)); } catch(e){} }
-
-let S = loadState();
-
-// Day reset — reset ALL statuses each new day
-(function checkDay(){
-  const today = new Date().toDateString();
-  if (S.lastDate !== today) {
-    S.taskStatus = {};
-    S.tasksDone = 0;
-    S.lastDate = today;
-    if (S.lastDate) S.days = (S.days || 1) + 1;
-    save();
-  }
-})();
-
-let tkTimers = {};
-
-// ══════════════════════════════════════
-// BUILD LEVELS
-// ══════════════════════════════════════
-(function(){
-  const el = document.getElementById('lvl-list');
-  LVL_DATA.forEach(v => {
-    el.innerHTML += `
-      <div class="lvc" onclick="openUpgMod('${v.id}','${v.str}',${v.daily},${v.pt},${v.tasks},${v.monthly})">
-        <div class="lvc-hd"><div class="lvc-name">${v.id}</div><div class="lv-bdg bdg-u">ترقية الآن</div></div>
-        <div class="lvc-info">
-          <div class="lv-it"><div class="lt">💰 الاستثمار</div><div class="lv" style="color:var(--gold)">${v.str}</div></div>
-          <div class="lv-it"><div class="lt">📋 المهام</div><div class="lv">${v.tasks}</div></div>
-          <div class="lv-it"><div class="lt">💵 للمهمة</div><div class="lv" style="color:var(--gold)">${v.pt}</div></div>
-          <div class="lv-it"><div class="lt">📈 يومي</div><div class="lv" style="color:var(--green)">${v.daily.toLocaleString()}</div></div>
-        </div>
-        <button class="upbtn">⬆️ ترقية إلى ${v.id} — ${v.str} DZD</button>
-      </div>`;
-  });
-})();
-
-// ══════════════════════════════════════
-// BUILD TASKS
-// ══════════════════════════════════════
-function buildTasks() {
-  const el = document.getElementById('tasks-list');
-  el.innerHTML = '';
-  let done = 0;
-  for (let i = 1; i <= S.currentTasks; i++) {
-    const st = S.taskStatus[i];
-    if (st === 'done') done++;
-    const isDone = st === 'done';
-    const isCancelled = st === 'cancelled';
-    el.innerHTML += `
-      <div class="tkc ${isDone?'done':isCancelled?'cancelled':''}" id="tkc-${i}">
-        <div class="tk-top">
-          <div class="tk-ico" id="tki-${i}">${isDone?'✅':isCancelled?'❌':TK_ICONS[(i-1)%TK_ICONS.length]}</div>
-          <div class="tk-inf">
-            <div class="tk-ttl">مهمة يومية ${i}</div>
-            <div class="tk-sub" id="tks-${i}" style="color:${isDone?'var(--green)':isCancelled?'var(--red)':''}">${isDone?'✅ مكتملة':isCancelled?'❌ ملغاة — تعود غداً':'انتظر 40 ثانية واحصل على +'+S.taskReward+' DZD'}</div>
-          </div>
-          <div class="tk-rew"><div class="tk-amt">+${S.taskReward}</div><div class="tk-lbl">DZD</div></div>
-        </div>
-        <div class="tk-pb"><div id="tkb-${i}" style="height:100%;border-radius:4px;width:${isDone||isCancelled?'100':'0'}%;background:${isDone?'var(--green)':isCancelled?'var(--red)':'linear-gradient(90deg,var(--gold),#E68000)'};transition:width 0.4s;"></div></div>
-        <div id="tka-${i}">
-          ${isDone||isCancelled?'':` <div class="tk-acts"><button class="tk-start" onclick="startTask(${i})">▶ ابدأ المهمة</button></div>`}
-        </div>
-      </div>`;
-  }
-  S.tasksDone = done;
-  document.getElementById('tasks-ctr').textContent = done + '/' + S.currentTasks + ' مكتملة';
-  const rem = S.currentTasks - done;
-  const nb = document.getElementById('ni-tb');
-  nb.textContent = rem; nb.style.display = rem > 0 ? 'flex' : 'none';
-  document.getElementById('h-tasks').textContent = done;
-  document.getElementById('acc-tasks-v').textContent = done;
-}
-buildTasks();
-
-// ══════════════════════════════════════
-// TASK START
-// ══════════════════════════════════════
-function startTask(i) {
-  if (S.taskStatus[i] || tkTimers[i]) return;
-  const card = document.getElementById('tkc-'+i);
-  const bar = document.getElementById('tkb-'+i);
-  const sub = document.getElementById('tks-'+i);
-  const acts = document.getElementById('tka-'+i);
-  card.classList.add('run');
-  sub.textContent = '⏱️ جاري التنفيذ... لا تغادر!';
-  sub.style.color = 'var(--gold)';
-  acts.innerHTML = `<div class="tk-acts"><button class="tk-x" onclick="cancelTask(${i})">✕</button><div class="tk-timer" id="tkt-${i}">40</div></div>`;
-  let elapsed = 0;
-  tkTimers[i] = setInterval(() => {
-    elapsed++;
-    bar.style.width = (elapsed/TASK_DUR*100) + '%';
-    const rem = TASK_DUR - elapsed;
-    const te = document.getElementById('tkt-'+i);
-    if(te) te.textContent = rem;
-    if(elapsed >= TASK_DUR) { clearInterval(tkTimers[i]); tkTimers[i]=null; completeTask(i); }
-  }, 1000);
-}
-
-// ══════════════════════════════════════
-// TASK CANCEL
-// ══════════════════════════════════════
-function cancelTask(i) {
-  if (!tkTimers[i]) return;
-  clearInterval(tkTimers[i]); tkTimers[i] = null;
-  S.taskStatus[i] = 'cancelled'; save();
-  const card=document.getElementById('tkc-'+i);
-  const bar=document.getElementById('tkb-'+i);
-  const sub=document.getElementById('tks-'+i);
-  const ico=document.getElementById('tki-'+i);
-  const acts=document.getElementById('tka-'+i);
-  card.classList.remove('run'); card.classList.add('cancelled');
-  bar.style.width='100%'; bar.style.background='var(--red)';
-  ico.textContent='❌';
-  sub.textContent='❌ ملغاة — تعود غداً'; sub.style.color='var(--red)';
-  acts.innerHTML='';
-  showToast('❌ تم إلغاء المهمة — تعود غداً', true);
-}
-
-function cancelAll() {
-  for (let i=1; i<=S.currentTasks; i++) if(tkTimers[i]) cancelTask(i);
-}
-
-// ══════════════════════════════════════
-// TASK COMPLETE
-// ══════════════════════════════════════
-function completeTask(i) {
-  S.taskStatus[i] = 'done';
-  S.balance += S.taskReward;
-  S.tasksDone++;
-  addTx('مهمة يومية '+i, S.taskReward, true, '⚡');
-  save();
-  const card=document.getElementById('tkc-'+i);
-  const bar=document.getElementById('tkb-'+i);
-  const sub=document.getElementById('tks-'+i);
-  const ico=document.getElementById('tki-'+i);
-  const acts=document.getElementById('tka-'+i);
-  card.classList.remove('run'); card.classList.add('done');
-  bar.style.width='100%'; bar.style.background='var(--green)';
-  ico.textContent='✅';
-  sub.textContent='✅ مكتملة'; sub.style.color='var(--green)';
-  acts.innerHTML=`<div class="tk-done-row">✅ تمت! +${S.taskReward} DZD أُضيفت لرصيدك</div>`;
-  updateUI();
-  const done = Object.values(S.taskStatus).filter(v=>v==='done').length;
-  document.getElementById('tasks-ctr').textContent = done+'/'+S.currentTasks+' مكتملة';
-  document.getElementById('h-tasks').textContent = done;
-  document.getElementById('acc-tasks-v').textContent = done;
-  const rem = S.currentTasks - done;
-  const nb = document.getElementById('ni-tb');
-  nb.textContent = rem; nb.style.display = rem > 0 ? 'flex' : 'none';
-  showToast('✅ +'+S.taskReward+' DZD تمت إضافتها!');
-}
-
-// Cancel tasks when leaving tasks page or hiding
-document.addEventListener('visibilitychange', () => { if(document.hidden) cancelAll(); });
-
-// ══════════════════════════════════════
-// PAGE SWITCH
-// ══════════════════════════════════════
-function switchPage(pg) {
-  if(pg !== 'tasks') cancelAll();
-  document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
-  document.getElementById('pg-'+pg).classList.add('active');
-  const ni = document.getElementById('ni-'+pg);
-  if(ni) ni.classList.add('active');
-}
-
-// ══════════════════════════════════════
-// UPDATE UI
-// ══════════════════════════════════════
-function updateUI() {
-  const fmt = S.balance.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('bal-num').textContent = fmt;
-  document.getElementById('total-v').textContent = S.balance.toLocaleString() + ' DZD';
-  document.getElementById('acc-bal-show').textContent = fmt + ' DZD';
-  document.getElementById('acc-bal-v').textContent = S.balance.toLocaleString();
-  document.getElementById('pb-bal').textContent = S.balance.toLocaleString() + ' DZD';
-  document.getElementById('h-days').textContent = S.days;
-  const np = 7000;
-  const pct = Math.min((S.balance/np)*100, 100);
-  document.getElementById('pb-in').style.width = pct + '%';
-  document.getElementById('pb-pct').textContent = Math.round(pct) + '% مكتمل';
-}
-
-// ══════════════════════════════════════
-// TRANSACTIONS
-// ══════════════════════════════════════
-function addTx(title, amount, isPos, ico) {
-  const now = new Date();
-  const t = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
-  S.txList.unshift({title,amount,isPos,ico:ico||'💰',time:'اليوم '+t});
-  if(S.txList.length > 30) S.txList.pop();
-  save(); renderTx();
-}
-function renderTx() {
-  const el = document.getElementById('tx-list');
-  if(!S.txList.length){ el.innerHTML='<div style="padding:10px 0;text-align:center;color:var(--text2);font-size:12px;">🔍 لا توجد معاملات بعد</div>'; return; }
-  el.innerHTML = S.txList.slice(0,6).map(tx=>`
-    <div class="txi">
-      <div class="txi-i" style="background:${tx.isPos?'rgba(0,230,118,0.09)':'rgba(255,23,68,0.09)'}">${tx.ico}</div>
-      <div class="txi-inf"><div class="txi-t">${tx.title}</div><div class="txi-d">${tx.time}</div></div>
-      <div class="txi-a" style="color:${tx.isPos?'var(--green)':'var(--red)'}">${tx.isPos?'+':''}${tx.amount.toLocaleString()} DZD</div>
-    </div>`).join('');
-}
-
-// ══════════════════════════════════════
-// MODAL
-// ══════════════════════════════════════
-function openMod(type) {
-  const ttl = document.getElementById('mod-ttl');
-  const cnt = document.getElementById('mod-cnt');
-  if(type==='deposit') {
-    ttl.textContent='⬆️ إيداع رصيد';
-    cnt.innerHTML=`
-      <p style="font-size:12px;color:var(--text2);text-align:center;margin-bottom:14px">أدخل المبلغ المراد إيداعه</p>
-      <input class="mod-inp" type="number" placeholder="المبلغ (DZD)" id="dep-v" min="1"/>
-      <button class="mod-btn" onclick="doDeposit()">✅ تأكيد الإيداع</button>
-      <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
-  } else if(type==='withdraw') {
-    const can = S.currentLevel !== 'trial';
-    ttl.textContent='⬇️ سحب رصيد';
-    if(!can) {
-      cnt.innerHTML=`
-        <div style="background:rgba(255,23,68,0.09);border:1px solid rgba(255,23,68,0.2);border-radius:13px;padding:16px;margin-bottom:14px;text-align:center;">
-          <div style="font-size:32px;margin-bottom:9px">🔒</div>
-          <div style="font-size:14px;font-weight:700;color:#FF7090;margin-bottom:7px">السحب مقفل</div>
-          <div style="font-size:12px;color:var(--text2);line-height:1.8;">وفقاً لسياسة الأمان وعقد <b style="color:var(--gold)">BlackRock, Inc</b>، ميزة السحب مفعلة فقط للأعضاء من رتبة <b style="color:var(--gold)">M1 فأعلى</b>. يرجى ترقية حسابك لفتح ميزة السحب.</div>
-        </div>
-        <button class="mod-btn" onclick="switchPage('levels');closeMod()">🚀 ترقية الآن</button>
-        <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
-    } else {
-      cnt.innerHTML=`
-        <p style="font-size:12px;color:var(--text2);text-align:center;margin-bottom:14px">رصيدك: <b style="color:var(--gold)">${S.balance.toLocaleString()} DZD</b></p>
-        <input class="mod-inp" type="number" placeholder="المبلغ (DZD)" id="wd-v" min="1"/>
-        <button class="mod-btn" onclick="doWithdraw()">✅ تأكيد السحب</button>
-        <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
-    }
-  } else if(type==='transfer') {
-    ttl.textContent='🔄 تحويل رصيد';
-    cnt.innerHTML=`
-      <input class="mod-inp" placeholder="ID المستخدم (BG-XXXXX)" id="tr-id"/>
-      <input class="mod-inp" type="number" placeholder="المبلغ (DZD)" id="tr-v" min="1"/>
-      <button class="mod-btn" onclick="doTransfer()">✅ تأكيد التحويل</button>
-      <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
-  }
-  document.getElementById('mod-ov').classList.add('open');
-}
-
-function doDeposit() {
-  const v = parseFloat(document.getElementById('dep-v')?.value||0);
-  if(v<=0){showToast('⚠️ أدخل مبلغاً صحيحاً',true);return;}
-  S.balance+=v; addTx('إيداع رصيد',v,true,'⬆️'); save(); updateUI();
-  showToast('✅ تم الإيداع: +'+v.toLocaleString()+' DZD'); closeMod();
-}
-function doWithdraw() {
-  const v = parseFloat(document.getElementById('wd-v')?.value||0);
-  if(v<=0){showToast('⚠️ أدخل مبلغاً صحيحاً',true);return;}
-  if(v>S.balance){showToast('❌ رصيد غير كافٍ',true);return;}
-  S.balance-=v; addTx('سحب رصيد',v,false,'⬇️'); save(); updateUI();
-  showToast('✅ تم السحب: '+v.toLocaleString()+' DZD'); closeMod();
-}
-function doTransfer() {
-  const id = document.getElementById('tr-id')?.value||'';
-  const v = parseFloat(document.getElementById('tr-v')?.value||0);
-  if(!id||v<=0){showToast('⚠️ أدخل بيانات صحيحة',true);return;}
-  if(v>S.balance){showToast('❌ رصيد غير كافٍ',true);return;}
-  S.balance-=v; addTx('تحويل إلى '+id,v,false,'🔄'); save(); updateUI();
-  showToast('✅ تم التحويل إلى '+id); closeMod();
-}
-
-function openUpgMod(id,price,daily,pt,tasks,monthly) {
-  document.getElementById('mod-ttl').textContent='⬆️ الترقية إلى '+id;
-  document.getElementById('mod-cnt').innerHTML=`
-    <div style="text-align:center;margin-bottom:18px">
-      <div style="font-size:46px;margin-bottom:9px">💎</div>
-      <div style="font-size:24px;font-weight:900;color:var(--gold)">${price} DZD</div>
-      <div style="font-size:12px;color:var(--text2);margin-top:5px">مبلغ الاستثمار المطلوب</div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px">
-      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:11px;text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px">📈 يومي</div><div style="font-size:15px;font-weight:700;color:var(--green)">${daily.toLocaleString()} DZD</div></div>
-      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:11px;text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px">📅 شهري</div><div style="font-size:15px;font-weight:700;color:var(--gold)">${monthly.toLocaleString()} DZD</div></div>
-      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:11px;text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px">📋 المهام</div><div style="font-size:15px;font-weight:700">${tasks}</div></div>
-      <div style="background:rgba(255,255,255,0.04);border-radius:11px;padding:11px;text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px">💵 للمهمة</div><div style="font-size:15px;font-weight:700;color:var(--gold)">${pt} DZD</div></div>
-    </div>
-    <button class="mod-btn" onclick="showToast('✅ تم إرسال طلب الترقية إلى ${id}');closeMod()">✅ تأكيد الترقية إلى ${id}</button>
-    <button class="mod-btn out" onclick="closeMod()">إلغاء</button>`;
-  document.getElementById('mod-ov').classList.add('open');
-}
-function closeMod() { document.getElementById('mod-ov').classList.remove('open'); }
-
-// ══════════════════════════════════════
-// NOTIFICATIONS
-// ══════════════════════════════════════
-function openNotif() { document.getElementById('notif-ov').classList.add('open'); document.getElementById('hdr-nb').style.display='none'; }
-function closeNotif() { document.getElementById('notif-ov').classList.remove('open'); }
-
-// ══════════════════════════════════════
-// AI CHAT — Anthropic API
-// ══════════════════════════════════════
-let chatHistory = [];
-
-const SYSTEM_PROMPT = `أنت مساعد ذكي ومفيد لمنصة استثمار تابعة لشركة BlackRock, Inc الأمريكية.
-اسم المنصة: BlackRock Investment Platform
-الشركة: BlackRock, Inc — مقرها نيويورك، أمريكا — تأسست 2020
-عقد الجزائر: يناير 2025 — ديسمبر 2028 (3 سنوات)
-المستويات: تجريبي (مجاني، 5 مهام، 43 DZD/مهمة، 215 DZD/يوم)، M1 (7000 DZD)، M2 (26600 DZD)، M3 (95000 DZD)، M4 (300000 DZD)، M5 (780000 DZD)، M6 (1950000 DZD)، G7 (4485000 DZD)
-السحب: مقفل في المستوى التجريبي — يفتح من M1
-المهام: كل مهمة تحتاج 40 ثانية — إذا غادرت تُلغى
-أجب دائماً بالعربية بشكل ودود ومختصر ومفيد. إذا سأل عن رصيده أو مهامه قل له أنك لا تملك وصول مباشر للبيانات لكن يمكنه رؤيتها في التطبيق.`;
-
-async function callAI(userMsg) {
-  chatHistory.push({role:'user', content:userMsg});
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system: SYSTEM_PROMPT,
-        messages: chatHistory.slice(-10)
-      })
-    });
-    const data = await res.json();
-    const reply = data.content?.[0]?.text || 'عذراً، حدث خطأ. حاول مرة أخرى.';
-    chatHistory.push({role:'assistant', content:reply});
-    if(chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
-    return reply;
-  } catch(e) {
-    // Fallback smart responses
-    return getFallback(userMsg);
-  }
-}
-
-function getFallback(msg) {
-  const m = msg.toLowerCase();
-  if(m.includes('رصيد')) return `💰 يمكنك رؤية رصيدك في الصفحة الرئيسية بالضبط. حالياً المستوى التجريبي يعطيك 215 DZD/يوم من 5 مهام يومية.`;
-  if(m.includes('سحب')) return `🔒 السحب مقفل في المستوى التجريبي. يفتح من مستوى M1 (7,000 DZD استثمار). اذهب إلى تبويب الترقية.`;
-  if(m.includes('مهم')) return `⚡ لديك 5 مهام يومية. كل مهمة = 40 ثانية انتظار = 43 DZD. إذا غادرت أثناء المهمة تُلغى وتعود غداً.`;
-  if(m.includes('رقي')||m.includes('ترقي')) return `💎 للترقية اضغط تبويب "الترقية". M1 تحتاج 7,000 DZD وتعطيك 215 DZD/يوم. M2 تحتاج 26,600 DZD وتعطيك 860 DZD/يوم.`;
-  if(m.includes('شركة')) return `🏢 BlackRock, Inc — أمريكا — تأسست 2020. عقد مع الجزائر 2025-2028. وثيقة الأمان SECURE V3 متاحة في حسابي.`;
-  return `🤖 يمكنني مساعدتك في:\n• معلومات المستويات والأرباح\n• كيفية الترقية والسحب\n• المهام اليومية\n• معلومات الشركة\n\nاكتب سؤالك!`;
-}
-
-function addChatMsg(text, isBot, isTyping) {
-  const msgs = document.getElementById('chat-msgs');
-  const d = document.createElement('div');
-  d.className = 'cm ' + (isBot?'bot':'usr');
-  if(isTyping) {
-    d.id = 'typing-ind';
-    d.innerHTML = `<div class="cm-av">🤖</div><div class="cm-bbl"><div class="cm-typing"><span></span><span></span><span></span></div></div>`;
-  } else {
-    d.innerHTML = isBot
-      ? `<div class="cm-av">🤖</div><div class="cm-bbl">${text.replace(/\n/g,'<br>')}</div>`
-      : `<div class="cm-bbl">${text}</div>`;
-  }
-  msgs.appendChild(d);
-  msgs.scrollTop = msgs.scrollHeight;
-  return d;
-}
-
-async function sendMsg() {
-  const inp = document.getElementById('chat-in');
-  const t = inp.value.trim();
-  if(!t) return;
-  addChatMsg(t, false);
-  inp.value = '';
-  const typingEl = addChatMsg('', true, true);
-  const reply = await callAI(t);
-  typingEl.remove();
-  addChatMsg(reply, true);
-}
-
-async function quickMsg(t) {
-  addChatMsg(t, false);
-  const typingEl = addChatMsg('', true, true);
-  const reply = await callAI(t);
-  typingEl.remove();
-  addChatMsg(reply, true);
-}
-
-function openChat() { document.getElementById('chat-ov').classList.add('open'); }
-function closeChat() { document.getElementById('chat-ov').classList.remove('open'); }
-
-// ══════════════════════════════════════
-// TOAST
-// ══════════════════════════════════════
-let toastT;
-function showToast(msg, isErr) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show' + (isErr?' err':'');
-  clearTimeout(toastT);
-  toastT = setTimeout(() => t.classList.remove('show'), 2800);
-}
-
-// ══════════════════════════════════════
-// MISC
-// ══════════════════════════════════════
-function copyCode() { navigator.clipboard?.writeText('BG-00001').catch(()=>{}); showToast('تم نسخ كود الإحالة 📋'); }
-function doLogout() { if(confirm('هل تريد تسجيل الخروج؟')) { cancelAll(); localStorage.removeItem('bri_state'); location.reload(); } }
-
-// ══════════════════════════════════════
-// INIT
-// ══════════════════════════════════════
-updateUI();
-renderTx();
-</script>
-</body>
-</html>
+/* PROGRESS 
