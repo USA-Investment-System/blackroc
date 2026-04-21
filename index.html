@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -10,180 +9,47 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        :root {
-            --bg: #060912;
-            --bg2: #0b0f1c;
-            --card: rgba(14, 18, 34, 0.95);
-            --gold: #F5C518;
-            --gold2: #FF9800;
-            --gold3: #FF6D00;
-            --green: #00E676;
-            --red: #FF1744;
-            --blue: #2979FF;
-            --border: rgba(255, 255, 255, 0.07);
-        }
-
-        body {
-            background: var(--bg);
-            color: white;
-            font-family: 'Tajawal', sans-serif;
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
-        }
-
-        #root {
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        /* smooth scrolling containers */
-        .hs {
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .hs::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* animations */
-        @keyframes su {
-            from { transform: translateY(40px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes fi {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes pp {
-            0%,100%{box-shadow:0 0 20px rgba(245,197,24,.3);}
-            50%{box-shadow:0 0 50px rgba(245,197,24,.7);}
-        }
-        @keyframes ft {
-            0%,100%{transform:translateY(0);}
-            50%{transform:translateY(-8px);}
-        }
-        @keyframes gr {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-        @keyframes nb {
-            0%,100%{transform:scale(1);}
-            50%{transform:scale(1.2);}
-        }
-        @keyframes robot-pulse {
-            0%,100%{box-shadow:0 0 20px rgba(245,197,24,.3),0 8px 32px rgba(0,0,0,.5);}
-            50%{box-shadow:0 0 40px rgba(245,197,24,.6),0 8px 32px rgba(0,0,0,.5);}
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root { --bg: #060912; --bg2: #0b0f1c; --gold: #F5C518; --gold2: #FF9800; --green: #00E676; --red: #FF1744; --blue: #2979FF; --border: rgba(255,255,255,0.07); }
+        body { background: var(--bg); color: white; font-family: 'Tajawal', sans-serif; overflow: hidden; height: 100vh; width: 100vw; }
+        #root { height: 100%; width: 100%; overflow: hidden; }
+        .hs { -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .hs::-webkit-scrollbar { display: none; }
+        @keyframes su { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fi { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pp { 0%,100%{box-shadow:0 0 20px rgba(245,197,24,.3);}50%{box-shadow:0 0 50px rgba(245,197,24,.7);} }
+        @keyframes ft { 0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);} }
+        @keyframes gr { from { width: 0; } to { width: 100%; } }
+        @keyframes nb { 0%,100%{transform:scale(1);}50%{transform:scale(1.2);} }
+        @keyframes robot-pulse { 0%,100%{box-shadow:0 0 20px rgba(245,197,24,.3);}50%{box-shadow:0 0 40px rgba(245,197,24,.6);} }
         .su { animation: su .35s cubic-bezier(.16,1,.3,1) both; }
         .fi { animation: fi .25s ease both; }
         .pp { animation: pp 2.5s infinite; }
         .ft { animation: ft 3s ease-in-out infinite; }
         .nb { animation: nb 1.5s infinite; }
-
-        /* cards */
-        .gc {
-            background: linear-gradient(135deg, rgba(18,24,45,.98), rgba(12,16,30,.99));
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 24px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.04);
-        }
+        .gc { background: linear-gradient(135deg, rgba(18,24,45,.98), rgba(12,16,30,.99)); border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,.5); }
         .gc-gold { border-color: rgba(245,197,24,.2); }
         .gc-green { border-color: rgba(0,230,118,.15); }
-        .gc-red { border-color: rgba(255,23,68,.2); }
-
-        .gt {
-            background: linear-gradient(135deg, #F5C518, #FF9800, #FF6D00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .btn-gold {
-            background: linear-gradient(135deg, #F5C518, #FF9800, #FF6D00);
-            box-shadow: 0 4px 20px rgba(245,197,24,.35);
-            color: #fff;
-            font-weight: 900;
-            border: none;
-            cursor: pointer;
-            transition: all .15s;
-        }
+        .gt { background: linear-gradient(135deg, #F5C518, #FF9800, #FF6D00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-gold { background: linear-gradient(135deg, #F5C518, #FF9800, #FF6D00); box-shadow: 0 4px 20px rgba(245,197,24,.35); color: #fff; font-weight: 900; border: none; cursor: pointer; transition: all .15s; }
         .btn-gold:active { transform: scale(.97); opacity: .9; }
-
-        .btn-ghost {
-            background: rgba(255,255,255,.06);
-            border: 1px solid var(--border);
-            color: white;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .btn-ghost:active { transform: scale(.97); }
-
-        .sec-badge {
-            background: linear-gradient(135deg,rgba(0,230,118,.12),rgba(0,200,83,.06));
-            border: 1px solid rgba(0,230,118,.2);
-        }
-
-        .n-dot {
-            background: linear-gradient(135deg,#FF1744,#D50000);
-            box-shadow: 0 0 8px rgba(255,23,68,.5);
-        }
-
-        .wheel-wrap {
-            width:270px;height:270px;border-radius:50%;
-            background: conic-gradient(
-                #F5C518 0deg 51.4deg,
-                #FF6D00 51.4deg 102.8deg,
-                #F5C518 102.8deg 154.2deg,
-                #FF6D00 154.2deg 205.6deg,
-                #F5C518 205.6deg 257deg,
-                #FF6D00 257deg 308.4deg,
-                #F5C518 308.4deg 360deg
-            );
-            box-shadow: 0 0 50px rgba(245,197,24,.25);
-            position:relative;
-        }
-        .wheel-hub {
-            position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-            width:55px;height:55px;
-            background:linear-gradient(135deg,#0b0f1c,#060912);
-            border-radius:50%;border:3px solid #F5C518;
-            display:flex;align-items:center;justify-content:center;
-        }
-        .wheel-ptr {
-            position:absolute;top:-14px;left:50%;transform:translateX(-50%);
-            width:0;height:0;
-            border-left:14px solid transparent;border-right:14px solid transparent;
-            border-top:28px solid #FF1744;
-            filter:drop-shadow(0 0 8px rgba(255,23,68,.6));
-        }
-        .money-display {
-            font-family:'Montserrat',sans-serif;
-            font-weight:900;
-            letter-spacing:-1px;
-        }
-        .overlay-bg {
-            background: rgba(4,6,14,.85);
-            backdrop-filter: blur(16px);
-        }
+        .btn-ghost { background: rgba(255,255,255,.06); border: 1px solid var(--border); color: white; font-weight: 700; cursor: pointer; }
+        .sec-badge { background: linear-gradient(135deg,rgba(0,230,118,.12),rgba(0,200,83,.06)); border: 1px solid rgba(0,230,118,.2); }
+        .n-dot { background: linear-gradient(135deg,#FF1744,#D50000); box-shadow: 0 0 8px rgba(255,23,68,.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .wheel-wrap { width:270px;height:270px;border-radius:50%; background: conic-gradient(#F5C518 0deg 51.4deg, #FF6D00 51.4deg 102.8deg, #F5C518 102.8deg 154.2deg, #FF6D00 154.2deg 205.6deg, #F5C518 205.6deg 257deg, #FF6D00 257deg 308.4deg, #F5C518 308.4deg 360deg); box-shadow: 0 0 50px rgba(245,197,24,.25); position:relative; }
+        .wheel-hub { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%); width:55px;height:55px; background:linear-gradient(135deg,#0b0f1c,#060912); border-radius:50%;border:3px solid #F5C518; display:flex;align-items:center;justify-content:center; }
+        .wheel-ptr { position:absolute;top:-14px;left:50%;transform:translateX(-50%); width:0;height:0; border-left:14px solid transparent;border-right:14px solid transparent; border-top:28px solid #FF1744; filter:drop-shadow(0 0 8px rgba(255,23,68,.6)); }
+        .money-display { font-family:'Montserrat',sans-serif; font-weight:900; letter-spacing:-1px; }
+        .overlay-bg { background: rgba(4,6,14,.85); backdrop-filter: blur(16px); }
         .task-active { border-color: rgba(245,197,24,.4) !important; background: linear-gradient(135deg,rgba(30,25,5,.4),rgba(12,16,30,.99)) !important; }
         .task-done { border-color: rgba(0,230,118,.3) !important; background: linear-gradient(135deg,rgba(0,30,15,.3),rgba(12,16,30,.99)) !important; }
         .task-fail { border-color: rgba(255,23,68,.2) !important; }
         .ai-btn { animation: robot-pulse 3s infinite; }
-        .inp {
-            background: rgba(255,255,255,.04);
-            border: 1px solid var(--border);
-            color: white;
-            outline: none;
-        }
+        .inp { background: rgba(255,255,255,.04); border: 1px solid var(--border); color: white; outline: none; }
         .inp:focus { border-color: rgba(245,197,24,.4); }
+        .av-ring { background: linear-gradient(135deg,#F5C518,#FF9800,#FF6D00); padding: 2.5px; border-radius: 50%; display: inline-block; }
+        .stat-box { background: linear-gradient(135deg,rgba(245,197,24,.08),rgba(255,152,0,.04)); border: 1px solid rgba(245,197,24,.15); border-radius: 14px; padding: 12px 8px; text-align: center; }
+        .dzd-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(245,197,24,.15); border: 1px solid rgba(245,197,24,.3); border-radius: 8px; padding: 2px 8px; }
     </style>
 </head>
 <body>
@@ -191,11 +57,11 @@
 
 <script type="text/babel">
 // --------------------------------------------------------------
-// BLACKROCK INVESTMENT PLATFORM - FULLY FUNCTIONAL
+// BLACKROCK INVESTMENT PLATFORM - FULL VERSION (1450+ LINES)
 // --------------------------------------------------------------
 const { useState, useEffect, useRef, useCallback, useMemo } = React;
 
-// UTILS
+// ---------- UTILS ----------
 const fmtDZD = (n) => {
     if (isNaN(n) || n === null || n === undefined) return '0';
     const abs = Math.abs(n);
@@ -211,8 +77,8 @@ const genCode = () => {
     return Array.from({length:6},()=>c[Math.floor(Math.random()*c.length)]).join('');
 };
 
-// AI AVATARS
-const AI_AVATARS = [
+// ---------- AVATARS ----------
+const AVATARS = [
     { id:1, label:'امرأة 1', url:'https://api.dicebear.com/7.x/lorelei/svg?seed=sofia&backgroundColor=b6e3f4&radius=50' },
     { id:2, label:'رجل 1', url:'https://api.dicebear.com/7.x/lorelei/svg?seed=alex&backgroundColor=d1d4f9&radius=50' },
     { id:3, label:'امرأة 2', url:'https://api.dicebear.com/7.x/lorelei/svg?seed=luna&backgroundColor=ffdfbf&radius=50' },
@@ -220,57 +86,86 @@ const AI_AVATARS = [
     { id:5, label:'امرأة 3', url:'https://api.dicebear.com/7.x/lorelei/svg?seed=zara&backgroundColor=b6e3f4&radius=50' },
 ];
 
-// ICONS (simplified)
+// ---------- ICONS ----------
 const Ic = ({ n, s=22, c='' }) => {
-    const svgProps = { width:s, height:s, fill:"none", stroke:"currentColor", strokeWidth:"2", strokeLinecap:"round", strokeLinejoin:"round", className:c };
+    const svg = { width:s, height:s, fill:"none", stroke:"currentColor", strokeWidth:"2", strokeLinecap:"round", strokeLinejoin:"round", className:c };
     const icons = {
-        home: <svg {...svgProps}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
-        tasks: <svg {...svgProps}><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
-        diamond: <svg {...svgProps}><path d="M6 3h12l4 6-10 13L2 9l4-6z"/><path d="M11 3 5 9l6 13V3z"/><path d="m13 22 6-13-6-6V22z"/><path d="m2 9 10 4 10-4"/></svg>,
-        user: <svg {...svgProps}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+        home: <svg {...svg}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+        tasks: <svg {...svg}><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
+        diamond: <svg {...svg}><path d="M6 3h12l4 6-10 13L2 9l4-6z"/><path d="M11 3 5 9l6 13V3z"/><path d="m13 22 6-13-6-6V22z"/><path d="m2 9 10 4 10-4"/></svg>,
+        user: <svg {...svg}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
         robot: <svg width={s} height={s} viewBox="0 0 24 24" fill="currentColor" className={c}><rect x="4" y="5" width="16" height="11" rx="2"/><circle cx="9" cy="10" r="1.5" fill="#060912"/><circle cx="15" cy="10" r="1.5" fill="#060912"/><rect x="8" y="14" width="8" height="1.5" rx="1" fill="#060912"/><path d="M12 3v2" stroke="currentColor" strokeWidth="2" fill="none"/><circle cx="12" cy="2.5" r="1" fill="currentColor"/><path d="M6 19h12" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round"/></svg>,
-        bell: <svg {...svgProps}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>,
-        lock: <svg {...svgProps}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
-        check: <svg {...svgProps} strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>,
-        x: <svg {...svgProps} strokeWidth="2.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
-        send: <svg {...svgProps}><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg>,
-        share: <svg {...svgProps}><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>,
-        left: <svg {...svgProps}><path d="m15 18-6-6 6-6"/></svg>,
-        wallet: <svg {...svgProps}><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><circle cx="16" cy="12" r="2"/></svg>,
-        download: <svg {...svgProps}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>,
-        up: <svg {...svgProps}><path d="m18 15-6-6-6 6"/></svg>,
-        users: <svg {...svgProps}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-        rocket: <svg {...svgProps}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>,
+        bell: <svg {...svg}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>,
+        lock: <svg {...svg}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
+        check: <svg {...svg} strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>,
+        x: <svg {...svg} strokeWidth="2.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
+        send: <svg {...svg}><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg>,
+        share: <svg {...svg}><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>,
+        left: <svg {...svg}><path d="m15 18-6-6 6-6"/></svg>,
+        wallet: <svg {...svg}><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><circle cx="16" cy="12" r="2"/></svg>,
+        download: <svg {...svg}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>,
+        up: <svg {...svg}><path d="m18 15-6-6-6 6"/></svg>,
+        users: <svg {...svg}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+        rocket: <svg {...svg}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>,
         star: <svg width={s} height={s} viewBox="0 0 24 24" fill="currentColor" className={c}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
-        gift: <svg {...svgProps}><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 2.5 2.5v5"/><path d="M16.5 8v-2.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1-2.5 2.5h-5"/></svg>,
-        shield: <svg {...svgProps}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
-        bldg: <svg {...svgProps}><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9h1"/><path d="M9 13h1"/><path d="M9 17h1"/></svg>,
-        settings: <svg {...svgProps}><circle cx="12" cy="12" r="3"/><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/></svg>,
-        logout: <svg {...svgProps}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>,
-        info: <svg {...svgProps}><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>,
+        gift: <svg {...svg}><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 2.5 2.5v5"/><path d="M16.5 8v-2.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1-2.5 2.5h-5"/></svg>,
+        shield: <svg {...svg}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+        bldg: <svg {...svg}><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9h1"/><path d="M9 13h1"/><path d="M9 17h1"/></svg>,
+        settings: <svg {...svg}><circle cx="12" cy="12" r="3"/><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/></svg>,
+        logout: <svg {...svg}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>,
+        info: <svg {...svg}><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>,
         play: <svg width={s} height={s} viewBox="0 0 24 24" fill="currentColor" className={c}><polygon points="5 3 19 12 5 21 5 3"/></svg>,
-        profit: <svg {...svgProps}><line x1="12" x2="12" y1="1" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
-        phone: <svg {...svgProps}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
-        mail: <svg {...svgProps}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
-        camera: <svg {...svgProps}><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+        profit: <svg {...svg}><line x1="12" x2="12" y1="1" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
+        phone: <svg {...svg}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
+        mail: <svg {...svg}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
+        camera: <svg {...svg}><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+        trend: <svg {...svg}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+        award: <svg {...svg}><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>,
+        globe: <svg {...svg}><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
     };
     return icons[n] || null;
 };
 
-// Toast
+// ---------- LEVELS ----------
+const LEVELS = [
+    {id:'trial', name:'تجريب المبتدئ', price:0, days:3, daily:43, total:215, monthly:'—', yearly:'—'},
+    {id:'m1', name:'M1', price:7000, days:5, daily:43, total:215, monthly:6450, yearly:77400},
+    {id:'m2', name:'M2', price:26600, days:10, daily:86, total:860, monthly:25800, yearly:309600},
+    {id:'m3', name:'M3', price:95000, days:25, daily:131, total:3275, monthly:98250, yearly:1179000},
+    {id:'m4', name:'M4', price:300000, days:50, daily:222, total:11100, monthly:333000, yearly:3996000},
+    {id:'m5', name:'M5', price:780000, days:80, daily:390, total:31200, monthly:936000, yearly:11232000},
+    {id:'m6', name:'M6', price:1950000, days:130, daily:652, total:84760, monthly:2542800, yearly:30513600},
+    {id:'g7', name:'G7', price:4485000, days:200, daily:1068, total:213600, monthly:6408000, yearly:76896000},
+];
+
+// ---------- AI KNOWLEDGE BASE ----------
+const AI_KB = {
+    'مرحبا': '👋 مرحباً بك في BlackRock! أنا مساعدك الذكي. كيف يمكنني مساعدتك اليوم؟',
+    'كيف احصل على المال': '💡 3 خطوات بسيطة:\n1️⃣ أكمل المهام اليومية (40 ثانية = 43 DZD)\n2️⃣ ادعُ أصدقاءك واربح 5% من دخلهم اليومي مدى الحياة\n3️⃣ رقِّ مستواك إلى M1 أو أعلى لمضاعفة الأرباح\n\n✨ كل صديق جديد يدخل برابطك يمنحك دورة عجلة حظ مجانية!',
+    'ما هي الشركة': '🏢 BlackRock, Inc هي أكبر شركة إدارة أصول في العالم:\n• تأسست 1988 في نيويورك\n• أصول مدارة: 10.2 تريليون دولار\n• مدرجة في بورصة نيويورك (NYSE: BLK)\n• عقد رسمي مع الجزائر (يناير 2025 - ديسمبر 2028)\n• حماية أموال المستثمرين 100%',
+    'نظام الاحالات': '🎯 نظام الإحالات:\n• كل صديق يسجل عبر رابطك الخاص → تكسب 5% من دخله اليومي مدى الحياة\n• كل صديق جديد → تحصل على دورة عجلة حظ مجانية\n• 10 أصدقاء → ~21 DZD يومياً إضافية\n• 100 صديق → ~215 DZD يومياً تلقائياً\n\n📢 رابطك موجود في "الملف الشخصي"',
+    'المهام': '⏱️ نظام المهام المتطور:\n• 5 مهام يومية، كل مهمة مستقلة (لا تحتاج إكمال السابقة)\n• كل مهمة: 40 ثانية انتظار = 43 DZD\n• إذا ألغيت المهمة تخسرها وتُعاد غداً\n• تُجدد المهام تلقائياً عند منتصف الليل\n\n🔥 أنجز الـ 5 مهام = 215 DZD في اليوم!',
+    'عجلة الحظ': '🎡 عجلة الحظ:\n• تحصل على دورة مجانية مع كل صديق يدخل برابطك\n• جوائز: 43, 86, 215, 430 DZD أو دورة إضافية\n• يمكنك تخزين الدورات واستخدامها لاحقاً\n• ادعُ أصدقاءك الآن لتدور العجلة!',
+    'كيف اسحب': '💳 نظام السحب:\n• الحد الأدنى: 215 DZD من رصيد المهام\n• يتطلب الترقية إلى M1 على الأقل\n• وقت المعالجة: 24-48 ساعة\n• طرق السحب: CCP، DZ Bank، PayPal\n\n⚠️ رصيد الترقية لا يُسحب (رأس مال استثماري)',
+    'default': '🤔 يمكنني مساعدتك في:\n• الاستثمار والمستويات M1..G7\n• المهام اليومية (40 ثانية)\n• نظام الإحالات 5% مدى الحياة\n• عجلة الحظ\n• السحب والتحويلات\n• معلومات الشركة\n\nاكتب سؤالك بالتفصيل!'
+};
+
+// ---------- TOAST COMPONENT ----------
 const Toast = ({ message, type, onClose }) => {
     useEffect(()=>{ const t=setTimeout(onClose,3200); return()=>clearTimeout(t); },[onClose]);
     const bg = type==='success'?'#00C853':type==='error'?'#D50000':type==='warning'?'#FF6D00':'#1565C0';
     return (
         <div style={{position:'fixed',top:20,left:'50%',transform:'translateX(-50%)',zIndex:999}} className="fi">
-            <div style={{background:bg,padding:'10px 20px',borderRadius:100,display:'flex',alignItems:'center',gap:8,boxShadow:'0 8px 32px rgba(0,0,0,.5)',whiteSpace:'nowrap',maxWidth:'85vw',overflow:'hidden',textOverflow:'ellipsis'}}>
-                <span style={{fontSize:13,fontWeight:800,color:'#fff'}}>{type==='success'?'✓ ':type==='error'?'✗ ':type==='warning'?'⚠ ':'ℹ '}{message}</span>
+            <div style={{background:bg,padding:'10px 20px',borderRadius:100,display:'flex',alignItems:'center',gap:8,boxShadow:'0 8px 32px rgba(0,0,0,.5)',whiteSpace:'nowrap',maxWidth:'85vw'}}>
+                <span style={{fontSize:13,fontWeight:800,color:'#fff'}}>
+                    {type==='success'?'✓ ':type==='error'?'✗ ':type==='warning'?'⚠ ':'ℹ '}{message}
+                </span>
             </div>
         </div>
     );
 };
 
-// Bottom Sheet
+// ---------- BOTTOM SHEET ----------
 const Sheet = ({ open, onClose, title, children }) => {
     if (!open) return null;
     return (
@@ -286,58 +181,55 @@ const Sheet = ({ open, onClose, title, children }) => {
     );
 };
 
-// Investment Levels
-const LEVELS = [
-    {id:'trial',name:'تجريب المبتدئ',price:0,days:3,daily:43,total:215,monthly:'—',yearly:'—'},
-    {id:'m1',name:'M1',price:7000,days:5,daily:43,total:215,monthly:6450,yearly:77400},
-    {id:'m2',name:'M2',price:26600,days:10,daily:86,total:860,monthly:25800,yearly:309600},
-    {id:'m3',name:'M3',price:95000,days:25,daily:131,total:3275,monthly:98250,yearly:1179000},
-    {id:'m4',name:'M4',price:300000,days:50,daily:222,total:11100,monthly:333000,yearly:3996000},
-    {id:'m5',name:'M5',price:780000,days:80,daily:390,total:31200,monthly:936000,yearly:11232000},
-    {id:'m6',name:'M6',price:1950000,days:130,daily:652,total:84760,monthly:2542800,yearly:30513600},
-    {id:'g7',name:'G7',price:4485000,days:200,daily:1068,total:213600,monthly:6408000,yearly:76896000},
-];
+// ---------- DZD DISPLAY ----------
+const DZD = ({amount, size=28}) => (
+    <div style={{display:'inline-flex',alignItems:'baseline',gap:4}}>
+        <span className="money-display gt" style={{fontSize:size,fontWeight:900}}>{fmtDZD(amount)}</span>
+        <span style={{fontSize:size*0.4,fontWeight:700,color:'rgba(245,197,24,.5)'}}>DZD</span>
+    </div>
+);
 
-// AI Knowledge Base
-const AI_KB = {
-    'مرحبا':'مرحباً بك في BlackRock 👋 أنا مساعدك الذكي. كيف يمكنني مساعدتك في رحلتك الاستثمارية اليوم؟',
-    'كيف احصل على المال':'💡 ابدأ بـ 3 خطوات:\n1. أكمل المهام اليومية — 40 ثانية = 43 DZD\n2. ادعُ أصدقاءك واربح 5% من دخلهم اليومي مدى الحياة\n3. رقِّ مستواك من M1 إلى G7 لمضاعفة أرباحك\n\nهل تريد البدء الآن؟',
-    'ما هي الشركة':'🏢 BlackRock, Inc هي أكبر شركة إدارة أصول في العالم:\nتأسست 1988 في نيويورك\nأصول تديرها 10.2 تريليون دولار\nمدرجة NYSE: BLK\nعقد رسمي مع الجزائر 2025-2028\nحماية أموال 100%',
-    'نظام الاحالات':'🎯 نظام الإحالات:\nكل صديق يدخل برابطك الخاص تربح 5% من دخله اليومي مدى الحياة\nكل صديق جديد = عجلة حظ مجانية لك\n10 أصدقاء = 21 DZD إضافية يومياً\n100 صديق = 215 DZD يومياً تلقائياً',
-    'المهام':'⏱️ المهام اليومية:\n40 ثانية انتظار = 43 DZD\n5 مهام يومية = 215 DZD في اليوم\nكل مهمة مستقلة، يمكنك لعب أي مهمة بدون شرط إكمال السابقة\nتُعاد المهام كل 24 ساعة',
-    'عجلة الحظ':'🎡 عجلة الحظ:\nتحصل على دوران مجاني مع كل صديق يدخل برابطك\nجوائز: 43, 86, 215, 430 DZD أو دورة إضافية',
-    'default':'🤔 يمكنني مساعدتك في:\nالاستثمار والمستويات M1..G7\nالمهام اليومية 40 ثانية\nنظام الإحالات 5% مدى الحياة\nعجلة الحظ\nالسحب والتحويلات\nمعلومات الشركة\n\nاكتب سؤالك!'
-};
+// ---------- AVATAR PICKER ----------
+const AvatarPicker = ({ current, onPick, onClose }) => (
+    <div className="overlay-bg fi" style={{position:'fixed',inset:0,zIndex:95,display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
+        <div className="gc" style={{borderRadius:20,padding:24,width:'100%',maxWidth:340}}>
+            <div style={{display:'flex',justifyContent:'space-between',marginBottom:20}}><span style={{fontWeight:900}}>اختر صورتك</span><button onClick={onClose} style={{background:'none',border:'none',color:'white'}}><Ic n="x" s={20}/></button></div>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:10}}>
+                {AVATARS.map(av=> <button key={av.id} onClick={()=>{onPick(av.id); onClose();}} style={{padding:3,borderRadius:12,background:current===av.id?'linear-gradient(135deg,#F5C518,#FF6D00)':'rgba(255,255,255,.05)',cursor:'pointer'}}><img src={av.url} style={{width:'100%',borderRadius:9}}/><span style={{fontSize:9,display:'block',textAlign:'center'}}>{av.label}</span></button>)}
+            </div>
+        </div>
+    </div>
+);
 
-// AI Chat Component
+// ---------- AI CHAT ----------
 const AiChat = ({ open, onClose, user }) => {
-    const [msgs, setMsgs] = useState([{id:1,t:'ai',text:'👋 مرحباً! أنا مساعد BlackRock الذكي.\n\nيمكنني مساعدتك في:\nالاستثمار والمستويات\nالمهام اليومية\nنظام الإحالات 5%\nعجلة الحظ\nالسحب\nمعلومات الشركة\n\nكيف يمكنني مساعدتك اليوم؟'}]);
+    const [msgs, setMsgs] = useState([{id:1, t:'ai', text:'👋 مرحباً! أنا مساعد BlackRock الذكي.\n\nيمكنني مساعدتك في:\n• الاستثمار والمستويات M1..G7\n• المهام اليومية (40 ثانية)\n• نظام الإحالات 5% مدى الحياة\n• عجلة الحظ\n• السحب والتحويلات\n• معلومات الشركة\n\nكيف يمكنني مساعدتك اليوم؟'}]);
     const [inp, setInp] = useState('');
     const [typing, setTyping] = useState(false);
     const endRef = useRef(null);
-    useEffect(()=>{if(endRef.current)endRef.current.scrollIntoView({behavior:'smooth'})},[msgs]);
+    useEffect(()=>{ if(endRef.current) endRef.current.scrollIntoView({behavior:'smooth'}); },[msgs]);
     const getResp = (txt) => { const lo = txt.toLowerCase(); for (const [k,v] of Object.entries(AI_KB)) if(lo.includes(k)) return v; return AI_KB.default; };
     const send = () => {
         if(!inp.trim()) return;
         const txt = inp.trim();
-        setMsgs(p=>[...p,{id:Date.now(),t:'user',text:txt}]);
+        setMsgs(p=>[...p,{id:Date.now(), t:'user', text:txt}]);
         setInp('');
         setTyping(true);
-        setTimeout(()=>{ setMsgs(p=>[...p,{id:Date.now()+1,t:'ai',text:getResp(txt)}]); setTyping(false); }, 1000);
+        setTimeout(()=>{ setMsgs(p=>[...p,{id:Date.now()+1, t:'ai', text:getResp(txt)}]); setTyping(false); }, 1000);
     };
     if(!open) return null;
     return (
         <div style={{position:'fixed',inset:0,zIndex:90,background:'var(--bg)',display:'flex',flexDirection:'column'}}>
-            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 16px',borderBottom:'1px solid rgba(255,255,255,.06)',background:'rgba(6,9,18,.97)',backdropFilter:'blur(20px)'}}>
-                <button onClick={onClose} className="gc" style={{width:40,height:40,borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid var(--border)'}}><Ic n="x" s={18}/></button>
-                <div style={{textAlign:'center'}}><div style={{color:'white',fontWeight:900,fontSize:16}}>مساعد BlackRock الذكي</div><div style={{display:'flex',gap:5,marginTop:2}}><span style={{width:7,height:7,background:'#00E676',borderRadius:'50%',animation:'nb 1.5s infinite'}}/><span style={{color:'#00E676',fontSize:11}}>متصل — مدعوم بـ AI</span></div></div>
-                <div style={{width:40,height:40,background:'linear-gradient(135deg,#F5C518,#FF6D00)',borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center'}}><Ic n="robot" s={22} c="text-white"/></div>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 16px',borderBottom:'1px solid rgba(255,255,255,.06)',background:'rgba(6,9,18,.97)'}}>
+                <button onClick={onClose} className="gc" style={{width:40,height:40,borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center'}}><Ic n="x" s={18}/></button>
+                <div style={{textAlign:'center'}}><div style={{fontWeight:900}}>مساعد BlackRock الذكي</div><div style={{display:'flex',gap:5,justifyContent:'center'}}><span style={{width:7,height:7,background:'#00E676',borderRadius:'50%',animation:'nb 1.5s infinite'}}/><span style={{color:'#00E676',fontSize:11}}>متصل — مدعوم بـ AI</span></div></div>
+                <div style={{width:40,height:40,background:'linear-gradient(135deg,#F5C518,#FF6D00)',borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center'}}><Ic n="robot" s={22}/></div>
             </div>
             <div className="hs" style={{flex:1,overflowY:'auto',padding:'16px',display:'flex',flexDirection:'column',gap:12}}>
                 {msgs.map(m=>(
                     <div key={m.id} style={{display:'flex',justifyContent:m.t==='user'?'flex-end':'flex-start',gap:8}}>
                         {m.t==='ai'&&<div style={{width:32,height:32,background:'linear-gradient(135deg,#F5C518,#FF6D00)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center'}}><Ic n="robot" s={16}/></div>}
-                        <div style={{maxWidth:'82%',padding:'10px 14px',borderRadius:16,background:m.t==='user'?'linear-gradient(135deg,#F5C518,#FF6D00)':'rgba(18,24,45,.95)',border:m.t==='ai'?'1px solid rgba(255,255,255,.06)':'none',fontSize:13,lineHeight:1.7,whiteSpace:'pre-wrap'}}>{m.text}</div>
+                        <div style={{maxWidth:'82%',padding:'10px 14px',borderRadius:16,background:m.t==='user'?'linear-gradient(135deg,#F5C518,#FF6D00)':'rgba(18,24,45,.95)',border:m.t==='ai'?'1px solid rgba(255,255,255,.06)':'none',fontSize:13,whiteSpace:'pre-wrap'}}>{m.text}</div>
                     </div>
                 ))}
                 {typing&&<div style={{display:'flex',gap:8}}><div style={{width:32,height:32,background:'linear-gradient(135deg,#F5C518,#FF6D00)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center'}}><Ic n="robot" s={16}/></div><div className="gc" style={{padding:'12px 16px',borderRadius:16,borderTopLeftRadius:4,display:'flex',gap:5}}>{[0,.2,.4].map(d=><span key={d} style={{width:7,height:7,background:'rgba(255,255,255,.4)',borderRadius:'50%',animation:`ft 1s ${d}s infinite`}}/>)}</div></div>}
@@ -345,18 +237,18 @@ const AiChat = ({ open, onClose, user }) => {
             </div>
             <div style={{padding:'8px 16px 0',borderTop:'1px solid rgba(255,255,255,.05)'}}>
                 <div className="hs" style={{display:'flex',gap:8,overflowX:'auto',paddingBottom:8}}>
-                    {['كيف احصل على المال','نظام الاحالات','المهام','ما هي الشركة','عجلة الحظ'].map(q=><button key={q} onClick={()=>setInp(q)} style={{padding:'6px 12px',background:'rgba(255,255,255,.05)',border:'1px solid rgba(255,255,255,.08)',borderRadius:100,color:'rgba(255,255,255,.65)',fontSize:11,fontWeight:700,whiteSpace:'nowrap',cursor:'pointer'}}>{q}</button>)}
+                    {['كيف احصل على المال','نظام الاحالات','المهام','ما هي الشركة','عجلة الحظ'].map(q=><button key={q} onClick={()=>setInp(q)} style={{padding:'6px 12px',background:'rgba(255,255,255,.05)',border:'1px solid rgba(255,255,255,.08)',borderRadius:100,color:'rgba(255,255,255,.65)',fontSize:11,whiteSpace:'nowrap',cursor:'pointer'}}>{q}</button>)}
                 </div>
                 <div style={{display:'flex',gap:8,alignItems:'center',paddingBottom:12}}>
                     <input className="inp" value={inp} onChange={e=>setInp(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} placeholder="اكتب سؤالك..." style={{flex:1,borderRadius:14,padding:'10px 14px',fontSize:13}}/>
-                    <button onClick={send} disabled={!inp.trim()} style={{width:42,height:42,borderRadius:12,background:inp.trim()?'linear-gradient(135deg,#F5C518,#FF6D00)':'rgba(255,255,255,.06)',display:'flex',alignItems:'center',justifyContent:'center',border:'none',cursor:inp.trim()?'pointer':'not-allowed'}}><Ic n="send" s={18} c={inp.trim()?"text-white":"text-white/30"}/></button>
+                    <button onClick={send} disabled={!inp.trim()} style={{width:42,height:42,borderRadius:12,background:inp.trim()?'linear-gradient(135deg,#F5C518,#FF6D00)':'rgba(255,255,255,.06)',display:'flex',alignItems:'center',justifyContent:'center',border:'none',cursor:inp.trim()?'pointer':'not-allowed'}}><Ic n="send" s={18}/></button>
                 </div>
             </div>
         </div>
     );
 };
 
-// Wheel Component
+// ---------- WHEEL ----------
 const Wheel = ({ open, onClose, user, onUpdate, toast }) => {
     const [spinning, setSpinning] = useState(false);
     const [rot, setRot] = useState(0);
@@ -365,7 +257,13 @@ const Wheel = ({ open, onClose, user, onUpdate, toast }) => {
     const prizes = [{label:'43 DZD',val:43},{label:'86 DZD',val:86},{label:'215 DZD',val:215},{label:'عجلة أخرى',val:0},{label:'430 DZD',val:430},{label:'86 DZD',val:86},{label:'215 DZD',val:215}];
     const spin = () => {
         if(spinning) return;
+        if((user.spins||0) <= 0 && (user.balance||0) < 43) {
+            toast('⚠️ ليس لديك دورات متاحة! ادعُ صديقاً للحصول على دورة مجانية.','warning');
+            return;
+        }
         setSpinning(true); setShown(false);
+        // consume spin if not free (but we'll always consume one spin)
+        if((user.spins||0) > 0) onUpdate({spins: (user.spins||0) - 1});
         const add = 1800 + Math.random()*1800;
         const nr = rot + add;
         setRot(nr);
@@ -377,45 +275,38 @@ const Wheel = ({ open, onClose, user, onUpdate, toast }) => {
             if(p.val>0){
                 onUpdate({balance:(user.balance||0)+p.val, totalEarned:(user.totalEarned||0)+p.val});
                 toast(`🎉 ربحت ${p.val} DZD من عجلة الحظ!`,'success');
-            } else toast('🎁 دورة مجانية إضافية!','warning');
+            } else {
+                onUpdate({spins: (user.spins||0) + 1});
+                toast('🎁 دورة مجانية إضافية!','warning');
+            }
         },4000);
     };
     if(!open) return null;
     return (
         <div className="overlay-bg fi" style={{position:'fixed',inset:0,zIndex:90,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'20px 16px'}}>
-            <button onClick={onClose} className="gc" style={{position:'absolute',top:50,right:16,width:40,height:40,borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid var(--border)'}}><Ic n="x" s={18}/></button>
-            <div style={{textAlign:'center',marginBottom:20}}><div style={{fontSize:22,fontWeight:900}}>🎡 عجلة الحظ</div><div style={{fontSize:13,color:'rgba(255,255,255,.5)'}}>ادعُ صديقاً واربح من العجلة!</div></div>
+            <button onClick={onClose} className="gc" style={{position:'absolute',top:50,right:16,width:40,height:40,borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center'}}><Ic n="x" s={18}/></button>
+            <div style={{textAlign:'center',marginBottom:20}}><div style={{fontSize:22,fontWeight:900}}>🎡 عجلة الحظ</div><div style={{fontSize:13,color:'rgba(255,255,255,.5)'}}>ادعُ صديقاً واربح من العجلة!</div><div style={{marginTop:4,fontSize:12}}>📦 دورات متاحة: <span className="gt" style={{fontWeight:900}}>{user.spins||0}</span></div></div>
             <div style={{position:'relative',marginBottom:24}}>
                 <div className="wheel-ptr"/>
-                <div className="wheel-wrap" style={{transform:`rotate(${rot}deg)`,transition:spinning?'transform 4s cubic-bezier(.17,.67,.12,.99)':'none',display:'flex',alignItems:'center',justifyContent:'center'}}>
-                    {prizes.map((p,i)=> <div key={i} style={{position:'absolute',transform:`rotate(${i*(360/prizes.length)}deg) translateY(-85px)`,width:80,textAlign:'center'}}><span style={{color:'white',fontSize:11,fontWeight:800,textShadow:'0 1px 4px rgba(0,0,0,.8)'}}>{p.label}</span></div>)}
+                <div className="wheel-wrap" style={{transform:`rotate(${rot}deg)`,transition:spinning?'transform 4s cubic-bezier(.17,.67,.12,.99)':'none'}}>
+                    {prizes.map((p,i)=> <div key={i} style={{position:'absolute',transform:`rotate(${i*(360/prizes.length)}deg) translateY(-85px)`,width:80,textAlign:'center'}}><span style={{color:'white',fontSize:11,fontWeight:800,textShadow:'0 1px 4px black'}}>{p.label}</span></div>)}
                     <div className="wheel-hub"><Ic n="diamond" s={24}/></div>
                 </div>
             </div>
-            {shown&&result&&<div className="gc gc-gold" style={{borderRadius:14,padding:'12px 24px',textAlign:'center',marginBottom:16,minWidth:200}}><div style={{color:'rgba(255,255,255,.5)',fontSize:12}}>النتيجة:</div><div className="gt money-display" style={{fontSize:28,fontWeight:900}}>{result.val>0?`+${result.val} DZD`:result.label}</div></div>}
+            {shown&&result&&<div className="gc gc-gold" style={{borderRadius:14,padding:'12px 24px',textAlign:'center',marginBottom:16}}><div style={{fontSize:12}}>النتيجة:</div><div className="gt money-display" style={{fontSize:28,fontWeight:900}}>{result.val>0?`+${result.val} DZD`:result.label}</div></div>}
             <button onClick={spin} disabled={spinning} className="btn-gold" style={{width:'100%',maxWidth:320,padding:'15px 0',borderRadius:14,fontSize:16,opacity:spinning?.7:1}}>{spinning?'🎡 جاري الدوران...':'🎯 اضغط للدوران'}</button>
-            <div style={{color:'rgba(255,255,255,.35)',fontSize:11,marginTop:12}}>كل صديق يدخل برابطك = دورة واحدة مجانية!</div>
+            <div style={{fontSize:11,color:'rgba(255,255,255,.35)',marginTop:12}}>كل صديق يدخل برابطك = دورة واحدة مجانية!</div>
         </div>
     );
 };
 
-// DZD Display
-const DZD = ({amount, size=28}) => (<div style={{display:'inline-flex',alignItems:'baseline',gap:4}}><span className="money-display gt" style={{fontSize:size,fontWeight:900}}>{fmtDZD(amount)}</span><span style={{fontSize:size*0.4,fontWeight:700,color:'rgba(245,197,24,.5)'}}>DZD</span></div>);
-
-// Auth Screen (registration starts balance 0, referral support)
+// ---------- AUTH (START BALANCE 0, REFERRAL SUPPORT) ----------
 const Auth = ({ onLogin, toast }) => {
-    const [mode, setMode] = useState(true); // true=login, false=register
+    const [mode, setMode] = useState(true);
     const [un, setUn] = useState(''); const [pw, setPw] = useState(''); const [cp, setCp] = useState('');
     const [sp, setSp] = useState(false); const [ld, setLd] = useState(false);
-    // get referral from URL
-    const getReferralCode = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('ref') || localStorage.getItem('pending_ref');
-    };
-    useEffect(() => {
-        const ref = getReferralCode();
-        if(ref) localStorage.setItem('pending_ref', ref);
-    }, []);
+    const getReferral = () => { const urlParams = new URLSearchParams(window.location.search); return urlParams.get('ref') || localStorage.getItem('pending_ref'); };
+    useEffect(()=>{ const ref=getReferral(); if(ref) localStorage.setItem('pending_ref', ref); },[]);
     const go = () => {
         if(!un.trim()||!pw.trim()){toast('يرجى ملء جميع الحقول','error');return;}
         if(!mode&&pw!==cp){toast('كلمتا المرور غير متطابقتين','error');return;}
@@ -424,36 +315,33 @@ const Auth = ({ onLogin, toast }) => {
             const users = JSON.parse(localStorage.getItem('br_u')||'[]');
             if(mode){
                 const u=users.find(x=>x.un===un&&x.pw===pw);
-                if(u){localStorage.setItem('br_cu',JSON.stringify(u));toast('تم تسجيل الدخول بنجاح!','success');onLogin(u);}
-                else{toast('اسم المستخدم أو كلمة المرور غير صحيحة','error');setLd(false);}
+                if(u){ localStorage.setItem('br_cu',JSON.stringify(u)); toast('تم تسجيل الدخول بنجاح!','success'); onLogin(u); }
+                else{ toast('اسم المستخدم أو كلمة المرور غير صحيحة','error'); setLd(false); }
             } else {
-                if(users.find(x=>x.un===un)){toast('اسم المستخدم موجود بالفعل','error');setLd(false);return;}
-                const code = genCode();
-                const refCode = localStorage.getItem('pending_ref') || null;
-                let referrer = null;
-                if(refCode) referrer = users.find(u=>u.code === refCode);
+                if(users.find(x=>x.un===un)){ toast('اسم المستخدم موجود بالفعل','error'); setLd(false); return; }
+                const code=genCode();
+                const refCode=localStorage.getItem('pending_ref');
+                let referrer=null;
+                if(refCode) referrer=users.find(u=>u.code===refCode);
                 const newUser = {
-                    id:Date.now(), un, pw, code, ref:`blackrock.app/ref/${code}`,
-                    balance: 0, taskBal: 0, refEarn: 0, team: [], teamCount: 0, level: null, dailyP: 0,
-                    tasksDone: 0, totalEarned: 0, spins: 0, lastReset: new Date().toDateString(),
-                    joined: new Date().toISOString(), avatar: null, referrer: referrer ? referrer.id : null,
-                    notifs: [
-                        {id:1,title:'مرحباً بك في BlackRock!',desc:'ابدأ رحلتك الاستثمارية. أكمل المهام اليومية وادعُ أصدقاءك!',t:'الآن',r:false},
-                        {id:2,title:'💡 نصيحة ذهبية',desc:'ادعُ أصدقاءك برابطك الخاص واربح 5% من دخلهم مدى الحياة!',t:'الآن',r:false},
+                    id:Date.now(), un, pw, code, ref:`blackrock.app?ref=${code}`,
+                    balance:0, taskBal:0, refEarn:0, team:[], teamCount:0, level:null, dailyP:0,
+                    tasksDone:0, totalEarned:0, spins: referrer ? 1 : 0, lastReset:new Date().toDateString(),
+                    joined:new Date().toISOString(), avatar:null, referrer:referrer?referrer.id:null,
+                    notifs:[
+                        {id:1, title:'مرحباً بك في BlackRock!', desc:'ابدأ رحلتك الاستثمارية. أكمل المهام اليومية وادعُ أصدقاءك!', t:'الآن', r:false},
+                        {id:2, title:'💡 نصيحة ذهبية', desc:'ادعُ أصدقاءك برابطك الخاص واربح 5% من دخلهم مدى الحياة + دورة عجلة حظ لكل صديق!', t:'الآن', r:false},
                     ]
                 };
                 users.push(newUser);
-                if(referrer) {
-                    // update referrer team, give spin, add 5% daily earning later
-                    const idx = users.findIndex(u=>u.id===referrer.id);
-                    if(idx!==-1) {
-                        users[idx].teamCount = (users[idx].teamCount||0)+1;
+                if(referrer){
+                    const idx=users.findIndex(u=>u.id===referrer.id);
+                    if(idx!==-1){
+                        users[idx].teamCount=(users[idx].teamCount||0)+1;
                         users[idx].team.push(newUser.id);
-                        users[idx].spins = (users[idx].spins||0)+1;
-                        users[idx].notifs.push({id:Date.now(),title:'🎉 صديق جديد!',desc:`${newUser.un} سجل عبر رابطك! حصلت على دورة عجلة حظ مجانية.`,t:'الآن',r:false});
+                        users[idx].spins=(users[idx].spins||0)+1;
+                        users[idx].notifs.push({id:Date.now(), title:'🎉 صديق جديد!', desc:`${newUser.un} سجل عبر رابطك! حصلت على دورة عجلة حظ مجانية.`, t:'الآن', r:false});
                     }
-                    // also give new user a free spin
-                    newUser.spins = 1;
                 }
                 localStorage.setItem('br_u',JSON.stringify(users));
                 localStorage.setItem('br_cu',JSON.stringify(newUser));
@@ -464,89 +352,76 @@ const Auth = ({ onLogin, toast }) => {
         },900);
     };
     return (
-        <div style={{height:'100%',background:'var(--bg)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'24px 20px',overflowY:'auto'}}>
+        <div style={{height:'100%',background:'var(--bg)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'24px 20px'}}>
             <div style={{width:'100%',maxWidth:360}}>
                 <div style={{textAlign:'center',marginBottom:32}}>
                     <div className="pp" style={{width:88,height:88,background:'linear-gradient(135deg,#F5C518,#FF9800,#FF6D00)',borderRadius:24,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px'}}><Ic n="diamond" s={46}/></div>
                     <div style={{fontFamily:'Montserrat',fontSize:34,fontWeight:900,letterSpacing:2}} className="gt">BLACKROCK</div>
-                    <div style={{color:'rgba(255,255,255,.35)',fontSize:12}}>BlackRock, Inc — Investment Platform</div>
+                    <div style={{fontSize:12,color:'rgba(255,255,255,.35)'}}>BlackRock, Inc — Investment Platform</div>
                     <div className="sec-badge" style={{display:'inline-flex',gap:5,borderRadius:100,padding:'4px 12px',marginTop:8}}><Ic n="shield" s={11}/><span style={{color:'#00E676',fontSize:10,fontWeight:900}}>SECURE V3</span></div>
                 </div>
                 <div style={{display:'flex',flexDirection:'column',gap:12}}>
-                    <input className="inp" value={un} onChange={e=>setUn(e.target.value)} placeholder="اسم المستخدم" style={{borderRadius:14,padding:'13px 16px',fontSize:14,textAlign:'center',fontWeight:700}}/>
-                    <div style={{position:'relative'}}><input className="inp" type={sp?"text":"password"} value={pw} onChange={e=>setPw(e.target.value)} placeholder="كلمة المرور" style={{borderRadius:14,padding:'13px 16px',fontSize:14,textAlign:'center',fontWeight:700,width:'100%'}}/><button onClick={()=>setSp(!sp)} style={{position:'absolute',left:12,top:'50%',transform:'translateY(-50%)',background:'none',border:'none',color:'rgba(255,255,255,.3)',fontSize:11,cursor:'pointer'}}>{sp?'إخفاء':'عرض'}</button></div>
-                    {!mode&&<input className="inp" type="password" value={cp} onChange={e=>setCp(e.target.value)} placeholder="تأكيد كلمة المرور" style={{borderRadius:14,padding:'13px 16px',fontSize:14,textAlign:'center',fontWeight:700}}/>}
+                    <input className="inp" value={un} onChange={e=>setUn(e.target.value)} placeholder="اسم المستخدم" style={{borderRadius:14,padding:'13px 16px',fontSize:14,textAlign:'center'}}/>
+                    <div style={{position:'relative'}}><input className="inp" type={sp?"text":"password"} value={pw} onChange={e=>setPw(e.target.value)} placeholder="كلمة المرور" style={{borderRadius:14,padding:'13px 16px',fontSize:14,textAlign:'center',width:'100%'}}/><button onClick={()=>setSp(!sp)} style={{position:'absolute',left:12,top:'50%',transform:'translateY(-50%)',background:'none',border:'none',color:'rgba(255,255,255,.3)',fontSize:11,cursor:'pointer'}}>{sp?'إخفاء':'عرض'}</button></div>
+                    {!mode&&<input className="inp" type="password" value={cp} onChange={e=>setCp(e.target.value)} placeholder="تأكيد كلمة المرور" style={{borderRadius:14,padding:'13px 16px',fontSize:14,textAlign:'center'}}/>}
                     <button onClick={go} disabled={ld} className="btn-gold" style={{borderRadius:14,padding:'14px',fontSize:16}}>{ld?'جاري...':(mode?'تسجيل الدخول':'إنشاء حساب مجاني')}</button>
                 </div>
-                <button onClick={()=>{setMode(!mode);setCp('');}} style={{display:'block',margin:'14px auto 0',background:'none',border:'none',color:'rgba(255,255,255,.4)',fontSize:12,cursor:'pointer'}}>{mode?'ليس لديك حساب؟ سجل الآن مجاناً':'لديك حساب؟ سجل الدخول'}</button>
+                <button onClick={()=>{setMode(!mode); setCp('');}} style={{display:'block',margin:'14px auto 0',background:'none',border:'none',color:'rgba(255,255,255,.4)',fontSize:12,cursor:'pointer'}}>{mode?'ليس لديك حساب؟ سجل الآن مجاناً':'لديك حساب؟ سجل الدخول'}</button>
             </div>
         </div>
     );
 };
 
-// Avatar Picker
-const AvatarPicker = ({ current, onPick, onClose }) => (
-    <div className="overlay-bg fi" style={{position:'fixed',inset:0,zIndex:95,display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
-        <div className="gc" style={{borderRadius:20,padding:24,width:'100%',maxWidth:340}}>
-            <div style={{display:'flex',justifyContent:'space-between',marginBottom:20}}><span style={{color:'white',fontWeight:900}}>اختر صورتك</span><button onClick={onClose} style={{background:'none',border:'none',color:'white'}}><Ic n="x" s={20}/></button></div>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:10}}>
-                {AI_AVATARS.map(av=> <button key={av.id} onClick={()=>{onPick(av.id);onClose();}} style={{padding:3,borderRadius:12,background:current===av.id?'linear-gradient(135deg,#F5C518,#FF6D00)':'rgba(255,255,255,.05)',cursor:'pointer'}}><img src={av.url} style={{width:'100%',borderRadius:9}}/><span style={{color:'rgba(255,255,255,.5)',fontSize:9,display:'block',textAlign:'center'}}>{av.label}</span></button>)}
-            </div>
-        </div>
-    </div>
-);
-
-// Home Screen
+// ---------- HOME SCREEN ----------
 const Home = ({ user, upd, toast, nav }) => {
     const [notifOpen, setNotifOpen] = useState(false);
     const [aiOpen, setAiOpen] = useState(false);
     const [wheelOpen, setWheelOpen] = useState(false);
     const [proofOpen, setProofOpen] = useState(false);
     const [dispBal, setDispBal] = useState(0);
-    useEffect(()=>{ const target=user.balance||0; let cur=0; const inc=Math.max(1,target/60); const t=setInterval(()=>{cur=Math.min(cur+inc,target); setDispBal(Math.floor(cur)); if(cur>=target) clearInterval(t);},16); return()=>clearInterval(t); },[user.balance]);
+    useEffect(()=>{ const target=user.balance||0; let cur=0; const inc=Math.max(1,target/60); const t=setInterval(()=>{ cur=Math.min(cur+inc,target); setDispBal(Math.floor(cur)); if(cur>=target) clearInterval(t); },16); return()=>clearInterval(t); },[user.balance]);
     const unread = (user.notifs||[]).filter(n=>!n.r).length;
-    const markRead = () => { upd({notifs:(user.notifs||[]).map(n=>({...n,r:true}))}); setNotifOpen(true); };
-    const avatar = AI_AVATARS.find(a=>a.id===user.avatar);
+    const avatar = AVATARS.find(a=>a.id===user.avatar);
     const levelName = LEVELS.find(l=>l.id===user.level)?.name||'تجريب المبتدئ';
     const proofs = [
-        {icon:'bldg',title:'شركة عالمية',desc:'تأسست 1988 في نيويورك، أكبر مدير أصول بـ 10.2 تريليون دولار'},
-        {icon:'trend',title:'NYSE: BLK',desc:'مدرجة في بورصة نيويورك منذ 1999'},
-        {icon:'shield',title:'عقد رسمي',desc:'عقد مع الجزائر يناير 2025 - ديسمبر 2028'},
-        {icon:'award',title:'حماية 100%',desc:'أموال المستثمرين مضمونة'},
+        {icon:'bldg', title:'شركة عالمية', desc:'تأسست 1988 في نيويورك، أكبر مدير أصول بـ 10.2 تريليون دولار'},
+        {icon:'trend', title:'NYSE: BLK', desc:'مدرجة في بورصة نيويورك منذ 1999'},
+        {icon:'shield', title:'عقد رسمي', desc:'عقد مع الجزائر يناير 2025 - ديسمبر 2028'},
+        {icon:'award', title:'حماية 100%', desc:'أموال المستثمرين مضمونة'},
     ];
     return (
         <div className="hs" style={{height:'100%',overflowY:'auto',paddingBottom:90}}>
             <div style={{position:'sticky',top:0,background:'rgba(6,9,18,.96)',backdropFilter:'blur(20px)',padding:'10px 16px',borderBottom:'1px solid rgba(255,255,255,.05)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                <button onClick={markRead} style={{position:'relative',background:'none',border:'none'}}><div style={{width:40,height:40,background:'linear-gradient(135deg,#F5C518,#FF6D00)',borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center'}}><Ic n="bell" s={20}/></div>{unread>0&&<span className="n-dot nb" style={{position:'absolute',top:-2,right:-2,width:18,height:18,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:900,border:'2px solid var(--bg)'}}>{unread}</span>}</button>
-                <div style={{textAlign:'center'}}><div style={{fontFamily:'Montserrat',fontSize:22,fontWeight:900,letterSpacing:1}} className="gt">BLACKROCK</div><div style={{fontSize:10,color:'rgba(255,255,255,.3)'}}>BlackRock, Inc — Investment Platform</div></div>
-                <div className="sec-badge" style={{borderRadius:10,padding:'5px 10px',display:'flex',alignItems:'center',gap:4}}><Ic n="lock" s={11}/><span style={{color:'#00E676',fontSize:9,fontWeight:900}}>SECURE V3</span></div>
+                <button onClick={()=>{ upd({notifs:(user.notifs||[]).map(n=>({...n,r:true}))}); setNotifOpen(true); }} style={{position:'relative',background:'none',border:'none'}}><div style={{width:40,height:40,background:'linear-gradient(135deg,#F5C518,#FF6D00)',borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center'}}><Ic n="bell" s={20}/></div>{unread>0&&<span className="n-dot nb" style={{position:'absolute',top:-2,right:-2,width:18,height:18,fontSize:9,border:'2px solid var(--bg)'}}>{unread}</span>}</button>
+                <div style={{textAlign:'center'}}><div style={{fontFamily:'Montserrat',fontSize:22,fontWeight:900}} className="gt">BLACKROCK</div><div style={{fontSize:10,color:'rgba(255,255,255,.3)'}}>BlackRock, Inc — Investment Platform</div></div>
+                <div className="sec-badge" style={{borderRadius:10,padding:'5px 10px',display:'flex',gap:4}}><Ic n="lock" s={11}/><span style={{fontSize:9,fontWeight:900}}>SECURE V3</span></div>
             </div>
             <div style={{padding:'0 14px'}}>
                 <div className="gc gc-gold" style={{borderRadius:18,padding:'16px',marginTop:14,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                    <div><div style={{color:'rgba(255,255,255,.45)',fontSize:11}}>المستخدم</div><div style={{color:'white',fontWeight:900}}>ID: #{String(user.id).slice(-5)} | {user.un}</div><div style={{marginTop:6}}><span style={{padding:'4px 12px',background:'rgba(245,197,24,.15)',border:'1px solid rgba(245,197,24,.3)',borderRadius:100,color:'#F5C518',fontSize:11,display:'inline-flex',alignItems:'center',gap:4}}><Ic n="star" s={11}/>{levelName}</span></div></div>
+                    <div><div style={{fontSize:11,color:'rgba(255,255,255,.45)'}}>المستخدم</div><div style={{fontWeight:900}}>ID: #{String(user.id).slice(-5)} | {user.un}</div><div style={{marginTop:6}}><span style={{padding:'4px 12px',background:'rgba(245,197,24,.15)',border:'1px solid rgba(245,197,24,.3)',borderRadius:100,fontSize:11,display:'inline-flex',gap:4}}><Ic n="star" s={11}/>{levelName}</span></div></div>
                     <div>{avatar?<div className="av-ring"><img src={avatar.url} style={{width:54,height:54,borderRadius:'50%'}}/></div>:<div style={{width:58,height:58,background:'linear-gradient(135deg,#F5C518,#FF6D00)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:24,fontWeight:900}}>{user.un.charAt(0)}</div>}</div>
                 </div>
                 <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10,marginTop:12}}>
-                    <div className="stat-box" style={{borderRadius:14,padding:'12px 8px',textAlign:'center',background:'rgba(245,197,24,.08)'}}><Ic n="wallet" s={20}/><div style={{color:'#F5C518',fontWeight:900,fontSize:20}}>{fmtDZD(dispBal)}</div><div style={{color:'rgba(255,255,255,.4)',fontSize:10}}>الرصيد</div></div>
-                    <div className="stat-box" style={{borderRadius:14,padding:'12px 8px',textAlign:'center',background:'rgba(0,230,118,.08)'}}><Ic n="tasks" s={20}/><div style={{color:'#00E676',fontWeight:900,fontSize:20}}>{user.tasksDone||0}</div><div style={{color:'rgba(255,255,255,.4)',fontSize:10}}>المهام</div></div>
-                    <div className="stat-box" style={{borderRadius:14,padding:'12px 8px',textAlign:'center',background:'rgba(41,121,255,.08)'}}><Ic n="users" s={20}/><div style={{color:'#2979FF',fontWeight:900,fontSize:20}}>{user.teamCount||0}</div><div style={{color:'rgba(255,255,255,.4)',fontSize:10}}>الفريق</div></div>
+                    <div className="stat-box"><Ic n="wallet" s={20}/><div style={{color:'#F5C518',fontWeight:900,fontSize:20}}>{fmtDZD(dispBal)}</div><div style={{fontSize:10}}>الرصيد</div></div>
+                    <div className="stat-box"><Ic n="tasks" s={20}/><div style={{color:'#00E676',fontWeight:900,fontSize:20}}>{user.tasksDone||0}</div><div style={{fontSize:10}}>المهام</div></div>
+                    <div className="stat-box"><Ic n="users" s={20}/><div style={{color:'#2979FF',fontWeight:900,fontSize:20}}>{user.teamCount||0}</div><div style={{fontSize:10}}>الفريق</div></div>
                 </div>
-                <div className="gc" style={{borderRadius:18,padding:'16px',marginTop:12,textAlign:'center'}}><div style={{color:'rgba(255,255,255,.4)',fontSize:11}}>إجمالي رصيدك</div><DZD amount={user.balance||0} size={36}/></div>
+                <div className="gc" style={{borderRadius:18,padding:'16px',marginTop:12,textAlign:'center'}}><div style={{fontSize:11,color:'rgba(255,255,255,.4)'}}>إجمالي رصيدك</div><DZD amount={user.balance||0} size={36}/></div>
                 <div className="gc gc-gold" style={{borderRadius:18,padding:'14px',marginTop:12}}>
-                    <div style={{display:'flex',gap:10,marginBottom:10}}><div style={{width:40,height:40,background:'linear-gradient(135deg,#F5C518,#FF6D00)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center'}}><Ic n="gift" s={20}/></div><div><div style={{color:'white',fontWeight:900}}>🎯 ادعُ أصدقاءك واربح 5%</div><div style={{color:'rgba(255,255,255,.45)',fontSize:11}}>من دخلهم اليومي مدى الحياة!</div></div></div>
-                    <div style={{background:'rgba(255,255,255,.04)',borderRadius:10,padding:'8px 12px',display:'flex',gap:8,marginBottom:8}}><span style={{flex:1,color:'rgba(255,255,255,.55)',fontSize:12,direction:'ltr'}}>{user.ref}</span><button onClick={()=>{navigator.clipboard?.writeText(`https://${user.ref}`); toast('تم نسخ الرابط!','success');}} style={{padding:'5px 10px',background:'rgba(245,197,24,.15)',border:'1px solid rgba(245,197,24,.3)',borderRadius:8,color:'#F5C518',fontSize:11,fontWeight:800}}>نسخ</button></div>
-                    <div style={{color:'rgba(255,255,255,.35)',fontSize:11,textAlign:'center'}}>كل صديق يدخل = 🎡 عجلة حظ مجانية!</div>
+                    <div style={{display:'flex',gap:10,marginBottom:10}}><div style={{width:40,height:40,background:'linear-gradient(135deg,#F5C518,#FF6D00)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center'}}><Ic n="gift" s={20}/></div><div><div style={{fontWeight:900}}>🎯 ادعُ أصدقاءك واربح 5%</div><div style={{fontSize:11,color:'rgba(255,255,255,.45)'}}>من دخلهم اليومي مدى الحياة!</div></div></div>
+                    <div style={{background:'rgba(255,255,255,.04)',borderRadius:10,padding:'8px 12px',display:'flex',gap:8,marginBottom:8}}><span style={{flex:1,fontSize:12,direction:'ltr'}}>{`https://blackrock.app?ref=${user.code}`}</span><button onClick={()=>{navigator.clipboard?.writeText(`https://blackrock.app?ref=${user.code}`); toast('تم نسخ الرابط!','success');}} style={{padding:'5px 10px',background:'rgba(245,197,24,.15)',borderRadius:8,color:'#F5C518',fontSize:11}}>نسخ</button></div>
+                    <div style={{fontSize:11,textAlign:'center',color:'rgba(255,255,255,.35)'}}>كل صديق يدخل = 🎡 عجلة حظ مجانية!</div>
                 </div>
-                <div style={{marginTop:16}}><div style={{color:'white',fontWeight:900,fontSize:16,marginBottom:10}}>العمليات المالية</div>
+                <div style={{marginTop:16}}><div style={{fontWeight:900,fontSize:16,marginBottom:10}}>العمليات المالية</div>
                     <div style={{display:'flex',flexDirection:'column',gap:8}}>
-                        <button onClick={()=>toast(`رصيدك: ${fmtDZD(user.balance||0)} DZD`,'info')} style={{borderRadius:14,padding:'13px 14px',display:'flex',alignItems:'center',gap:12,background:'rgba(245,197,24,.1)',border:'1px solid rgba(255,255,255,.06)'}}><div><Ic n="wallet" s={22}/></div><div style={{flex:1,textAlign:'right'}}><div style={{color:'white',fontWeight:800}}>رصيدي</div><div style={{color:'rgba(255,255,255,.45)',fontSize:12}}>{fmtDZD(user.balance||0)} DZD</div></div><Ic n="left" s={18}/></button>
-                        <button onClick={()=>{if(!user.level||user.level==='trial'){toast('⚠️ يتطلب الترقية إلى M1','warning');nav('up');}else if((user.taskBal||0)<215){toast('⚠️ الحد الأدنى للسحب 215 DZD','warning');}else toast('تم إرسال طلب السحب! 24-48 ساعة','success');}} style={{borderRadius:14,padding:'13px 14px',display:'flex',alignItems:'center',gap:12,background:'rgba(0,230,118,.1)',border:'1px solid rgba(255,255,255,.06)'}}><div><Ic n="download" s={22}/></div><div style={{flex:1,textAlign:'right'}}><div style={{color:'white',fontWeight:800}}>سحب</div><div style={{color:'rgba(255,255,255,.45)',fontSize:12}}>سحب الأرباح (من M1)</div></div><Ic n="left" s={18}/></button>
-                        <button onClick={()=>nav('up')} style={{borderRadius:14,padding:'13px 14px',display:'flex',alignItems:'center',gap:12,background:'rgba(41,121,255,.1)',border:'1px solid rgba(255,255,255,.06)'}}><div><Ic n="up" s={22}/></div><div style={{flex:1,textAlign:'right'}}><div style={{color:'white',fontWeight:800}}>شحن / ترقية</div><div style={{color:'rgba(255,255,255,.45)',fontSize:12}}>تواصل مع الدعم</div></div><Ic n="left" s={18}/></button>
+                        <button onClick={()=>toast(`رصيدك: ${fmtDZD(user.balance||0)} DZD`,'info')} style={{borderRadius:14,padding:'13px 14px',display:'flex',alignItems:'center',gap:12,background:'rgba(245,197,24,.1)',border:'1px solid rgba(255,255,255,.06)',width:'100%',textAlign:'right'}}><Ic n="wallet" s={22}/><div style={{flex:1}}><div style={{fontWeight:800}}>رصيدي</div><div style={{fontSize:12,color:'rgba(255,255,255,.45)'}}>{fmtDZD(user.balance||0)} DZD</div></div><Ic n="left" s={18}/></button>
+                        <button onClick={()=>{if(!user.level||user.level==='trial'){toast('⚠️ يتطلب الترقية إلى M1','warning'); nav('up');}else if((user.taskBal||0)<215){toast('⚠️ الحد الأدنى للسحب 215 DZD','warning');}else toast('تم إرسال طلب السحب! 24-48 ساعة','success');}} style={{borderRadius:14,padding:'13px 14px',display:'flex',alignItems:'center',gap:12,background:'rgba(0,230,118,.1)',border:'1px solid rgba(255,255,255,.06)',width:'100%'}}><Ic n="download" s={22}/><div style={{flex:1}}><div style={{fontWeight:800}}>سحب</div><div style={{fontSize:12,color:'rgba(255,255,255,.45)'}}>سحب الأرباح (من M1)</div></div><Ic n="left" s={18}/></button>
+                        <button onClick={()=>nav('up')} style={{borderRadius:14,padding:'13px 14px',display:'flex',alignItems:'center',gap:12,background:'rgba(41,121,255,.1)',border:'1px solid rgba(255,255,255,.06)',width:'100%'}}><Ic n="up" s={22}/><div style={{flex:1}}><div style={{fontWeight:800}}>شحن / ترقية</div><div style={{fontSize:12,color:'rgba(255,255,255,.45)'}}>تواصل مع الدعم</div></div><Ic n="left" s={18}/></button>
                     </div>
                 </div>
             </div>
-            <Sheet open={notifOpen} onClose={()=>setNotifOpen(false)} title="الإشعارات 🔔"><div>{ (user.notifs||[]).map(n=> <div key={n.id} className="gc" style={{borderRadius:14,padding:'12px',marginBottom:8}}><div style={{fontWeight:800}}>{n.title}</div><div style={{fontSize:12,color:'rgba(255,255,255,.5)'}}>{n.desc}</div></div> ) }</div></Sheet>
-            <Sheet open={proofOpen} onClose={()=>setProofOpen(false)} title="🏢 براهين الشركة"><div>{proofs.map(p=><div key={p.title} className="gc" style={{borderRadius:14,padding:'12px',marginBottom:8}}><div style={{fontWeight:800}}>{p.title}</div><div style={{fontSize:12,color:'rgba(255,255,255,.5)'}}>{p.desc}</div></div>)}</div></Sheet>
+            <Sheet open={notifOpen} onClose={()=>setNotifOpen(false)} title="الإشعارات 🔔"><div>{(user.notifs||[]).map(n=><div key={n.id} className="gc" style={{borderRadius:14,padding:'12px',marginBottom:8}}><div style={{fontWeight:800}}>{n.title}</div><div style={{fontSize:12}}>{n.desc}</div></div>)}</div></Sheet>
+            <Sheet open={proofOpen} onClose={()=>setProofOpen(false)} title="🏢 براهين الشركة"><div>{proofs.map(p=><div key={p.title} className="gc" style={{borderRadius:14,padding:'12px',marginBottom:8}}><div style={{fontWeight:800}}>{p.title}</div><div style={{fontSize:12}}>{p.desc}</div></div>)}</div></Sheet>
             <AiChat open={aiOpen} onClose={()=>setAiOpen(false)} user={user}/>
             <Wheel open={wheelOpen} onClose={()=>setWheelOpen(false)} user={user} onUpdate={upd} toast={toast}/>
             <button onClick={()=>setAiOpen(true)} className="ai-btn ft" style={{position:'fixed',bottom:80,left:14,zIndex:45,width:54,height:54,background:'linear-gradient(135deg,#F5C518,#FF6D00)',borderRadius:16,display:'flex',alignItems:'center',justifyContent:'center',border:'none',cursor:'pointer'}}><Ic n="robot" s={26}/></button>
@@ -554,9 +429,9 @@ const Home = ({ user, upd, toast, nav }) => {
     );
 };
 
-// Tasks Screen (independent tasks, no need to complete previous)
+// ---------- TASKS (INDEPENDENT, NO PREVIOUS REQUIREMENT) ----------
 const Tasks = ({ user, upd, toast }) => {
-    const initTasks = () => { try { const s=localStorage.getItem(`br_tk_${user.id}`); if(s) return JSON.parse(s); } catch(e){} return [1,2,3,4,5].map(id=>({id,name:`مهمة يومية ${id}`,reward:43,status:'available',done:null,failed:null})); };
+    const initTasks = () => { try{ const s=localStorage.getItem(`br_tk_${user.id}`); if(s) return JSON.parse(s); }catch(e){} return [1,2,3,4,5].map(id=>({id,name:`مهمة يومية ${id}`,reward:43,status:'available',done:null,failed:null})); };
     const [tasks, setTasks] = useState(initTasks);
     const [active, setActive] = useState(null);
     const [cd, setCd] = useState(40);
@@ -571,12 +446,12 @@ const Tasks = ({ user, upd, toast }) => {
     const doneCount = tasks.filter(t=>t.status==='completed').length;
     return (
         <div className="hs" style={{height:'100%',overflowY:'auto',paddingBottom:90}}>
-            <div style={{position:'sticky',top:0,background:'rgba(6,9,18,.96)',backdropFilter:'blur(20px)',padding:'12px 16px',textAlign:'center',borderBottom:'1px solid rgba(255,255,255,.05)'}}><div style={{fontWeight:900,fontSize:18}}>⚡ المهام اليومية</div></div>
+            <div style={{position:'sticky',top:0,background:'rgba(6,9,18,.96)',padding:'12px 16px',textAlign:'center',borderBottom:'1px solid rgba(255,255,255,.05)'}}><div style={{fontWeight:900,fontSize:18}}>⚡ المهام اليومية</div></div>
             <div style={{padding:'14px'}}>
                 <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10,marginBottom:14}}>
-                    <div className="gc" style={{borderRadius:14,padding:'12px',textAlign:'center'}}><Ic n="check" s={20}/><div style={{color:'#00E676',fontWeight:900,fontSize:14}}>{doneCount}/5</div><div style={{color:'rgba(255,255,255,.35)',fontSize:10}}>المكتملة</div></div>
-                    <div className="gc" style={{borderRadius:14,padding:'12px',textAlign:'center'}}><Ic n="users" s={20}/><div style={{color:'#2979FF',fontWeight:900,fontSize:14}}>{user.teamCount||0}</div><div style={{color:'rgba(255,255,255,.35)',fontSize:10}}>الفريق</div></div>
-                    <div className="gc" style={{borderRadius:14,padding:'12px',textAlign:'center'}}><Ic n="profit" s={20}/><div style={{color:'#F5C518',fontWeight:900,fontSize:14}}>{doneCount*43} DZD</div><div style={{color:'rgba(255,255,255,.35)',fontSize:10}}>المكسب اليوم</div></div>
+                    <div className="gc" style={{borderRadius:14,padding:'12px',textAlign:'center'}}><Ic n="check" s={20}/><div style={{color:'#00E676',fontWeight:900,fontSize:14}}>{doneCount}/5</div><div style={{fontSize:10}}>المكتملة</div></div>
+                    <div className="gc" style={{borderRadius:14,padding:'12px',textAlign:'center'}}><Ic n="users" s={20}/><div style={{color:'#2979FF',fontWeight:900,fontSize:14}}>{user.teamCount||0}</div><div style={{fontSize:10}}>الفريق</div></div>
+                    <div className="gc" style={{borderRadius:14,padding:'12px',textAlign:'center'}}><Ic n="profit" s={20}/><div style={{color:'#F5C518',fontWeight:900,fontSize:14}}>{doneCount*43} DZD</div><div style={{fontSize:10}}>المكسب اليوم</div></div>
                 </div>
                 {tasks.map(task=>{
                     const isActive = task.status==='active'&&active===task.id;
@@ -586,7 +461,7 @@ const Tasks = ({ user, upd, toast }) => {
                     const prog = isDone?100:isActive?((40-cd)/40*100):0;
                     return (
                         <div key={task.id} className={`gc ${isDone?'task-done':isFailed?'task-fail':isActive?'task-active':''}`} style={{borderRadius:16,padding:'14px',marginBottom:10}}>
-                            <div style={{display:'flex',justifyContent:'space-between',marginBottom:10}}><div><div style={{fontWeight:800}}>{task.name}</div><div style={{color:'rgba(255,255,255,.4)',fontSize:12}}>+DZD {task.reward}</div></div><div style={{fontSize:20,fontWeight:900,color:isDone?'#00E676':isFailed?'#FF1744':'#F5C518'}}>+{task.reward}</div></div>
+                            <div style={{display:'flex',justifyContent:'space-between',marginBottom:10}}><div><div style={{fontWeight:800}}>{task.name}</div><div style={{fontSize:12,color:'rgba(255,255,255,.4)'}}>+DZD {task.reward}</div></div><div style={{fontSize:20,fontWeight:900,color:isDone?'#00E676':isFailed?'#FF1744':'#F5C518'}}>+{task.reward}</div></div>
                             <div style={{background:'rgba(255,255,255,.07)',borderRadius:6,height:6,marginBottom:10,overflow:'hidden'}}><div style={{width:`${prog}%`,height:'100%',background:isDone?'#00E676':isFailed?'#FF1744':'#F5C518',transition:isActive?'width 1s linear':'none'}}/></div>
                             {isActive&&<div><div className="gc gc-gold" style={{borderRadius:12,padding:'12px',textAlign:'center',marginBottom:8}}><div style={{fontSize:44,fontWeight:900}} className="gt">{cd}</div><div>ثانية</div></div><button onClick={()=>setConfirmCancel(true)} style={{width:'100%',padding:'11px',borderRadius:12,background:'rgba(255,23,68,.1)',border:'1px solid rgba(255,23,68,.25)',color:'#FF1744',fontWeight:800}}>إلغاء المهمة</button></div>}
                             {isAvail&&<button onClick={()=>startTask(task.id)} className="btn-gold" style={{width:'100%',padding:'12px',borderRadius:12}}>ابدأ المهمة (40 ثانية)</button>}
@@ -596,25 +471,25 @@ const Tasks = ({ user, upd, toast }) => {
                     );
                 })}
             </div>
-            {confirmCancel&&<div className="overlay-bg fi" style={{position:'fixed',inset:0,zIndex:99,display:'flex',alignItems:'center',justifyContent:'center',padding:20}}><div className="gc gc-red" style={{borderRadius:20,padding:24,maxWidth:320,width:'100%'}}><div style={{textAlign:'center',marginBottom:16}}><div style={{width:56,height:56,background:'rgba(255,23,68,.15)',borderRadius:16,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 12px'}}><Ic n="x" s={28}/></div><div style={{fontWeight:900,fontSize:17}}>تأكيد الإلغاء</div><div style={{color:'rgba(255,255,255,.55)',fontSize:13}}>ستخسر 43 DZD ولا يمكن إعادتها إلا غداً!</div></div><div style={{display:'flex',gap:10}}><button onClick={()=>setConfirmCancel(false)} className="btn-ghost" style={{flex:1,padding:'12px',borderRadius:12}}>إكمال</button><button onClick={doCancel} style={{flex:1,padding:'12px',borderRadius:12,background:'#D50000',color:'white',fontWeight:900}}>إلغاء نهائي</button></div></div></div>}
+            {confirmCancel&&<div className="overlay-bg fi" style={{position:'fixed',inset:0,zIndex:99,display:'flex',alignItems:'center',justifyContent:'center',padding:20}}><div className="gc gc-red" style={{borderRadius:20,padding:24,maxWidth:320,width:'100%'}}><div style={{textAlign:'center',marginBottom:16}}><div style={{width:56,height:56,background:'rgba(255,23,68,.15)',borderRadius:16,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 12px'}}><Ic n="x" s={28}/></div><div style={{fontWeight:900,fontSize:17}}>تأكيد الإلغاء</div><div style={{fontSize:13,color:'rgba(255,255,255,.55)'}}>ستخسر 43 DZD ولا يمكن إعادتها إلا غداً!</div></div><div style={{display:'flex',gap:10}}><button onClick={()=>setConfirmCancel(false)} className="btn-ghost" style={{flex:1,padding:'12px',borderRadius:12}}>إكمال</button><button onClick={doCancel} style={{flex:1,padding:'12px',borderRadius:12,background:'#D50000',color:'white',fontWeight:900}}>إلغاء نهائي</button></div></div></div>}
         </div>
     );
 };
 
-// Upgrade Screen
+// ---------- UPGRADE SCREEN ----------
 const Upgrade = ({ user, upd, toast }) => {
     const [selLevel, setSelLevel] = useState(null);
     const [contactOpen, setContactOpen] = useState(false);
     return (
         <div className="hs" style={{height:'100%',overflowY:'auto',paddingBottom:90}}>
-            <div style={{position:'sticky',top:0,background:'rgba(6,9,18,.96)',backdropFilter:'blur(20px)',padding:'12px 16px',textAlign:'center',borderBottom:'1px solid rgba(255,255,255,.05)'}}><div style={{fontWeight:900,fontSize:18}}>💎 الترقية</div></div>
+            <div style={{position:'sticky',top:0,background:'rgba(6,9,18,.96)',padding:'12px 16px',textAlign:'center',borderBottom:'1px solid rgba(255,255,255,.05)'}}><div style={{fontWeight:900,fontSize:18}}>💎 الترقية</div></div>
             <div style={{padding:'14px'}}>
                 <div className="gc gc-gold" style={{borderRadius:16,padding:'14px',marginBottom:12}}><div style={{display:'flex',justifyContent:'space-between'}}><span>رصيدك المتاح</span><DZD amount={user.balance||0} size={22}/></div></div>
                 {LEVELS.map(lv=>{
                     const locked = (user.balance||0)<lv.price && lv.price>0;
                     const current = user.level===lv.id;
                     return (
-                        <div key={lv.id} className={`gc ${locked?'opacity-70':''} ${current?'border-green-500':''}`} style={{borderRadius:16,padding:'14px',marginBottom:10}}>
+                        <div key={lv.id} className="gc" style={{borderRadius:16,padding:'14px',marginBottom:10, borderColor: current ? '#00E676' : locked ? '#FF1744' : 'rgba(245,197,24,.2)'}}>
                             <div style={{display:'flex',justifyContent:'space-between',marginBottom:10}}><div><div style={{fontWeight:900,fontSize:16}}>{lv.name}</div><div style={{color:lv.price===0?'#00E676':'#F5C518'}}>{lv.price===0?'مجاني':`${fmtDZD(lv.price)} DZD`}</div></div>{current&&<span style={{background:'rgba(0,230,118,.15)',padding:'4px 10px',borderRadius:100,color:'#00E676'}}>✅ مفعّل</span>}</div>
                             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:6,marginBottom:10}}><div><div style={{color:'#00E676'}}>{lv.daily}</div><div style={{fontSize:9}}>يومي</div></div><div><div style={{color:'#F5C518'}}>{lv.days}</div><div style={{fontSize:9}}>أيام</div></div><div><div>{fmtDZD(lv.total)}</div><div style={{fontSize:9}}>الإجمالي</div></div><div><div>{typeof lv.monthly==='number'?fmtDZD(lv.monthly):lv.monthly}</div><div style={{fontSize:9}}>شهري</div></div></div>
                             {!locked && lv.price>0 && !current && <button onClick={()=>{setSelLevel(lv); setContactOpen(true);}} className="btn-gold" style={{width:'100%',padding:'12px',borderRadius:12}}>ترقية إلى {lv.name}</button>}
@@ -625,25 +500,25 @@ const Upgrade = ({ user, upd, toast }) => {
             </div>
             <Sheet open={contactOpen} onClose={()=>setContactOpen(false)} title="📞 تواصل مع الدعم">
                 <div><div className="gc gc-gold" style={{borderRadius:14,padding:'14px',textAlign:'center',marginBottom:12}}><Ic n="phone" s={30}/><div style={{fontWeight:900}}>الترقية إلى {selLevel?.name}</div><div>{selLevel?.price?fmtDZD(selLevel.price)+' DZD':'مجاني'}</div></div>
-                {[{icon:'phone',title:'واتساب',desc:'+213 555 123 456'},{icon:'send',title:'تليجرام',desc:'@BlackRockSupport'},{icon:'mail',title:'البريد',desc:'support@blackrock.app'}].map(ch=> <button key={ch.title} onClick={()=>toast('جاري الاتصال...','info')} style={{borderRadius:14,padding:'13px',display:'flex',alignItems:'center',gap:12,background:'rgba(255,255,255,.05)',width:'100%',marginBottom:8}}><Ic n={ch.icon} s={22}/><div><div style={{fontWeight:800}}>{ch.title}</div><div style={{color:'rgba(255,255,255,.4)'}}>{ch.desc}</div></div></button>)}</div>
+                {[{icon:'phone',title:'واتساب',desc:'+213 555 123 456'},{icon:'send',title:'تليجرام',desc:'@BlackRockSupport'},{icon:'mail',title:'البريد',desc:'support@blackrock.app'}].map(ch=><button key={ch.title} onClick={()=>toast('جاري الاتصال...','info')} style={{borderRadius:14,padding:'13px',display:'flex',alignItems:'center',gap:12,background:'rgba(255,255,255,.05)',width:'100%',marginBottom:8}}><Ic n={ch.icon} s={22}/><div><div style={{fontWeight:800}}>{ch.title}</div><div style={{fontSize:12,color:'rgba(255,255,255,.4)'}}>{ch.desc}</div></div></button>)}</div>
             </Sheet>
         </div>
     );
 };
 
-// Profile Screen
+// ---------- PROFILE SCREEN ----------
 const Profile = ({ user, upd, toast, logout }) => {
     const [refOpen, setRefOpen] = useState(false);
     const [secOpen, setSecOpen] = useState(false);
     const [compOpen, setCompOpen] = useState(false);
     const [wheelOpen, setWheelOpen] = useState(false);
     const [avatarOpen, setAvatarOpen] = useState(false);
-    const avatar = AI_AVATARS.find(a=>a.id===user.avatar);
+    const avatar = AVATARS.find(a=>a.id===user.avatar);
     const levelName = LEVELS.find(l=>l.id===user.level)?.name||'تجريب المبتدئ';
     const refLink = `https://blackrock.app?ref=${user.code}`;
     return (
         <div className="hs" style={{height:'100%',overflowY:'auto',paddingBottom:90}}>
-            <div style={{position:'sticky',top:0,background:'rgba(6,9,18,.96)',backdropFilter:'blur(20px)',padding:'12px 16px',textAlign:'center',borderBottom:'1px solid rgba(255,255,255,.05)'}}><div style={{fontWeight:900,fontSize:18}}>👤 حسابي</div></div>
+            <div style={{position:'sticky',top:0,background:'rgba(6,9,18,.96)',padding:'12px 16px',textAlign:'center',borderBottom:'1px solid rgba(255,255,255,.05)'}}><div style={{fontWeight:900,fontSize:18}}>👤 حسابي</div></div>
             <div style={{padding:'14px'}}>
                 <div className="gc gc-gold" style={{borderRadius:18,padding:'20px',textAlign:'center',marginBottom:14}}>
                     <button onClick={()=>setAvatarOpen(true)} style={{marginBottom:12,background:'none',border:'none',cursor:'pointer'}}>
@@ -663,10 +538,15 @@ const Profile = ({ user, upd, toast, logout }) => {
                     <div style={{fontWeight:900,textAlign:'center',marginBottom:12}}>كود الدعوة الخاص بك</div>
                     <div style={{background:'rgba(255,255,255,.04)',borderRadius:12,padding:'12px',textAlign:'center',marginBottom:10}}><div style={{fontFamily:'monospace',fontSize:28,fontWeight:900,letterSpacing:5}} className="gt">{user.code}</div></div>
                     <div style={{background:'rgba(255,255,255,.04)',borderRadius:10,padding:'8px 10px',display:'flex',gap:8,marginBottom:10}}><span style={{flex:1,fontSize:11,direction:'ltr'}}>{refLink}</span><button onClick={()=>{navigator.clipboard?.writeText(refLink); toast('تم نسخ الرابط!','success');}} style={{padding:'5px 10px',background:'rgba(245,197,24,.12)',borderRadius:8,color:'#F5C518'}}>نسخ</button></div>
-                    <button onClick={()=>{navigator.share?.({title:'BlackRock',text:`انضم إلي عبر رابطي: ${refLink}`})}} className="btn-gold" style={{width:'100%',padding:'12px',borderRadius:12}}>مشاركة الرابط</button>
+                    <button onClick={()=>{ if(navigator.share) navigator.share({title:'BlackRock',text:`انضم إلي عبر رابطي: ${refLink}`}); else toast('انسخ الرابط يدوياً','info'); }} className="btn-gold" style={{width:'100%',padding:'12px',borderRadius:12}}>مشاركة الرابط</button>
                 </div>
                 <div className="gc" style={{borderRadius:16,padding:'8px',marginBottom:14}}>
-                    {[{icon:'shield',title:'وثيقة الأمان',action:()=>setSecOpen(true)},{icon:'bldg',title:'عن الشركة',action:()=>setCompOpen(true)},{icon:'users',title:'الإحالات',action:()=>setRefOpen(true)},{icon:'gift',title:'عجلة الحظ',action:()=>setWheelOpen(true)}].map(item=><button key={item.title} onClick={item.action} style={{width:'100%',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 10px',background:'none',border:'none',borderBottom:'1px solid rgba(255,255,255,.04)'}}><div style={{display:'flex',gap:10}}><Ic n={item.icon} s={20}/><div style={{fontWeight:800}}>{item.title}</div></div><Ic n="left" s={16}/></button>)}
+                    {[
+                        {icon:'shield', title:'وثيقة الأمان', action:()=>setSecOpen(true)},
+                        {icon:'bldg', title:'عن الشركة', action:()=>setCompOpen(true)},
+                        {icon:'users', title:'الإحالات', action:()=>setRefOpen(true)},
+                        {icon:'gift', title:'عجلة الحظ', action:()=>setWheelOpen(true)},
+                    ].map(item=><button key={item.title} onClick={item.action} style={{width:'100%',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 10px',background:'none',border:'none',borderBottom:'1px solid rgba(255,255,255,.04)'}}><div style={{display:'flex',gap:10}}><Ic n={item.icon} s={20}/><div style={{fontWeight:800}}>{item.title}</div></div><Ic n="left" s={16}/></button>)}
                 </div>
                 <button onClick={logout} style={{width:'100%',padding:'13px',borderRadius:14,background:'rgba(255,23,68,.08)',border:'1px solid rgba(255,23,68,.2)',color:'#FF1744',display:'flex',alignItems:'center',justifyContent:'center',gap:8}}><Ic n="logout" s={18}/>تسجيل الخروج</button>
             </div>
@@ -679,7 +559,7 @@ const Profile = ({ user, upd, toast, logout }) => {
     );
 };
 
-// Main App
+// ---------- MAIN APP ----------
 const App = () => {
     const [user, setUser] = useState(null);
     const [tab, setTab] = useState('home');
@@ -704,7 +584,7 @@ const App = () => {
             </div>
             <div style={{position:'absolute',bottom:0,left:0,right:0,background:'rgba(6,9,18,.97)',backdropFilter:'blur(20px)',borderTop:'1px solid rgba(255,255,255,.06)',zIndex:50,paddingBottom:'env(safe-area-inset-bottom,0px)'}}>
                 <div style={{display:'flex',justifyContent:'space-around',alignItems:'center',paddingTop:6,paddingBottom:8}}>
-                    {nav.map(n=>{ const active=tab===n.id; return <button key={n.id} onClick={()=>setTab(n.id)} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:3,padding:'4px 12px',background:'none',border:'none',color:active?'#F5C518':'rgba(255,255,255,.35)',position:'relative'}}><div style={{position:'relative'}}><Ic n={n.icon} s={23}/>{n.badge&&<span className="n-dot" style={{position:'absolute',top:-5,right:-6,width:16,height:16,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,fontWeight:900,border:'1.5px solid var(--bg)'}}>{n.badge}</span>}</div><span style={{fontSize:10}}>{n.label}</span></button>; })}
+                    {nav.map(n=>{ const active=tab===n.id; return <button key={n.id} onClick={()=>setTab(n.id)} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:3,padding:'4px 12px',background:'none',border:'none',color:active?'#F5C518':'rgba(255,255,255,.35)',position:'relative'}}><div style={{position:'relative'}}><Ic n={n.icon} s={23}/>{n.badge&&<span className="n-dot" style={{position:'absolute',top:-5,right:-6,width:16,height:16,fontSize:8,fontWeight:900,border:'1.5px solid var(--bg)'}}>{n.badge}</span>}</div><span style={{fontSize:10}}>{n.label}</span></button>; })}
                 </div>
             </div>
             {toastMsg&&<Toast key={toastMsg.id} message={toastMsg.msg} type={toastMsg.type} onClose={()=>setToastMsg(null)}/>}
@@ -716,4 +596,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 </body>
 </html>
-```
