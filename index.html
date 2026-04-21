@@ -1,786 +1,1093 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>💰 تطبيق الاستثمار الذكي</title>
-  <style>
-    /* ───────────── Reset & Base ───────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:       #0d1117;
-      --card:     #161b22;
-      --card2:    #1c2330;
-      --border:   #30363d;
-      --green:    #00d084;
-      --red:      #ff4d6d;
-      --blue:     #58a6ff;
-      --gold:     #f0c040;
-      --purple:   #bc8cff;
-      --text:     #e6edf3;
-      --muted:    #8b949e;
-      --radius:   14px;
-      --shadow:   0 4px 24px rgba(0,0,0,.45);
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#020509">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BlackRock — Investment Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   BLACKROCK v5 — DESIGN SYSTEM
+══════════════════════════════════════ */
+:root{
+  --bg:#020509;
+  --bg2:#040810;
+  --bg3:#070c18;
+  --c1:#0a1020;
+  --c2:#0d1428;
+  --gold:#D4AF37;
+  --gold2:#C9992C;
+  --gold3:#B8860B;
+  --goldL:#E8CC6A;
+  --white:#FFFFFF;
+  --gray1:rgba(255,255,255,.85);
+  --gray2:rgba(255,255,255,.55);
+  --gray3:rgba(255,255,255,.28);
+  --gray4:rgba(255,255,255,.1);
+  --gray5:rgba(255,255,255,.05);
+  --grn:#22C55E;
+  --red:#EF4444;
+  --blu:#3B82F6;
+  --border:rgba(212,175,55,.15);
+  --border2:rgba(255,255,255,.06);
+  --sh:0 4px 24px rgba(0,0,0,.6);
+}
+*{font-family:'Tajawal',sans-serif;-webkit-tap-highlight-color:transparent;box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);}
+#root{height:100%;display:flex;justify-content:center;align-items:center;}
+.app{width:100%;max-width:420px;height:100%;position:relative;overflow:hidden;background:var(--bg);}
 
-    /* ───────────── Scrollbar ───────────── */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+/* Scrollable areas */
+.scr,.sh,.auth-s{-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.scr::-webkit-scrollbar,.sh::-webkit-scrollbar,.auth-s::-webkit-scrollbar{display:none;}
+.scr{position:absolute;top:0;left:0;right:0;bottom:72px;overflow-y:auto;overflow-x:hidden;}
+.auth-s{position:absolute;inset:0;overflow-y:auto;}
 
-    /* ───────────── Header ───────────── */
-    header {
-      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
-      border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(12px);
-    }
-    .logo { font-size: 1.4rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-    .logo span { background: linear-gradient(90deg, var(--green), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .header-time { font-size: .85rem; color: var(--muted); }
-    .header-badge {
-      background: rgba(0,208,132,.12);
-      color: var(--green);
-      border: 1px solid rgba(0,208,132,.3);
-      border-radius: 99px;
-      padding: 4px 14px;
-      font-size: .8rem;
-      font-weight: 600;
-    }
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translate3d(0,16px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes sheetUp{from{transform:translateY(110%)}to{transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ripple{to{transform:scale(4);opacity:0}}
+@keyframes dp{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+@keyframes tdot{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}}
+@keyframes countUp{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@keyframes borderGlow{0%,100%{box-shadow:0 0 0 0 rgba(212,175,55,0)}50%{box-shadow:0 0 20px 4px rgba(212,175,55,.3)}}
+@keyframes progressBar{from{width:0}to{width:100%}}
+@keyframes loadProg{from{width:0}to{width:75%}}
 
-    /* ───────────── Layout ───────────── */
-    .container { max-width: 1300px; margin: 0 auto; padding: 24px 20px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
-    .grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 24px; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
-    @media(max-width:900px){
-      .grid-4{grid-template-columns:repeat(2,1fr);}
-      .grid-3,.grid-2{grid-template-columns:1fr;}
-    }
-    @media(max-width:500px){ .grid-4{grid-template-columns:1fr;} }
+.fu{animation:fadeUp .25s cubic-bezier(.16,1,.3,1) both;}
+.fi{animation:fadeIn .2s ease both;}
+.floatY{animation:floatY 3s ease-in-out infinite;}
+.pulse{animation:pulse 2s infinite;}
+.cUp{animation:countUp .35s cubic-bezier(.34,1.56,.64,1) both;}
 
-    /* ───────────── Cards ───────────── */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
-      transition: transform .2s, border-color .2s;
-    }
-    .card:hover { transform: translateY(-2px); border-color: #484f58; }
-    .card-title {
-      font-size: .8rem;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .8px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .card-value { font-size: 1.7rem; font-weight: 800; }
-    .card-sub { font-size: .82rem; color: var(--muted); margin-top: 4px; }
+/* ── Typography ── */
+.t-hero{font-family:'Montserrat',sans-serif;font-weight:900;font-size:28px;letter-spacing:3px;}
+.t-lg{font-size:18px;font-weight:800;}
+.t-md{font-size:15px;font-weight:700;}
+.t-sm{font-size:12px;font-weight:600;}
+.t-xs{font-size:10.5px;font-weight:600;}
+.money{font-family:'Montserrat',sans-serif;font-weight:800;letter-spacing:-.5px;}
 
-    /* ───────────── Stat Badge ───────────── */
-    .badge-up   { color: var(--green); font-size: .85rem; font-weight: 700; }
-    .badge-down { color: var(--red);   font-size: .85rem; font-weight: 700; }
+/* ── Gold gradient text ── */
+.gt{background:linear-gradient(135deg,#E8CC6A,#D4AF37,#C9992C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 
-    /* ───────────── Section Title ───────────── */
-    .section-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border-right: 3px solid var(--green);
-      padding-right: 10px;
-    }
+/* ── Cards ── */
+.card{
+  background:linear-gradient(160deg,rgba(10,16,32,.98),rgba(7,12,24,.99));
+  border:1px solid var(--border2);
+  border-radius:16px;
+}
+.card-gold{border-color:var(--border);}
+.card-glow{box-shadow:0 0 0 1px rgba(212,175,55,.12),0 8px 32px rgba(0,0,0,.5);}
 
-    /* ───────────── Chart Canvas ───────────── */
-    canvas { display: block; width: 100% !important; }
+/* ── Gold shimmer card ── */
+.shimmer-card{
+  background:linear-gradient(160deg,rgba(15,22,42,.98),rgba(10,16,32,.99));
+  border:1px solid rgba(212,175,55,.18);
+  border-radius:16px;
+  position:relative;
+  overflow:hidden;
+}
+.shimmer-card::before{
+  content:'';
+  position:absolute;
+  top:0;left:-100%;width:80%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(212,175,55,.05),transparent);
+  animation:shimmer 3s infinite;
+}
 
-    /* ───────────── Assets Table ───────────── */
-    .assets-table { width: 100%; border-collapse: collapse; }
-    .assets-table th {
-      text-align: right;
-      font-size: .75rem;
-      color: var(--muted);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .6px;
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--border);
-    }
-    .assets-table td {
-      padding: 12px 12px;
-      border-bottom: 1px solid rgba(48,54,61,.5);
-      font-size: .9rem;
-      vertical-align: middle;
-    }
-    .assets-table tr:last-child td { border-bottom: none; }
-    .assets-table tr:hover td { background: rgba(255,255,255,.02); }
-    .asset-icon {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
-      margin-left: 10px;
-    }
-    .asset-name { font-weight: 700; font-size: .95rem; }
-    .asset-sym  { font-size: .78rem; color: var(--muted); }
-    td.num { font-family: monospace; font-size: .9rem; }
+/* ── Buttons ── */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:800;border-radius:12px;padding:13px 16px;font-size:14px;width:100%;transition:transform .1s,opacity .1s;position:relative;overflow:hidden;}
+.btn:active{transform:scale(.97);opacity:.88;}
+.btn-primary{
+  background:linear-gradient(135deg,#D4AF37,#C9992C,#B8860B);
+  color:#020509;
+  box-shadow:0 4px 20px rgba(212,175,55,.3),inset 0 1px 0 rgba(255,255,255,.15);
+}
+.btn-secondary{background:rgba(255,255,255,.07);border:1px solid var(--border2);color:var(--white);}
+.btn-danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#EF4444;}
+.btn-success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#22C55E;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--gold);}
 
-    /* ───────────── Progress Bar ───────────── */
-    .progress-wrap { background: rgba(255,255,255,.06); border-radius: 99px; height: 6px; overflow: hidden; }
-    .progress-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
+/* ── Nav ── */
+.nav{
+  position:absolute;bottom:0;left:0;right:0;height:72px;
+  background:rgba(2,5,9,.96);
+  border-top:1px solid rgba(212,175,55,.1);
+  display:flex;justify-content:space-around;align-items:center;
+  z-index:100;
+  backdrop-filter:blur(20px);
+}
+.nb{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;color:var(--gray3);padding:4px 14px;position:relative;}
+.nb.on{color:var(--gold);}
+.nb.on::after{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:20px;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:0 0 2px 2px;}
+.nl{font-size:10px;font-weight:700;margin-top:1px;}
+.bdg{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;background:var(--red);border-radius:8px;border:2px solid var(--bg);font-size:8.5px;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 3px;}
 
-    /* ───────────── Donut Chart ───────────── */
-    .donut-wrap { position: relative; display: flex; justify-content: center; align-items: center; }
-    .donut-center {
-      position: absolute;
-      text-align: center;
-      pointer-events: none;
-    }
-    .donut-center .dv { font-size: 1.3rem; font-weight: 800; }
-    .donut-center .dl { font-size: .72rem; color: var(--muted); margin-top: 2px; }
-    .legend { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .legend-item { display: flex; align-items: center; justify-content: space-between; font-size: .85rem; }
-    .legend-dot { width: 10px; height: 10px; border-radius: 50%; margin-left: 8px; flex-shrink: 0; }
+/* ── Input ── */
+.inp{background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:12px;color:var(--white);padding:13px 16px;font-size:14px;font-family:'Tajawal',sans-serif;font-weight:700;outline:none;width:100%;transition:border-color .2s;}
+.inp:focus{border-color:rgba(212,175,55,.5);background:rgba(255,255,255,.07);}
+.inp::placeholder{color:var(--gray3);}
 
-    /* ───────────── Trade Panel ───────────── */
-    .tabs { display: flex; gap: 0; margin-bottom: 20px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
-    .tab-btn {
-      flex: 1;
-      padding: 10px;
-      background: transparent;
-      color: var(--muted);
-      border: none;
-      cursor: pointer;
-      font-size: .9rem;
-      font-weight: 600;
-      transition: all .2s;
-    }
-    .tab-btn.active-buy  { background: rgba(0,208,132,.15); color: var(--green); }
-    .tab-btn.active-sell { background: rgba(255,77,109,.15); color: var(--red); }
-    .form-group { margin-bottom: 14px; }
-    .form-group label { font-size: .8rem; color: var(--muted); font-weight: 600; display: block; margin-bottom: 6px; }
-    .form-group select,
-    .form-group input {
-      width: 100%;
-      background: var(--card2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      padding: 10px 12px;
-      font-size: .95rem;
-      outline: none;
-      transition: border-color .2s;
-      font-family: inherit;
-    }
-    .form-group select:focus,
-    .form-group input:focus { border-color: var(--blue); }
-    .btn {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity .2s, transform .15s;
-      font-family: inherit;
-    }
-    .btn:hover  { opacity: .88; }
-    .btn:active { transform: scale(.97); }
-    .btn-buy  { background: linear-gradient(135deg, #00d084, #00b36b); color: #fff; }
-    .btn-sell { background: linear-gradient(135deg, #ff4d6d, #d6304f); color: #fff; }
-    .trade-estimate {
-      background: rgba(255,255,255,.04);
-      border-radius: 10px;
-      padding: 12px 14px;
-      margin-bottom: 14px;
-      font-size: .85rem;
-    }
-    .trade-estimate .row { display: flex; justify-content: space-between; margin-bottom: 4px; }
-    .trade-estimate .row:last-child { margin-bottom: 0; border-top: 1px solid var(--border); padding-top: 6px; margin-top: 4px; font-weight: 700; }
+/* ── Sheet ── */
+.sho{position:fixed;inset:0;background:rgba(2,5,9,.85);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:flex-end;}
+.sh{
+  background:linear-gradient(180deg,rgba(10,16,32,1),rgba(4,8,16,1));
+  border-radius:24px 24px 0 0;
+  border-top:1px solid rgba(212,175,55,.15);
+  border-left:1px solid var(--border2);
+  border-right:1px solid var(--border2);
+  width:100%;max-height:92vh;
+  overflow-y:auto;
+  animation:sheetUp .3s cubic-bezier(.16,1,.3,1);
+}
 
-    /* ───────────── Transactions ───────────── */
-    .tx-list { display: flex; flex-direction: column; gap: 10px; max-height: 340px; overflow-y: auto; padding-left: 4px; }
-    .tx-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--card2);
-      border-radius: 10px;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      transition: border-color .2s;
-    }
-    .tx-item:hover { border-color: #484f58; }
-    .tx-icon { font-size: 1.3rem; margin-left: 12px; }
-    .tx-name { font-weight: 700; font-size: .9rem; }
-    .tx-date { font-size: .75rem; color: var(--muted); margin-top: 2px; }
-    .tx-right { text-align: left; }
-    .tx-amount { font-weight: 700; font-size: .95rem; font-family: monospace; }
-    .tx-type  { font-size: .75rem; }
+/* ── Badges ── */
+.badge-gold{background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(201,153,44,.1));border:1px solid rgba(212,175,55,.3);border-radius:100px;padding:3px 10px;display:inline-flex;align-items:center;gap:4px;}
+.badge-green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:100px;padding:3px 10px;}
+.badge-red{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);border-radius:100px;padding:3px 10px;}
 
-    /* ───────────── Ticker Bar ───────────── */
-    .ticker-wrap {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      margin-bottom: 24px;
-      position: relative;
-    }
-    .ticker-inner { display: flex; animation: scroll 30s linear infinite; white-space: nowrap; padding: 12px 0; }
-    .ticker-inner:hover { animation-play-state: paused; }
-    @keyframes scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-    .ticker-item { display: inline-flex; align-items: center; gap: 8px; padding: 0 28px; font-size: .85rem; }
-    .ticker-item .sym  { font-weight: 800; color: var(--blue); }
-    .ticker-item .price{ font-family: monospace; }
+/* ── Stats ── */
+.stat-card{
+  background:linear-gradient(160deg,rgba(10,16,32,.98),rgba(7,12,24,.99));
+  border:1px solid var(--border2);
+  border-radius:14px;padding:12px 8px;text-align:center;
+}
 
-    /* ───────────── Toast ───────────── */
-    #toast {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--card2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 12px 24px;
-      border-radius: 99px;
-      font-size: .9rem;
-      font-weight: 600;
-      box-shadow: 0 8px 32px rgba(0,0,0,.6);
-      z-index: 9999;
-      transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .35s;
-      opacity: 0;
-      pointer-events: none;
-    }
-    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+/* ── Progress ── */
+.prog{background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;}
+.pg{height:100%;border-radius:4px;transition:width .4s ease;}
+.pg-gold{background:linear-gradient(90deg,#D4AF37,#C9992C);}
+.pg-green{background:linear-gradient(90deg,#22C55E,#16A34A);}
+.pg-red{background:linear-gradient(90deg,#EF4444,#DC2626);}
+.pg-blue{background:linear-gradient(90deg,#3B82F6,#2563EB);}
 
-    /* ───────────── Profit Line Chart ───────────── */
-    #lineChart { height: 200px; }
-  </style>
+/* ── Task cards ── */
+.tc{border-radius:14px;padding:13px;margin-bottom:8px;transition:border-color .2s,background .2s;}
+.tc-a{border-color:rgba(212,175,55,.25)!important;}
+.tc-r{border-color:rgba(212,175,55,.5)!important;background:linear-gradient(135deg,rgba(22,17,3,.5),rgba(7,12,24,.99))!important;}
+.tc-d{border-color:rgba(34,197,94,.3)!important;background:linear-gradient(135deg,rgba(0,20,10,.3),rgba(7,12,24,.99))!important;}
+.tc-f{border-color:rgba(239,68,68,.2)!important;opacity:.7;}
+
+/* ── Level cards ── */
+.lvc{background:linear-gradient(160deg,rgba(10,16,32,.98),rgba(7,12,24,.99));border:1px solid rgba(212,175,55,.1);border-radius:14px;padding:13px;margin-bottom:9px;}
+.lvc.lk{border-color:rgba(239,68,68,.08);opacity:.65;}
+.lvc.cu{border-color:rgba(34,197,94,.35);background:linear-gradient(160deg,rgba(0,25,12,.25),rgba(7,12,24,.99));}
+
+/* ── AI chat ── */
+.bai{background:rgba(10,16,32,.97);border:1px solid var(--border2);border-radius:14px;border-top-left-radius:4px;padding:10px 13px;max-width:84%;font-size:12.5px;line-height:1.7;color:var(--gray1);white-space:pre-wrap;}
+.bu{background:linear-gradient(135deg,#D4AF37,#C9992C);border-radius:14px;border-top-right-radius:4px;padding:10px 13px;max-width:84%;font-size:12.5px;line-height:1.7;color:#020509;font-weight:700;white-space:pre-wrap;}
+.tdd span{display:inline-block;width:6px;height:6px;background:var(--gray3);border-radius:50%;margin:0 2px;}
+.tdd span:nth-child(1){animation:tdot 1.2s 0s infinite ease}
+.tdd span:nth-child(2){animation:tdot 1.2s .2s infinite ease}
+.tdd span:nth-child(3){animation:tdot 1.2s .4s infinite ease}
+
+/* ── FAB ── */
+.fab{position:absolute;bottom:80px;left:12px;z-index:99;width:50px;height:50px;background:linear-gradient(135deg,#D4AF37,#C9992C);border-radius:15px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;box-shadow:0 6px 24px rgba(212,175,55,.4);}
+.fdot{position:absolute;top:-2px;right:-2px;width:11px;height:11px;background:var(--grn);border-radius:50%;border:2.5px solid var(--bg);animation:dp 1.5s infinite;}
+
+/* ── Avatar ── */
+.avr{background:linear-gradient(135deg,#D4AF37,#C9992C,#B8860B);padding:2.5px;border-radius:50%;display:inline-block;}
+
+/* ── Wheel ── */
+.wo{width:268px;height:268px;border-radius:50%;position:relative;box-shadow:0 0 60px rgba(212,175,55,.2);}
+.wp{position:absolute;top:-12px;left:50%;transform:translateX(-50%);border-left:12px solid transparent;border-right:12px solid transparent;border-top:24px solid #EF4444;z-index:10;filter:drop-shadow(0 0 6px rgba(239,68,68,.6));}
+.wh{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;background:linear-gradient(135deg,#08101e,#02050a);border-radius:50%;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;z-index:5;box-shadow:0 0 16px rgba(212,175,55,.35);}
+
+/* ── Toast ── */
+.toast-el{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;padding:10px 20px;border-radius:100px;font-size:13px;font-weight:800;color:#fff;white-space:nowrap;max-width:88vw;text-overflow:ellipsis;overflow:hidden;display:none;animation:fadeUp .18s ease;}
+
+/* ── Save indicator ── */
+.sv{position:fixed;top:12px;right:12px;z-index:9998;font-size:9.5px;font-weight:800;color:var(--grn);background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:100px;padding:2px 8px;opacity:0;transition:opacity .3s;}
+.sv.on{opacity:1;}
+
+/* ── Header logo area ── */
+.hdr-logo{
+  display:flex;align-items:center;gap:8px;
+}
+.hdr-logo .logo-icon{
+  width:32px;height:32px;
+  background:linear-gradient(135deg,#D4AF37,#B8860B);
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── Market ticker ── */
+.ticker{
+  background:rgba(212,175,55,.06);
+  border-bottom:1px solid rgba(212,175,55,.08);
+  padding:6px 14px;
+  display:flex;gap:16px;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.ticker::-webkit-scrollbar{display:none;}
+.tick-item{display:flex;align-items:center;gap:5px;flex-shrink:0;}
+
+/* ── Join card ── */
+.join-card{
+  background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(201,153,44,.07));
+  border:1.5px solid rgba(212,175,55,.35);
+  border-radius:16px;padding:18px;text-align:center;margin-bottom:18px;
+  animation:borderGlow 3s infinite;
+}
+
+/* ── Divider ── */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:12px 0;}
+
+/* ── Section header ── */
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.sec-ttl{font-size:15px;font-weight:800;color:var(--white);}
+.sec-link{font-size:11.5px;font-weight:700;color:var(--gold);cursor:pointer;background:none;border:none;}
+</style>
 </head>
 <body>
+<div id="root"><div class="app" id="app"></div></div>
+<div class="toast-el" id="toast"></div>
+<div class="sv" id="sv">محفوظ ✓</div>
 
-<!-- ╔══════════════════════ HEADER ══════════════════════╗ -->
-<header>
-  <div class="logo">💰 <span>استثمر ذكي</span></div>
-  <div class="header-time" id="clock">--:--:--</div>
-  <div class="header-badge" id="mktStatus">● السوق مفتوح</div>
-</header>
-
-<!-- ╔══════════════════════ BODY ══════════════════════╗ -->
-<div class="container">
-
-  <!-- TICKER BAR -->
-  <div class="ticker-wrap">
-    <div class="ticker-inner" id="tickerInner"></div>
-  </div>
-
-  <!-- KPI CARDS -->
-  <div class="grid-4">
-    <div class="card">
-      <div class="card-title">💼 إجمالي المحفظة</div>
-      <div class="card-value" id="kpiTotal">$0</div>
-      <div class="card-sub" id="kpiTotalChg">--</div>
-    </div>
-    <div class="card">
-      <div class="card-title">📈 الربح / الخسارة</div>
-      <div class="card-value" id="kpiPnl">$0</div>
-      <div class="card-sub" id="kpiPnlPct">--</div>
-    </div>
-    <div class="card">
-      <div class="card-title">💵 الرصيد النقدي</div>
-      <div class="card-value" id="kpiCash">$10,000</div>
-      <div class="card-sub">متاح للتداول</div>
-    </div>
-    <div class="card">
-      <div class="card-title">📊 عدد الصفقات</div>
-      <div class="card-value" id="kpiTrades">0</div>
-      <div class="card-sub">إجمالي التعاملات</div>
-    </div>
-  </div>
-
-  <!-- CHART + DONUT -->
-  <div class="grid-3">
-    <!-- Line Chart -->
-    <div class="card">
-      <div class="section-title">📉 أداء المحفظة (آخر 30 يوم)</div>
-      <canvas id="lineChart"></canvas>
-    </div>
-    <!-- Donut -->
-    <div class="card">
-      <div class="section-title">🥧 توزيع الأصول</div>
-      <div class="donut-wrap">
-        <canvas id="donutChart" width="180" height="180" style="max-width:180px"></canvas>
-        <div class="donut-center">
-          <div class="dv" id="donutVal">0%</div>
-          <div class="dl">تنويع</div>
-        </div>
-      </div>
-      <div class="legend" id="donutLegend"></div>
-    </div>
-  </div>
-
-  <!-- ASSETS TABLE + TRADE PANEL -->
-  <div class="grid-3">
-    <!-- Table -->
-    <div class="card">
-      <div class="section-title">📋 الأصول المتاحة</div>
-      <table class="assets-table">
-        <thead>
-          <tr>
-            <th>الأصل</th>
-            <th>السعر</th>
-            <th>التغيير</th>
-            <th>محفظتي</th>
-            <th>%</th>
-          </tr>
-        </thead>
-        <tbody id="assetsBody"></tbody>
-      </table>
-    </div>
-    <!-- Trade -->
-    <div class="card">
-      <div class="section-title">⚡ تنفيذ صفقة</div>
-      <div class="tabs">
-        <button class="tab-btn active-buy" id="tabBuy"  onclick="setTab('buy')">🟢 شراء</button>
-        <button class="tab-btn"            id="tabSell" onclick="setTab('sell')">🔴 بيع</button>
-      </div>
-      <div class="form-group">
-        <label>الأصل</label>
-        <select id="tradeAsset" onchange="updateEstimate()">
-          <option value="">-- اختر أصل --</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>الكمية</label>
-        <input type="number" id="tradeQty" value="1" min="0.01" step="0.01" oninput="updateEstimate()"/>
-      </div>
-      <div class="trade-estimate" id="tradeEst">
-        <div class="row"><span style="color:var(--muted)">سعر الوحدة</span><span id="estUnit">--</span></div>
-        <div class="row"><span style="color:var(--muted)">الرسوم (0.1%)</span><span id="estFee">--</span></div>
-        <div class="row"><span>الإجمالي</span><span id="estTotal">--</span></div>
-      </div>
-      <button class="btn btn-buy" id="tradeBtn" onclick="executeTrade()">تنفيذ الشراء</button>
-    </div>
-  </div>
-
-  <!-- HOLDINGS + TRANSACTIONS -->
-  <div class="grid-2">
-    <!-- Holdings -->
-    <div class="card">
-      <div class="section-title">🏦 محفظتي</div>
-      <div id="holdingsList"></div>
-    </div>
-    <!-- Transactions -->
-    <div class="card">
-      <div class="section-title">🕒 سجل المعاملات</div>
-      <div class="tx-list" id="txList">
-        <p style="color:var(--muted);text-align:center;padding:20px">لا توجد معاملات بعد</p>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /container -->
-<div id="toast"></div>
-
-<!-- ╔══════════════════════ SCRIPT ══════════════════════╗ -->
 <script>
-/* ──────────── DATA ──────────── */
-const ASSETS = [
-  { id:'BTC',  name:'بيتكوين',     sym:'BTC',  icon:'₿', color:'#f7931a', price:67420, initPrice:60000 },
-  { id:'ETH',  name:'إيثيريوم',    sym:'ETH',  icon:'Ξ', color:'#627eea', price:3580,  initPrice:3200  },
-  { id:'AAPL', name:'آبل',         sym:'AAPL', icon:'🍎', color:'#aaaaaa', price:189.5, initPrice:175   },
-  { id:'TSLA', name:'تيسلا',       sym:'TSLA', icon:'⚡', color:'#cc0000', price:245.3, initPrice:230   },
-  { id:'GOLD', name:'الذهب',       sym:'XAU',  icon:'🪙', color:'#f0c040', price:2345,  initPrice:2100  },
-  { id:'AMZN', name:'أمازون',      sym:'AMZN', icon:'📦', color:'#ff9900', price:185.2, initPrice:170   },
-  { id:'MSFT', name:'مايكروسوفت',  sym:'MSFT', icon:'🪟', color:'#00a4ef', price:412.7, initPrice:390   },
-  { id:'OIL',  name:'النفط',       sym:'OIL',  icon:'🛢', color:'#8b4513', price:78.4,  initPrice:72    },
+// ════════════════════════════════════════════
+//  BLACKROCK v5 — Professional App
+// ════════════════════════════════════════════
+
+// ── Storage ──
+let _svT;
+const DB={
+  g(k){try{const v=localStorage.getItem('br5_'+k);return v?JSON.parse(v):null;}catch{return null;}},
+  s(k,v){
+    try{localStorage.setItem('br5_'+k,JSON.stringify(v));}catch{}
+    clearTimeout(_svT);
+    const el=document.getElementById('sv');
+    if(el){el.classList.add('on');_svT=setTimeout(()=>el.classList.remove('on'),1500);}
+  },
+  d(k){try{localStorage.removeItem('br5_'+k);}catch{}}
+};
+
+// ── App State ──
+const S={
+  user:null,tab:'home',
+  activeTask:null,cdVal:40,cdTimer:null,tasks:null,
+  sheetEl:null,wheelRot:0,wheelSpinning:false,
+  aiMsgs:[],aiTyping:false,joinCode:null,
+  mktTick:0
+};
+
+// ── Utils ──
+function fmt(n){n=parseFloat(n)||0;if(n>=1e12)return(n/1e12).toFixed(2)+'T';if(n>=1e9)return(n/1e9).toFixed(2)+'B';if(n>=1e6)return(n/1e6).toFixed(2)+'M';if(n>=1e3)return(n/1e3).toFixed(1)+'K';return n.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtDZD(n){return fmt(n)+' DZD';}
+function genCode(){const c='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';return Array.from({length:6},()=>c[Math.floor(Math.random()*c.length)]).join('');}
+function today(){return new Date().toDateString();}
+function $(id){return document.getElementById(id);}
+function now(){return new Date().toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});}
+function detectRef(){const h=location.hash;if(h.includes('ref='))S.joinCode=h.split('ref=')[1]?.split('&')[0]||null;const p=new URLSearchParams(location.search);if(p.get('ref'))S.joinCode=p.get('ref');}
+
+// ── Toast ──
+let _tt;
+function toast(msg,type='info'){
+  clearTimeout(_tt);
+  const c={success:'#16A34A',error:'#DC2626',warning:'#D97706',info:'#1D4ED8'};
+  const ic={success:'✓',error:'✗',warning:'⚠',info:'ℹ'};
+  const el=$('toast');if(!el)return;
+  el.style.cssText=`position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;padding:10px 20px;border-radius:100px;font-size:13px;font-weight:800;color:#fff;background:${c[type]||c.info};display:block;white-space:nowrap;max-width:88vw;overflow:hidden;text-overflow:ellipsis;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:fadeUp .18s ease;`;
+  el.textContent=ic[type]+' '+msg;
+  _tt=setTimeout(()=>{el.style.display='none';},2800);
+}
+
+// ── User management ──
+function saveUser(){
+  if(!S.user)return;
+  DB.s('cur',S.user);
+  const users=DB.g('users')||[];
+  const i=users.findIndex(u=>u.id===S.user.id);
+  if(i>=0)users[i]=S.user;else users.push(S.user);
+  DB.s('users',users);
+}
+function upd(ch){Object.assign(S.user,ch);saveUser();}
+
+// ── Tasks ──
+function loadTasks(){
+  const saved=DB.g('tk_'+S.user.id);
+  if(saved&&saved.date===today())return saved.tasks;
+  const t=[1,2,3,4,5].map(id=>({id,status:'available'}));
+  DB.s('tk_'+S.user.id,{date:today(),tasks:t});
+  return t;
+}
+function saveTasks(){DB.s('tk_'+S.user.id,{date:today(),tasks:S.tasks});}
+
+// ── Levels ──
+const LVS=[
+  {id:'trial',n:'Starter Trial',p:0,d:3,dy:43,tot:215,mo:'—'},
+  {id:'m1',n:'M1 — Basic',p:7000,d:5,dy:43,tot:215,mo:6450},
+  {id:'m2',n:'M2 — Standard',p:26600,d:10,dy:86,tot:860,mo:25800},
+  {id:'m3',n:'M3 — Advanced',p:95000,d:25,dy:131,tot:3275,mo:98250},
+  {id:'m4',n:'M4 — Premium',p:300000,d:50,dy:222,tot:11100,mo:333000},
+  {id:'m5',n:'M5 — Elite',p:780000,d:80,dy:390,tot:31200,mo:936000},
+  {id:'m6',n:'M6 — Executive',p:1950000,d:130,dy:652,tot:84760,mo:2542800},
+  {id:'g7',n:'G7 — Platinum',p:4485000,d:200,dy:1068,tot:213600,mo:6408000},
+];
+function lvN(id){return LVS.find(l=>l.id===id)?.n||'Starter Trial';}
+
+// ── Market data (simulated) ──
+const MARKETS=[
+  {sym:'BLK',name:'BlackRock',val:865.42,chg:+1.24},
+  {sym:'DZD/USD',name:'الدينار',val:134.20,chg:-0.15},
+  {sym:'GOLD',name:'الذهب',val:2342.80,chg:+0.82},
+  {sym:'S&P 500',name:'S&P 500',val:5248.49,chg:+0.45},
 ];
 
-let cash     = 10000;
-let holdings = {};   // { id: qty }
-let trades   = 0;
-let transactions = [];
-let currentTab = 'buy';
-let portfolioHistory = [];
+// ── AI ──
+const KB=[
+  {k:['مرحبا','هلا','اهلا','السلام','hello','hi'],r:`أهلاً وسهلاً بك في BlackRock! 🌟\n\nأنا مساعدك الذكي المالي المتخصص. يمكنني مساعدتك في:\n\n📈 استراتيجيات الاستثمار\n💰 حساب أرباحك اليومية\n🏢 معلومات الشركة والعقد الرسمي\n🎯 نظام الإحالات ومضاعفة الدخل\n⏱️ نظام المهام اليومية\n💳 السحب والمعاملات\n\nما الذي تودّ معرفته؟`},
+  {k:['شركة','blackrock','بلاك','عن التطبيق'],r:`🏢 BlackRock, Inc\n\nالشركة الأولى عالمياً في إدارة الأصول:\n\n• تأسست: 1988، نيويورك\n• الأصول المُدارة: 10.2 تريليون دولار\n• التداول: NYSE — رمز BLK\n• EIN: 32-0174431\n• التواجد: 38 دولة، +19,000 موظف\n\n🇩🇿 عقد الجزائر الرسمي:\n• بدء: يناير 2025\n• انتهاء: ديسمبر 2027 (3 سنوات)\n• مسجّل رسمياً لدى السلطات الجزائرية\n\n🛡️ الأمان:\n• تشفير AES-256 + SSL/TLS 3.0\n• أموالك محمية 100%`},
+  {k:['كيف ربح','كيف اكسب','طريقة','كيف احصل','اكسب'],r:`💡 استراتيجية الربح الثلاثية:\n\n━━━━━━━━━━━━━━━━━━\n1️⃣ المهام اليومية (فورية)\n• 5 مهام × 43 DZD = 215 DZD يومياً\n• كل مهمة: 40 ثانية فقط!\n• شهرياً: ~6,450 DZD\n\n2️⃣ نظام الإحالات (سلبية)\n• كل صديق = 5% من أرباحه مدى الحياة\n• 10 أصدقاء = ~107 DZD/يوم تلقائياً\n• 100 صديق = ~1,075 DZD/يوم!\n\n3️⃣ الترقية الاستثمارية (تراكمية)\n• M1: 43 DZD/يوم\n• G7: 1,068 DZD/يوم\n━━━━━━━━━━━━━━━━━━\n💪 ابدأ المهام الآن!`},
+  {k:['مهمة','مهام','40 ثانية','task'],r:`⏱️ نظام المهام اليومية:\n\n• 5 مهام مستقلة كل يوم\n• كل مهمة = 40 ثانية = 43 DZD\n• العبها بأي ترتيب تريد\n• الإجمالي: 215 DZD/يوم\n• التجديد: كل منتصف ليل\n\n⚠️ تحذير: لا تلغِ المهمة أثناء العد!\n\n📊 الإجماليات:\n• يومياً: 215 DZD\n• شهرياً: 6,450 DZD\n• سنوياً: 77,400 DZD`},
+  {k:['احال','إحال','رابط','صديق','5%','فريق'],r:`🎯 نظام الإحالة الذهبية:\n\n━━━━━━━━━━━━━━━━━━\nكل صديق يسجل برابطك:\n✅ دورة عجلة حظ مجانية لك 🎡\n✅ 5% من أرباحه اليومية مدى الحياة\n\n💰 جدول الأرباح:\n• 5 أصدقاء = ~53 DZD/يوم\n• 20 صديقاً = ~215 DZD/يوم\n• 50 صديقاً = ~537 DZD/يوم\n• 100 صديق = ~1,075 DZD/يوم!\n━━━━━━━━━━━━━━━━━━\n🚀 انشر رابطك في واتساب وتليجرام الآن!`},
+  {k:['سحب','اسحب','withdraw','تحويل'],r:`💳 نظام السحب:\n\n• الحد الأدنى: 215 DZD\n• الشرط: مستوى M1 فأعلى\n• وقت المعالجة: 24-48 ساعة\n\nطرق السحب المتاحة:\n🏦 CCP — بريد الجزائر\n🏦 DZ Bank\n💻 PayPal\n\nللسحب: الرئيسية ← سحب الأرباح`},
+  {k:['امان','أمان','ضمان','موثوق','حقيقي','ضمانة'],r:`🛡️ ضمانات الأمان:\n\n• تشفير عسكري AES-256\n• بروتوكول SSL/TLS 3.0\n• عقد رسمي مع الجزائر ✅\n  (يناير 2025 → ديسمبر 2027)\n• الشركة مدرجة رسمياً في NYSE\n• أموالك محمية بالكامل\n\n🏢 BlackRock هي أكبر مدير أصول\nفي التاريخ — 35 سنة من الثقة`},
+  {k:['عجلة','wheel','جائزة'],r:`🎡 عجلة الحظ:\n\n• تحصل عليها مع كل صديق يسجل برابطك\n• دورة واحدة لكل صديق جديد\n\nالجوائز:\n🥇 430 DZD\n🥈 215 DZD\n🥉 86 DZD\n🎁 43 DZD\n🎠 دورة إضافية مجانية\n\n💡 كلما أكثرت من الإحالات كلما فزت أكثر!`},
+];
+function aiR(txt){const lo=txt.toLowerCase();for(const e of KB)if(e.k.some(k=>lo.includes(k)))return e.r;return `🤔 سؤال ممتاز!\n\nجرّب سؤالاً من هذه:\n• "كيف أربح؟"\n• "عن الشركة"\n• "المهام"\n• "الإحالات"\n• "السحب"\n• "الأمان"\n• "عجلة الحظ"`;}
 
-/* ──────────── CLOCK ──────────── */
-function updateClock(){
-  const n = new Date();
-  document.getElementById('clock').textContent = n.toLocaleTimeString('ar-SA');
-  const h = n.getHours();
-  const open = h >= 9 && h < 17;
-  const el = document.getElementById('mktStatus');
-  el.textContent = open ? '● السوق مفتوح' : '● السوق مغلق';
-  el.style.background = open ? 'rgba(0,208,132,.12)' : 'rgba(255,77,109,.12)';
-  el.style.color       = open ? 'var(--green)' : 'var(--red)';
-  el.style.borderColor = open ? 'rgba(0,208,132,.3)' : 'rgba(255,77,109,.3)';
-}
-setInterval(updateClock, 1000); updateClock();
-
-/* ──────────── PRICE SIMULATION ──────────── */
-function simulatePrices(){
-  ASSETS.forEach(a => {
-    const chg = (Math.random()-.48) * a.price * 0.008;
-    a.price = Math.max(a.price + chg, 1);
-  });
-  renderTicker();
-  renderAssetsTable();
-  updateKPIs();
-  updateEstimate();
-}
-setInterval(simulatePrices, 2500);
-
-/* ──────────── TICKER ──────────── */
-function renderTicker(){
-  let html = '';
-  const doubled = [...ASSETS, ...ASSETS];
-  doubled.forEach(a => {
-    const chg = ((a.price - a.initPrice)/a.initPrice*100).toFixed(2);
-    const cls = chg>=0?'badge-up':'badge-down';
-    const arrow = chg>=0?'▲':'▼';
-    html += `<span class="ticker-item">
-      <span class="sym">${a.sym}</span>
-      <span class="price">$${fmt(a.price)}</span>
-      <span class="${cls}">${arrow}${Math.abs(chg)}%</span>
-    </span>`;
-  });
-  document.getElementById('tickerInner').innerHTML = html;
+// ── Avatars ──
+const AVS=[
+  {id:1,url:'https://api.dicebear.com/7.x/lorelei/svg?seed=sofia&backgroundColor=1e2d4a',l:'سيدة 1'},
+  {id:2,url:'https://api.dicebear.com/7.x/lorelei/svg?seed=alex&backgroundColor=1a2540',l:'رجل 1'},
+  {id:3,url:'https://api.dicebear.com/7.x/lorelei/svg?seed=luna&backgroundColor=2a1f3d',l:'سيدة 2'},
+  {id:4,url:'https://api.dicebear.com/7.x/lorelei/svg?seed=marcus&backgroundColor=1f3020',l:'رجل 2'},
+  {id:5,url:'https://api.dicebear.com/7.x/lorelei/svg?seed=zara&backgroundColor=3d1f2a',l:'سيدة 3'},
+];
+function avH(u,sz=52){
+  const av=AVS.find(a=>a.id===u.avatar);
+  if(av)return`<div class="avr"><img src="${av.url}" style="width:${sz}px;height:${sz}px;border-radius:50%;display:block;border:2px solid var(--bg)"></div>`;
+  return`<div style="width:${sz}px;height:${sz}px;background:linear-gradient(135deg,#D4AF37,#B8860B);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${Math.round(sz*.38)}px;font-weight:900;color:var(--bg)">${(u.un||'?').charAt(0).toUpperCase()}</div>`;
 }
 
-/* ──────────── ASSETS TABLE ──────────── */
-function renderAssetsTable(){
-  const tb = document.getElementById('assetsBody');
-  tb.innerHTML = ASSETS.map(a => {
-    const chg = ((a.price - a.initPrice)/a.initPrice*100).toFixed(2);
-    const cls = chg>=0?'badge-up':'badge-down';
-    const arr = chg>=0?'▲':'▼';
-    const held = holdings[a.id]||0;
-    const val  = held * a.price;
-    return `<tr>
-      <td>
-        <div style="display:flex;align-items:center">
-          <div class="asset-icon" style="background:${a.color}22;color:${a.color}">${a.icon}</div>
-          <div><div class="asset-name">${a.name}</div><div class="asset-sym">${a.sym}</div></div>
-        </div>
-      </td>
-      <td class="num">$${fmt(a.price)}</td>
-      <td class="${cls}">${arr}${Math.abs(chg)}%</td>
-      <td class="num">${held>0?held.toFixed(4):'--'}</td>
-      <td class="num">${held>0?'$'+fmt(val):'--'}</td>
-    </tr>`;
-  }).join('');
-}
+// ── Icons ──
+const I={
+  home:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+  tasks:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+  diamond:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/><path d="M11 3 5 9l6 13V3z"/><path d="m13 22 6-13-6-6V22z"/><path d="m2 9 10 4 10-4"/></svg>',
+  user:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  bell:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>',
+  shield:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+  lock:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+  check:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  x:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+  send:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg>',
+  share:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>',
+  arL:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>',
+  up:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>',
+  wallet:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><circle cx="16" cy="12" r="2"/></svg>',
+  dl:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>',
+  bldg:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9h1"/><path d="M9 13h1"/><path d="M9 17h1"/></svg>',
+  users:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  rocket:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>',
+  star:'<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  logout:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>',
+  cog:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+  gift:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A2.5 2.5 0 0 1 10 5.5V8"/><path d="M16.5 8V5.5A2.5 2.5 0 0 1 19 3a2.5 2.5 0 0 1 0 5h-5"/></svg>',
+  globe:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+  phone:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.13 12 19.79 19.79 0 0 1 1.06 3.38 2 2 0 0 1 3.03 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+  mail:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+  cam:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>',
+  profit:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="1" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+  info:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>',
+  robot:'<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="5" width="16" height="11" rx="2"/><circle cx="9" cy="10" r="1.5" fill="#020509"/><circle cx="15" cy="10" r="1.5" fill="#020509"/><rect x="8" y="14" width="8" height="1.5" rx="1" fill="#020509"/><path d="M12 3v2" stroke="white" stroke-width="2" fill="none"/><circle cx="12" cy="2.5" r="1" fill="white"/><path d="M6 19h12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
+  chart:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+  trend:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+};
 
-/* ──────────── TRADE SELECT ──────────── */
-function populateTradeSelect(){
-  const sel = document.getElementById('tradeAsset');
-  sel.innerHTML = '<option value="">-- اختر أصل --</option>' +
-    ASSETS.map(a => `<option value="${a.id}">${a.icon} ${a.name} (${a.sym})</option>`).join('');
+// ════════════════════════════════════════════
+//  SHEET & NAV
+// ════════════════════════════════════════════
+function openSheet(html,title=''){
+  closeSheet();
+  const ov=document.createElement('div');
+  ov.className='sho fi';ov.id='sho';
+  ov.onclick=e=>{if(e.target===ov)closeSheet();};
+  const sh=document.createElement('div');sh.className='sh';
+  sh.innerHTML=`<div style="width:40px;height:4px;background:rgba(212,175,55,.2);border-radius:2px;margin:14px auto 10px"></div>${title?`<div style="text-align:center;font-size:16px;font-weight:800;color:var(--white);padding:0 16px 12px;border-bottom:1px solid var(--border2)">${title}</div>`:''}<div style="padding:16px 16px 50px">${html}</div>`;
+  ov.appendChild(sh);document.body.appendChild(ov);S.sheetEl=ov;
 }
+function closeSheet(){if(S.sheetEl){S.sheetEl.remove();S.sheetEl=null;}}
+window.closeSheet=closeSheet;
 
-/* ──────────── TAB ──────────── */
-function setTab(t){
-  currentTab = t;
-  document.getElementById('tabBuy').className  = 'tab-btn' + (t==='buy'?' active-buy':'');
-  document.getElementById('tabSell').className = 'tab-btn' + (t==='sell'?' active-sell':'');
-  document.getElementById('tradeBtn').className= 'btn ' + (t==='buy'?'btn-buy':'btn-sell');
-  document.getElementById('tradeBtn').textContent = t==='buy'?'تنفيذ الشراء':'تنفيذ البيع';
-  updateEstimate();
+function navH(){
+  return`<nav class="nav">${[
+    {id:'home',ic:'home',l:'الرئيسية'},
+    {id:'tasks',ic:'tasks',l:'المهام',b:5},
+    {id:'up',ic:'diamond',l:'الترقية'},
+    {id:'profile',ic:'user',l:'حسابي'},
+  ].map(t=>`<button class="nb${S.tab===t.id?' on':''}" onclick="setTab('${t.id}')"><div style="position:relative">${I[t.ic]}${t.b?`<span class="bdg">${t.b}</span>`:''}</div><span class="nl">${t.l}</span></button>`).join('')}</nav>`;
 }
+function fabH(){return`<button class="fab floatY" onclick="openAI()"><div class="fdot"></div><span style="color:var(--bg)">${I.robot}</span></button>`;}
 
-/* ──────────── ESTIMATE ──────────── */
-function updateEstimate(){
-  const id  = document.getElementById('tradeAsset').value;
-  const qty = parseFloat(document.getElementById('tradeQty').value)||0;
-  if(!id||qty<=0){ ['estUnit','estFee','estTotal'].forEach(x=>document.getElementById(x).textContent='--'); return; }
-  const a   = ASSETS.find(x=>x.id===id);
-  const sub  = a.price * qty;
-  const fee  = sub * 0.001;
-  const tot  = currentTab==='buy' ? sub+fee : sub-fee;
-  document.getElementById('estUnit').textContent  = '$'+fmt(a.price);
-  document.getElementById('estFee').textContent   = '$'+fmt(fee);
-  document.getElementById('estTotal').textContent = '$'+fmt(tot);
-}
+// ════════════════════════════════════════════
+//  HOME
+// ════════════════════════════════════════════
+function homeH(){
+  const u=S.user,lv=lvN(u.level),unread=(u.notifs||[]).filter(n=>!n.r).length;
+  const done=(S.tasks||[]).filter(t=>t.status==='done').length;
+  const base=location.href.split('?')[0].split('#')[0];
+  const refLink=base+'?ref='+u.code;
+  const lvData=LVS.find(l=>l.id===u.level)||LVS[0];
 
-/* ──────────── EXECUTE TRADE ──────────── */
-function executeTrade(){
-  const id  = document.getElementById('tradeAsset').value;
-  const qty = parseFloat(document.getElementById('tradeQty').value)||0;
-  if(!id) return showToast('⚠️ اختر أصلاً أولاً','warn');
-  if(qty<=0) return showToast('⚠️ أدخل كمية صحيحة','warn');
-  const a   = ASSETS.find(x=>x.id===id);
-  const sub  = a.price * qty;
-  const fee  = sub * 0.001;
-
-  if(currentTab==='buy'){
-    const cost = sub + fee;
-    if(cost > cash) return showToast('❌ رصيد غير كافٍ','err');
-    cash -= cost;
-    holdings[id] = (holdings[id]||0) + qty;
-    addTx('buy', a, qty, sub+fee);
-    showToast(`✅ تم شراء ${qty} ${a.sym} بـ $${fmt(cost)}`,'ok');
-  } else {
-    const held = holdings[id]||0;
-    if(qty > held) return showToast('❌ لا تملك هذه الكمية','err');
-    const recv = sub - fee;
-    cash += recv;
-    holdings[id] -= qty;
-    if(holdings[id] < 0.00001) delete holdings[id];
-    addTx('sell', a, qty, recv);
-    showToast(`✅ تم بيع ${qty} ${a.sym} بـ $${fmt(recv)}`,'ok');
-  }
-  trades++;
-  updateKPIs();
-  renderHoldings();
-  renderDonut();
-  updatePortfolioHistory();
-}
-
-/* ──────────── TRANSACTIONS ──────────── */
-function addTx(type, asset, qty, amount){
-  const now = new Date();
-  transactions.unshift({ type, asset, qty, amount,
-    date: now.toLocaleString('ar-SA') });
-  renderTxList();
-}
-function renderTxList(){
-  const el = document.getElementById('txList');
-  if(!transactions.length){ el.innerHTML='<p style="color:var(--muted);text-align:center;padding:20px">لا توجد معاملات بعد</p>'; return; }
-  el.innerHTML = transactions.slice(0,20).map(t => `
-    <div class="tx-item">
-      <div style="display:flex;align-items:center">
-        <div class="tx-icon">${t.asset.icon}</div>
+  return`<div class="fu" style="padding-bottom:16px">
+  <!-- Header -->
+  <div style="background:rgba(2,5,9,.95);backdrop-filter:blur(20px);padding:12px 16px 8px;border-bottom:1px solid rgba(212,175,55,.08);position:sticky;top:0;z-index:50">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div class="hdr-logo">
+        <div class="logo-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/></svg></div>
         <div>
-          <div class="tx-name">${t.asset.name}</div>
-          <div class="tx-date">${t.date} · ${t.qty} وحدة</div>
+          <div style="font-family:Montserrat,sans-serif;font-size:15px;font-weight:900;letter-spacing:2px;color:var(--gold)">BLACKROCK</div>
+          <div style="font-size:8.5px;color:var(--gray3);letter-spacing:.5px">INVESTMENT PLATFORM</div>
         </div>
       </div>
-      <div class="tx-right">
-        <div class="tx-amount" style="color:${t.type==='buy'?'var(--red)':'var(--green)'}">
-          ${t.type==='buy'?'-':'+'}$${fmt(t.amount)}
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:100px;padding:2px 8px;display:flex;align-items:center;gap:3px">
+          ${I.shield}<span style="color:var(--grn);font-size:9px;font-weight:800">NYSE: BLK</span>
         </div>
-        <div class="tx-type" style="color:${t.type==='buy'?'var(--red)':'var(--green)'}">
-          ${t.type==='buy'?'🔴 شراء':'🟢 بيع'}
+        <button onclick="openNotifs()" style="position:relative;background:none;border:none;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center">
+          <div style="width:36px;height:36px;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--gold)">${I.bell}</div>
+          ${unread>0?`<span class="bdg" style="top:-2px;right:-2px">${unread}</span>`:''}
+        </button>
+      </div>
+    </div>
+    <!-- Market Ticker -->
+    <div class="ticker" style="margin:0 -16px;padding:5px 16px">
+      ${MARKETS.map(m=>`<div class="tick-item"><span style="color:var(--gray3);font-size:9.5px;font-weight:700">${m.sym}</span><span style="color:var(--gold);font-size:9.5px;font-weight:800;font-family:Montserrat,sans-serif">${m.val}</span><span style="font-size:9px;font-weight:700;color:${m.chg>=0?'var(--grn)':'var(--red)'}">${m.chg>=0?'↑':'↓'}${Math.abs(m.chg)}%</span></div>`).join('')}
+    </div>
+  </div>
+
+  <div style="padding:0 14px">
+  <!-- Balance Hero Card -->
+  <div class="shimmer-card" style="margin:12px 0;padding:20px 18px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px">
+      <div>
+        <div style="color:var(--gray2);font-size:11px;font-weight:600;letter-spacing:.5px;margin-bottom:6px">TOTAL PORTFOLIO VALUE</div>
+        <div class="money gt" style="font-size:34px">${fmt(u.balance)}</div>
+        <div style="color:var(--gray3);font-size:11px;margin-top:2px">DZD</div>
+      </div>
+      <div style="text-align:left">
+        ${avH(u,44)}
+        <div style="margin-top:6px;text-align:center">
+          <div class="badge-gold" style="font-size:9px;padding:2px 7px"><span style="color:var(--gold);font-weight:800">${lv.split('—')[0].trim()}</span></div>
         </div>
       </div>
-    </div>`).join('');
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      ${[
+        {l:'الفريق',v:u.teamCount||0,c:'var(--gold)',ic:'users'},
+        {l:'المهام',v:done+'/5',c:'var(--grn)',ic:'tasks'},
+        {l:'اليومي',v:'+'+lvData.dy,c:'var(--blu)',ic:'profit'},
+      ].map(s=>`<div style="background:rgba(255,255,255,.04);border-radius:10px;padding:9px;text-align:center"><div style="color:${s.c};font-size:14px;font-weight:800;font-family:Montserrat,sans-serif" class="cUp">${s.v}</div><div style="color:var(--gray3);font-size:9.5px;font-weight:600;margin-top:2px">${s.l}</div></div>`).join('')}
+    </div>
+  </div>
+
+  <!-- Quick Actions Row -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+    <button onclick="doWithdraw()" class="card" style="padding:13px;display:flex;align-items:center;gap:10px;border:none;cursor:pointer;text-align:right">
+      <div style="width:36px;height:36px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--grn);flex-shrink:0">${I.dl}</div>
+      <div><div style="color:var(--white);font-weight:800;font-size:12.5px">سحب</div><div style="color:var(--gray3);font-size:10px">السحب السريع</div></div>
+    </button>
+    <button onclick="setTab('up')" class="card" style="padding:13px;display:flex;align-items:center;gap:10px;border:none;cursor:pointer;text-align:right">
+      <div style="width:36px;height:36px;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.18);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0">${I.diamond}</div>
+      <div><div style="color:var(--white);font-weight:800;font-size:12.5px">ترقية</div><div style="color:var(--gray3);font-size:10px">رفع المستوى</div></div>
+    </button>
+  </div>
+
+  <!-- Referral Banner -->
+  <div class="card card-gold" style="padding:14px;margin-bottom:12px;background:linear-gradient(135deg,rgba(15,22,42,.98),rgba(10,16,32,.99))">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:10px;display:flex;align-items:center;justify-content:center"><span style="color:var(--bg)">${I.gift}</span></div>
+        <div>
+          <div style="color:var(--white);font-weight:800;font-size:13px">🎯 الإحالة الذهبية</div>
+          <div style="color:var(--gray3);font-size:10.5px">5% من دخل كل صديق مدى الحياة</div>
+        </div>
+      </div>
+      <div class="badge-gold"><span class="money gt" style="font-size:12px">5%</span></div>
+    </div>
+    <div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.12);border-radius:9px;padding:7px 10px;display:flex;align-items:center;gap:7px;margin-bottom:8px">
+      <span style="flex:1;color:var(--gray2);font-size:10.5px;direction:ltr;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center">${u.ref}</span>
+      <button onclick="copyRef()" style="padding:4px 10px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:7px;color:var(--bg);font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0">نسخ</button>
+    </div>
+    <button class="btn btn-primary" onclick="shareRef()" style="font-size:13px;color:var(--bg)">${I.share}<span>مشاركة الرابط الحقيقي</span></button>
+    <div style="text-align:center;margin-top:6px;color:var(--gray3);font-size:10px">كل صديق يسجل = 🎡 عجلة حظ مجانية!</div>
+  </div>
+
+  <!-- Portfolio Performance -->
+  <div style="margin-bottom:12px">
+    <div class="sec-hdr"><span class="sec-ttl">📊 أداء المحفظة</span></div>
+    <div class="card" style="padding:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        ${[
+          {l:'إجمالي الأرباح',v:fmtDZD(u.totalEarned||0),c:'var(--grn)'},
+          {l:'أرباح الإحالات',v:fmtDZD(u.refEarn||0),c:'var(--gold)'},
+          {l:'أرباح اليوم',v:'+'+done*43+' DZD',c:'var(--blu)'},
+          {l:'الأرباح الشهرية',v:typeof lvData.mo==='number'?fmtDZD(lvData.mo):'—',c:'var(--gold)'},
+        ].map(r=>`<div style="background:rgba(255,255,255,.03);border-radius:9px;padding:9px"><div style="color:${r.c};font-weight:800;font-size:12px">${r.v}</div><div style="color:var(--gray3);font-size:9.5px;margin-top:2px">${r.l}</div></div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  <!-- Company & Security -->
+  <div>
+    <div class="sec-hdr"><span class="sec-ttl">🏢 عن الشركة والأمان</span><button class="sec-link" onclick="openCompanySheet()">التفاصيل</button></div>
+    <div class="card card-gold" style="padding:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        ${[
+          {v:'NYSE: BLK',l:'رمز التداول',c:'var(--gold)'},
+          {v:'يناير 2025',l:'بدء عقد الجزائر',c:'var(--grn)'},
+          {v:'ديسمبر 2027',l:'انتهاء العقد',c:'var(--gold)'},
+          {v:'AES-256',l:'بروتوكول التشفير',c:'var(--blu)'},
+        ].map(r=>`<div style="text-align:center"><div style="color:${r.c};font-size:11px;font-weight:800">${r.v}</div><div style="color:var(--gray3);font-size:9.5px;margin-top:1px">${r.l}</div></div>`).join('')}
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>`;
 }
 
-/* ──────────── HOLDINGS ──────────── */
-function renderHoldings(){
-  const el = document.getElementById('holdingsList');
-  const keys = Object.keys(holdings).filter(k=>holdings[k]>0);
-  if(!keys.length){ el.innerHTML='<p style="color:var(--muted);text-align:center;padding:20px">محفظتك فارغة</p>'; return; }
-  const total = keys.reduce((s,k)=>s+(holdings[k]*ASSETS.find(a=>a.id===k).price),0);
-  el.innerHTML = keys.map(k=>{
-    const a = ASSETS.find(x=>x.id===k);
-    const val = holdings[k]*a.price;
-    const pct = total ? (val/total*100).toFixed(1) : 0;
-    const chg = ((a.price-a.initPrice)/a.initPrice*100).toFixed(2);
-    return `<div style="margin-bottom:14px">
+// ════════════════════════════════════════════
+//  TASKS
+// ════════════════════════════════════════════
+function taskCardH(t){
+  const isAct=S.activeTask===t.id&&t.status==='active';
+  const cls=t.status==='available'?'tc-a':t.status==='active'?'tc-r':t.status==='done'?'tc-d':t.status==='failed'?'tc-f':'';
+  const prog=t.status==='done'?100:isAct?((40-S.cdVal)/40*100):0;
+  return`<div class="card tc ${cls}" style="padding:13px;margin-bottom:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:9px">
+        <div style="width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:${t.status==='done'?'rgba(34,197,94,.12)':t.status==='failed'?'rgba(239,68,68,.1)':'linear-gradient(135deg,var(--gold),var(--gold2))'}">
+          <span style="color:${t.status==='done'?'var(--grn)':t.status==='failed'?'var(--red)':'var(--bg)'}">${t.status==='done'?I.check:t.status==='failed'?I.x:I.rocket}</span>
+        </div>
+        <div>
+          <div style="color:${t.status==='failed'?'var(--gray3)':'var(--white)'};font-weight:800;font-size:13.5px">Task ${t.id} — يومية ${t.id}</div>
+          <div style="color:var(--gray3);font-size:11px;margin-top:1px">Reward: 43 DZD</div>
+        </div>
+      </div>
+      <div class="money" style="font-size:18px;font-weight:900;color:${t.status==='done'?'var(--grn)':t.status==='failed'?'rgba(239,68,68,.5)':'var(--gold)'}">+43</div>
+    </div>
+    <div class="prog" style="height:5px;margin-bottom:8px"><div class="pg ${t.status==='done'?'pg-green':t.status==='failed'?'pg-red':'pg-gold'}" style="width:${prog}%"></div></div>
+    ${isAct?`
+    <div class="card" style="padding:12px;text-align:center;margin-bottom:8px;border-radius:11px;background:linear-gradient(135deg,rgba(22,17,3,.5),rgba(7,12,24,.99));border-color:rgba(212,175,55,.3)">
+      <div style="color:var(--gray2);font-size:11px;margin-bottom:3px;letter-spacing:.5px">WAITING...</div>
+      <div style="font-family:Montserrat,sans-serif;font-weight:900;font-size:46px;line-height:1;background:linear-gradient(135deg,var(--goldL),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text" id="cd-${t.id}">${S.cdVal}</div>
+      <div style="color:var(--gray3);font-size:10px;margin-top:2px">SECONDS</div>
+      <div class="prog" style="margin-top:9px;height:4px"><div class="pg pg-gold" id="cb-${t.id}" style="width:${(40-S.cdVal)/40*100}%"></div></div>
+    </div>
+    <button class="btn btn-danger" onclick="cancelTask(${t.id})" style="font-size:12.5px">${I.x}<span>إلغاء (تخسر 43 DZD)</span></button>
+    `:''}
+    ${t.status==='available'?`<button class="btn btn-primary" onclick="startTask(${t.id})" style="font-size:13px;color:var(--bg)">${I.rocket}<span>ابدأ المهمة — 40 ثانية</span></button>`:''}
+    ${t.status==='done'?`<div class="btn btn-success" style="pointer-events:none;font-size:13px">${I.check}<span>مكتملة ✅ — +43 DZD</span></div>`:''}
+    ${t.status==='failed'?`<div class="btn btn-danger" style="pointer-events:none;font-size:12.5px;opacity:.55">${I.x}<span>أُلغيت — تُعاد غداً</span></div>`:''}
+  </div>`;
+}
+
+function tasksH(){
+  if(!S.tasks)S.tasks=loadTasks();
+  const done=S.tasks.filter(t=>t.status==='done').length;
+  const pct=Math.min((S.user.taskBal||0)/215*100,100);
+  return`<div class="fu">
+  <div style="position:sticky;top:0;background:rgba(2,5,9,.96);backdrop-filter:blur(20px);padding:12px 16px;border-bottom:1px solid rgba(212,175,55,.08);z-index:50">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="width:28px;height:28px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center"><span style="color:var(--bg)">${I.tasks}</span></div>
+      <div><div style="color:var(--white);font-weight:900;font-size:16px">Daily Tasks</div><div style="color:var(--gray3);font-size:9.5px">المهام اليومية</div></div>
+    </div>
+  </div>
+  <div style="padding:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:11px">
+      <div class="stat-card"><span style="color:var(--grn)">${I.check}</span><div class="money" style="color:var(--grn);font-size:17px;margin-top:2px">${done}/5</div><div style="color:var(--gray3);font-size:9px;margin-top:1px">COMPLETED</div></div>
+      <div class="stat-card"><span style="color:var(--gold)">${I.profit}</span><div class="money" style="color:var(--gold);font-size:17px;margin-top:2px">${done*43}</div><div style="color:var(--gray3);font-size:9px;margin-top:1px">DZD TODAY</div></div>
+      <div class="stat-card"><span style="color:var(--blu)">${I.users}</span><div class="money" style="color:var(--blu);font-size:17px;margin-top:2px">${S.user.teamCount||0}</div><div style="color:var(--gray3);font-size:9px;margin-top:1px">TEAM</div></div>
+    </div>
+    <div class="card" style="padding:10px 12px;margin-bottom:11px;border-color:rgba(239,68,68,.18)">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px"><span style="color:var(--red)">${I.lock}</span><span style="color:rgba(239,100,100,.9);font-size:11px;font-weight:800">Withdrawal Locked — يتطلب M1 + 215 DZD</span></div>
+      <div class="prog" style="height:5px"><div class="pg pg-red" style="width:${pct}%"></div></div>
+      <div style="display:flex;justify-content:space-between;color:var(--gray3);font-size:10px;margin-top:3px"><span>${fmt(S.user.taskBal||0)} DZD</span><span>215 DZD</span></div>
+    </div>
+    ${S.tasks.map(t=>taskCardH(t)).join('')}
+  </div></div>`;
+}
+
+// ════════════════════════════════════════════
+//  UPGRADE
+// ════════════════════════════════════════════
+function upgradeH(){
+  return`<div class="fu">
+  <div style="position:sticky;top:0;background:rgba(2,5,9,.96);backdrop-filter:blur(20px);padding:12px 16px;border-bottom:1px solid rgba(212,175,55,.08);z-index:50">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="width:28px;height:28px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center"><span style="color:var(--bg)">${I.diamond}</span></div>
+      <div><div style="color:var(--white);font-weight:900;font-size:16px">Investment Plans</div><div style="color:var(--gray3);font-size:9.5px">خطط الاستثمار</div></div>
+    </div>
+  </div>
+  <div style="padding:12px">
+    <div class="shimmer-card" style="padding:12px;margin-bottom:12px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <div class="asset-icon" style="background:${a.color}22;color:${a.color};width:30px;height:30px;font-size:.9rem">${a.icon}</div>
-          <div>
-            <span style="font-weight:700;font-size:.9rem">${a.name}</span>
-            <span style="font-size:.78rem;color:var(--muted);margin-right:6px">${holdings[k].toFixed(4)} ${a.sym}</span>
+        <span style="color:var(--gray2);font-size:12px;font-weight:700">AVAILABLE BALANCE</span>
+        <span class="money gt" style="font-size:19px">${fmt(S.user.balance)} DZD</span>
+      </div>
+      <div class="prog" style="height:5px"><div class="pg pg-gold" style="width:100%"></div></div>
+    </div>
+    ${LVS.map(lv=>{
+      const locked=(S.user.balance||0)<lv.p&&lv.p>0;
+      const current=S.user.level===lv.id;
+      return`<div class="lvc ${locked?'lk':''} ${current?'cu':''}">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">
+          <div style="display:flex;align-items:center;gap:9px">
+            <div style="width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:${locked?'rgba(239,68,68,.07)':current?'rgba(34,197,94,.1)':'linear-gradient(135deg,var(--gold),var(--gold2))'}">
+              <span style="color:${locked?'var(--red)':current?'var(--grn)':'var(--bg)'}">${locked?I.lock:I.rocket}</span>
+            </div>
+            <div>
+              <div style="color:${locked?'var(--gray3)':'var(--white)'};font-weight:900;font-size:14.5px">${lv.n}</div>
+              <div style="color:${lv.p===0?'var(--grn)':'var(--gold)'};font-size:12px;font-weight:700">${lv.p===0?'FREE':fmt(lv.p)+' DZD'}</div>
+            </div>
           </div>
+          ${current?`<span class="badge-green" style="color:var(--grn);font-size:10px;font-weight:800">✓ ACTIVE</span>`:''}
         </div>
-        <div style="text-align:left">
-          <div style="font-weight:700;font-size:.9rem">$${fmt(val)}</div>
-          <div class="${chg>=0?'badge-up':'badge-down'}" style="font-size:.75rem">${chg>=0?'▲':'▼'}${Math.abs(chg)}%</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:9px">
+          ${[['Daily','var(--grn)',lv.dy+' DZD'],['Days','var(--gold)',lv.d],['Total','#FF9800',lv.tot],['Monthly','var(--blu)',typeof lv.mo==='number'?fmt(lv.mo):lv.mo]].map(([k,c,v])=>`<div style="background:rgba(255,255,255,.04);border-radius:7px;padding:6px 3px;text-align:center"><div style="color:${c};font-weight:800;font-size:10.5px">${v}</div><div style="color:var(--gray3);font-size:9px;margin-top:1px">${k}</div></div>`).join('')}
+        </div>
+        ${!locked&&lv.p>0&&!current?`<button class="btn btn-primary" onclick="openContact('${lv.n}','${lv.p}')" style="font-size:12.5px;color:var(--bg)">${I.rocket}<span>Upgrade to ${lv.n}</span></button>`:''}
+        ${lv.id==='trial'&&!current?`<button class="btn btn-success" onclick="activateTrial()" style="font-size:12.5px">${I.check}<span>Activate Free Trial</span></button>`:''}
+        ${current?`<div class="btn btn-success" style="pointer-events:none;font-size:12.5px">${I.check}<span>Current Active Plan</span></div>`:''}
+      </div>`;
+    }).join('')}
+  </div></div>`;
+}
+
+// ════════════════════════════════════════════
+//  PROFILE
+// ════════════════════════════════════════════
+function profileH(){
+  const u=S.user,lv=lvN(u.level);
+  const base=location.href.split('?')[0].split('#')[0];
+  const refLink=base+'?ref='+u.code;
+  return`<div class="fu">
+  <div style="position:sticky;top:0;background:rgba(2,5,9,.96);backdrop-filter:blur(20px);padding:12px 16px;border-bottom:1px solid rgba(212,175,55,.08);z-index:50">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="width:28px;height:28px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center"><span style="color:var(--bg)">${I.user}</span></div>
+      <div><div style="color:var(--white);font-weight:900;font-size:16px">My Account</div><div style="color:var(--gray3);font-size:9.5px">حسابي الشخصي</div></div>
+    </div>
+  </div>
+  <div style="padding:12px">
+    <!-- Profile Header -->
+    <div class="shimmer-card" style="padding:20px;text-align:center;margin-bottom:12px">
+      <button onclick="openAvatarPicker()" style="position:relative;display:inline-block;background:none;border:none;cursor:pointer;margin-bottom:10px">
+        ${avH(u,76)}
+        <div style="position:absolute;bottom:0;right:0;width:22px;height:22px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)"><span style="color:var(--bg)">${I.cam}</span></div>
+      </button>
+      <div style="color:var(--white);font-weight:900;font-size:17px;margin-bottom:3px">${u.un}</div>
+      <div style="color:var(--gray3);font-size:11px;margin-bottom:9px;font-family:Montserrat,sans-serif">ID: BLK-${String(u.id).slice(-6)}</div>
+      <div class="badge-gold" style="font-size:11px;margin:0 auto"><span class="money gt">${lv}</span></div>
+      <div style="color:var(--gray3);font-size:10px;margin-top:8px">Member since: ${new Date(u.joined||Date.now()).toLocaleDateString('en',{year:'numeric',month:'short'})}</div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+      ${[['Portfolio Value',fmt(u.balance)+' DZD','var(--gold)'],['Team Members',u.teamCount||0,'var(--blu)'],['Total Earned',fmt(u.totalEarned||0)+' DZD','var(--grn)'],['Lucky Spins',u.wheelSpins||0,'#A855F7']].map(([l,v,c])=>`<div class="card" style="border-radius:12px;padding:11px;text-align:center"><div class="money" style="color:${c};font-size:14px">${v}</div><div style="color:var(--gray3);font-size:10px;margin-top:2px">${l}</div></div>`).join('')}
+    </div>
+
+    <!-- Referral Card -->
+    <div class="card card-gold" style="padding:14px;margin-bottom:12px">
+      <div style="color:var(--white);font-weight:800;font-size:13.5px;margin-bottom:10px;text-align:center">🔗 Your Referral Link</div>
+      <div style="background:rgba(212,175,55,.06);border-radius:10px;padding:10px;text-align:center;border:1px solid rgba(212,175,55,.15);margin-bottom:8px">
+        <div class="money gt" style="font-size:24px;letter-spacing:4px">${u.code}</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border-radius:9px;padding:7px 10px;display:flex;align-items:center;gap:7px;margin-bottom:8px;border:1px solid var(--border2)">
+        <span style="flex:1;color:var(--gray2);font-size:9.5px;direction:ltr;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center">${refLink}</span>
+        <button onclick="copyRef()" style="padding:4px 10px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:7px;color:var(--bg);font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0">Copy</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+        <button class="btn btn-secondary" onclick="copyRef()" style="font-size:12px;padding:10px">${I.gift}<span>نسخ</span></button>
+        <button class="btn btn-primary" onclick="shareRef()" style="font-size:12px;padding:10px;color:var(--bg)">${I.share}<span>مشاركة</span></button>
+      </div>
+      <div style="text-align:center;margin-top:7px;color:var(--gray3);font-size:9.5px">⚡ الرابط يفتح التطبيق مباشرة عند الضغط</div>
+    </div>
+
+    <!-- Menu -->
+    <div class="card" style="border-radius:14px;overflow:hidden;margin-bottom:12px">
+      ${[
+        {ic:'shield',t:'Security & Contract',d:'SSL + Algeria Agreement',c:'var(--grn)',fn:'openSecSheet()'},
+        {ic:'bldg',t:'About BlackRock',d:'NYSE: BLK — Est. 1988',c:'var(--blu)',fn:'openCoSheet()'},
+        {ic:'users',t:'My Referrals',d:(S.user.teamCount||0)+' members',c:'var(--gold)',fn:'openRefSheet()'},
+        {ic:'gift',t:'Lucky Wheel',d:'Earn with referrals',c:'#A855F7',fn:'tryWheel()'},
+        {ic:'cog',t:'Settings',d:'Account settings',c:'var(--gray3)',fn:'openSetSheet()'},
+      ].map((m,i)=>`<button onclick="${m.fn}" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:none;border:none;cursor:pointer;${i>0?'border-top:1px solid var(--border2)':''};text-align:right"><div style="display:flex;align-items:center;gap:10px"><div style="width:34px;height:34px;background:rgba(255,255,255,.04);border-radius:9px;display:flex;align-items:center;justify-content:center"><span style="color:${m.c}">${I[m.ic]}</span></div><div><div style="color:var(--white);font-weight:800;font-size:13px">${m.t}</div><div style="color:var(--gray3);font-size:10.5px">${m.d}</div></div></div><span style="color:var(--gray4)">${I.arL}</span></button>`).join('')}
+    </div>
+    <button class="btn btn-danger" onclick="doLogout()" style="font-size:13px">${I.logout}<span>Sign Out / تسجيل الخروج</span></button>
+  </div></div>`;
+}
+
+// ════════════════════════════════════════════
+//  MAIN RENDER
+// ════════════════════════════════════════════
+function render(){
+  const app=$('app');if(!app)return;
+  let c='';
+  if(S.tab==='home')c=homeH();
+  else if(S.tab==='tasks')c=tasksH();
+  else if(S.tab==='up')c=upgradeH();
+  else if(S.tab==='profile')c=profileH();
+  app.innerHTML=`<div class="scr">${c}</div>${navH()}${(S.tab==='home'||S.tab==='tasks')?fabH():''}`;
+}
+window.setTab=function(id){if(S.tab===id)return;S.tab=id;render();};
+
+// ════════════════════════════════════════════
+//  ACTIONS
+// ════════════════════════════════════════════
+window.startTask=function(id){
+  if(S.activeTask!==null){toast('هناك مهمة جارية!','warning');return;}
+  const t=S.tasks.find(x=>x.id===id);if(!t||t.status!=='available')return;
+  t.status='active';S.activeTask=id;S.cdVal=40;saveTasks();render();
+  toast('⏱️ Task started! Wait 40 seconds...','info');
+  S.cdTimer=setInterval(()=>{
+    S.cdVal--;
+    const cd=$('cd-'+id),cb=$('cb-'+id);
+    if(cd)cd.textContent=S.cdVal;
+    if(cb)cb.style.width=((40-S.cdVal)/40*100)+'%';
+    if(S.cdVal<=0){clearInterval(S.cdTimer);S.cdTimer=null;completeTask(id);}
+  },1000);
+};
+function completeTask(id){
+  const t=S.tasks.find(x=>x.id===id);if(!t)return;
+  t.status='done';S.activeTask=null;saveTasks();
+  upd({balance:(S.user.balance||0)+43,taskBal:(S.user.taskBal||0)+43,totalEarned:(S.user.totalEarned||0)+43});
+  toast('✓ Task completed! +43 DZD','success');render();
+}
+window.cancelTask=function(id){
+  openSheet(`<div style="text-align:center;padding:4px 0 6px">
+    <div style="width:54px;height:54px;background:rgba(239,68,68,.1);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 11px"><span style="color:var(--red)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span></div>
+    <div style="color:var(--white);font-weight:900;font-size:16px;margin-bottom:7px">Cancel Task?</div>
+    <div style="color:var(--gray2);font-size:12.5px;line-height:1.65;margin-bottom:16px">إذا ألغيت الآن ستخسر <span style="color:var(--red);font-weight:900">43 DZD</span> حتى الغد!</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button class="btn btn-secondary" onclick="closeSheet()" style="font-size:13px">Continue Task</button>
+      <button class="btn btn-danger" onclick="confirmCancel(${id})" style="background:var(--red);border-color:var(--red);color:white;font-size:13px">Cancel Anyway</button>
+    </div>
+  </div>`,'');
+};
+window.confirmCancel=function(id){
+  clearInterval(S.cdTimer);S.cdTimer=null;
+  const t=S.tasks.find(x=>x.id===id);if(t)t.status='failed';
+  S.activeTask=null;saveTasks();closeSheet();
+  toast('❌ Task cancelled — resets tomorrow','error');render();
+};
+window.activateTrial=function(){upd({level:'trial'});toast('Free trial activated!','success');render();};
+window.openContact=function(name,price){
+  openSheet(`<div style="text-align:center;padding:4px 0 12px">
+    <div style="font-family:Montserrat,sans-serif;font-size:12px;font-weight:800;color:var(--gold);letter-spacing:2px;margin-bottom:8px">UPGRADE PLAN</div>
+    <div style="color:var(--white);font-weight:900;font-size:16px">${name}</div>
+    <div style="color:var(--gray3);font-size:12px;margin-top:4px;margin-bottom:16px">${parseFloat(price)===0?'Free':'Investment: '+fmt(parseFloat(price))+' DZD'}</div>
+  </div>
+  ${[
+    {ic:'phone',t:'WhatsApp',d:'+213 555 123 456',c:'rgba(34,197,94,.08)',tc:'var(--grn)'},
+    {ic:'send',t:'Telegram',d:'@BlackRockDZSupport',c:'rgba(59,130,246,.08)',tc:'var(--blu)'},
+    {ic:'mail',t:'Email',d:'support@blackrock.app',c:'rgba(239,68,68,.07)',tc:'var(--red)'},
+  ].map(ch=>`<button onclick="toast('Opening...','info')" style="width:100%;border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;background:${ch.c};border:1px solid var(--border2);cursor:pointer;text-align:right;margin-bottom:7px"><div style="width:38px;height:38px;background:rgba(255,255,255,.05);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:${ch.tc}">${I[ch.ic]}</div><div style="flex:1"><div style="color:var(--white);font-weight:800;font-size:13px">${ch.t}</div><div style="color:var(--gray3);font-size:11px;direction:ltr;text-align:right">${ch.d}</div></div></button>`).join('')}
+  <div class="card card-gold" style="border-radius:11px;padding:10px"><div style="color:var(--gray2);font-size:10.5px;text-align:center">⚠️ تواصل فقط عبر القنوات الرسمية أعلاه</div></div>`,'📞 Contact Support');
+};
+window.doWithdraw=function(){
+  if(!S.user.level||S.user.level==='trial'){toast('Upgrade to M1 first','warning');setTab('up');return;}
+  if((S.user.taskBal||0)<215){toast('Minimum 215 DZD required','warning');return;}
+  toast('Withdrawal request submitted! 24-48h','success');
+};
+window.copyRef=function(){const base=location.href.split('?')[0].split('#')[0];try{navigator.clipboard.writeText(base+'?ref='+S.user.code);}catch{}toast('✓ Referral link copied!','success');};
+window.shareRef=function(){
+  const base=location.href.split('?')[0].split('#')[0];
+  const lnk=base+'?ref='+S.user.code;
+  const txt=`🏦 BlackRock Investment Platform\n\nانضم برابطي الخاص:\n${lnk}\n\n💰 اربح 215 DZD يومياً من المهام!\n🎡 عجلة حظ مجانية عند التسجيل!\n📈 نظام إحالات: 5% مدى الحياة`;
+  if(navigator.share)navigator.share({title:'BlackRock — Investment Platform',text:txt,url:lnk});
+  else{try{navigator.clipboard.writeText(txt);}catch{}toast('Message copied!','success');}
+};
+window.doLogout=function(){clearInterval(S.cdTimer);DB.d('cur');S.user=null;S.tab='home';S.tasks=null;toast('Signed out','success');boot();};
+
+// ─── Sheet Actions ───
+window.openNotifs=function(){
+  upd({notifs:(S.user.notifs||[]).map(n=>({...n,r:true}))});
+  const ns=S.user.notifs||[];
+  openSheet(ns.length?ns.map(n=>`<div class="card" style="border-radius:12px;padding:11px;display:flex;gap:9px;margin-bottom:8px"><div style="width:36px;height:36px;background:rgba(212,175,55,.08);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:var(--gold)">${n.title.includes('🎁')?I.gift:n.title.includes('💡')?I.info:I.check}</span></div><div><div style="color:var(--white);font-weight:800;font-size:12px;margin-bottom:2px">${n.title}</div><div style="color:var(--gray2);font-size:11px;line-height:1.5">${n.desc}</div></div></div>`).join(''):`<div style="text-align:center;padding:24px;color:var(--gray3)">No notifications</div>`,'🔔 Notifications');
+  render();
+};
+window.openSecSheet=function(){
+  openSheet(`<div class="card card-gold" style="padding:16px;text-align:center;margin-bottom:12px">
+    <div style="font-size:36px;margin-bottom:8px">🛡️</div>
+    <div style="color:var(--white);font-weight:900;font-size:15px">Security & Contract</div>
+    <div style="color:var(--gray3);font-size:11.5px;margin-top:3px">Official Algeria Investment Contract</div>
+  </div>
+  ${[
+    {l:'Company',v:'BlackRock, Inc'},
+    {l:'Registration',v:'NYSE: BLK'},
+    {l:'EIN',v:'32-0174431'},
+    {l:'Encryption',v:'SSL/TLS 3.0 — AES-256'},
+    {l:'Algeria Contract Start',v:'January 2025 ✅'},
+    {l:'Contract End',v:'December 2027 (3 years)'},
+    {l:'Fund Protection',v:'100% Guaranteed ✅'},
+  ].map(r=>`<div class="card" style="border-radius:10px;padding:11px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="color:var(--gray2);font-size:12px">${r.l}</span><span style="color:var(--white);font-weight:800;font-size:12px">${r.v}</span></div>`).join('')}
+  <div class="card card-gold" style="padding:13px;margin-top:8px;border-radius:12px">
+    <div style="color:var(--gray1);font-size:11.5px;line-height:1.8;text-align:center">
+      تقر شركة <span style="color:var(--grn);font-weight:900">BlackRock, Inc</span> بأنها أبرمت عقداً رسمياً مع الجانب الجزائري في <span style="color:var(--gold);font-weight:900">يناير 2025</span> مدته <span style="color:var(--gold);font-weight:900">3 سنوات</span> وينتهي في <span style="color:var(--gold);font-weight:900">ديسمبر 2027</span>.
+    </div>
+  </div>`,'🛡️ Security & Contract');
+};
+window.openCoSheet=function(){
+  openSheet(`<div style="text-align:center;margin-bottom:14px">
+    <div style="font-family:Montserrat,sans-serif;font-size:26px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,var(--goldL),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:3px">BLACKROCK</div>
+    <div style="color:var(--gray3);font-size:11px">BlackRock, Inc — New York, United States</div>
+  </div>
+  ${[
+    {l:'Founded',v:'1988, New York'},
+    {l:'AUM',v:'$10.2 Trillion'},
+    {l:'Stock Exchange',v:'NYSE: BLK'},
+    {l:'Employees',v:'+19,000'},
+    {l:'Countries',v:'38 Nations'},
+    {l:'Algeria Contract',v:'Jan 2025 → Dec 2027'},
+  ].map(r=>`<div class="card" style="border-radius:10px;padding:11px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="color:var(--gray2);font-size:12px">${r.l}</span><span style="color:var(--white);font-weight:800;font-size:12px">${r.v}</span></div>`).join('')}
+  <button class="btn btn-primary" onclick="window.open('https://www.blackrock.com','_blank')" style="font-size:13px;color:var(--bg);margin-top:4px">${I.globe}<span>Visit blackrock.com</span></button>`,'🏢 About BlackRock');
+};
+window.openRefSheet=function(){
+  const base=location.href.split('?')[0].split('#')[0];
+  const refLink=base+'?ref='+S.user.code;
+  openSheet(`<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px">
+    <div class="card card-gold" style="border-radius:12px;padding:13px;text-align:center"><div class="money" style="color:var(--gold);font-size:26px">${S.user.teamCount||0}</div><div style="color:var(--gray3);font-size:10px;margin-top:2px">Total Referrals</div></div>
+    <div class="card" style="border-radius:12px;padding:13px;text-align:center;border-color:rgba(34,197,94,.2)"><div class="money" style="color:var(--grn);font-size:16px">${fmt(S.user.refEarn||0)}</div><div style="color:var(--gray3);font-size:10px;margin-top:2px">DZD Earned</div></div>
+  </div>
+  <div class="card card-gold" style="padding:13px;border-radius:12px;text-align:center">
+    <div style="color:var(--gray2);font-size:11px;margin-bottom:7px">Your Referral Link (works directly)</div>
+    <div style="background:rgba(212,175,55,.05);border-radius:9px;padding:8px;margin-bottom:8px;border:1px solid var(--border)"><span style="color:var(--gray2);font-size:9.5px;direction:ltr;word-break:break-all">${refLink}</span></div>
+    <div style="color:var(--gray3);font-size:11px;line-height:1.7">Each referral = <span style="color:var(--gold);font-weight:800">5%</span> of their daily earnings forever + 🎡</div>
+  </div>`,'👥 My Referrals');
+};
+window.openSetSheet=function(){
+  openSheet(`<div class="card" style="border-radius:12px;padding:13px;margin-bottom:11px">
+    ${[['Username',S.user.un],['Balance',fmt(S.user.balance)+' DZD'],['Level',lvN(S.user.level)],['Joined',new Date(S.user.joined||Date.now()).toLocaleDateString()]].map(([l,v])=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border2)"><span style="color:var(--gray3);font-size:12px">${l}</span><span style="color:var(--white);font-size:12px;font-weight:700">${v}</span></div>`).join('')}
+  </div>
+  <button class="btn btn-danger" onclick="if(confirm('Clear all data?')){localStorage.clear();location.reload();}" style="font-size:13px">${I.x}<span>Clear All Data</span></button>`,'⚙️ Settings');
+};
+window.openAvatarPicker=function(){
+  closeSheet();
+  openSheet(`<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:9px">
+    ${AVS.map(av=>`<button onclick="pickAvatar(${av.id})" style="padding:3px;border-radius:10px;background:${S.user.avatar===av.id?'linear-gradient(135deg,var(--gold),var(--gold2))':'rgba(255,255,255,.04)'};border:${S.user.avatar===av.id?'none':'1px solid var(--border2)'};cursor:pointer;text-align:center"><img src="${av.url}" alt="" style="width:100%;border-radius:8px;display:block"><span style="color:var(--gray3);font-size:8px;display:block;margin-top:2px">${av.l}</span></button>`).join('')}
+  </div>`,'🖼️ Choose Avatar');
+};
+window.pickAvatar=function(id){upd({avatar:id});closeSheet();toast('Avatar updated!','success');render();};
+
+// ─── Wheel ───
+const WP=[{l:'43 DZD',v:43},{l:'86 DZD',v:86},{l:'215 DZD',v:215},{l:'Extra Spin',v:0},{l:'430 DZD',v:430},{l:'86 DZD',v:86},{l:'215 DZD',v:215}];
+window.tryWheel=function(){
+  closeSheet();
+  if((S.user.wheelSpins||0)<=0){toast('No spins! Refer a friend to earn one','warning');return;}
+  openWheelScreen();
+};
+function openWheelScreen(){
+  const ex=$('wheel-screen');if(ex)ex.remove();
+  const ov=document.createElement('div');
+  ov.id='wheel-screen';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(2,5,9,.94);backdrop-filter:blur(20px);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px;animation:fadeIn .18s ease';
+  ov.innerHTML=`
+    <button onclick="$('wheel-screen')?.remove()" style="position:absolute;top:50px;right:14px;width:36px;height:36px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gray2)">${I.x}</button>
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-family:Montserrat,sans-serif;font-size:13px;font-weight:800;color:var(--gold);letter-spacing:2px;margin-bottom:4px">LUCKY WHEEL</div>
+      <div style="color:var(--white);font-weight:900;font-size:22px;margin-bottom:4px">🎡 عجلة الحظ</div>
+      <div style="color:var(--gray3);font-size:12px">Spins remaining: <span id="w-spins" style="color:var(--gold);font-weight:900">${S.user.wheelSpins||0}</span></div>
+    </div>
+    <div style="position:relative;margin-bottom:20px">
+      <div class="wp"></div>
+      <div class="wo" id="wheel-el" style="background:conic-gradient(#D4AF37 0deg 51.4deg,#6B4C0A 51.4deg 102.8deg,#D4AF37 102.8deg 154.2deg,#6B4C0A 154.2deg 205.6deg,#D4AF37 205.6deg 257deg,#6B4C0A 257deg 308.4deg,#D4AF37 308.4deg 360deg);transform:rotate(${S.wheelRot}deg)">
+        ${WP.map((p,i)=>`<div style="position:absolute;transform:rotate(${i*(360/7)}deg) translateY(-83px);width:78px;text-align:center;top:50%;left:50%;margin-top:-7px;margin-right:-39px"><span style="color:var(--bg);font-size:10.5px;font-weight:900;text-shadow:none">${p.l}</span></div>`).join('')}
+        <div class="wh"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/></svg></div>
+      </div>
+    </div>
+    <div id="w-result" style="min-height:54px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;width:100%;max-width:290px"></div>
+    <button id="w-btn" onclick="spinWheel()" class="btn btn-primary" style="width:100%;max-width:290px;font-size:14.5px;color:var(--bg)">${(S.user.wheelSpins||0)>0?'🎯 SPIN NOW':'No Spins Left'}</button>
+    <div style="color:var(--gray3);font-size:10px;margin-top:9px">Refer a friend to earn free spins</div>
+  `;
+  document.body.appendChild(ov);
+}
+window.spinWheel=function(){
+  if(S.wheelSpinning||(S.user.wheelSpins||0)<=0)return;
+  S.wheelSpinning=true;
+  const btn=$('w-btn');btn.textContent='🎡 Spinning...';btn.disabled=true;
+  const add=1800+Math.random()*1800,nr=S.wheelRot+add;
+  const el=$('wheel-el');
+  el.style.transition='transform 4s cubic-bezier(.17,.67,.12,.99)';
+  el.style.transform=`rotate(${nr}deg)`;
+  S.wheelRot=nr;
+  setTimeout(()=>{
+    const seg=360/7,wi=Math.floor(((360-(nr%360))+seg/2)%360/seg)%7,prize=WP[wi];
+    S.wheelSpinning=false;
+    const ns=Math.max(0,(S.user.wheelSpins||0)-1);
+    if(prize.v>0){upd({balance:(S.user.balance||0)+prize.v,totalEarned:(S.user.totalEarned||0)+prize.v,wheelSpins:ns});toast('🎉 Won '+prize.v+' DZD!','success');}
+    else{upd({wheelSpins:ns+1});toast('🎁 Extra free spin!','warning');}
+    const res=$('w-result');
+    if(res)res.innerHTML=`<div class="shimmer-card" style="border-radius:12px;padding:12px 20px;text-align:center;width:100%"><div style="color:var(--gray3);font-size:11px;font-family:Montserrat,sans-serif;margin-bottom:3px">PRIZE</div><div class="money gt" style="font-size:26px">${prize.v>0?'+'+prize.v+' DZD':prize.l}</div></div>`;
+    const sw=$('w-spins');if(sw)sw.textContent=S.user.wheelSpins||0;
+    if(btn){btn.textContent=(S.user.wheelSpins||0)>0?'🎯 SPIN AGAIN':'No Spins Left';btn.disabled=(S.user.wheelSpins||0)<=0;}
+    render();
+  },4100);
+};
+
+// ─── AI Chat ───
+function openAI(){
+  if($('ai-screen'))return;
+  if(!S.aiMsgs.length)S.aiMsgs=[{id:1,t:'ai',text:'مرحباً! 👋 أنا مساعد BlackRock الذكي.\n\nيمكنني مساعدتك في:\n• استراتيجيات الاستثمار\n• حساب الأرباح والعوائد\n• معلومات الشركة والعقد\n• نظام الإحالات\n\nاسألني بالعربية أو الإنجليزية! 🌍'}];
+  const ov=document.createElement('div');
+  ov.id='ai-screen';
+  ov.style.cssText='position:fixed;inset:0;background:var(--bg);z-index:300;display:flex;flex-direction:column;animation:fadeIn .16s ease';
+  ov.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid rgba(212,175,55,.08);background:rgba(2,5,9,.97);flex-shrink:0">
+      <button onclick="$('ai-screen')?.remove()" style="width:36px;height:36px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gray3)">${I.x}</button>
+      <div style="text-align:center">
+        <div style="font-family:Montserrat,sans-serif;font-size:12px;font-weight:800;color:var(--gold);letter-spacing:1.5px">AI ASSISTANT</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin-top:2px"><span style="width:6px;height:6px;background:var(--grn);border-radius:50%;animation:dp 1.5s infinite"></span><span style="color:var(--grn);font-size:10px;font-weight:700">Online</span></div>
+      </div>
+      <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--bg)">${I.robot}</div>
+    </div>
+    <div id="ai-msgs" style="flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch"></div>
+    <div style="flex-shrink:0;padding:7px 13px 0;border-top:1px solid rgba(212,175,55,.06)">
+      <div id="ai-q" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:7px;-webkit-overflow-scrolling:touch"></div>
+      <div style="display:flex;gap:7px;align-items:center;padding-bottom:14px">
+        <input class="inp" id="ai-inp" placeholder="Ask me anything..." style="flex:1;border-radius:11px;padding:10px 13px;font-size:12.5px" onkeydown="if(event.key==='Enter')sendAI()">
+        <button onclick="sendAI()" style="width:38px;height:38px;border-radius:10px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--gold),var(--gold2));flex-shrink:0;color:var(--bg)">${I.send}</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(ov);
+  renderAIMsgs();
+  const q=$('ai-q');
+  if(q)q.innerHTML=['كيف أربح؟','عن الشركة','المهام','الإحالات','الأمان','عجلة الحظ'].map(t=>`<button onclick="quickAI('${t}')" style="padding:4px 11px;background:rgba(212,175,55,.07);border:1px solid rgba(212,175,55,.15);border-radius:100px;color:var(--gold);font-size:10.5px;font-weight:700;white-space:nowrap;cursor:pointer;flex-shrink:0;font-family:Tajawal,sans-serif">${t}</button>`).join('');
+}
+window.openAI=openAI;
+function renderAIMsgs(){
+  const c=$('ai-msgs');if(!c)return;
+  c.innerHTML=S.aiMsgs.map(m=>`<div style="display:flex;justify-content:${m.t==='user'?'flex-end':'flex-start'};gap:7px;align-items:flex-start">${m.t==='ai'?`<div style="width:28px;height:28px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;color:var(--bg)">${I.robot.replace('20','14')}</div>`:''}<div class="${m.t==='ai'?'bai':'bu'}">${m.text}</div></div>`).join('');
+  if(S.aiTyping)c.innerHTML+=`<div style="display:flex;gap:7px;align-items:center"><div style="width:28px;height:28px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--bg)">${I.robot.replace('20','14')}</div><div class="bai tdd" style="padding:12px 14px"><span></span><span></span><span></span></div></div>`;
+  c.scrollTop=c.scrollHeight;
+}
+window.quickAI=function(t){const i=$('ai-inp');if(i)i.value=t;sendAI();};
+window.sendAI=function(){
+  const inp=$('ai-inp'),txt=inp?.value.trim();
+  if(!txt||S.aiTyping)return;
+  S.aiMsgs.push({id:Date.now(),t:'user',text:txt});inp.value='';S.aiTyping=true;renderAIMsgs();
+  setTimeout(()=>{S.aiMsgs.push({id:Date.now()+1,t:'ai',text:aiR(txt)});S.aiTyping=false;renderAIMsgs();},700+Math.random()*800);
+};
+
+// ════════════════════════════════════════════
+//  AUTH
+// ════════════════════════════════════════════
+function renderAuth(){
+  const app=$('app');
+  const jb=S.joinCode?`<div class="join-card"><div style="font-size:28px;margin-bottom:8px">🎁</div><div style="font-family:Montserrat,sans-serif;font-size:13px;font-weight:800;color:var(--gold);letter-spacing:1px;margin-bottom:5px">YOU'VE BEEN INVITED</div><div style="color:var(--gray2);font-size:12px;margin-bottom:8px">سجّل الآن وستحصل على:</div><div style="color:var(--gold);font-weight:800;font-size:12.5px">🎡 Lucky Wheel Spin — Free</div><div style="color:var(--grn);font-weight:800;font-size:12.5px;margin-top:3px">✅ Priority Account Access</div></div>`:'';
+  app.innerHTML=`
+  <div class="auth-s" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 18px;min-height:100%">
+    <div style="position:absolute;top:0;left:0;right:0;height:50%;background:radial-gradient(ellipse at 50% -20%,rgba(212,175,55,.07) 0%,transparent 70%);pointer-events:none"></div>
+    <div style="position:relative;z-index:1;width:100%;max-width:340px" class="fu">
+      ${jb}
+      <div style="text-align:center;margin-bottom:28px">
+        <div style="width:80px;height:80px;background:linear-gradient(135deg,var(--gold),var(--gold2),var(--gold3));border-radius:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 8px 32px rgba(212,175,55,.3)">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/><path d="M11 3 5 9l6 13V3z"/><path d="m13 22 6-13-6-6V22z"/><path d="m2 9 10 4 10-4"/></svg>
+        </div>
+        <div style="font-family:Montserrat,sans-serif;font-size:28px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,var(--goldL),var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px">BLACKROCK</div>
+        <div style="color:var(--gray3);font-size:11px;letter-spacing:.5px">INVESTMENT PLATFORM</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px">
+          <div style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:100px;padding:2px 10px;display:flex;align-items:center;gap:3px">${I.shield}<span style="color:var(--grn);font-size:9px;font-weight:800">SECURE SSL</span></div>
+          <div style="background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.18);border-radius:100px;padding:2px 10px"><span style="color:var(--gold);font-size:9px;font-weight:800">NYSE: BLK</span></div>
         </div>
       </div>
-      <div class="progress-wrap">
-        <div class="progress-fill" style="width:${pct}%;background:${a.color}"></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="color:var(--gray3);font-size:10px;font-weight:700;letter-spacing:.5px;margin-bottom:5px;padding-right:2px">USERNAME</div>
+          <input class="inp" id="a-un" placeholder="Enter username">
+        </div>
+        <div style="position:relative">
+          <div style="color:var(--gray3);font-size:10px;font-weight:700;letter-spacing:.5px;margin-bottom:5px;padding-right:2px">PASSWORD</div>
+          <input class="inp" id="a-pw" type="password" placeholder="Enter password" style="width:100%">
+          <button onclick="atPw()" id="pw-tog" style="position:absolute;left:12px;bottom:14px;background:none;border:none;color:var(--gray3);font-size:11px;font-weight:700;cursor:pointer">Show</button>
+        </div>
+        <div id="cp-w" style="display:none">
+          <div style="color:var(--gray3);font-size:10px;font-weight:700;letter-spacing:.5px;margin-bottom:5px;padding-right:2px">CONFIRM PASSWORD</div>
+          <input class="inp" id="a-cp" type="password" placeholder="Confirm password">
+        </div>
+        <button class="btn btn-primary" id="auth-btn" onclick="doAuth()" style="margin-top:4px;font-size:15px;color:var(--bg);font-weight:900">Sign In</button>
       </div>
-    </div>`;
-  }).join('');
-}
-
-/* ──────────── KPIs ──────────── */
-function updateKPIs(){
-  const invested = Object.keys(holdings).reduce((s,k)=>s+(holdings[k]*ASSETS.find(a=>a.id===k).price),0);
-  const total    = invested + cash;
-  const pnl      = total - 10000;
-  const pct      = (pnl/10000*100).toFixed(2);
-  document.getElementById('kpiTotal').textContent = '$'+fmt(total);
-  document.getElementById('kpiTotalChg').textContent = (pnl>=0?'▲ ربح ':'▼ خسارة ') + '$'+fmt(Math.abs(pnl));
-  document.getElementById('kpiTotalChg').className = pnl>=0?'badge-up':'badge-down';
-  document.getElementById('kpiPnl').textContent = (pnl>=0?'+':'-')+'$'+fmt(Math.abs(pnl));
-  document.getElementById('kpiPnl').style.color = pnl>=0?'var(--green)':'var(--red)';
-  document.getElementById('kpiPnlPct').textContent = (pnl>=0?'▲':'▼')+Math.abs(pct)+'% من رأس المال';
-  document.getElementById('kpiPnlPct').className = pnl>=0?'badge-up':'badge-down';
-  document.getElementById('kpiCash').textContent  = '$'+fmt(cash);
-  document.getElementById('kpiTrades').textContent = trades;
-  renderHoldings();
-}
-
-/* ──────────── DONUT CHART ──────────── */
-let donutCtx, donutChart;
-function renderDonut(){
-  const keys = Object.keys(holdings).filter(k=>holdings[k]>0);
-  const canvas = document.getElementById('donutChart');
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width, h = canvas.height;
-  ctx.clearRect(0,0,w,h);
-  const cx=w/2, cy=h/2, R=76, r=46;
-
-  let data=[], colorArr=[], total=0;
-  if(!keys.length){
-    // empty
-    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2);
-    ctx.arc(cx,cy,r,0,Math.PI*2,true);
-    ctx.fillStyle='#30363d'; ctx.fill();
-    document.getElementById('donutVal').textContent='0%';
-    document.getElementById('donutLegend').innerHTML='<p style="color:var(--muted);font-size:.8rem;text-align:center">أضف أصولاً لعرض التوزيع</p>';
-    return;
-  }
-  keys.forEach(k=>{ const v=holdings[k]*ASSETS.find(a=>a.id===k).price; total+=v; data.push({k,v}); });
-  data.forEach(d=>{ d.pct=d.v/total; });
-  keys.forEach(k=>colorArr.push(ASSETS.find(a=>a.id===k).color));
-
-  let start = -Math.PI/2;
-  data.forEach((d,i)=>{
-    const end = start + d.pct*Math.PI*2;
-    ctx.beginPath();
-    ctx.arc(cx,cy,R,start,end);
-    ctx.arc(cx,cy,r,end,start,true);
-    ctx.closePath();
-    ctx.fillStyle = colorArr[i];
-    ctx.fill();
-    start = end;
-  });
-
-  const numAssets = keys.length;
-  document.getElementById('donutVal').textContent = numAssets + (numAssets===1?'':' أصول');
-  document.getElementById('donutLegend').innerHTML = data.map((d,i)=>{
-    const a = ASSETS.find(x=>x.id===d.k);
-    return `<div class="legend-item">
-      <div style="display:flex;align-items:center">
-        <div class="legend-dot" style="background:${a.color}"></div>
-        <span>${a.name}</span>
+      <button onclick="atMode()" id="mode-btn" style="display:block;margin:12px auto 0;background:none;border:none;color:var(--gray2);font-size:12px;cursor:pointer;font-weight:700">Don't have an account? Sign up free</button>
+      <div style="margin-top:16px;padding:13px;background:rgba(212,175,55,.04);border:1px solid rgba(212,175,55,.1);border-radius:12px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">${I.shield}<span style="color:var(--grn);font-size:12px;font-weight:800">Platform Security</span></div>
+        <div style="color:var(--gray3);font-size:10px;line-height:1.75">• Algeria Official Contract: Jan 2025 → Dec 2027<br>• AES-256 + SSL/TLS 3.0 Encryption<br>• NYSE Listed: BLK — EIN: 32-0174431</div>
       </div>
-      <span style="font-weight:700">${(d.pct*100).toFixed(1)}%</span>
-    </div>`;
-  }).join('');
+    </div>
+  </div>`;
+  let lm=true;
+  window.atPw=()=>{const i=$('a-pw'),b=$('pw-tog');i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'Show':'Hide';};
+  window.atMode=()=>{
+    lm=!lm;
+    $('cp-w').style.display=lm?'none':'block';
+    $('auth-btn').textContent=lm?'Sign In':'Create Account';
+    $('mode-btn').textContent=lm?`Don't have an account? Sign up free`:'Already have account? Sign in';
+  };
+  window.doAuth=()=>{
+    const un=($('a-un').value||'').trim(),pw=($('a-pw').value||'').trim(),cp=($('a-cp')?.value||'').trim();
+    if(!un||!pw){toast('Please fill all fields','error');return;}
+    if(!lm&&pw!==cp){toast('Passwords do not match','error');return;}
+    $('auth-btn').textContent='Loading...';$('auth-btn').disabled=true;
+    setTimeout(()=>{
+      const users=DB.g('users')||[];
+      if(lm){
+        const u=users.find(x=>x.un===un&&x.pw===pw);
+        if(u){DB.s('cur',u);S.user=u;toast('Welcome back! 🎉','success');launchApp();}
+        else{toast('Invalid credentials','error');$('auth-btn').textContent='Sign In';$('auth-btn').disabled=false;}
+      } else {
+        if(users.find(x=>x.un===un)){toast('Username already taken','error');$('auth-btn').textContent='Create Account';$('auth-btn').disabled=false;return;}
+        const code=genCode();
+        if(S.joinCode){
+          const ru=users.find(x=>x.code===S.joinCode);
+          if(ru){ru.wheelSpins=(ru.wheelSpins||0)+1;ru.teamCount=(ru.teamCount||0)+1;const ri=users.findIndex(x=>x.id===ru.id);if(ri>=0)users[ri]=ru;DB.s('users',users);}
+        }
+        const u={id:Date.now(),un,pw,code,ref:'blackrock.app/ref/'+code,
+          balance:0,taskBal:0,refEarn:0,teamCount:0,wheelSpins:S.joinCode?1:0,level:null,
+          totalEarned:0,avatar:null,joined:new Date().toISOString(),joinedVia:S.joinCode||null,
+          notifs:[
+            {id:1,title:S.joinCode?'🎁 Welcome Bonus! You got a Lucky Spin!':'Welcome to BlackRock! 🎉',desc:S.joinCode?'You joined via referral and earned a free lucky wheel spin!':'Complete daily tasks and invite friends to maximize earnings!',t:'Now',r:false},
+            {id:2,title:'💡 Pro Tip',desc:'Invite friends with your referral link and earn 5% of their daily income for life!',t:'Now',r:false},
+          ]};
+        users.push(u);DB.s('users',users);DB.s('cur',u);S.user=u;
+        toast(S.joinCode?'Account created + Free spin! 🎡':'Account created successfully! 🎉','success');
+        S.joinCode=null;launchApp();
+      }
+    },450);
+  };
 }
 
-/* ──────────── LINE CHART ──────────── */
-function generateInitHistory(){
-  let v=10000;
-  for(let i=0;i<30;i++){
-    v += (Math.random()-.45)*300;
-    portfolioHistory.push(Math.max(v,5000));
-  }
-}
-function updatePortfolioHistory(){
-  const invested = Object.keys(holdings).reduce((s,k)=>s+(holdings[k]*ASSETS.find(a=>a.id===k).price),0);
-  portfolioHistory.push(invested+cash);
-  if(portfolioHistory.length>50) portfolioHistory.shift();
-  drawLineChart();
-}
-function drawLineChart(){
-  const canvas = document.getElementById('lineChart');
-  const rect   = canvas.parentElement.getBoundingClientRect();
-  canvas.width  = rect.width - 40;
-  canvas.height = 200;
-  const ctx = canvas.getContext('2d');
-  const d   = portfolioHistory;
-  const W   = canvas.width, H = canvas.height;
-  const pad = { t:20, b:30, l:60, r:20 };
-  const pw  = W - pad.l - pad.r;
-  const ph  = H - pad.t - pad.b;
-  ctx.clearRect(0,0,W,H);
+function launchApp(){S.tasks=loadTasks();render();}
+function boot(){const app=$('app');if(!app)return;const u=DB.g('cur');if(u){S.user=u;launchApp();}else renderAuth();}
 
-  const minV = Math.min(...d)*0.995;
-  const maxV = Math.max(...d)*1.005;
-  const xScale = i => pad.l + (i/(d.length-1))*pw;
-  const yScale = v => pad.t + ph - ((v-minV)/(maxV-minV))*ph;
-
-  // Grid
-  ctx.strokeStyle='rgba(48,54,61,.6)'; ctx.lineWidth=1;
-  for(let i=0;i<=4;i++){
-    const y = pad.t + (ph/4)*i;
-    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+pw,y); ctx.stroke();
-    const val = maxV - ((maxV-minV)/4)*i;
-    ctx.fillStyle='#8b949e'; ctx.font='11px Segoe UI';
-    ctx.textAlign='right';
-    ctx.fillText('$'+fmt(val), pad.l-6, y+4);
-  }
-
-  // Gradient fill
-  const grad = ctx.createLinearGradient(0,pad.t,0,pad.t+ph);
-  grad.addColorStop(0,'rgba(0,208,132,.25)');
-  grad.addColorStop(1,'rgba(0,208,132,0)');
-  ctx.beginPath();
-  ctx.moveTo(xScale(0), yScale(d[0]));
-  d.forEach((_,i)=>{ if(i>0) ctx.lineTo(xScale(i), yScale(d[i])); });
-  ctx.lineTo(xScale(d.length-1), pad.t+ph);
-  ctx.lineTo(xScale(0), pad.t+ph);
-  ctx.closePath();
-  ctx.fillStyle=grad; ctx.fill();
-
-  // Line
-  ctx.beginPath();
-  ctx.moveTo(xScale(0), yScale(d[0]));
-  d.forEach((_,i)=>{ if(i>0) ctx.lineTo(xScale(i), yScale(d[i])); });
-  ctx.strokeStyle='#00d084'; ctx.lineWidth=2.5;
-  ctx.lineJoin='round'; ctx.stroke();
-
-  // Last dot
-  const lx = xScale(d.length-1), ly = yScale(d[d.length-1]);
-  ctx.beginPath(); ctx.arc(lx,ly,5,0,Math.PI*2);
-  ctx.fillStyle='#00d084'; ctx.fill();
+// ════════════════════════════════════════════
+//  SPLASH
+// ════════════════════════════════════════════
+function splash(){
+  $('app').innerHTML=`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:var(--bg);position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(212,175,55,.06) 0%,transparent 65%);pointer-events:none"></div>
+    <div style="width:84px;height:84px;background:linear-gradient(135deg,var(--gold),var(--gold2),var(--gold3));border-radius:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(212,175,55,.3);animation:glow 2.5s infinite">
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/><path d="M11 3 5 9l6 13V3z"/><path d="m13 22 6-13-6-6V22z"/><path d="m2 9 10 4 10-4"/></svg>
+    </div>
+    <div style="font-family:Montserrat,sans-serif;font-size:30px;font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,var(--goldL),var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">BLACKROCK</div>
+    <div style="color:var(--gray3);font-size:11px;letter-spacing:2px;font-weight:600">INVESTMENT PLATFORM</div>
+    <div style="width:120px;height:2px;background:rgba(212,175,55,.12);border-radius:2px;margin-top:6px;overflow:hidden"><div style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));animation:progressBar 1.2s cubic-bezier(.4,0,.2,1) forwards"></div></div>
+    <div style="color:var(--gray3);font-size:9.5px;letter-spacing:.5px;margin-top:4px">Securing connection...</div>
+  </div>`;
 }
 
-/* ──────────── TOAST ──────────── */
-function showToast(msg, type='ok'){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.background = type==='ok' ? 'rgba(0,208,132,.2)' : type==='err' ? 'rgba(255,77,109,.2)' : 'rgba(88,166,255,.2)';
-  t.style.borderColor = type==='ok' ? 'var(--green)' : type==='err' ? 'var(--red)' : 'var(--blue)';
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 3000);
-}
-
-/* ──────────── UTILS ──────────── */
-function fmt(n){ return parseFloat(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-
-/* ──────────── INIT ──────────── */
-generateInitHistory();
-populateTradeSelect();
-renderTicker();
-renderAssetsTable();
-renderDonut();
-drawLineChart();
-updateKPIs();
-setInterval(()=>{ renderDonut(); renderHoldings(); updateKPIs(); drawLineChart(); }, 3000);
-window.addEventListener('resize', drawLineChart);
+detectRef();
+splash();
+setTimeout(boot,1100);
 </script>
 </body>
-   </html>
+</html>
