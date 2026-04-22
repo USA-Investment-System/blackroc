@@ -157,17 +157,96 @@ window.toggleLang = function(){
   render();
 };
 
-// ── STORAGE ──
+// ── ADVANCED STORAGE SYSTEM ──
+var Storage = {
+  _prefix: 'BR8_',
+  _backupPrefix: 'BR8_BACKUP_',
+  _t: null,
+  
+  // تشفير بسيط للبيانات
+  _encode: function(data){
+    try {
+      var json = JSON.stringify(data);
+      return btoa(unescape(encodeURIComponent(json)));
+    } catch(e) { return null; }
+  },
+  
+  _decode: function(str){
+    try {
+      var json = decodeURIComponent(escape(atob(str)));
+      return JSON.parse(json);
+    } catch(e) { return null; }
+  },
+  
+  save: function(key, data){
+    try {
+      var encoded = this._encode(data);
+      if(!encoded) return false;
+      
+      localStorage.setItem(this._prefix + key, encoded);
+      sessionStorage.setItem(this._backupPrefix + key, encoded);
+      
+      // إشعار الحفظ
+      clearTimeout(this._t);
+      var d = document.getElementById('sv-dot');
+      if(d){ d.classList.add('on'); this._t = setTimeout(function(){ d.classList.remove('on'); }, 1400); }
+      
+      return true;
+    } catch(e) {
+      console.error('Save failed:', e);
+      return false;
+    }
+  },
+  
+  load: function(key){
+    try {
+      var data = localStorage.getItem(this._prefix + key);
+      if(!data) {
+        data = sessionStorage.getItem(this._backupPrefix + key);
+      }
+      if(!data) return null;
+      return this._decode(data);
+    } catch(e) {
+      console.error('Load failed:', e);
+      return null;
+    }
+  },
+  
+  remove: function(key){
+    try {
+      localStorage.removeItem(this._prefix + key);
+      sessionStorage.removeItem(this._backupPrefix + key);
+      return true;
+    } catch(e) { return false; }
+  },
+  
+  // مزامنة جميع المستخدمين
+  syncUsers: function(){
+    var users = this.load('users') || [];
+    var cur = this.load('cur');
+    if(cur){
+      var found = false;
+      for(var i=0; i<users.length; i++){
+        if(users[i].id === cur.id){
+          users[i] = cur;
+          found = true;
+          break;
+        }
+      }
+      if(!found) users.push(cur);
+      this.save('users', users);
+    }
+    return users;
+  }
+};
+
+// ── DB WRAPPER ──
 var DB = {
   _t:null,
-  g:function(k){try{var v=localStorage.getItem('BR8_'+k);return v?JSON.parse(v):null;}catch(e){return null;}},
-  s:function(k,v){
-    try{localStorage.setItem('BR8_'+k,JSON.stringify(v));}catch(e){}
-    clearTimeout(DB._t);
-    var d=document.getElementById('sv-dot');
-    if(d){d.classList.add('on');DB._t=setTimeout(function(){d.classList.remove('on');},1400);}
-  },
-  d:function(k){try{localStorage.removeItem('BR8_'+k);}catch(e){}}
+  g:function(k){ return Storage.load(k); },
+  s:function(k,v){ Storage.save(k, v); },
+  d:function(k){ Storage.remove(k); },
+  sync: function(){ return Storage.syncUsers(); }
 };
 
 // ── STATE ──
@@ -212,7 +291,14 @@ function saveUser(){
   if(!found)users.push(S.user);
   DB.s('users',users);
 }
-function upd(ch){for(var k in ch){if(ch.hasOwnProperty(k))S.user[k]=ch[k];}saveUser();}
+
+function upd(ch){
+  if(!S.user) return;
+  for(var k in ch){if(ch.hasOwnProperty(k))S.user[k]=ch[k];}
+  saveUser();
+  // مزامنة فورية
+  DB.sync();
+}
 
 // ── LEVELS ──
 var LVS=[
@@ -364,10 +450,13 @@ function buildTicker(){
 
 // ── HOME ──
 function buildHome(){
-  var u=S.user,lv=lvD(u.level),done=0;
+  var u=S.user,lv=lvD(u.level||'trial'),done=0;
   if(S.tasks)for(var i=0;i<S.tasks.length;i++)if(S.tasks[i].status==='done')done++;
   var cs=compSt(u),unread=0;
   if(u.notifs)for(var j=0;j<u.notifs.length;j++)if(!u.notifs[j].r)unread++;
+  
+  var todayEarnings = done * Math.max(43, Math.round(lv.dy / 5));
+  
   return '<div class="fu" style="padding-bottom:16px">'
   +'<div style="position:sticky;top:0;z-index:40;background:rgba(2,5,9,.96);padding:9px 13px 0;border-bottom:1px solid rgba(212,175,55,.06)">'
   +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">'
@@ -417,7 +506,7 @@ function buildHome(){
   +'<div class="card" style="padding:12px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'
   +'<div style="background:var(--t5);border-radius:8px;padding:8px"><div style="color:var(--grn);font-weight:800;font-size:11.5px">'+fDZD(u.totalEarned||0)+'</div><div style="color:var(--t3);font-size:9px;margin-top:1px">'+t('earned')+'</div></div>'
   +'<div style="background:var(--t5);border-radius:8px;padding:8px"><div style="color:var(--g);font-weight:800;font-size:11.5px">'+fDZD(u.refEarn||0)+'</div><div style="color:var(--t3);font-size:9px;margin-top:1px">'+t('refE')+'</div></div>'
-  +'<div style="background:var(--t5);border-radius:8px;padding:8px"><div style="color:var(--blu);font-weight:800;font-size:11.5px">+'+done*Math.max(43,Math.round(lv.dy/5))+' DZD</div><div style="color:var(--t3);font-size:9px;margin-top:1px">'+t('tod')+'</div></div>'
+  +'<div style="background:var(--t5);border-radius:8px;padding:8px"><div style="color:var(--blu);font-weight:800;font-size:11.5px">+'+todayEarnings+' DZD</div><div style="color:var(--t3);font-size:9px;margin-top:1px">'+t('tod')+'</div></div>'
   +'<div style="background:var(--t5);border-radius:8px;padding:8px"><div style="color:var(--g);font-weight:800;font-size:11.5px">'+(lv.mo?fDZD(lv.mo):'—')+'</div><div style="color:var(--t3);font-size:9px;margin-top:1px">'+t('mon')+'</div></div>'
   +'</div></div></div>'
   // Company
@@ -630,7 +719,58 @@ function completeTask(id){
   var tk=null; for(var i=0;i<S.tasks.length;i++)if(S.tasks[i].id===id){tk=S.tasks[i];break;}
   if(!tk)return;
   tk.status='done'; S.activeTask=null; saveTasks();
-  upd({balance:(S.user.balance||0)+tk.reward,taskBal:(S.user.taskBal||0)+tk.reward,totalEarned:(S.user.totalEarned||0)+tk.reward});
+  
+  // تحديث رصيد المستخدم
+  var newBalance = (S.user.balance||0) + tk.reward;
+  var newTaskBal = (S.user.taskBal||0) + tk.reward;
+  var newTotalEarned = (S.user.totalEarned||0) + tk.reward;
+  
+  upd({balance: newBalance, taskBal: newTaskBal, totalEarned: newTotalEarned});
+  
+  // ── نظام الإحالات: إعطاء 5% للداعي ──
+  if(S.user.joinedVia){
+    var users = DB.g('users') || [];
+    var refUser = null;
+    var refIndex = -1;
+    
+    for(var i=0; i<users.length; i++){
+      if(users[i].code === S.user.joinedVia){
+        refUser = users[i];
+        refIndex = i;
+        break;
+      }
+    }
+    
+    if(refUser && refIndex !== -1){
+      var refBonus = Math.round(tk.reward * 0.05); // 5% من المكافأة
+      if(refBonus > 0){
+        refUser.refEarn = (refUser.refEarn || 0) + refBonus;
+        refUser.balance = (refUser.balance || 0) + refBonus;
+        refUser.totalEarned = (refUser.totalEarned || 0) + refBonus;
+        
+        // إضافة إشعار للداعي
+        if(!refUser.notifs) refUser.notifs = [];
+        refUser.notifs.unshift({
+          id: Date.now(),
+          title: '💰 ' + (LG.l==='ar'?'ربح إحالة جديد!':'New Referral Earning!'),
+          desc: (LG.l==='ar'?S.user.un + ' أكمل مهمة! +' + refBonus + ' DZD':S.user.un + ' completed a task! +' + refBonus + ' DZD'),
+          t: new Date().toLocaleTimeString(),
+          r: false
+        });
+        
+        // حفظ تحديث الداعي
+        users[refIndex] = refUser;
+        DB.s('users', users);
+        
+        // إذا كان الداعي هو المستخدم الحالي، تحديث الحالة
+        if(S.user.id === refUser.id){
+          S.user = refUser;
+          DB.s('cur', refUser);
+        }
+      }
+    }
+  }
+  
   toast('✓ +'+tk.reward+' DZD!','success'); render();
 }
 
@@ -728,7 +868,7 @@ window.openSetSh=function(){
   var h='<div class="card" style="border-radius:11px;padding:12px;margin-bottom:10px">';
   for(var i=0;i<rows.length;i++)h+='<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--b2)"><span style="color:var(--t3);font-size:11px">'+rows[i][0]+'</span><span style="color:var(--w);font-size:11px;font-weight:700">'+rows[i][1]+'</span></div>';
   h+='</div><button class="btn bs" onclick="toggleLang()" style="font-size:12.5px;margin-bottom:7px">'+IC.globe+'<span>'+(LG.l==='ar'?'Switch to English':'التبديل للعربية')+'</span></button>'
-  +'<button class="btn bd" onclick="if(confirm(\''+(LG.l==='ar'?'مسح كل البيانات؟':'Clear all data?')+'\')){localStorage.clear();location.reload();}" style="font-size:12.5px">'+IC.xmark+'<span>'+t('clear')+'</span></button>';
+  +'<button class="btn bd" onclick="if(confirm(\''+(LG.l==='ar'?'مسح كل البيانات؟':'Clear all data?')+'\')){localStorage.clear();sessionStorage.clear();location.reload();}" style="font-size:12.5px">'+IC.xmark+'<span>'+t('clear')+'</span></button>';
   openSheet(h,t('setT'));
 };
 
@@ -920,24 +1060,99 @@ function renderAuth(){
         for(var j=0;j<users.length;j++)if(users[j].un===un){exists=true;break;}
         if(exists){toast(LG.l==='ar'?'الاسم موجود':'Username taken','error');btn.textContent=t('signUp');btn.disabled=false;return;}
         var code=genCode();
+        
+        // ── نظام الإحالات المتطور ──
+        var referrerUser = null;
+        var referrerIndex = -1;
+        
         if(S.joinCode){
-          var ru=null;
-          for(var k=0;k<users.length;k++)if(users[k].code===S.joinCode){ru=users[k];break;}
-          if(ru){
-            ru.wheelSpins=(ru.wheelSpins||0)+1;
-            ru.teamCount=(ru.teamCount||0)+1;
-            if(!ru.notifs)ru.notifs=[];
-            ru.notifs.push({id:Date.now(),title:'🎡 '+(LG.l==='ar'?'صديق جديد انضم!':'New friend joined!'),desc:un+(LG.l==='ar'?' انضم برابطك! +دورة عجلة حظ ✅':' joined via your link! +Lucky spin ✅'),t:new Date().toLocaleTimeString(),r:false});
-            if(ru.m1Refs>=10&&(ru.m1Refs%10===0)){var nx=nxtLv(ru.level||'trial');if(nx){ru.level=nx.id;ru.notifs.push({id:Date.now()+1,title:'🏆 Free Upgrade!',desc:'Congrats! Upgraded to '+nx.n+'!',t:new Date().toLocaleTimeString(),r:false});}}
-            for(var m=0;m<users.length;m++)if(users[m].id===ru.id){users[m]=ru;break;}
+          for(var k=0;k<users.length;k++){
+            if(users[k].code===S.joinCode){
+              referrerUser = users[k];
+              referrerIndex = k;
+              break;
+            }
+          }
+          
+          if(referrerUser && referrerIndex !== -1){
+            // إعطاء الداعي دورة + تحديث الفريق
+            referrerUser.wheelSpins = (referrerUser.wheelSpins || 0) + 1;
+            referrerUser.teamCount = (referrerUser.teamCount || 0) + 1;
+            
+            // إشعار للداعي
+            if(!referrerUser.notifs) referrerUser.notifs = [];
+            referrerUser.notifs.unshift({
+              id: Date.now(),
+              title: '🎡 ' + (LG.l==='ar'?'صديق جديد انضم!':'New friend joined!'),
+              desc: un + (LG.l==='ar'?' انضم برابطك! +دورة عجلة حظ ✅':' joined via your link! +Lucky spin ✅'),
+              t: new Date().toLocaleTimeString(),
+              r: false
+            });
+            
+            // التحقق من المسابقة
+            if(referrerUser.m1Refs >= 10 && (referrerUser.m1Refs % 10 === 0)){
+              var nx = nxtLv(referrerUser.level || 'trial');
+              if(nx){
+                referrerUser.level = nx.id;
+                referrerUser.notifs.unshift({
+                  id: Date.now() + 1,
+                  title: '🏆 ' + (LG.l==='ar'?'ترقية مجانية!':'Free Upgrade!'),
+                  desc: (LG.l==='ar'?'مبروك! تم ترقيتك إلى ' + nx.n:'Congrats! Upgraded to ' + nx.n) + '!',
+                  t: new Date().toLocaleTimeString(),
+                  r: false
+                });
+              }
+            }
+            
+            // حفظ تحديث الداعي
+            users[referrerIndex] = referrerUser;
+            DB.s('users', users);
           }
         }
-        var newUser={id:Date.now(),un:un,pw:pw,code:code,ref:'blackrock.app/ref/'+code,balance:0,taskBal:0,refEarn:0,teamCount:0,wheelSpins:S.joinCode?1:0,m1Refs:0,level:null,totalEarned:0,avatar:null,joined:new Date().toISOString(),joinedVia:S.joinCode||null,
-          notifs:[{id:1,title:S.joinCode?'🎁 '+(LG.l==='ar'?'مرحباً! حصلت على دورة!':'Welcome! Got a spin!'):'👋 '+(LG.l==='ar'?'مرحباً في BlackRock!':'Welcome to BlackRock!'),desc:LG.l==='ar'?'ابدأ المهام اليومية وادعُ أصدقاءك للربح أكثر!':'Start daily tasks & invite friends to earn more!',t:'Now',r:false},{id:2,title:'🏆 '+(LG.l==='ar'?'مسابقة الإحالة':'Referral Contest'),desc:LG.l==='ar'?'ادعُ 10 أصدقاء يشحنون M1 → ترقية مجانية!':'Invite 10 friends to upgrade M1 → Free upgrade!',t:'Now',r:false}]
+        
+        var newUser = {
+          id: Date.now(),
+          un: un,
+          pw: pw,
+          code: code,
+          ref: 'blackrock.app/ref/' + code,
+          balance: 0,
+          taskBal: 0,
+          refEarn: 0,
+          teamCount: 0,
+          wheelSpins: S.joinCode ? 1 : 0,
+          m1Refs: 0,
+          level: null,
+          totalEarned: 0,
+          avatar: null,
+          joined: new Date().toISOString(),
+          joinedVia: S.joinCode || null,
+          notifs: [
+            {
+              id: 1,
+              title: S.joinCode ? '🎁 ' + (LG.l==='ar'?'مرحباً! حصلت على دورة!':'Welcome! Got a spin!') : '👋 ' + (LG.l==='ar'?'مرحباً في BlackRock!':'Welcome to BlackRock!'),
+              desc: LG.l==='ar'?'ابدأ المهام اليومية وادعُ أصدقاءك للربح أكثر!':'Start daily tasks & invite friends to earn more!',
+              t: 'Now',
+              r: false
+            },
+            {
+              id: 2,
+              title: '🏆 ' + (LG.l==='ar'?'مسابقة الإحالة':'Referral Contest'),
+              desc: LG.l==='ar'?'ادعُ 10 أصدقاء يشحنون M1 → ترقية مجانية!':'Invite 10 friends to upgrade M1 → Free upgrade!',
+              t: 'Now',
+              r: false
+            }
+          ]
         };
-        users.push(newUser); DB.s('users',users); DB.s('cur',newUser); S.user=newUser;
-        toast(S.joinCode?'🎡 '+(LG.l==='ar'?'مرحباً + دورة عجلة مجانية!':'Welcome + Free spin!'):'🎉','success');
-        S.joinCode=null; launchApp();
+        
+        users.push(newUser);
+        DB.s('users', users);
+        DB.s('cur', newUser);
+        S.user = newUser;
+        
+        toast(S.joinCode ? '🎡 ' + (LG.l==='ar'?'مرحباً + دورة عجلة مجانية!':'Welcome + Free spin!') : '🎉', 'success');
+        S.joinCode = null;
+        launchApp();
       }
     },350);
   };
