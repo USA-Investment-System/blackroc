@@ -1,252 +1,592 @@
-import { useEffect, useState, useRef } from 'react';
-import { useStore } from './store';
-import { Auth } from './components/Auth';
-import { Home } from './components/Home';
-import { Tasks } from './components/Tasks';
-import { Upgrade } from './components/Upgrade';
-import { Profile } from './components/Profile';
-import { Company } from './components/Company';
-import { Invest } from './components/Invest';
-import { Wheel } from './components/Wheel';
-import { Nav, Toast, Sheet } from './components/ui';
-import { Bot, X, Send } from 'lucide-react';
-import { T, fDZD, lvN, lvD } from './utils';
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>BlackRock Investment</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Tajawal',sans-serif}
+html,body{height:100%;overflow:hidden;background:#020509;color:#fff}
+#root{height:100%;display:flex;justify-content:center}
+.app{width:100%;max-width:430px;height:100%;position:relative;overflow:hidden;background:#020509}
+.scr{position:absolute;top:0;left:0;right:0;bottom:72px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+::-webkit-scrollbar{display:none}
+.gt{background:linear-gradient(135deg,#E8CC6A,#D4AF37,#C9992C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:800;border-radius:14px;padding:14px 18px;font-size:15px;width:100%}
+.btn:active{transform:scale(.97);opacity:.9}
+.bp{background:linear-gradient(135deg,#D4AF37,#C9992C,#B8860B);color:#020509;box-shadow:0 4px 18px rgba(212,175,55,.35)}
+.bs{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:#fff}
+.bd{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#EF4444}
+.bn{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:#22C55E}
+.inp{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;color:#fff;padding:14px 16px;font-size:15px;font-family:'Tajawal',sans-serif;font-weight:600;outline:none;width:100%}
+.inp:focus{border-color:rgba(212,175,55,.6)}
+.card{background:linear-gradient(160deg,rgba(14,20,36,.99),rgba(8,12,22,.99));border:1px solid rgba(255,255,255,.08);border-radius:16px}
+.cg{border-color:rgba(212,175,55,.22)!important}
+.nav{position:absolute;bottom:0;left:0;right:0;height:72px;background:rgba(2,5,9,.98);border-top:1px solid rgba(212,175,55,.12);display:flex;justify-content:space-around;align-items:center;z-index:50;backdrop-filter:blur(20px)}
+.nbt{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;cursor:pointer;color:rgba(255,255,255,.4);padding:8px 12px;position:relative;min-width:60px}
+.nbt.on{color:#D4AF37}
+.nbt.on::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:3px;background:linear-gradient(90deg,#D4AF37,#C9992C);border-radius:0 0 3px 3px}
+.nbl{font-size:11px;font-weight:700;margin-top:2px}
+.nbdg{position:absolute;top:4px;right:8px;min-width:18px;height:18px;background:#EF4444;border-radius:9px;border:2px solid #020509;font-size:10px;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.sho{position:fixed;inset:0;background:rgba(2,5,9,.85);z-index:200;display:flex;align-items:flex-end;backdrop-filter:blur(6px)}
+.shp{background:linear-gradient(180deg,#0d1424,#060a14);border-radius:26px 26px 0 0;border-top:1px solid rgba(212,175,55,.2);width:100%;max-width:430px;max-height:92vh;overflow-y:auto;animation:su .35s cubic-bezier(.16,1,.3,1)}
+@keyframes su{from{transform:translateY(110%)}to{transform:translateY(0)}}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes gl{0%,100%{box-shadow:0 0 24px rgba(212,175,55,.4)}50%{box-shadow:0 0 48px rgba(212,175,55,.7)}}
+@keyframes dp{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+@keyframes pb{from{width:0}to{width:100%}}
+.fu{animation:fu .3s cubic-bezier(.16,1,.3,1) both}
+.gl{animation:gl 2.5s ease-in-out infinite}
+.pgb{background:rgba(255,255,255,.08);border-radius:100px;overflow:hidden}
+.pgf{height:100%;border-radius:100px;transition:width .4s}
+.pg-g{background:linear-gradient(90deg,#D4AF37,#C9992C)}
+.pg-n{background:linear-gradient(90deg,#22C55E,#16A34A)}
+.pg-r{background:linear-gradient(90deg,#EF4444,#DC2626)}
+.pg-p{background:linear-gradient(90deg,#A855F7,#7C3AED)}
+.bgd{background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(201,153,44,.1));border:1px solid rgba(212,175,55,.35);border-radius:100px;padding:4px 12px;display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800}
+.fab{position:absolute;bottom:84px;left:16px;z-index:49;width:56px;height:56px;background:linear-gradient(135deg,#D4AF37,#C9992C);border-radius:18px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;box-shadow:0 6px 22px rgba(212,175,55,.4)}
+.odot{display:inline-block;width:8px;height:8px;background:#22C55E;border-radius:50%;animation:dp 1.6s infinite}
+.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:9999;padding:12px 22px;border-radius:100px;font-size:14px;font-weight:800;color:#fff;box-shadow:0 10px 35px rgba(0,0,0,.7);animation:fu .3s both;backdrop-filter:blur(12px)}
+.save-pill{position:fixed;top:16px;right:16px;z-index:9998;display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:100px;font-size:12px;font-weight:800;backdrop-filter:blur(14px);animation:fu .25s both}
+.tc-r{border-color:rgba(212,175,55,.55)!important;background:linear-gradient(135deg,rgba(22,17,3,.5),rgba(8,12,22,.99))!important}
+.tc-d{border-color:rgba(34,197,94,.32)!important;background:linear-gradient(135deg,rgba(0,18,8,.4),rgba(8,12,22,.99))!important}
+.tc-f{opacity:.55;border-color:rgba(239,68,68,.2)!important}
+</style>
+</head>
+<body>
+<div id="root"><div class="app" id="app"></div></div>
+<script>
+'use strict';
 
-function aiResp(txt: string, u: any, lang: string) {
-  const lo = txt.toLowerCase(); const ar = lang === 'ar';
-  const lv = lvD(u.level || 'trial'); const pr = Math.max(43, Math.round(lv.dy / 5));
-  if (/hello|hi\b|hey|مرحبا|هلا|اهلا|السلام/.test(lo))
-    return ar?`أهلاً ${u.un}! 👋\n\nأنا مساعد BlackRock.\n\n📊 رصيدك: ${fDZD(u.balance||0)}\n🏆 مستواك: ${lvN(u.level)}\n👥 فريقك: ${u.teamCount||0}\n\nكيف أساعدك؟`:`Hello ${u.un}! 👋\n\nI'm BlackRock AI.\n\n📊 Balance: ${fDZD(u.balance||0)}\n🏆 Level: ${lvN(u.level)}\n👥 Team: ${u.teamCount||0}\n\nHow can I help?`;
-  if (/earn|money|ربح|اكسب|كيف|طريقة/.test(lo))
-    return ar?`💡 استراتيجية الربح:\n\n1️⃣ المهام: 5 × ${pr} = ${pr*5} DZD/يوم\n2️⃣ الإحالات: 5% مدى الحياة\n3️⃣ الترقية: M1→G7\n\n🏆 10 أصدقاء = ترقية مجانية!`:`💡 Earning:\n\n1️⃣ Tasks: 5 × ${pr} = ${pr*5} DZD/day\n2️⃣ Referrals: 5% forever\n3️⃣ Upgrade: M1→G7\n\n🏆 10 friends = Free upgrade!`;
-  if (/task|daily|مهمة|مهام/.test(lo))
-    return ar?`⏱️ المهام اليومية:\n\n• 5 مهام كل يوم\n• كل مهمة = ${pr} DZD\n• الإجمالي: ${pr*5} DZD/يوم\n\nمستواك: ${lvN(u.level)}`:`⏱️ Daily Tasks:\n\n• 5 tasks daily\n• Each = ${pr} DZD\n• Total: ${pr*5} DZD/day\n\nLevel: ${lvN(u.level)}`;
-  if (/withdraw|سحب/.test(lo))
-    return ar?`💳 السحب:\n\n• الحد: 215 DZD\n• الشرط: M1+\n• المعالجة: 24-48h\n\n💳 CCP\n🏦 DZ Bank\n💻 PayPal`:`💳 Withdrawal:\n\n• Min: 215 DZD\n• Requires: M1+\n• 24-48h\n\n💳 CCP\n🏦 DZ Bank\n💻 PayPal`;
-  if (/referral|friend|احال|صديق|5%/.test(lo))
-    return ar?`🎯 الإحالات:\n\n✅ 🎡 عجلة حظ لك وله\n✅ 5% من أرباحه!\n\n👥 فريقك: ${u.teamCount||0}\n💰 أرباح: ${fDZD(u.refEarn||0)}`:`🎯 Referrals:\n\n✅ 🎡 Spin for both\n✅ 5% of earnings!\n\n👥 Team: ${u.teamCount||0}\n💰 Earnings: ${fDZD(u.refEarn||0)}`;
-  if (/شركة|company|blackrock/.test(lo))
-    return ar?`🏢 BlackRock, Inc\n\n• 1988 — نيويورك\n• 10.2 تريليون $\n• NYSE: BLK\n\n🇩🇿 العقد: يناير 2025 → ديسمبر 2027`:`🏢 BlackRock, Inc\n\n• 1988 — New York\n• $10.2T AUM\n• NYSE: BLK\n\n🇩🇿 Contract: Jan 2025 → Dec 2027`;
-  if (/رصيد|balance|كم/.test(lo))
-    return ar?`💰 رصيدك:\n\n💳 ${fDZD(u.balance||0)}\n📋 مهام: ${fDZD(u.taskBal||0)}\n🤝 إحالات: ${fDZD(u.refEarn||0)}\n📈 إجمالي: ${fDZD(u.totalEarned||0)}`:`💰 Balance:\n\n💳 ${fDZD(u.balance||0)}\n📋 Tasks: ${fDZD(u.taskBal||0)}\n🤝 Ref: ${fDZD(u.refEarn||0)}\n📈 Total: ${fDZD(u.totalEarned||0)}`;
-  if (/wheel|عجلة|spin/.test(lo))
-    return ar?`🎡 عجلة الحظ:\n\nدوراتك: ${u.wheelSpins||0}\n\nكل صديق = دورة لك + دورة له!\n\n🥇 430  🥈 215  🥉 86  🎁 43`:`🎡 Wheel:\n\nSpins: ${u.wheelSpins||0}\n\nEach friend = spin for both!\n\n🥇 430  🥈 215  🥉 86  🎁 43`;
-  return ar?`🤔 جرّب:\n• "كيف أربح؟"\n• "المهام"\n• "الإحالات"\n• "رصيدي"\n• "السحب"\n• "الشركة"`:`🤔 Try:\n• "How to earn?"\n• "Tasks"\n• "Referrals"\n• "Balance"\n• "Withdraw"\n• "Company"`;
-}
+// ========== CURRENCY ==========
+var CUR_AR = 'دج', CUR_EN = 'DA';
+function fmt(n){n=parseFloat(n)||0;if(n>=1e6)return(n/1e6).toFixed(2)+'M';if(n>=1e3)return n.toLocaleString('en-US',{maximumFractionDigits:0});return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fDZ(n,lang){return fmt(n)+' '+(lang==='ar'?CUR_AR:CUR_EN)}
+function CUR(lang){return lang==='ar'?CUR_AR:CUR_EN}
 
-function AI() {
-  const { user, lang, aiMsgs, addAi } = useStore();
-  const t = T[lang];
-  const [open, setOpen] = useState(false);
-  const [input, setInput] = useState('');
-  const [typing, setTyping] = useState(false);
-  const msgsRef = useRef<HTMLDivElement>(null);
+// ========== TRANSLATIONS ==========
+var T={
+ar:{home:'الرئيسية',tasks:'المهام',funds:'الصناديق',up:'الترقية',acc:'حسابي',bal:'إجمالي الرصيد',team:'الفريق',done:'المهام',daily:'اليومي',
+signIn:'تسجيل الدخول',signUp:'إنشاء حساب',user:'اسم المستخدم',pass:'كلمة المرور',conf:'تأكيد كلمة المرور',out:'تسجيل الخروج',
+share:'مشاركة',copy:'نسخ',copied:'تم النسخ!',lang:'English',
+buyNow:'استثمر الآن',expectedIncome:'الدخل المتوقع',todayIncome:'دخل اليوم'},
+en:{home:'Home',tasks:'Tasks',funds:'Funds',up:'Plans',acc:'Account',bal:'Total Balance',team:'Team',done:'Done',daily:'Daily',
+signIn:'Sign In',signUp:'Sign Up',user:'Username',pass:'Password',conf:'Confirm Password',out:'Sign Out',
+share:'Share',copy:'Copy',copied:'Copied!',lang:'عربي',
+buyNow:'Invest Now',expectedIncome:'Expected Income',todayIncome:'Today Income'}
+};
+function t(k){return (T[LG.l]||T.ar)[k]||k}
+var LG={l:'ar'};
 
-  useEffect(() => { if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight; }, [aiMsgs, typing]);
+// ========== STORAGE WITH AUTO-SAVE ==========
+var DB={
+_t:null,
+g:function(k,d){try{var v=localStorage.getItem('BR_'+k);return v?JSON.parse(v):(d!==undefined?d:null)}catch(e){return d!==undefined?d:null}},
+s:function(k,v){try{localStorage.setItem('BR_'+k,JSON.stringify(v));this.showSave()}catch(e){}},
+d:function(k){try{localStorage.removeItem('BR_'+k)}catch(e){}},
+showSave:function(){
+clearTimeout(this._t);
+var ex=document.getElementById('save-pill');if(ex)ex.remove();
+var p=document.createElement('div');p.id='save-pill';p.className='save-pill';
+p.style.cssText+=';background:rgba(212,175,55,.95);color:#020509;border:1px solid rgba(212,175,55,.5)';
+p.innerHTML='<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> '+(LG.l==='ar'?'جاري الحفظ':'Saving');
+document.body.appendChild(p);
+setTimeout(function(){p.style.background='rgba(22,163,74,.95)';p.style.color='#fff';p.style.border='1px solid rgba(34,197,94,.5)';p.innerHTML='✓ '+(LG.l==='ar'?'تم الحفظ':'Saved')},500);
+this._t=setTimeout(function(){if(p)p.remove()},2000);
+}};
+if(!document.getElementById('spin-style')){var s=document.createElement('style');s.id='spin-style';s.textContent='@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}';document.head.appendChild(s)}
 
-  const send = (ov?: string) => {
-    const val = ov || input.trim(); if (!val || typing) return;
-    addAi({ id: Date.now(), r: 'user', text: val }); setInput(''); setTyping(true);
-    setTimeout(() => { addAi({ id: Date.now() + 1, r: 'ai', text: aiResp(val, user, lang) }); setTyping(false); }, 500 + Math.random() * 700);
-  };
+// ========== LEVELS ==========
+var LVS=[
+{id:'trial',n:'Starter',p:0,d:3,dy:43,tot:215,mo:0},
+{id:'m1',n:'M1',p:7000,d:5,dy:43,tot:215,mo:6450},
+{id:'m2',n:'M2',p:26600,d:10,dy:86,tot:860,mo:25800},
+{id:'m3',n:'M3',p:95000,d:25,dy:131,tot:3275,mo:98250},
+{id:'m4',n:'M4',p:300000,d:50,dy:222,tot:11100,mo:333000},
+{id:'m5',n:'M5',p:780000,d:80,dy:390,tot:31200,mo:936000},
+{id:'m6',n:'M6',p:1950000,d:130,dy:652,tot:84760,mo:2542800},
+{id:'g7',n:'G7 Platinum',p:4485000,d:200,dy:1068,tot:213600,mo:6408000}];
+function lvN(id){for(var i=0;i<LVS.length;i++)if(LVS[i].id===id)return LVS[i].n;return 'Starter'}
+function lvD(id){for(var i=0;i<LVS.length;i++)if(LVS[i].id===id)return LVS[i];return LVS[0]}
 
-  const qs = lang === 'ar' ? ['كيف أربح؟','المهام','الإحالات','رصيدي','السحب','الشركة'] : ['Earn?','Tasks','Referrals','Balance','Withdraw','Company'];
+// ========== FUNDS ==========
+var FUNDS=[
+{id:'energy',ar:'صندوق الطاقة المتجددة',en:'Renewable Energy Fund',catAr:'استثمار حصري',catEn:'Exclusive',days:13,rate:8,total:104,min:5000,max:5000000,prog:79,hot:true,emo:'⚡',grad:'linear-gradient(135deg,#3B82F6,#1E40AF)',descAr:'استثمر في مستقبل الطاقة المتجددة',descEn:'Invest in renewable energy future'},
+{id:'gold',ar:'صندوق استثمار الذهب',en:'Gold Investment Fund',catAr:'صندوق آمن',catEn:'Safe',days:180,rate:1.5,total:270,min:10000,max:10000000,prog:65,hot:false,emo:'🥇',grad:'linear-gradient(135deg,#D4AF37,#C9992C)',descAr:'استثمار آمن في الذهب',descEn:'Safe gold investment'},
+{id:'tech',ar:'صندوق التكنولوجيا العالمية',en:'Global Tech Fund',catAr:'عوائد عالية',catEn:'High Returns',days:30,rate:5.5,total:165,min:8000,max:8000000,prog:88,hot:true,emo:'🚀',grad:'linear-gradient(135deg,#A855F7,#7C3AED)',descAr:'استثمار في Apple, Google, Microsoft',descEn:'Invest in Apple, Google, Microsoft'},
+{id:'realestate',ar:'صندوق العقارات الفاخرة',en:'Luxury Real Estate',catAr:'استثمار طويل',catEn:'Long-term',days:90,rate:2.8,total:252,min:15000,max:15000000,prog:42,hot:false,emo:'🏛️',grad:'linear-gradient(135deg,#22C55E,#16A34A)',descAr:'العقارات الفاخرة بالجزائر',descEn:'Luxury real estate in Algeria'},
+{id:'crypto',ar:'صندوق العملات الرقمية',en:'Cryptocurrency Fund',catAr:'مخاطر عالية',catEn:'High Risk',days:21,rate:9.5,total:199,min:6000,max:6000000,prog:95,hot:true,emo:'₿',grad:'linear-gradient(135deg,#F59E0B,#DC2626)',descAr:'Bitcoin, Ethereum والعملات الرقمية',descEn:'Bitcoin, Ethereum & cryptos'},
+{id:'oil',ar:'صندوق النفط والغاز',en:'Oil & Gas Fund',catAr:'استثمار تقليدي',catEn:'Classic',days:60,rate:3.5,total:210,min:12000,max:12000000,prog:56,hot:false,emo:'🛢️',grad:'linear-gradient(135deg,#1F2937,#374151)',descAr:'النفط والغاز بالجزائر',descEn:'Algerian oil and gas'},
+{id:'vip',ar:'صندوق VIP الحصري',en:'VIP Exclusive',catAr:'حصري للأعضاء',catEn:'Members Only',days:7,rate:12.5,total:187.5,min:50000,max:50000000,prog:98,hot:true,emo:'👑',grad:'linear-gradient(135deg,#7C3AED,#A855F7,#D946EF)',descAr:'صندوق VIP بأعلى عوائد',descEn:'Highest VIP returns'}];
 
-  return (
-    <>
-      {/* FAB Button */}
-      <button onClick={() => {
-        setOpen(true);
-        if (aiMsgs.length === 0) addAi({ id: 1, r: 'ai', text: lang === 'ar'
-          ? 'أهلاً بك! 👋\n\nأنا المساعد الذكي لمنصة BlackRock.\nيمكنني مساعدتك في:\n\n💰 طرق الربح والمهام\n📊 معلومات رصيدك\n🏢 معلومات الشركة\n💳 السحب والإيداع\n👥 نظام الإحالات\n🎡 عجلة الحظ\n\nاكتب سؤالك أو اختر من الأزرار أدناه 👇'
-          : "Welcome! 👋\n\nI'm BlackRock's AI Assistant.\nI can help you with:\n\n💰 Earning & Tasks\n📊 Your Balance\n🏢 Company Info\n💳 Withdrawals\n👥 Referral System\n🎡 Lucky Wheel\n\nType your question or tap a button below 👇"
-        });
-      }} style={{
-        position: 'fixed', bottom: 78, left: 12, zIndex: 49,
-        width: 52, height: 52,
-        background: 'linear-gradient(135deg, #D4AF37, #C9992C)',
-        borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        border: 'none', cursor: 'pointer',
-        boxShadow: '0 4px 20px rgba(212,175,55,.4)',
-      }} className="an-float">
-        <div className="an-pulse" style={{
-          position: 'absolute', top: -2, right: -2,
-          width: 12, height: 12, background: '#22C55E', borderRadius: 6,
-          border: '2px solid #020509',
-        }} />
-        <Bot size={24} color="#020509" />
-      </button>
+// ========== TASKS ==========
+var TASKS_AR=['مراجعة أداء المحفظة','قراءة تقرير السوق اليومي','تحليل اتجاهات BLK','فحص الاستراتيجية اليومية','مشاهدة رسالة استثمارية','تحديث بيانات المحفظة','مراجعة الأرباح والخسائر','تحليل مؤشرات السوق','متابعة أخبار الاستثمار','فحص أداء الأسهم','مراجعة عقد الاستثمار','تحليل عائد المحفظة'];
+var TASKS_EN=['Review portfolio','Read market report','Analyze BLK trends','Check strategy','View investment report','Update portfolio','Review P&L','Analyze indicators','Investment news','Stock performance','Review contract','Analyze yield'];
 
-      {/* AI Chat Screen */}
-      {open && (
-        <div className="an-fadeIn" style={{
-          position: 'fixed', inset: 0, background: '#020509',
-          zIndex: 300, display: 'flex', flexDirection: 'column',
-        }}>
-          {/* Header */}
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '12px 16px',
-            borderBottom: '1px solid rgba(212,175,55,.08)',
-            background: 'rgba(2,5,9,.97)', flexShrink: 0,
-          }}>
-            <button onClick={() => setOpen(false)} style={{
-              width: 40, height: 40,
-              background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)',
-              borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', color: 'rgba(255,255,255,.5)',
-            }}><X size={18} /></button>
-            <div style={{ textAlign: 'center' }}>
-              <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: 13, fontWeight: 900, color: '#D4AF37', letterSpacing: 2 }}>AI ASSISTANT</p>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 2 }}>
-                <span className="an-pulse" style={{ width: 7, height: 7, background: '#22C55E', borderRadius: 4, display: 'inline-block' }} />
-                <span style={{ color: '#22C55E', fontSize: 11, fontWeight: 800 }}>Online</span>
-              </div>
-            </div>
-            <div style={{
-              width: 40, height: 40,
-              background: 'linear-gradient(135deg, #D4AF37, #C9992C)',
-              borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}><Bot size={20} color="#020509" /></div>
-          </div>
+// ========== STATE ==========
+var S={user:null,tab:'home',lang:'ar',tasks:null,activeTask:null,cdVal:40,cdTimer:null,sheet:null,wheelRot:0,wheelSpin:false,aiOpen:false,wheelOpen:false,aiMsgs:[]};
 
-          {/* Messages */}
-          <div ref={msgsRef} className="no-sb touch-scroll" style={{
-            flex: 1, overflowY: 'auto',
-            padding: 16, display: 'flex', flexDirection: 'column', gap: 12,
-          }}>
-            {aiMsgs.map(m => (
-              <div key={m.id} style={{
-                display: 'flex', gap: 8, alignItems: 'flex-start',
-                justifyContent: m.r === 'user' ? 'flex-end' : 'flex-start',
-              }}>
-                {m.r === 'ai' && (
-                  <div style={{
-                    width: 32, height: 32,
-                    background: 'linear-gradient(135deg, #D4AF37, #C9992C)',
-                    borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    flexShrink: 0, marginTop: 2,
-                  }}><Bot size={16} color="#020509" /></div>
-                )}
-                <div style={{
-                  whiteSpace: 'pre-wrap',
-                  fontSize: 15, lineHeight: 1.8, maxWidth: '82%',
-                  padding: '12px 16px',
-                  borderRadius: 18,
-                  ...(m.r === 'ai' ? {
-                    background: 'rgba(10,16,32,.95)',
-                    border: '1px solid rgba(255,255,255,.06)',
-                    borderTopLeftRadius: 4,
-                    color: 'rgba(255,255,255,.85)',
-                  } : {
-                    background: 'linear-gradient(135deg, #D4AF37, #C9992C)',
-                    borderTopRightRadius: 4,
-                    color: '#020509', fontWeight: 700,
-                  }),
-                }}>{m.text}</div>
-              </div>
-            ))}
-            {typing && (
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <div style={{
-                  width: 32, height: 32,
-                  background: 'linear-gradient(135deg, #D4AF37, #C9992C)',
-                  borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  flexShrink: 0,
-                }}><Bot size={16} color="#020509" /></div>
-                <div style={{
-                  background: 'rgba(10,16,32,.95)',
-                  border: '1px solid rgba(255,255,255,.06)',
-                  borderRadius: 18, borderTopLeftRadius: 4,
-                  padding: '14px 20px',
-                  display: 'flex', gap: 6, alignItems: 'center',
-                }}>
-                  <span className="td1" style={{ width: 7, height: 7, background: 'rgba(255,255,255,.3)', borderRadius: 4, display: 'inline-block' }} />
-                  <span className="td2" style={{ width: 7, height: 7, background: 'rgba(255,255,255,.3)', borderRadius: 4, display: 'inline-block' }} />
-                  <span className="td3" style={{ width: 7, height: 7, background: 'rgba(255,255,255,.3)', borderRadius: 4, display: 'inline-block' }} />
-                </div>
-              </div>
-            )}
-          </div>
+// ========== UTILS ==========
+function genCode(){var c='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',r='';for(var i=0;i<6;i++)r+=c[Math.floor(Math.random()*c.length)];return r}
+function today(){return new Date().toDateString()}
+function gId(id){return document.getElementById(id)}
+function getDailyTasks(level,uid){
+var saved=DB.g('tk_'+uid);
+if(saved&&saved.date===today())return saved.tasks;
+var lv=lvD(level||'trial'),per=Math.max(43,Math.round(lv.dy/5));
+var seed=parseInt((today().replace(/\D/g,'')||'0').slice(-6))+(uid%1000);
+var idx=[0,1,2,3,4,5,6,7,8,9,10,11];idx.sort(function(a,b){return Math.sin(seed+a)-Math.sin(seed+b)});
+var tk=[];for(var i=0;i<5;i++)tk.push({id:i+1,ar:TASKS_AR[idx[i]],en:TASKS_EN[idx[i]],sec:40,reward:per,status:'available'});
+DB.s('tk_'+uid,{date:today(),tasks:tk});return tk}
+function saveUser(){if(!S.user)return;DB.s('cur',S.user);var us=DB.g('users',[]);var f=false;for(var i=0;i<us.length;i++)if(us[i].id===S.user.id){us[i]=S.user;f=true;break}if(!f)us.push(S.user);DB.s('users',us)}
+function upd(c){for(var k in c)if(c.hasOwnProperty(k))S.user[k]=c[k];saveUser()}
 
-          {/* Bottom Input Area */}
-          <div style={{
-            flexShrink: 0,
-            padding: '8px 16px 16px',
-            borderTop: '1px solid rgba(212,175,55,.06)',
-          }}>
-            {/* Quick buttons */}
-            <div className="no-sb" style={{
-              display: 'flex', gap: 6, overflowX: 'auto',
-              paddingBottom: 8, WebkitOverflowScrolling: 'touch',
-            }}>
-              {qs.map(q => (
-                <button key={q} onClick={() => send(q)} style={{
-                  padding: '7px 14px',
-                  background: 'rgba(212,175,55,.06)',
-                  border: '1px solid rgba(212,175,55,.15)',
-                  borderRadius: 99, color: '#D4AF37',
-                  fontSize: 13, fontWeight: 800,
-                  whiteSpace: 'nowrap', flexShrink: 0, cursor: 'pointer',
-                  fontFamily: 'Tajawal, sans-serif',
-                }}>{q}</button>
-              ))}
-            </div>
-            {/* Input */}
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <input
-                value={input} onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && send()}
-                style={{
-                  flex: 1,
-                  background: 'rgba(255,255,255,.04)',
-                  border: '1px solid rgba(255,255,255,.08)',
-                  borderRadius: 14, color: '#fff',
-                  padding: '12px 16px', fontSize: 15, fontWeight: 700,
-                  outline: 'none', fontFamily: 'Tajawal, sans-serif',
-                }}
-                placeholder={t.aiP}
-              />
-              <button onClick={() => send()} style={{
-                width: 46, height: 46, borderRadius: 14,
-                background: 'linear-gradient(135deg, #D4AF37, #C9992C)',
-                border: 'none', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0,
-              }}><Send size={20} color="#020509" /></button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
+// ========== TOAST ==========
+var _tt=null;
+function toast(msg,type){
+clearTimeout(_tt);
+var c={success:'rgba(22,163,74,.95)',error:'rgba(220,38,38,.95)',warning:'rgba(217,119,6,.95)',info:'rgba(30,64,175,.95)'};
+var ex=document.getElementById('toast-el');if(ex)ex.remove();
+var el=document.createElement('div');el.id='toast-el';el.className='toast';
+el.style.background=c[type]||c.info;el.textContent=msg;
+document.body.appendChild(el);
+_tt=setTimeout(function(){if(el)el.remove()},2600)}
 
-export default function App() {
-  const { user, tab, lang, showWheel, showCompany, showInvest } = useStore();
+// ========== ICONS (SVG) ==========
+var IC={
+home:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+tasks:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+diamond:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/></svg>',
+user:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+bell:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>',
+xmark:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+share:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>',
+logout:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>'};
 
-  useEffect(() => {
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  }, [lang]);
+// ========== RENDER FUNCTIONS ==========
+function buildNav(){
+var done=0;if(S.tasks)for(var i=0;i<S.tasks.length;i++)if(S.tasks[i].status==='available')done++;
+var tabs=[{id:'home',ic:'home',l:t('home')},{id:'tasks',ic:'tasks',l:t('tasks'),b:done},{id:'funds',ic:'',e:'💼',l:t('funds'),sp:true},{id:'up',ic:'diamond',l:t('up')},{id:'profile',ic:'user',l:t('acc')}];
+var h='<nav class="nav">';
+for(var k=0;k<tabs.length;k++){var tb=tabs[k];
+if(tb.sp){h+='<button class="nbt'+(S.tab===tb.id?' on':'')+'" onclick="setTab(\''+tb.id+'\')" style="transform:translateY(-12px)">';
+h+='<div style="width:52px;height:52px;background:linear-gradient(135deg,#D4AF37,#C9992C);border-radius:16px;display:flex;align-items:center;justify-content:center;border:3px solid #020509;box-shadow:0 4px 16px rgba(212,175,55,.5)"><span style="font-size:24px">'+tb.e+'</span></div>';
+h+='<span class="nbl" style="margin-top:4px;color:'+(S.tab===tb.id?'#D4AF37':'rgba(212,175,55,.7)')+'">'+tb.l+'</span></button>'}
+else{h+='<button class="nbt'+(S.tab===tb.id?' on':'')+'" onclick="setTab(\''+tb.id+'\')"><div style="position:relative">'+IC[tb.ic]+(tb.b>0?'<span class="nbdg">'+tb.b+'</span>':'')+'</div><span class="nbl">'+tb.l+'</span></button>'}}
+return h+'</nav>'}
 
-  if (!user) return (<><Auth /><Toast /></>);
+function buildHome(){
+var u=S.user,lv=lvD(u.level||'trial'),done=0;
+if(S.tasks)for(var i=0;i<S.tasks.length;i++)if(S.tasks[i].status==='done')done++;
+return '<div class="fu" style="padding-bottom:20px">'
++'<div style="position:sticky;top:0;z-index:30;background:rgba(2,5,9,.97);padding:14px 16px;border-bottom:1px solid rgba(212,175,55,.1);backdrop-filter:blur(16px)">'
++'<div style="display:flex;align-items:center;justify-content:space-between">'
++'<div style="display:flex;align-items:center;gap:10px"><div style="width:38px;height:38px;background:linear-gradient(135deg,#D4AF37,#C9992C);border-radius:11px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#020509" stroke-width="2.5"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/></svg></div>'
++'<div><div style="font-size:16px;font-weight:900;letter-spacing:2.5px;color:#D4AF37;font-family:Montserrat,sans-serif">BLACKROCK</div><div style="font-size:9px;color:rgba(255,255,255,.4);letter-spacing:1px">منصة الاستثمار</div></div></div>'
++'<div style="display:flex;gap:8px"><button onclick="toggleLang()" style="background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.25);border-radius:100px;padding:6px 12px;color:#D4AF37;font-size:11px;font-weight:800;cursor:pointer">'+t('lang')+'</button>'
++'<button onclick="openSheet(\'notifs\')" style="position:relative;background:none;border:none;cursor:pointer;width:36px;height:36px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.25);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#D4AF37">'+IC.bell+'</button></div>'
++'</div></div>'
++'<div style="padding:16px">'
+// Balance Hero
++'<div style="background:linear-gradient(160deg,rgba(16,22,40,.99),rgba(10,14,28,.99));border:1px solid rgba(212,175,55,.25);border-radius:18px;padding:20px;margin-bottom:16px">'
++'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">'
++'<div><div style="color:rgba(255,255,255,.6);font-size:11.5px;font-weight:700;letter-spacing:1px;margin-bottom:8px">💰 '+t('bal').toUpperCase()+'</div>'
++'<div style="display:flex;align-items:baseline;gap:8px"><div style="font-size:36px;font-weight:900;line-height:1;font-family:Montserrat,sans-serif" class="gt">'+fmt(u.balance||0)+'</div><div style="color:rgba(255,255,255,.5);font-size:14px;font-weight:700">'+CUR(LG.l)+'</div></div></div>'
++'<div style="text-align:center"><div style="width:54px;height:54px;background:linear-gradient(135deg,#D4AF37,#C9992C);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#020509">'+(u.un||'?').charAt(0).toUpperCase()+'</div>'
++'<div class="bgd" style="margin-top:8px;font-size:10px;padding:3px 9px"><span class="gt">'+lvN(u.level||'trial')+'</span></div></div>'
++'</div>'
++'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">'
++'<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:10px;text-align:center"><div style="color:#D4AF37;font-size:17px;font-weight:900;font-family:Montserrat,sans-serif">'+(u.teamCount||0)+'</div><div style="color:rgba(255,255,255,.5);font-size:10.5px;margin-top:6px">'+t('team')+'</div></div>'
++'<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:10px;text-align:center"><div style="color:#22C55E;font-size:17px;font-weight:900;font-family:Montserrat,sans-serif">'+done+'/5</div><div style="color:rgba(255,255,255,.5);font-size:10.5px;margin-top:6px">'+t('done')+'</div></div>'
++'<div style="background:rgba(255,255,255,.06);border-radius:12px;padding:10px;text-align:center"><div style="color:#3B82F6;font-size:17px;font-weight:900;font-family:Montserrat,sans-serif">+'+lv.dy+'</div><div style="color:rgba(255,255,255,.5);font-size:10.5px;margin-top:6px">'+t('daily')+'</div></div>'
++'</div></div>'
+// Quick Actions
++'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">'
++'<button onclick="doWithdraw()" class="card" style="padding:14px;display:flex;align-items:center;gap:12px;border:none;cursor:pointer;text-align:right">'
++'<div style="width:40px;height:40px;background:rgba(34,197,94,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#22C55E;flex-shrink:0">💳</div>'
++'<div><div style="color:#fff;font-weight:900;font-size:13.5px">'+(LG.l==='ar'?'سحب':'Withdraw')+'</div><div style="color:rgba(255,255,255,.5);font-size:11.5px">'+(LG.l==='ar'?'سريع':'Quick')+'</div></div></button>'
++'<button onclick="setTab(\'up\')" class="card" style="padding:14px;display:flex;align-items:center;gap:12px;border:none;cursor:pointer;text-align:right">'
++'<div style="width:40px;height:40px;background:rgba(212,175,55,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#D4AF37;flex-shrink:0">💎</div>'
++'<div><div style="color:#fff;font-weight:900;font-size:13.5px">'+t('up')+'</div><div style="color:rgba(255,255,255,.5);font-size:11.5px">'+(LG.l==='ar'?'رفع المستوى':'Level Up')+'</div></div></button>'
++'</div>'
+// Referral
++'<div class="card cg" style="padding:16px;margin-bottom:16px">'
++'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
++'<div style="width:40px;height:40px;background:linear-gradient(135deg,#D4AF37,#C9992C);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#020509">🎁</div>'
++'<div style="flex:1"><div style="color:#fff;font-weight:900;font-size:14px">🎯 '+(LG.l==='ar'?'الإحالة الذهبية':'Golden Referral')+'</div><div style="color:rgba(255,255,255,.5);font-size:11.5px">5% '+(LG.l==='ar'?'مدى الحياة':'for life')+'</div></div>'
++'<div class="bgd"><span style="color:#D4AF37">5%</span></div></div>'
++'<div style="background:rgba(212,175,55,.08);border-radius:12px;padding:8px 12px;display:flex;align-items:center;gap:8px;margin-bottom:12px">'
++'<span style="flex:1;color:rgba(255,255,255,.65);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr;text-align:center">blackrock.app/ref/'+u.code+'</span>'
++'<button onclick="cpRef()" style="padding:6px 12px;background:linear-gradient(135deg,#D4AF37,#C9992C);border:none;border-radius:8px;color:#020509;font-size:11px;font-weight:900;cursor:pointer">'+t('copy')+'</button></div>'
++'<button class="btn bp" onclick="shareRef()">'+IC.share+'<span>'+t('share')+'</span></button>'
++'</div>'
++'</div></div>'}
 
-  return (
-    <div className="w-full max-w-[430px] h-full relative overflow-hidden bg-[#020509] mx-auto">
-      <div className="absolute top-0 left-0 right-0 bottom-[68px] overflow-y-auto overflow-x-hidden no-sb touch-scroll bg-[#020509]">
-        {tab === 'home' && <Home />}
-        {tab === 'tasks' && <Tasks />}
-        {tab === 'up' && <Upgrade />}
-        {tab === 'profile' && <Profile />}
-      </div>
-      <Nav />
-      {(tab === 'home' || tab === 'tasks') && <AI />}
-      {showWheel && <Wheel />}
-      {showCompany && <Company />}
-      {showInvest && <Invest />}
-      <Toast />
-      <Sheet />
-    </div>
-  );
-}
+function buildFunds(){
+var u=S.user;
+var totalInv=(u.investments||[]).reduce(function(s,i){return s+i.amount},0);
+var cards='';
+for(var i=0;i<FUNDS.length;i++){var f=FUNDS[i];
+cards+='<div style="background:linear-gradient(160deg,rgba(14,20,36,.99),rgba(8,12,22,.99));border:'+(f.hot?'1.5px solid rgba(212,175,55,.4)':'1px solid rgba(255,255,255,.08)')+';border-radius:20px;overflow:hidden;margin-bottom:14px;box-shadow:'+(f.hot?'0 4px 20px rgba(212,175,55,.15)':'0 2px 8px rgba(0,0,0,.2)')+'">';
+// Top Banner
+cards+='<div style="background:'+f.grad+';padding:16px;position:relative;min-height:110px">';
+if(f.hot)cards+='<div style="position:absolute;top:12px;right:12px;background:linear-gradient(135deg,#EF4444,#DC2626);border-radius:8px;padding:4px 9px;display:flex;align-items:center;gap:4px;box-shadow:0 2px 10px rgba(239,68,68,.4)"><span style="font-size:11px">🔥</span><span style="color:#fff;font-size:10px;font-weight:900">'+(LG.l==='ar'?'رائج':'HOT')+'</span></div>';
+cards+='<div style="display:flex;align-items:center;gap:14px;height:100%">';
+cards+='<div style="width:70px;height:70px;border-radius:18px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:40px;flex-shrink:0;border:2px solid rgba(255,255,255,.25);box-shadow:0 4px 12px rgba(0,0,0,.3)">'+f.emo+'</div>';
+cards+='<div style="flex:1;min-width:0;padding-inline-end:'+(f.hot?'60px':'0')+'">';
+cards+='<div style="display:inline-block;background:rgba(0,0,0,.35);border-radius:6px;padding:3px 9px;margin-bottom:8px"><span style="color:#fff;font-size:10.5px;font-weight:800">'+(LG.l==='ar'?f.catAr:f.catEn)+'</span></div>';
+cards+='<h3 style="color:#fff;font-size:16px;font-weight:900;margin:0;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.4)">'+(LG.l==='ar'?f.ar:f.en)+'</h3>';
+cards+='</div></div></div>';
+// Body
+cards+='<div style="padding:16px">';
+cards+='<p style="color:rgba(255,255,255,.65);font-size:12.5px;margin:0 0 14px;line-height:1.6">'+(LG.l==='ar'?f.descAr:f.descEn)+'</p>';
+// Stats
+cards+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">';
+cards+='<div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18);border-radius:12px;padding:10px 6px;text-align:center"><div style="font-size:18px;margin-bottom:4px">📅</div><div style="color:#F59E0B;font-size:15px;font-weight:900;font-family:Montserrat,sans-serif">'+f.days+'</div><div style="color:rgba(255,255,255,.5);font-size:10px;margin-top:4px">'+(LG.l==='ar'?'يوم':'Days')+'</div></div>';
+cards+='<div style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.18);border-radius:12px;padding:10px 6px;text-align:center"><div style="font-size:18px;margin-bottom:4px">📈</div><div style="color:#22C55E;font-size:15px;font-weight:900;font-family:Montserrat,sans-serif">'+f.rate+'%</div><div style="color:rgba(255,255,255,.5);font-size:10px;margin-top:4px">'+(LG.l==='ar'?'يومي':'Daily')+'</div></div>';
+cards+='<div style="background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.18);border-radius:12px;padding:10px 6px;text-align:center"><div style="font-size:18px;margin-bottom:4px">💎</div><div style="color:#D4AF37;font-size:15px;font-weight:900;font-family:Montserrat,sans-serif">'+f.total+'%</div><div style="color:rgba(255,255,255,.5);font-size:10px;margin-top:4px">'+(LG.l==='ar'?'إجمالي':'Total')+'</div></div>';
+cards+='</div>';
+// Progress
+cards+='<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="display:flex;align-items:center;gap:5px"><span style="font-size:12px">📊</span><span style="color:rgba(255,255,255,.6);font-size:11.5px">'+(LG.l==='ar'?'الاكتمال':'Filled')+'</span></div><span style="color:#D4AF37;font-size:13px;font-weight:900;font-family:Montserrat,sans-serif">'+f.prog+'%</span></div>';
+cards+='<div class="pgb" style="height:8px"><div style="height:100%;width:'+f.prog+'%;background:linear-gradient(90deg,#D4AF37,#F59E0B);border-radius:100px;box-shadow:0 0 10px rgba(245,158,11,.5)"></div></div></div>';
+// Buy Limit
+cards+='<div style="background:rgba(255,255,255,.04);border-radius:12px;padding:10px 12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center"><div style="display:flex;align-items:center;gap:6px"><span>💵</span><span style="color:rgba(255,255,255,.6);font-size:11.5px">'+(LG.l==='ar'?'حد الشراء':'Buy Range')+'</span></div><div style="color:#E8CC6A;font-size:11.5px;font-weight:700;font-family:Montserrat,sans-serif">'+fmt(f.min)+' - '+fmt(f.max)+'</div></div>';
+// Buttons
+cards+='<div style="display:flex;gap:10px"><button onclick="openInvest(\''+f.id+'\')" style="flex:1;padding:14px;background:linear-gradient(135deg,#D4AF37,#C9992C);border:none;border-radius:12px;color:#020509;font-size:14px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 16px rgba(212,175,55,.4)"><span>💎</span><span>'+t('buyNow')+'</span></button>';
+cards+='<button onclick="toast(\''+(LG.l==='ar'?'تواصل واتساب':'WhatsApp')+'\',\'info\')" style="width:52px;height:52px;background:linear-gradient(135deg,#25D366,#128C7E);border:none;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;box-shadow:0 4px 14px rgba(37,211,102,.35);font-size:22px">📞</button>';
+cards+='</div></div></div>'}
+
+return '<div class="fu" style="padding-bottom:20px">'
++'<div style="position:sticky;top:0;z-index:30;background:rgba(2,5,9,.98);padding:14px 16px;border-bottom:1px solid rgba(212,175,55,.1);backdrop-filter:blur(16px)">'
++'<div style="display:flex;align-items:center;gap:10px"><div style="width:40px;height:40px;background:linear-gradient(135deg,#D4AF37,#C9992C);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px">💼</div>'
++'<div><h1 style="color:#fff;font-weight:900;font-size:17px;margin:0">'+(LG.l==='ar'?'صناديق BlackRock':'BlackRock Funds')+'</h1><p style="color:rgba(255,255,255,.45);font-size:11px;margin:2px 0 0">'+(LG.l==='ar'?'استثمار آمن ومضمون':'Safe & guaranteed')+'</p></div></div></div>'
++'<div style="padding:16px">'
+// Hero Banner
++'<div style="background:linear-gradient(135deg,#D4AF37,#F59E0B,#FF6B35);border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:0 8px 30px rgba(245,158,11,.35)">'
++'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.3);border-radius:100px;padding:5px 12px;margin-bottom:12px"><span>💎</span><span style="color:#fff;font-size:11px;font-weight:900;letter-spacing:1px">BLACKROCK PREMIUM</span></div>'
++'<div style="color:#fff;font-size:20px;font-weight:900;line-height:1.3;margin-bottom:8px">'+(LG.l==='ar'?'استثمر اليوم • اربح غداً':'Invest Today • Profit Tomorrow')+'</div>'
++'<div style="color:rgba(255,255,255,.95);font-size:12px;line-height:1.6;margin-bottom:12px">'+(LG.l==='ar'?'صناديق بعوائد يومية مضمونة':'Funds with guaranteed daily returns')+'</div>'
++'</div>'
+// Income Stats
++'<div style="background:linear-gradient(160deg,rgba(14,20,36,.99),rgba(8,12,22,.99));border:1px solid rgba(212,175,55,.2);border-radius:18px;padding:16px;margin-bottom:14px">'
++'<div style="display:flex;align-items:center;gap:6px;margin-bottom:12px"><span style="font-size:16px">📊</span><span style="color:#fff;font-size:13px;font-weight:800">'+(LG.l==='ar'?'إحصائياتك':'Your Stats')+'</span></div>'
++'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
++'<div style="background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(212,175,55,.03));border:1px solid rgba(212,175,55,.2);border-radius:14px;padding:14px"><div style="color:rgba(255,255,255,.55);font-size:11px;margin-bottom:6px">💰 '+t('expectedIncome')+'</div><div style="font-size:20px;font-weight:900;font-family:Montserrat,sans-serif" class="gt">'+fmt(u.expectedIncome||0)+'</div><div style="color:rgba(255,255,255,.4);font-size:10px;margin-top:4px">'+CUR(LG.l)+'</div></div>'
++'<div style="background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(34,197,94,.03));border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:14px"><div style="color:rgba(255,255,255,.55);font-size:11px;margin-bottom:6px">📈 '+t('todayIncome')+'</div><div style="color:#22C55E;font-size:20px;font-weight:900;font-family:Montserrat,sans-serif">'+fmt(u.taskBal||0)+'</div><div style="color:rgba(255,255,255,.4);font-size:10px;margin-top:4px">'+CUR(LG.l)+'</div></div>'
++'</div>'
++(totalInv>0?'<div style="margin-top:10px;padding:12px;background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(59,130,246,.03));border:1px solid rgba(59,130,246,.2);border-radius:12px;display:flex;justify-content:space-between;align-items:center"><div><span style="font-size:16px">💼</span> <span style="color:rgba(255,255,255,.7);font-size:12px;font-weight:700">'+(LG.l==='ar'?'إجمالي الاستثمار':'Total Invested')+'</span></div><span style="color:#3B82F6;font-size:14px;font-weight:900;font-family:Montserrat,sans-serif">'+fmt(totalInv)+' '+CUR(LG.l)+'</span></div>':'')
++'</div>'
++'<h3 style="color:#fff;font-weight:900;font-size:15px;margin:0 0 14px;display:flex;align-items:center;gap:8px"><span>💎</span><span>'+(LG.l==='ar'?'الصناديق المتاحة':'Available Funds')+'</span></h3>'
++cards
++'</div></div>'}
+
+function buildTasks(){
+if(!S.tasks)S.tasks=getDailyTasks(S.user.level||'trial',S.user.id);
+var done=0,totR=0;for(var i=0;i<S.tasks.length;i++)if(S.tasks[i].status==='done'){done++;totR+=S.tasks[i].reward}
+var pct=Math.min(((S.user.taskBal||0)/215)*100,100);
+var cards='';
+for(var j=0;j<S.tasks.length;j++){var tk=S.tasks[j];
+var isAct=(S.activeTask===tk.id&&tk.status==='active');
+var cls=tk.status==='active'?'tc-r':(tk.status==='done'?'tc-d':(tk.status==='failed'?'tc-f':''));
+var nm=LG.l==='ar'?tk.ar:tk.en;
+var iBg=tk.status==='done'?'rgba(34,197,94,.15)':(tk.status==='failed'?'rgba(239,68,68,.12)':'linear-gradient(135deg,#D4AF37,#C9992C)');
+var iC=tk.status==='done'?'#22C55E':(tk.status==='failed'?'#EF4444':'#020509');
+var ico=tk.status==='done'?'✓':(tk.status==='failed'?'✕':'🚀');
+var aC=tk.status==='done'?'#22C55E':(tk.status==='failed'?'rgba(239,68,68,.5)':'#D4AF37');
+var pgC=tk.status==='done'?'pg-n':(tk.status==='failed'?'pg-r':'pg-g');
+var prog=tk.status==='done'?100:(isAct?((tk.sec-S.cdVal)/tk.sec*100):0);
+cards+='<div class="card '+cls+'" style="padding:16px;margin-bottom:12px">';
+cards+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">';
+cards+='<div style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:'+iBg+';color:'+iC+';font-size:20px;font-weight:900">'+ico+'</div>';
+cards+='<div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;line-height:1.3;margin-bottom:4px;color:'+(tk.status==='failed'?'rgba(255,255,255,.4)':'#fff')+'">'+nm+'</div>';
+cards+='<div style="color:rgba(255,255,255,.5);font-size:11.5px">⏱ '+tk.sec+(LG.l==='ar'?'ث':'s')+' • 💎 '+tk.reward+' '+CUR(LG.l)+'</div></div>';
+cards+='<div style="font-size:22px;font-weight:900;font-family:Montserrat,sans-serif;color:'+aC+'">+'+tk.reward+'</div></div>';
+cards+='<div class="pgb" style="height:6px;margin-bottom:12px"><div class="pgf '+pgC+'" style="width:'+prog+'%"></div></div>';
+if(isAct){
+cards+='<div class="card cg" style="padding:18px;text-align:center;margin-bottom:12px;border-radius:14px"><div style="color:rgba(255,255,255,.6);font-size:11px;margin-bottom:4px">'+(LG.l==='ar'?'انتظر':'WAIT')+'</div>';
+cards+='<div style="font-size:56px;font-weight:900;line-height:1;font-family:Montserrat,sans-serif;margin:6px 0" class="gt" id="cd-'+tk.id+'">'+S.cdVal+'</div>';
+cards+='<div style="color:rgba(255,255,255,.5);font-size:11px">'+(LG.l==='ar'?'ثانية':'SEC')+'</div></div>';
+cards+='<button class="btn bd" onclick="cancelTask('+tk.id+')">✕ '+(LG.l==='ar'?'إلغاء':'Cancel')+'</button>'}
+else if(tk.status==='available'){cards+='<button class="btn bp" onclick="startTask('+tk.id+')">🚀 '+(LG.l==='ar'?'ابدأ':'Start')+' • '+tk.sec+'ث</button>'}
+else if(tk.status==='done'){cards+='<div class="btn bn" style="pointer-events:none">✓ '+(LG.l==='ar'?'مكتملة':'Done')+' • +'+tk.reward+' '+CUR(LG.l)+'</div>'}
+else{cards+='<div class="btn bd" style="pointer-events:none;opacity:.6">✕ '+(LG.l==='ar'?'أُلغيت':'Cancelled')+'</div>'}
+cards+='</div>'}
+
+return '<div class="fu">'
++'<div style="position:sticky;top:0;z-index:30;background:rgba(2,5,9,.97);padding:14px 16px;border-bottom:1px solid rgba(212,175,55,.1);backdrop-filter:blur(16px)">'
++'<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;background:linear-gradient(135deg,#D4AF37,#C9992C);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#020509">⚡</div>'
++'<div><h1 style="color:#fff;font-weight:900;font-size:17px;margin:0">'+(LG.l==='ar'?'المهام اليومية':'Daily Tasks')+'</h1><p style="color:rgba(255,255,255,.4);font-size:11px;margin:2px 0 0">'+(LG.l==='ar'?'تتغير يومياً':'Changes daily')+'</p></div></div></div>'
++'<div style="padding:16px">'
++'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">'
++'<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:12px 8px;text-align:center"><div style="font-size:24px;margin-bottom:4px">✅</div><div style="color:#22C55E;font-size:20px;font-weight:900;font-family:Montserrat,sans-serif">'+done+'/5</div><div style="color:rgba(255,255,255,.4);font-size:10px;margin-top:6px">DONE</div></div>'
++'<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:12px 8px;text-align:center"><div style="font-size:24px;margin-bottom:4px">💰</div><div style="color:#D4AF37;font-size:20px;font-weight:900;font-family:Montserrat,sans-serif">'+totR+'</div><div style="color:rgba(255,255,255,.4);font-size:10px;margin-top:6px">'+CUR(LG.l).toUpperCase()+'</div></div>'
++'<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:12px 8px;text-align:center"><div style="font-size:24px;margin-bottom:4px">👥</div><div style="color:#3B82F6;font-size:20px;font-weight:900;font-family:Montserrat,sans-serif">'+(S.user.teamCount||0)+'</div><div style="color:rgba(255,255,255,.4);font-size:10px;margin-top:6px">TEAM</div></div>'
++'</div>'
++'<div class="card" style="padding:14px;margin-bottom:16px;border-color:rgba(239,68,68,.25)">'
++'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><div style="width:36px;height:36px;background:rgba(239,68,68,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#EF4444">🔒</div>'
++'<div style="flex:1"><div style="color:#EF4444;font-size:13px;font-weight:900">'+(LG.l==='ar'?'السحب مقفل':'Withdrawal Locked')+'</div><div style="color:rgba(255,255,255,.5);font-size:11px;margin-top:2px">'+(LG.l==='ar'?'يتطلب M1 + 215 دج':'Requires M1 + 215 DA')+'</div></div></div>'
++'<div class="pgb" style="height:6px;margin-bottom:6px"><div class="pgf pg-r" style="width:'+pct+'%"></div></div>'
++'<div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:#D4AF37;font-family:Montserrat,sans-serif;font-weight:700">'+fmt(S.user.taskBal||0)+' '+CUR(LG.l)+'</span><span style="color:rgba(255,255,255,.5);font-family:Montserrat,sans-serif;font-weight:700">/ 215 '+CUR(LG.l)+'</span></div></div>'
++cards
++'</div></div>'}
+
+function buildUpgrade(){
+var cards='';
+for(var i=0;i<LVS.length;i++){var lv=LVS[i],locked=((S.user.balance||0)<lv.p&&lv.p>0),cur=(S.user.level===lv.id);
+var iBg=locked?'rgba(239,68,68,.1)':(cur?'rgba(34,197,94,.15)':'linear-gradient(135deg,#D4AF37,#C9992C)');
+var iC=locked?'#EF4444':(cur?'#22C55E':'#020509');
+cards+='<div style="background:linear-gradient(160deg,rgba(14,20,36,.99),rgba(8,12,22,.99));border:1px solid '+(cur?'rgba(34,197,94,.45)':locked?'rgba(239,68,68,.1)':'rgba(212,175,55,.15)')+';border-radius:16px;padding:16px;margin-bottom:12px;'+(locked?'opacity:.55;':'')+'">';
+cards+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';
+cards+='<div style="display:flex;align-items:center;gap:12px"><div style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:'+iBg+';color:'+iC+';font-size:20px">'+(locked?'🔒':'🚀')+'</div>';
+cards+='<div><div style="color:'+(locked?'rgba(255,255,255,.4)':'#fff')+';font-weight:900;font-size:16px">'+lv.n+'</div>';
+cards+='<div style="color:'+(lv.p===0?'#22C55E':'#D4AF37')+';font-size:13px;font-weight:700;font-family:Montserrat,sans-serif">'+(lv.p===0?(LG.l==='ar'?'مجاني':'FREE'):fmt(lv.p)+' '+CUR(LG.l))+'</div></div></div>';
+if(cur)cards+='<span style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);border-radius:100px;padding:4px 10px;color:#22C55E;font-size:10px;font-weight:900">✓ '+(LG.l==='ar'?'مفعّل':'Active')+'</span>';
+cards+='</div>';
+cards+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:12px">';
+cards+='<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px 4px;text-align:center"><div style="color:#22C55E;font-weight:900;font-size:11px;font-family:Montserrat,sans-serif">'+lv.dy+' '+CUR(LG.l)+'</div><div style="color:rgba(255,255,255,.4);font-size:9px;margin-top:3px">'+(LG.l==='ar'?'يومي':'Daily')+'</div></div>';
+cards+='<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px 4px;text-align:center"><div style="color:#D4AF37;font-weight:900;font-size:11px;font-family:Montserrat,sans-serif">'+lv.d+'</div><div style="color:rgba(255,255,255,.4);font-size:9px;margin-top:3px">'+(LG.l==='ar'?'أيام':'Days')+'</div></div>';
+cards+='<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px 4px;text-align:center"><div style="color:#F59E0B;font-weight:900;font-size:11px;font-family:Montserrat,sans-serif">'+lv.tot+'</div><div style="color:rgba(255,255,255,.4);font-size:9px;margin-top:3px">'+(LG.l==='ar'?'إجمالي':'Total')+'</div></div>';
+cards+='<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px 4px;text-align:center"><div style="color:#3B82F6;font-weight:900;font-size:11px;font-family:Montserrat,sans-serif">'+(lv.mo?fmt(lv.mo):'—')+'</div><div style="color:rgba(255,255,255,.4);font-size:9px;margin-top:3px">'+(LG.l==='ar'?'شهري':'Monthly')+'</div></div>';
+cards+='</div>';
+if(!locked&&lv.p>0&&!cur)cards+='<button class="btn bp" onclick="toast(\''+(LG.l==='ar'?'تواصل مع الدعم':'Contact support')+'\',\'info\')" style="font-size:13px">💎 '+(LG.l==='ar'?'ترقية':'Upgrade')+' → '+lv.n+'</button>';
+if(lv.id==='trial'&&!cur)cards+='<button class="btn bn" onclick="upd({level:\'trial\'});toast(\'✓ '+(LG.l==='ar'?'تم التفعيل':'Activated')+'\',\'success\');render()">✓ '+(LG.l==='ar'?'بدء التجربة':'Start Trial')+'</button>';
+if(cur)cards+='<div class="btn bn" style="pointer-events:none">✓ '+(LG.l==='ar'?'مفعّل':'Active')+' • '+lv.n+'</div>';
+cards+='</div>'}
+
+return '<div class="fu">'
++'<div style="position:sticky;top:0;z-index:30;background:rgba(2,5,9,.97);padding:14px 16px;border-bottom:1px solid rgba(212,175,55,.1);backdrop-filter:blur(16px)">'
++'<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;background:linear-gradient(135deg,#D4AF37,#C9992C);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#020509">💎</div>'
++'<div><h1 style="color:#fff;font-weight:900;font-size:17px;margin:0">'+(LG.l==='ar'?'خطط الاستثمار':'Investment Plans')+'</h1></div></div></div>'
++'<div style="padding:16px">'
++'<div style="background:linear-gradient(160deg,rgba(16,22,40,.99),rgba(10,14,28,.99));border:1px solid rgba(212,175,55,.25);border-radius:18px;padding:16px;margin-bottom:16px">'
++'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="color:rgba(255,255,255,.6);font-size:12px;font-weight:700">💰 '+(LG.l==='ar'?'رصيدك':'Balance')+'</span><span style="font-size:20px;font-weight:900;font-family:Montserrat,sans-serif;color:#D4AF37">'+fmt(S.user.balance||0)+' '+CUR(LG.l)+'</span></div>'
++'<div class="pgb" style="height:5px"><div class="pgf pg-g" style="width:100%"></div></div></div>'
++cards
++'</div></div>'}
+
+function buildProfile(){
+var u=S.user;
+return '<div class="fu">'
++'<div style="position:sticky;top:0;z-index:30;background:rgba(2,5,9,.97);padding:14px 16px;border-bottom:1px solid rgba(212,175,55,.1);backdrop-filter:blur(16px)">'
++'<div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;background:linear-gradient(135deg,#D4AF37,#C9992C);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#020509">'+IC.user+'</div><h1 style="color:#fff;font-weight:900;font-size:18px;margin:0">'+(LG.l==='ar'?'حسابي':'My Account')+'</h1></div>'
++'<button onclick="toggleLang()" style="background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.25);border-radius:100px;padding:7px 14px;color:#D4AF37;font-size:12px;font-weight:800;cursor:pointer">🌐 '+t('lang')+'</button></div></div>'
++'<div style="padding:16px">'
+// Hero
++'<div style="background:linear-gradient(160deg,rgba(16,22,40,.99),rgba(10,14,28,.99));border:1px solid rgba(212,175,55,.25);border-radius:18px;padding:24px;text-align:center;margin-bottom:16px">'
++'<div style="width:92px;height:92px;background:linear-gradient(135deg,#D4AF37,#C9992C);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900;color:#020509;margin:0 auto 14px">'+(u.un||'?').charAt(0).toUpperCase()+'</div>'
++'<h2 style="color:#fff;font-weight:900;font-size:22px;margin:0 0 4px">'+u.un+'</h2>'
++'<div style="color:rgba(255,255,255,.4);font-size:12px;margin-bottom:12px;font-family:Montserrat,sans-serif">ID: BLK-'+String(u.id).slice(-6)+'</div>'
++'<div class="bgd" style="display:inline-flex"><span class="gt">⭐ '+lvN(u.level||'trial')+'</span></div></div>'
+// Stats
++'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">'
++'<div class="card" style="padding:14px;text-align:center"><div style="font-size:22px;margin-bottom:4px">💰</div><div style="color:#D4AF37;font-weight:900;font-family:Montserrat,sans-serif;font-size:15px">'+fmt(u.balance||0)+' '+CUR(LG.l)+'</div><div style="color:rgba(255,255,255,.5);font-size:11px;margin-top:4px">'+(LG.l==='ar'?'الرصيد':'Balance')+'</div></div>'
++'<div class="card" style="padding:14px;text-align:center"><div style="font-size:22px;margin-bottom:4px">👥</div><div style="color:#3B82F6;font-weight:900;font-family:Montserrat,sans-serif;font-size:18px">'+(u.teamCount||0)+'</div><div style="color:rgba(255,255,255,.5);font-size:11px;margin-top:4px">'+(LG.l==='ar'?'الفريق':'Team')+'</div></div>'
++'<div class="card" style="padding:14px;text-align:center"><div style="font-size:22px;margin-bottom:4px">📈</div><div style="color:#22C55E;font-weight:900;font-family:Montserrat,sans-serif;font-size:15px">'+fmt(u.totalEarned||0)+' '+CUR(LG.l)+'</div><div style="color:rgba(255,255,255,.5);font-size:11px;margin-top:4px">'+(LG.l==='ar'?'الأرباح':'Earned')+'</div></div>'
++'<div class="card" style="padding:14px;text-align:center"><div style="font-size:22px;margin-bottom:4px">🎡</div><div style="color:#A855F7;font-weight:900;font-family:Montserrat,sans-serif;font-size:18px">'+(u.wheelSpins||0)+'</div><div style="color:rgba(255,255,255,.5);font-size:11px;margin-top:4px">'+(LG.l==='ar'?'دورات':'Spins')+'</div></div>'
++'</div>'
+// Auto-save Card
++'<div class="card" style="padding:14px;margin-bottom:16px;border-color:rgba(34,197,94,.3)"><div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;background:rgba(34,197,94,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px">💾</div><div style="flex:1"><div style="color:#fff;font-weight:900;font-size:14px">'+(LG.l==='ar'?'الحفظ التلقائي مفعّل':'Auto-save enabled')+'</div><div style="color:rgba(255,255,255,.5);font-size:11.5px;margin-top:2px">'+(LG.l==='ar'?'بياناتك محفوظة تلقائياً':'Your data is saved automatically')+'</div></div><span class="odot"></span></div></div>'
+// Ref Code
++'<div class="card cg" style="padding:16px;margin-bottom:16px">'
++'<div style="color:#fff;font-weight:900;font-size:14px;text-align:center;margin-bottom:12px">🔗 '+(LG.l==='ar'?'كود الدعوة':'Referral Code')+'</div>'
++'<div style="background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.22);border-radius:14px;padding:16px;text-align:center;margin-bottom:12px"><div style="font-size:28px;font-weight:900;letter-spacing:6px;font-family:Montserrat,sans-serif" class="gt">'+u.code+'</div></div>'
++'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button class="btn bs" onclick="cpRef()" style="font-size:12.5px;padding:12px">'+t('copy')+'</button><button class="btn bp" onclick="shareRef()" style="font-size:12.5px;padding:12px">'+t('share')+'</button></div></div>'
+// Logout
++'<button class="btn bd" onclick="doLogout()" style="margin-bottom:16px">'+IC.logout+' '+t('out')+'</button>'
++'</div></div>'}
+
+// ========== ACTIONS ==========
+window.setTab=function(id){if(S.tab===id){var sc=document.querySelector('.scr');if(sc)sc.scrollTop=0;return}S.tab=id;DB.s('lastTab',id);render()}
+window.toggleLang=function(){LG.l=LG.l==='ar'?'en':'ar';document.documentElement.lang=LG.l;document.documentElement.dir=LG.l==='ar'?'rtl':'ltr';DB.s('lang',LG.l);render()}
+window.cpRef=function(){try{navigator.clipboard.writeText('blackrock.app/ref/'+S.user.code)}catch(e){}toast(t('copied'),'success')}
+window.shareRef=function(){var lnk='blackrock.app/ref/'+S.user.code;var msg='🏦 BlackRock Investment\n'+lnk;if(navigator.share)navigator.share({title:'BlackRock',text:msg,url:lnk}).catch(function(){});else{try{navigator.clipboard.writeText(msg)}catch(e){}toast(t('copied'),'success')}}
+window.doWithdraw=function(){if(!S.user.level||S.user.level==='trial'){toast(LG.l==='ar'?'⚠️ يتطلب M1':'⚠️ Requires M1','warning');setTab('up');return}if((S.user.taskBal||0)<215){toast(LG.l==='ar'?'⚠️ الحد الأدنى 215 دج':'⚠️ Min 215 DA','warning');return}toast(LG.l==='ar'?'✓ تم إرسال طلب السحب!':'✓ Withdrawal sent!','success')}
+window.doLogout=function(){clearInterval(S.cdTimer);DB.d('cur');S.user=null;S.tab='home';S.tasks=null;render();toast(LG.l==='ar'?'تم تسجيل الخروج':'Signed out','success')}
+
+window.startTask=function(id){
+if(S.activeTask!==null){toast(LG.l==='ar'?'مهمة جارية!':'Task in progress!','warning');return}
+var tk=null;for(var i=0;i<S.tasks.length;i++)if(S.tasks[i].id===id){tk=S.tasks[i];break}
+if(!tk||tk.status!=='available')return;
+tk.status='active';S.activeTask=id;S.cdVal=tk.sec;DB.s('tk_'+S.user.id,{date:today(),tasks:S.tasks});render();
+toast(LG.l==='ar'?'⏱️ المهمة بدأت!':'⏱️ Task started!','info');
+S.cdTimer=setInterval(function(){
+S.cdVal--;var cd=gId('cd-'+id);if(cd)cd.textContent=S.cdVal;
+if(S.cdVal<=0){clearInterval(S.cdTimer);S.cdTimer=null;
+for(var i=0;i<S.tasks.length;i++)if(S.tasks[i].id===id){S.tasks[i].status='done';break}
+upd({balance:(S.user.balance||0)+tk.reward,taskBal:(S.user.taskBal||0)+tk.reward,totalEarned:(S.user.totalEarned||0)+tk.reward});
+DB.s('tk_'+S.user.id,{date:today(),tasks:S.tasks});
+S.activeTask=null;toast('✓ +'+tk.reward+' '+CUR(LG.l)+'!','success');render()}},1000)}
+
+window.cancelTask=function(id){
+clearInterval(S.cdTimer);S.cdTimer=null;
+for(var i=0;i<S.tasks.length;i++)if(S.tasks[i].id===id){S.tasks[i].status='failed';break}
+S.activeTask=null;DB.s('tk_'+S.user.id,{date:today(),tasks:S.tasks});
+toast(LG.l==='ar'?'❌ أُلغيت':'❌ Cancelled','error');render()}
+
+// Investment
+window.openInvest=function(fid){
+var f=null;for(var i=0;i<FUNDS.length;i++)if(FUNDS[i].id===fid){f=FUNDS[i];break}
+if(!f)return;
+var ov=document.createElement('div');ov.id='invest-modal';ov.className='sho';
+ov.onclick=function(e){if(e.target===ov)closeInvest()};
+ov.innerHTML='<div class="shp" style="padding:0">'
++'<div style="position:sticky;top:0;background:#0d1424;border-bottom:1px solid rgba(255,255,255,.08);padding:12px 16px"><div style="width:40px;height:4px;background:rgba(212,175,55,.25);border-radius:2px;margin:0 auto 12px"></div>'
++'<div style="display:flex;align-items:center;justify-content:space-between"><div style="width:40px"></div><div style="color:#fff;font-size:16px;font-weight:900">'+f.emo+' '+(LG.l==='ar'?'تفاصيل الصندوق':'Fund Details')+'</div>'
++'<button onclick="closeInvest()" style="width:40px;height:40px;background:rgba(255,255,255,.08);border:none;border-radius:12px;color:#fff;cursor:pointer;font-size:20px">✕</button></div></div>'
++'<div style="padding:16px">'
++'<div style="background:'+f.grad+';border-radius:20px;padding:24px;text-align:center;margin-bottom:14px;box-shadow:0 10px 30px rgba(0,0,0,.4)"><div style="font-size:64px;margin-bottom:10px">'+f.emo+'</div>'
++'<h2 style="color:#fff;font-size:20px;font-weight:900;margin:0 0 8px">'+(LG.l==='ar'?f.ar:f.en)+'</h2>'
++'<p style="color:rgba(255,255,255,.92);font-size:12.5px;margin:0">'+(LG.l==='ar'?f.descAr:f.descEn)+'</p></div>'
++'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">'
++'<div class="card" style="padding:14px;text-align:center"><div style="font-size:24px;margin-bottom:6px">📅</div><div style="color:#F59E0B;font-size:15px;font-weight:900;font-family:Montserrat,sans-serif">'+f.days+'</div><div style="color:rgba(255,255,255,.5);font-size:10.5px;margin-top:4px">'+(LG.l==='ar'?'الأيام':'Days')+'</div></div>'
++'<div class="card" style="padding:14px;text-align:center"><div style="font-size:24px;margin-bottom:6px">📈</div><div style="color:#22C55E;font-size:15px;font-weight:900;font-family:Montserrat,sans-serif">'+f.rate+'%</div><div style="color:rgba(255,255,255,.5);font-size:10.5px;margin-top:4px">'+(LG.l==='ar'?'يومي':'Daily')+'</div></div>'
++'<div class="card" style="padding:14px;text-align:center"><div style="font-size:24px;margin-bottom:6px">💎</div><div style="color:#D4AF37;font-size:15px;font-weight:900;font-family:Montserrat,sans-serif">'+f.total+'%</div><div style="color:rgba(255,255,255,.5);font-size:10.5px;margin-top:4px">'+(LG.l==='ar'?'إجمالي':'Total')+'</div></div>'
++'<div class="card" style="padding:14px;text-align:center"><div style="font-size:24px;margin-bottom:6px">🏦</div><div style="color:#3B82F6;font-size:11px;font-weight:900;font-family:Montserrat,sans-serif">'+(LG.l==='ar'?f.catAr:f.catEn)+'</div><div style="color:rgba(255,255,255,.5);font-size:10.5px;margin-top:4px">'+(LG.l==='ar'?'الفئة':'Category')+'</div></div>'
++'</div>'
++'<div style="background:linear-gradient(160deg,rgba(14,20,36,.99),rgba(8,12,22,.99));border:1px solid rgba(212,175,55,.2);border-radius:16px;padding:16px;margin-bottom:14px">'
++'<div style="display:flex;justify-content:space-between;margin-bottom:10px"><div style="color:rgba(255,255,255,.7);font-size:12px;font-weight:700">💰 '+(LG.l==='ar'?'مبلغ الاستثمار':'Investment Amount')+'</div><div style="color:#D4AF37;font-size:11px;font-weight:700">'+(LG.l==='ar'?'الأدنى:':'Min:')+' '+fmt(f.min)+'</div></div>'
++'<div style="position:relative"><input type="number" id="inv-amount" oninput="updateInvest(\''+fid+'\')" placeholder="'+fmt(f.min)+' - '+fmt(f.max)+'" class="inp" style="padding-inline-end:60px;font-size:16px;font-weight:800"><div style="position:absolute;top:50%;transform:translateY(-50%);inset-inline-end:14px;color:#D4AF37;font-size:13px;font-weight:800">'+CUR(LG.l)+'</div></div>'
++'<div style="display:flex;gap:6px;margin-top:10px"><button onclick="setInvAmt('+f.min+',\''+fid+'\')" style="flex:1;padding:8px;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.2);border-radius:10px;color:#E8CC6A;font-size:11px;font-weight:800;cursor:pointer">'+fmt(f.min)+'</button>'
++'<button onclick="setInvAmt('+(f.min*2)+',\''+fid+'\')" style="flex:1;padding:8px;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.2);border-radius:10px;color:#E8CC6A;font-size:11px;font-weight:800;cursor:pointer">'+fmt(f.min*2)+'</button>'
++'<button onclick="setInvAmt('+(f.min*5)+',\''+fid+'\')" style="flex:1;padding:8px;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.2);border-radius:10px;color:#E8CC6A;font-size:11px;font-weight:800;cursor:pointer">'+fmt(f.min*5)+'</button>'
++'<button onclick="setInvAmt('+(f.min*10)+',\''+fid+'\')" style="flex:1;padding:8px;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.2);border-radius:10px;color:#E8CC6A;font-size:11px;font-weight:800;cursor:pointer">'+fmt(f.min*10)+'</button></div>'
++'<div style="margin-top:12px;padding:12px;background:rgba(255,255,255,.04);border-radius:12px;display:flex;justify-content:space-between"><span style="color:rgba(255,255,255,.7);font-size:12px">💼 '+(LG.l==='ar'?'رصيدك':'Balance')+'</span><span style="color:#D4AF37;font-size:14px;font-weight:900;font-family:Montserrat,sans-serif">'+fmt(S.user.balance||0)+' '+CUR(LG.l)+'</span></div>'
++'</div>'
++'<div id="invest-preview"></div>'
++'<button id="invest-btn" onclick="doInvest(\''+fid+'\')" class="btn bp" style="margin-bottom:12px">💎 '+(LG.l==='ar'?'استثمر الآن':'Invest Now')+'</button>'
++'<div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:20px"><span style="font-size:20px">🔒</span><div style="color:rgba(255,255,255,.75);font-size:11.5px;line-height:1.6">'+(LG.l==='ar'?'استثمار محمي بعقد رسمي. أموالك آمنة 100%':'Protected by official contract. 100% safe')+'</div></div>'
++'</div></div>';
+document.body.appendChild(ov)}
+
+window.closeInvest=function(){var ov=gId('invest-modal');if(ov)ov.remove()}
+
+window.setInvAmt=function(amt,fid){var i=gId('inv-amount');if(i){i.value=amt;updateInvest(fid)}}
+
+window.updateInvest=function(fid){
+var f=null;for(var i=0;i<FUNDS.length;i++)if(FUNDS[i].id===fid){f=FUNDS[i];break}
+var amt=parseFloat(gId('inv-amount').value)||0;
+var pv=gId('invest-preview');
+if(amt>=f.min&&amt<=f.max&&amt<=(S.user.balance||0)){
+var dly=amt*(f.rate/100),tot=amt*(f.total/100),fin=amt+tot;
+pv.innerHTML='<div style="background:linear-gradient(135deg,rgba(34,197,94,.12),rgba(22,163,74,.05));border:1px solid rgba(34,197,94,.35);border-radius:16px;padding:16px;margin-bottom:14px">'
++'<div style="color:#22C55E;font-size:13px;font-weight:800;margin-bottom:14px">📊 '+(LG.l==='ar'?'الأرباح المتوقعة':'Expected Profits')+'</div>'
++'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
++'<div style="background:rgba(0,0,0,.25);border-radius:12px;padding:12px;text-align:center"><div style="font-size:20px;margin-bottom:4px">📅</div><div style="color:rgba(255,255,255,.55);font-size:10.5px;margin-bottom:6px">'+(LG.l==='ar'?'يومياً':'Daily')+'</div><div style="color:#22C55E;font-size:17px;font-weight:900;font-family:Montserrat,sans-serif">+'+fmt(dly)+'</div><div style="color:rgba(255,255,255,.4);font-size:9.5px;margin-top:2px">'+CUR(LG.l)+'</div></div>'
++'<div style="background:rgba(0,0,0,.25);border-radius:12px;padding:12px;text-align:center"><div style="font-size:20px;margin-bottom:4px">🎯</div><div style="color:rgba(255,255,255,.55);font-size:10.5px;margin-bottom:6px">'+(LG.l==='ar'?'بعد '+f.days+' يوم':'After '+f.days+' days')+'</div><div style="color:#D4AF37;font-size:17px;font-weight:900;font-family:Montserrat,sans-serif">+'+fmt(tot)+'</div><div style="color:rgba(255,255,255,.4);font-size:9.5px;margin-top:2px">'+CUR(LG.l)+'</div></div>'
++'</div>'
++'<div style="background:rgba(0,0,0,.3);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center"><span style="color:rgba(255,255,255,.7);font-size:12px;font-weight:700">💰 '+(LG.l==='ar'?'الإجمالي':'Total')+'</span><span style="font-size:17px;font-weight:900;font-family:Montserrat,sans-serif" class="gt">'+fmt(fin)+' '+CUR(LG.l)+'</span></div>'
++'</div>'}else{pv.innerHTML=''}}
+
+window.doInvest=function(fid){
+var f=null;for(var i=0;i<FUNDS.length;i++)if(FUNDS[i].id===fid){f=FUNDS[i];break}
+var amt=parseFloat(gId('inv-amount').value)||0;
+if(amt<f.min){toast(LG.l==='ar'?'⚠️ الحد الأدنى '+fmt(f.min)+' '+CUR(LG.l):'⚠️ Min '+fmt(f.min)+' '+CUR(LG.l),'warning');return}
+if(amt>f.max){toast(LG.l==='ar'?'⚠️ الحد الأقصى '+fmt(f.max):'⚠️ Max '+fmt(f.max),'warning');return}
+if(amt>(S.user.balance||0)){toast(LG.l==='ar'?'❌ رصيد غير كافٍ':'❌ Insufficient balance','error');return}
+var inv=S.user.investments||[];inv.push({fundId:fid,amount:amt,date:new Date().toISOString(),expectedReturn:amt*(f.total/100)});
+upd({balance:(S.user.balance||0)-amt,investments:inv,expectedIncome:(S.user.expectedIncome||0)+amt*(f.total/100)});
+toast('✅ '+(LG.l==='ar'?'تم الاستثمار!':'Invested!')+' +'+fmt(amt*(f.total/100))+' '+CUR(LG.l),'success');
+closeInvest();render()}
+
+// Sheet
+window.openSheet=function(s){toast(LG.l==='ar'?'الإشعارات':'Notifications','info')}
+
+// ========== AUTH ==========
+function renderAuth(){
+var app=gId('app');
+app.innerHTML='<div style="position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#020509">'
++'<div style="position:absolute;top:0;left:0;right:0;height:50%;background:radial-gradient(ellipse at 50% 0%,rgba(212,175,55,.12) 0%,transparent 65%);pointer-events:none"></div>'
++'<div style="position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;min-height:100%;padding:20px 18px">'
++'<div style="width:100%;max-width:380px;display:flex;justify-content:flex-end;margin-bottom:12px"><button onclick="toggleLang()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:8px 14px;color:rgba(255,255,255,.75);font-size:12.5px;font-weight:700;cursor:pointer">🌐 '+t('lang')+'</button></div>'
++'<div class="fu" style="width:100%;max-width:380px">'
++'<div style="text-align:center;margin-bottom:28px"><div class="gl" style="width:96px;height:96px;background:linear-gradient(135deg,#D4AF37,#C9992C,#B8860B);border-radius:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#020509" stroke-width="2.5"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/><path d="M11 3 5 9l6 13V3z"/><path d="m13 22 6-13-6-6V22z"/></svg></div>'
++'<div style="font-size:34px;font-weight:900;letter-spacing:4px;font-family:Montserrat,sans-serif;line-height:1.1" class="gt">BLACKROCK</div>'
++'<div style="color:rgba(255,255,255,.5);font-size:11px;letter-spacing:2.5px;margin:6px 0 14px">INVESTMENT PLATFORM</div>'
++'<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">'
++'<div style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);border-radius:100px;padding:6px 12px;color:#22C55E;font-size:10.5px;font-weight:900">🛡️ SSL V3</div>'
++'<div style="background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);border-radius:100px;padding:6px 12px;color:#D4AF37;font-size:10.5px;font-weight:900">NYSE: BLK</div>'
++'<div style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);border-radius:100px;padding:6px 12px;color:#3B82F6;font-size:10.5px;font-weight:900">🔒 AES-256</div>'
++'</div></div>'
++'<div style="display:flex;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:5px;margin-bottom:22px">'
++'<button id="tab-login" onclick="setAuthMode(true)" style="flex:1;padding:13px;border-radius:11px;font-size:14px;font-weight:800;background:linear-gradient(135deg,#D4AF37,#C9992C);color:#020509;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(212,175,55,.3)">'+t('signIn')+'</button>'
++'<button id="tab-signup" onclick="setAuthMode(false)" style="flex:1;padding:13px;border-radius:11px;font-size:14px;font-weight:800;background:transparent;color:rgba(255,255,255,.6);border:none;cursor:pointer">'+t('signUp')+'</button>'
++'</div>'
++'<div style="display:flex;flex-direction:column;gap:14px">'
++'<div><label style="display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.7);font-size:12px;font-weight:700;margin-bottom:8px">👤 '+t('user')+'</label><input class="inp" id="aun" placeholder="'+t('user')+'"></div>'
++'<div><label style="display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.7);font-size:12px;font-weight:700;margin-bottom:8px">🔒 '+t('pass')+'</label><div style="position:relative"><input class="inp" id="apw" type="password" placeholder="'+t('pass')+'" style="padding-inline-end:60px"><button type="button" onclick="tPw()" id="pwt-btn" style="position:absolute;top:50%;transform:translateY(-50%);inset-inline-end:12px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.25);border-radius:8px;padding:5px 10px;color:#D4AF37;font-size:14px;cursor:pointer">👁</button></div></div>'
++'<div id="cpw-cnt" style="display:none"><label style="display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.7);font-size:12px;font-weight:700;margin-bottom:8px">✓ '+t('conf')+'</label><input class="inp" id="acp" type="password" placeholder="'+t('conf')+'"></div>'
++'<button class="btn bp" id="abtn" onclick="doAuth()" style="margin-top:10px;font-size:15px;padding:16px">'+t('signIn')+'</button>'
++'</div>'
++'<div style="background:linear-gradient(160deg,rgba(14,20,36,.99),rgba(8,12,22,.99));border:1px solid rgba(212,175,55,.2);border-radius:16px;padding:16px;margin-top:24px">'
++'<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="width:32px;height:32px;background:rgba(34,197,94,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#22C55E">🛡️</div><div><div style="color:#fff;font-size:13.5px;font-weight:900">'+(LG.l==='ar'?'أمان المنصة':'Platform Security')+'</div><div style="color:rgba(255,255,255,.4);font-size:10.5px">'+(LG.l==='ar'?'حماية متقدمة':'Advanced Protection')+'</div></div></div>'
++'<div style="display:flex;flex-direction:column;gap:6px">'
++'<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:9px"><span>📜</span><span style="color:rgba(255,255,255,.75);font-size:11.5px;font-weight:600">'+(LG.l==='ar'?'عقد رسمي: 2025-2027':'Contract: 2025-2027')+'</span></div>'
++'<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:9px"><span>🔒</span><span style="color:rgba(255,255,255,.75);font-size:11.5px;font-weight:600">AES-256 + SSL/TLS 3.0</span></div>'
++'<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:9px"><span>🏛️</span><span style="color:rgba(255,255,255,.75);font-size:11.5px;font-weight:600">NYSE: BLK — EIN: 32-0174431</span></div>'
++'</div></div>'
++'<div style="text-align:center;color:rgba(255,255,255,.35);font-size:11px;margin-top:24px;padding-bottom:16px">© 2025 BlackRock, Inc.</div>'
++'</div></div></div>';
+window._isLogin=true}
+
+window._isLogin=true;
+window.setAuthMode=function(login){window._isLogin=login;
+var ti=gId('tab-login'),ts=gId('tab-signup'),cp=gId('cpw-cnt'),ab=gId('abtn');
+if(login){ti.style.background='linear-gradient(135deg,#D4AF37,#C9992C)';ti.style.color='#020509';ti.style.boxShadow='0 4px 14px rgba(212,175,55,.3)';
+ts.style.background='transparent';ts.style.color='rgba(255,255,255,.6)';ts.style.boxShadow='none';
+cp.style.display='none';ab.textContent=t('signIn')}
+else{ts.style.background='linear-gradient(135deg,#D4AF37,#C9992C)';ts.style.color='#020509';ts.style.boxShadow='0 4px 14px rgba(212,175,55,.3)';
+ti.style.background='transparent';ti.style.color='rgba(255,255,255,.6)';ti.style.boxShadow='none';
+cp.style.display='block';ab.textContent=t('signUp')}}
+
+window.tPw=function(){var i=gId('apw'),b=gId('pwt-btn');i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'👁':'🙈'}
+
+window.doAuth=function(){
+var un=(gId('aun').value||'').trim(),pw=(gId('apw').value||'').trim(),cp=(gId('acp')?gId('acp').value||'':'').trim();
+if(!un||!pw){toast(LG.l==='ar'?'يرجى ملء الحقول':'Fill all fields','error');return}
+if(!window._isLogin&&pw!==cp){toast(LG.l==='ar'?'كلمتا المرور مختلفتان':'Passwords don\'t match','error');return}
+var users=DB.g('users',[]);
+if(window._isLogin){
+var f=null;for(var i=0;i<users.length;i++)if(users[i].un===un&&users[i].pw===pw){f=users[i];break}
+if(f){DB.s('cur',f);S.user=f;S.tasks=getDailyTasks(f.level||'trial',f.id);toast('👋 '+un,'success');render()}
+else toast(LG.l==='ar'?'بيانات خاطئة':'Wrong credentials','error')}
+else{
+for(var j=0;j<users.length;j++)if(users[j].un===un){toast(LG.l==='ar'?'الاسم موجود':'Username taken','error');return}
+var nu={id:Date.now(),un:un,pw:pw,code:genCode(),balance:0,taskBal:0,refEarn:0,teamCount:0,wheelSpins:0,m1Refs:0,level:null,totalEarned:0,joined:new Date().toISOString(),investments:[],expectedIncome:0};
+users.push(nu);DB.s('users',users);DB.s('cur',nu);S.user=nu;S.tasks=getDailyTasks('trial',nu.id);
+toast('🎉 '+(LG.l==='ar'?'مرحباً!':'Welcome!'),'success');render()}}
+
+// ========== RENDER ==========
+function render(){
+var app=gId('app');if(!app)return;
+if(!S.user){renderAuth();return}
+var c='';
+if(S.tab==='home')c=buildHome();
+else if(S.tab==='tasks')c=buildTasks();
+else if(S.tab==='funds')c=buildFunds();
+else if(S.tab==='up')c=buildUpgrade();
+else if(S.tab==='profile')c=buildProfile();
+app.innerHTML='<div class="scr">'+c+'</div>'+buildNav()}
+
+// ========== INIT ==========
+function init(){
+var sl=DB.g('lang');if(sl){LG.l=sl;document.documentElement.lang=sl;document.documentElement.dir=sl==='ar'?'rtl':'ltr'}
+var u=DB.g('cur');
+if(u){S.user=u;S.tasks=getDailyTasks(u.level||'trial',u.id);
+var lt=DB.g('lastTab');if(lt)S.tab=lt}
+render()}
+
+// Auto-save every 30s
+setInterval(function(){if(S.user)DB.s('cur',S.user)},30000);
+
+// Save on page unload
+window.addEventListener('beforeunload',function(){if(S.user)DB.s('cur',S.user)});
+
+// Splash then init
+setTimeout(init,800);
+
+// Initial splash
+gId('app').innerHTML='<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px"><div class="gl" style="width:90px;height:90px;background:linear-gradient(135deg,#D4AF37,#C9992C,#B8860B);border-radius:24px;display:flex;align-items:center;justify-content:center"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#020509" stroke-width="2.5"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/></svg></div><div style="font-size:32px;font-weight:900;letter-spacing:4px;font-family:Montserrat,sans-serif" class="gt">BLACKROCK</div><div style="color:rgba(255,255,255,.4);font-size:11px;letter-spacing:2px">INVESTMENT PLATFORM</div><div style="width:100px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;margin-top:8px"><div style="height:100%;background:linear-gradient(90deg,#D4AF37,#C9992C);animation:pb 1s ease-out forwards"></div></div></div>';
+</script>
+</body>
+</html>
