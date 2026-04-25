@@ -153,7 +153,7 @@ function company(){modal(`<h2>BLACKROCK</h2><div class="card" style="padding:15p
 function wheel(){if(S.user.wheelSpins<=0)return toast('ادع صديقاً للحصول على دورة','warning');let prize=[43,86,215,430][Math.floor(Math.random()*4)];S.user.wheelSpins--;S.user.balance+=prize;S.user.totalEarned+=prize;S.user.activityLog.push('wheel +'+prize);save();toast('🎉 +'+prize+' د.ج','success');render()}
 function settings(){modal(`<button class="btn card" onclick="lang()">تبديل اللغة</button><button class="btn" style="background:rgba(239,68,68,.1);color:var(--red);margin-top:8px" onclick="localStorage.clear();location.reload()">مسح البيانات</button>`,'الإعدادات')}
 function copyRef(){navigator.clipboard.writeText(S.user.ref);toast('تم النسخ','success')}
-function shareRef(){let msg='BlackRock Investment\\n'+S.user.ref;navigator.share?navigator.share({text:msg,url:S.user.ref}):navigator.clipboard.writeText(msg);toast('تمت المشاركة','success')}
+function shareRef(){let msg='BlackRock Investment\n'+S.user.ref;navigator.share?navigator.share({text:msg,url:S.user.ref}):navigator.clipboard.writeText(msg);toast('تمت المشاركة','success')}
 function logout(){S.user=null;S.tab='home';save();auth()}
 function modal(html,title=''){document.body.insertAdjacentHTML('beforeend',`<div class="sheet" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="panel"><div style="width:38px;height:4px;background:rgba(212,175,55,.2);border-radius:2px;margin:0 auto 12px"></div>${title?`<h3 style="text-align:center;margin-bottom:12px">${title}</h3>`:''}${html}</div></div>`)}
 function closeModal(){let m=$('#modal');if(m)m.remove()}
