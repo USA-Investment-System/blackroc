@@ -1,166 +1,1775 @@
+انضر يوجد لاق كثير جدا بطئ جدا اريد واجهة كأنها واجهة شركة black rock
+وطور المساعد الذكي انا قلت له شرمة لم يعرف اريده ان يعرف كل شئ عن تطبيق ويعطيك نصائح ويحفزك على شحن وادخال اصدقاء ولا اريد ظهور هده نجمو عندما يكتب ******
+قلت لك عجلة الحض ليست دائمة هيا فقط عندما يدخل شخص ب رابط الذي ارسلته له للتطبيق فم يتفعل عدد اصدقاء او فريق الذي ادخلته حدث هد نظام وطوره
+والمهام اريدها الكل تشتغل ليس واحد فقط والباقي لا لا اريدها كلها حدث هدا 
+واريد كأنه تطبيق black rockحقيقي
+حدث كل شئ 
+صحح الفغرات وطور كل شئ 
+نظم كل شئ 
+لااريد اخطاء 
+وفي الحساب اريد مجموعة صور لي يخترو هم في مكان حرف A مجموعة صور ذكاء اصطناعي 5 صور نساء ورجال في 
+هيا يجب ان يضنو انه تطبيق black rockحقيقي مع كل ادلا 
+لااريد لاق  ولاثقل 
+وطور شكل النقود DZD  لي تتضح انها حقيقيا
+هيا صحح وطور برنامج
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>BlackRock Investment</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body,#root{height:100%;overflow:hidden;background:#020509;color:#fff;font-family:Tajawal,sans-serif}
-:root{--bg:#020509;--card:#07101f;--card2:#0b1325;--gold:#d4af37;--gold2:#c9992c;--gold3:#b8860b;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--purple:#a855f7;--mut:rgba(255,255,255,.42);--line:rgba(255,255,255,.08)}
-::-webkit-scrollbar{display:none}
-@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fade{from{opacity:0}to{opacity:1}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
-@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.app{width:100%;max-width:430px;height:100%;margin:auto;position:relative;overflow:hidden;background:#020509}
-.scr{position:absolute;inset:0 0 68px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:14px}
-.nav{position:absolute;bottom:0;left:0;right:0;height:68px;background:rgba(2,5,9,.98);border-top:1px solid rgba(212,175,55,.12);display:flex;z-index:50}
-.nav button{flex:1;background:none;border:0;color:rgba(255,255,255,.34);font-family:Tajawal;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative}
-.nav button.on{color:var(--gold)}
-.nav button.on:before{content:"";position:absolute;top:0;width:30px;height:3px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:0 0 3px 3px}
-.badge{position:absolute;top:4px;right:24px;background:var(--red);color:#fff;border-radius:99px;font-size:9px;padding:1px 5px;border:2px solid var(--bg)}
-.card{background:linear-gradient(160deg,rgba(10,16,32,.98),rgba(7,12,24,.99));border:1px solid var(--line);border-radius:16px}
-.gold{background:linear-gradient(135deg,var(--gold),var(--gold2),var(--gold3))}
-.gt{background:linear-gradient(135deg,#e8cc6a,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.btn{border:0;border-radius:13px;padding:13px 14px;font-family:Tajawal;font-weight:900;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn:active{transform:scale(.97);opacity:.9}
-.inp{width:100%;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);border-radius:14px;color:#fff;padding:14px 15px;font-size:15px;font-family:Tajawal;font-weight:800;outline:0}
-.inp:focus{border-color:rgba(212,175,55,.5)}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
-.anim{animation:up .25s both}
-.top{position:sticky;top:0;z-index:30;background:rgba(2,5,9,.98);border-bottom:1px solid rgba(212,175,55,.07);padding:11px 14px}
-.logo{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#020509;font-size:20px}
-.small{font-size:10px;color:var(--mut);font-weight:800}
-.money{font-family:Montserrat,sans-serif;font-weight:900}
-.sheet{position:fixed;inset:0;background:rgba(0,0,0,.84);z-index:200;display:flex;align-items:flex-end;animation:fade .18s}
-.panel{width:100%;max-height:92vh;overflow-y:auto;background:linear-gradient(180deg,#0b1122,#050912);border-radius:22px 22px 0 0;border-top:1px solid rgba(212,175,55,.15);padding:12px 14px 40px;animation:up .22s}
-.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:9999;border-radius:99px;padding:10px 18px;color:#fff;font-weight:900;font-size:13px;max-width:90vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:up .2s}
-.fab{position:absolute;left:12px;bottom:80px;width:52px;height:52px;border-radius:16px;border:0;z-index:45;animation:float 3s infinite;box-shadow:0 5px 22px rgba(212,175,55,.35)}
-.dot{position:absolute;top:-2px;right:-2px;width:12px;height:12px;border-radius:50%;background:var(--green);border:2px solid var(--bg);animation:pulse 1.5s infinite}
-.ticker{overflow:hidden;background:rgba(212,175,55,.035);margin:8px -14px -11px;border-top:1px solid rgba(212,175,55,.05)}
-.tickerin{display:flex;white-space:nowrap;animation:tick 22s linear infinite;padding:5px 0}
-.ticker span{padding:0 12px;font-size:9px;font-weight:800;color:var(--mut)}
-.avatar{width:78px;height:78px;border-radius:50%;object-fit:cover;border:3px solid rgba(212,175,55,.8)}
-.locked{opacity:.55}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BlackRock Investment Platform</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #050810; overflow: hidden; color: white; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px rgba(255, 193, 7, 0.3); } 50% { box-shadow: 0 0 40px rgba(255, 193, 7, 0.6); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        @keyframes count-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes progress-fill { from { width: 0%; } to { width: 100%; } }
+        @keyframes glow-pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        
+        .slide-up { animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .fade-in { animation: fade-in 0.3s ease-out; }
+        .pulse-glow { animation: pulse-glow 2s infinite; }
+        .float { animation: float 3s ease-in-out infinite; }
+        .spin-slow { animation: spin 8s linear infinite; }
+        .bounce { animation: bounce 2s infinite; }
+        .shake { animation: shake 0.5s; }
+        .count-up { animation: count-up 0.5s ease-out; }
+        
+        .glass-card {
+            background: linear-gradient(135deg, rgba(20, 25, 45, 0.95), rgba(15, 20, 35, 0.98));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        
+        .gold-gradient {
+            background: linear-gradient(135deg, #FFD700, #FFA000, #FF8F00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .green-glow {
+            background: linear-gradient(135deg, #00E676, #00C853);
+            box-shadow: 0 0 20px rgba(0, 230, 118, 0.3);
+        }
+        
+        .btn-press:active { transform: scale(0.97); }
+        
+        .wheel-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                #FFD700 0deg 51.4deg,
+                #FF6F00 51.4deg 102.8deg,
+                #FFD700 102.8deg 154.2deg,
+                #FF6F00 154.2deg 205.6deg,
+                #FFD700 205.6deg 257deg,
+                #FF6F00 257deg 308.4deg,
+                #FFD700 308.4deg 360deg
+            );
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(0,0,0,0.5);
+        }
+        
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1a1f3a, #0a0e1a);
+            border-radius: 50%;
+            border: 3px solid #FFD700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .wheel-pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid #FF1744;
+            z-index: 20;
+            filter: drop-shadow(0 0 10px rgba(255, 23, 68, 0.5));
+        }
+        
+        .secure-badge {
+            background: linear-gradient(135deg, rgba(0, 230, 118, 0.15), rgba(0, 200, 83, 0.08));
+            border: 1px solid rgba(0, 230, 118, 0.25);
+        }
+        
+        .level-card {
+            background: linear-gradient(135deg, rgba(20, 25, 45, 0.95), rgba(15, 20, 35, 0.98));
+            border: 1px solid rgba(255, 193, 7, 0.15);
+        }
+        
+        .level-card.locked {
+            border-color: rgba(239, 68, 68, 0.2);
+            opacity: 0.75;
+        }
+        
+        .invest-btn {
+            background: linear-gradient(135deg, #FF8F00, #FF6F00, #FF5722);
+            box-shadow: 0 4px 20px rgba(255, 143, 0, 0.4), 0 0 40px rgba(255, 143, 0, 0.1);
+        }
+        
+        .nav-item { position: relative; }
+        .nav-item.active { color: #FFD700; }
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700, #FFA000);
+            border-radius: 2px;
+        }
+        
+        .progress-bar-gold {
+            background: linear-gradient(90deg, #FFD700, #FFA000, #FF8F00);
+            height: 4px;
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
+        
+        .progress-bar-red {
+            background: linear-gradient(90deg, #EF5350, #E53935);
+            height: 4px;
+            border-radius: 2px;
+        }
+        
+        .notification-badge {
+            background: linear-gradient(135deg, #FF1744, #D50000);
+            box-shadow: 0 0 10px rgba(255, 23, 68, 0.4);
+        }
+        
+        .star-icon { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.5)); }
+        
+        .robot-float {
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(255, 143, 0, 0.4));
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.2);
+        }
+        
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        
+        .task-timer {
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .proof-card {
+            background: linear-gradient(135deg, rgba(0, 230, 118, 0.1), rgba(0, 200, 83, 0.05));
+            border: 1px solid rgba(0, 230, 118, 0.2);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#050810',
+                        darker: '#030508',
+                        card: '#14192d',
+                        gold: '#FFD700',
+                        goldDark: '#FFA000',
+                        green: '#00E676',
+                        red: '#EF5350'
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 <body>
-<div id="root"></div>
-<script>
-const D='د.ج',STORE='BR_FULL_FINAL_APP',USERS='BR_FULL_FINAL_USERS';
-const $=s=>document.querySelector(s);
-const fmt=n=>{n=+n||0;if(n>=1e6)return(n/1e6).toFixed(2).replace('.',',')+'M';if(n>=1e3)return(n/1e3).toFixed(1).replace('.',',')+'K';return n.toLocaleString('fr-DZ',{minimumFractionDigits:2,maximumFractionDigits:2})}
-const dzd=n=>fmt(n)+' '+D;
-const today=()=>new Date().toDateString();
-const save=()=>{localStorage.setItem(STORE,JSON.stringify(S));flashSave();syncUserOnly()}
-const load=()=>JSON.parse(localStorage.getItem(STORE)||'null');
-const getUsers=()=>JSON.parse(localStorage.getItem(USERS)||'[]');
-const setUsers=u=>localStorage.setItem(USERS,JSON.stringify(u));
-const code=()=>Math.random().toString(36).slice(2,8).toUpperCase();
-const av=(style,seed)=>`https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}&backgroundColor=0f172a,1e293b,312e81`;
-const AVS=['Ahmed','Amina','Karim','Lina','Yacine','Sofia','Nassim','Rania','Samir','Nour','Zaki','Meriem'].map((s,i)=>av(['avataaars','lorelei','micah','adventurer','notionists'][i%5],s));
-const MKT=[['BLK','865,42','▲1,24%','#22C55E'],['د.ج/USD','134,20','▼0,15%','#EF4444'],['GOLD','2.342,8','▲0,82%','#22C55E'],['S&P500','5.248','▲0,45%','#22C55E']];
-const LEVELS=[
-{id:'trial',n:'Starter',p:0,d:3,dy:43,tot:215,mo:0},
-{id:'m1',n:'M1',p:7000,d:5,dy:43,tot:215,mo:6450},
-{id:'m2',n:'M2',p:26600,d:10,dy:86,tot:860,mo:25800},
-{id:'m3',n:'M3',p:95000,d:25,dy:131,tot:3275,mo:98250},
-{id:'m4',n:'M4',p:300000,d:50,dy:222,tot:11100,mo:333000},
-{id:'m5',n:'M5',p:780000,d:80,dy:390,tot:31200,mo:936000},
-{id:'m6',n:'M6',p:1950000,d:130,dy:652,tot:84760,mo:2542800},
-{id:'g7',n:'G7 Platinum',p:4485000,d:200,dy:1068,tot:213600,mo:6408000}
-];
-const FUNDS=[
-{id:1,n:'صندوق الطاقة المتجددة',d:'استثمر في مشاريع الطاقة الشمسية والرياح مع عوائد مضمونة',days:15,rate:6.5,total:97.5,min:1000,sold:72,e:'⚡',c:'#22C55E'},
-{id:2,n:'صندوق استثمار الذهب',d:'استثمار آمن في الذهب الخام مع عوائد يومية ثابتة',days:30,rate:4.2,total:126,min:1000,sold:85,e:'🪙',c:'#D4AF37'},
-{id:3,n:'صندوق التكنولوجيا',d:'استثمر في شركات التقنية الكبرى مع عوائد عالية',days:10,rate:8,total:80,min:1000,sold:54,e:'💻',c:'#3B82F6'},
-{id:4,n:'صندوق العقارات',d:'عقارات فاخرة مع عوائد شهرية مستقرة',days:60,rate:2.8,total:168,min:1000,sold:38,e:'🏢',c:'#A855F7'},
-{id:5,n:'صندوق VIP حصري',d:'للمستثمرين المميزين فقط مع أعلى العوائد',days:7,rate:12,total:84,min:1000,sold:91,e:'💎',c:'#F59E0B'}
-];
-const TASKS=['مراجعة أداء المحفظة','قراءة تقرير السوق اليومي','تحليل اتجاهات BLK','فحص الاستراتيجية اليومية','مشاهدة رسالة استثمارية','تحديث بيانات المحفظة','مراجعة الأرباح والخسائر','تحليل مؤشرات السوق','متابعة أخبار الاستثمار','فحص أداء الأسهم','مراجعة عقد الاستثمار','تحليل عائد المحفظة'];
+    <div id="root"></div>
 
-let S=load()||{lang:'ar',tab:'home',user:null,tasks:null,active:null,cd:40,chat:[],wheel:0,openFund:null};
-let timer=null,login=true;
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
 
-function normalize(u){
- if(!u)return null;
- return {balance:0,taskBal:0,refEarn:0,teamCount:0,wheelSpins:0,m1Refs:0,level:null,totalEarned:0,avatar:null,investments:[],withdrawals:[],upgradeRequests:[],team:[],notifs:[],loginStreak:0,activityLog:[],...u}
-}
-function syncUserOnly(){
- if(!S.user)return;
- S.user=normalize(S.user);
- let users=getUsers().map(normalize),i=users.findIndex(u=>u.id===S.user.id);
- if(i>=0)users[i]=S.user;else users.push(S.user);
- setUsers(users);
-}
-function flashSave(){let e=$('#save');if(!e)return;e.style.opacity=1;clearTimeout(e._t);e._t=setTimeout(()=>e.style.opacity=0,1000)}
-function toast(msg,type='info'){let c={success:'#16A34A',error:'#DC2626',warning:'#D97706',info:'#1E40AF'}[type]||'#1E40AF';let e=document.createElement('div');e.className='toast';e.style.background=c;e.textContent=msg;document.body.appendChild(e);setTimeout(()=>e.remove(),2600)}
-function refCode(){try{return(new URLSearchParams(location.search).get('ref')||'').toUpperCase()}catch{return''}}
-function lv(id){return LEVELS.find(x=>x.id===id)||LEVELS[0]}
-function lvN(id){return lv(id).n}
-function makeTasks(){
- if(!S.user)return[];
- let old=JSON.parse(localStorage.getItem('tasks_'+S.user.id)||'null');
- if(old&&old.date===today())return old.tasks;
- let reward=Math.max(43,Math.round(lv(S.user.level||'trial').dy/5));
- let arr=[...TASKS].sort(()=>Math.random()-.5).slice(0,5).map((n,i)=>({id:i+1,n,sec:40,reward,status:'available'}));
- localStorage.setItem('tasks_'+S.user.id,JSON.stringify({date:today(),tasks:arr}));
- return arr
-}
-function app(html){$('#root').innerHTML=`<div class="app">${html}</div>`}
-function header(title,icon='◇'){return`<div class="top"><div class="row"><div class="row"><div class="logo gold">${icon}</div><div><b style="font-size:16px">${title}</b><div class="small">BLACKROCK INVESTMENT</div></div></div><button onclick="lang()" class="btn" style="width:auto;padding:5px 10px;background:rgba(212,175,55,.08);color:var(--gold);border:1px solid rgba(212,175,55,.18)">${S.lang==='ar'?'English':'عربي'}</button></div></div>`}
-function nav(){let b=(S.tasks||[]).filter(t=>t.status==='available').length,u=S.user||{};let tabs=[['home','⌂','الرئيسية',0],['tasks','⚡','المهام',b],['plans','◇','الترقية',0],['acc','♙','حسابي',(u.notifs||[]).filter(n=>!n.r).length]];return`<nav class="nav">${tabs.map(t=>`<button onclick="setTab('${t[0]}')" class="${S.tab===t[0]?'on':''}"><span style="font-size:24px">${t[1]}</span>${t[3]?`<b class="badge">${t[3]}</b>`:''}<span>${t[2]}</span></button>`).join('')}</nav>`}
-function render(){if(!S.user)return auth();S.user=normalize(S.user);if(!S.tasks)S.tasks=makeTasks();let p={home,tasks,plans,acc}[S.tab]||home;app(`<div class="scr">${p()}</div>${nav()}${['home','tasks'].includes(S.tab)?`<button class="fab gold" onclick="ai()"><i class="dot"></i>🤖</button>`:''}<div id="save" style="position:fixed;top:12px;right:12px;opacity:0;z-index:999;background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.3);color:var(--green);padding:6px 10px;border-radius:99px;font-weight:900;font-size:11px">تم الحفظ</div>`)}
-function auth(){let r=refCode();app(`<div style="height:100%;overflow:auto;padding:25px;display:flex;align-items:center;justify-content:center"><div class="anim" style="width:100%;max-width:360px">${r?`<div class="card" style="border-color:rgba(212,175,55,.3);padding:14px;text-align:center;margin-bottom:15px"><b style="color:var(--gold)">🎁 دعوة صديق مفعلة</b><p class="small">سجل لتحصل على دورة عجلة حظ مجانية</p></div>`:''}<div style="text-align:center;margin-bottom:26px"><div class="gold" style="width:78px;height:78px;border-radius:20px;margin:auto;display:flex;align-items:center;justify-content:center;font-size:36px">◇</div><h1 class="gt" style="font-family:Montserrat;font-size:28px;letter-spacing:3px;margin-top:12px">BLACKROCK</h1><p class="small">منصة الاستثمار</p></div><form onsubmit="doAuth(event)" style="display:flex;flex-direction:column;gap:12px"><input id="un" class="inp" placeholder="اسم المستخدم"><div style="position:relative"><input id="pw" class="inp" type="password" placeholder="كلمة المرور"><button type="button" onclick="togglePw()" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--mut)">👁</button></div><input id="cpw" class="inp" type="password" placeholder="تأكيد كلمة المرور" style="display:none"><button class="btn gold" style="font-size:16px">تسجيل الدخول</button></form><button onclick="mode()" id="mode" style="display:block;margin:14px auto;background:none;border:0;color:var(--mut);font-family:Tajawal;font-weight:800">ليس لديك حساب؟ سجل مجاناً</button><div class="card" style="padding:15px"><b style="color:var(--green)">🛡 Platform Security</b><p class="small" style="line-height:1.8">• عقد رسمي: يناير 2025 → ديسمبر 2027<br>• AES-256 + SSL/TLS 3.0<br>• NYSE: BLK</p></div></div></div>`)}
-function mode(){login=!login;$('#cpw').style.display=login?'none':'block';$('.btn.gold').textContent=login?'تسجيل الدخول':'إنشاء حساب';$('#mode').textContent=login?'ليس لديك حساب؟ سجل مجاناً':'لديك حساب؟ سجل الدخول'}
-function togglePw(){let p=$('#pw');p.type=p.type==='password'?'text':'password'}
-function doAuth(e){e.preventDefault();let un=$('#un').value.trim(),pw=$('#pw').value.trim(),cp=$('#cpw').value.trim(),users=getUsers().map(normalize);if(!un||!pw)return toast('املأ البيانات','error');if(!login&&pw!==cp)return toast('كلمتا المرور مختلفتان','error');if(login){let u=users.find(x=>x.un===un&&x.pw===pw);if(!u)return toast('بيانات خاطئة','error');S.user=normalize(u);S.tasks=makeTasks();dailyLogin();save();render();return}if(users.find(x=>x.un===un))return toast('الاسم موجود','error');let c=code(),r=refCode(),avatar=AVS[Math.floor(Math.random()*AVS.length)];let u=normalize({id:Date.now(),un,pw,code:c,ref:`${location.origin}${location.pathname}?ref=${c}`,wheelSpins:r?1:0,avatar,joined:new Date().toISOString(),joinedVia:r||null,notifs:[{id:1,title:'👋 مرحباً',desc:'ابدأ المهام اليومية للربح',t:'Now',r:false}],loginStreak:1,lastLogin:today(),activityLog:['account created']});let ri=users.findIndex(x=>x.code===r);if(ri>=0){users[ri].teamCount++;users[ri].wheelSpins++;users[ri].team.push({id:u.id,username:un,code:c,avatar,joined:u.joined,active:true});users[ri].notifs.push({id:Date.now(),title:'🎡 صديق جديد',desc:un+' سجل برابطك',t:new Date().toLocaleTimeString(),r:false})}users.push(u);setUsers(users);S.user=u;S.tasks=makeTasks();save();render()}
-function dailyLogin(){if(!S.user)return;let td=today();if(S.user.lastLogin!==td){let y=new Date(Date.now()-86400000).toDateString();S.user.loginStreak=S.user.lastLogin===y?(S.user.loginStreak||0)+1:1;let r=Math.min(100,10+S.user.loginStreak*2);S.user.balance+=r;S.user.totalEarned+=r;S.user.lastLogin=td;S.user.activityLog.push('daily login +'+r+' د.ج');toast('🎁 +'+r+' د.ج','success')}}
-function setTab(t){S.tab=t;save();render()}
-function lang(){S.lang=S.lang==='ar'?'en':'ar';document.documentElement.lang=S.lang;document.documentElement.dir=S.lang==='ar'?'rtl':'ltr';save();render()}
-function home(){let u=S.user,l=lv(u.level),done=S.tasks.filter(t=>t.status==='done').length;return`${header('BLACKROCK','◇')}<div class="ticker"><div class="tickerin">${[...MKT,...MKT].map(m=>`<span>${m[0]} <b style="color:var(--gold)">${m[1]}</b> <b style="color:${m[3]}">${m[2]}</b></span>`).join('')}</div></div><section style="padding:12px;display:flex;flex-direction:column;gap:10px"><div class="card" style="padding:16px"><div class="row"><div><p class="small">إجمالي الرصيد</p><h1 class="gt money">${fmt(u.balance)}</h1><b class="small">د.ج</b></div>${u.avatar?`<img class="avatar" style="width:52px;height:52px" src="${u.avatar}">`:`<div class="gold" style="width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#020509;font-weight:900">${u.un[0]}</div>`}</div><div class="grid3" style="margin-top:12px">${[[u.teamCount,'الفريق','#D4AF37'],[done+'/5','المهام','#22C55E'],['+'+l.dy,'اليومي','#3B82F6']].map(x=>`<div style="background:rgba(255,255,255,.03);border-radius:10px;padding:8px;text-align:center"><b class="money" style="color:${x[2]}">${x[0]}</b><p class="small">${x[1]}</p></div>`).join('')}</div></div><div class="grid2"><button class="btn card" onclick="deposit()">💰 شحن</button><button class="btn card" onclick="withdraw()">💳 سحب</button></div><button class="btn" onclick="invest()" style="background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(184,134,11,.06));border:1px solid rgba(212,175,55,.25);color:var(--gold);justify-content:space-between"><span>📈 استثمار BlackRock</span><span>›</span></button><div class="card" style="padding:14px;border-color:rgba(168,85,247,.25)"><div class="row"><b>🏆 مسابقة الإحالة</b><b style="color:var(--purple)">${(u.m1Refs||0)%10}/10</b></div><div style="height:5px;background:rgba(255,255,255,.07);border-radius:4px;margin-top:10px"><div style="height:100%;width:${((u.m1Refs||0)%10)*10}%;background:linear-gradient(90deg,#A855F7,#D4AF37);border-radius:4px"></div></div><p class="small" style="margin-top:6px">10 أصدقاء M1 = ترقية مجانية</p></div><div class="card" style="padding:14px;border-color:rgba(212,175,55,.18)"><h3>🎯 الإحالة الذهبية</h3><p class="small">5% من دخل كل صديق مدى الحياة</p><div class="row" style="background:rgba(255,255,255,.03);border-radius:10px;padding:9px;margin:10px 0;direction:ltr"><small>${u.ref}</small><button onclick="copyRef()" class="btn gold" style="width:auto;padding:6px 12px">نسخ</button></div><button onclick="shareRef()" class="btn gold">مشاركة</button></div><h3>📊 أداء المحفظة</h3><div class="grid2">${[[dzd(u.totalEarned),'إجمالي الأرباح','#22C55E'],[dzd(u.refEarn),'أرباح الإحالات','#D4AF37'],['+'+done*l.dy+' د.ج','أرباح اليوم','#3B82F6'],[l.mo?dzd(l.mo):'—','شهري','#D4AF37']].map(x=>`<div class="card" style="padding:12px"><b style="color:${x[2]}">${x[0]}</b><p class="small">${x[1]}</p></div>`).join('')}</div><button class="btn card" onclick="company()">🏢 الشركة والأمان ›</button></section>`}
-function tasks(){let has=!!S.user.level,list=has?S.tasks:S.tasks.slice(0,3);return`${header('المهام اليومية','⚡')}<section style="padding:12px;display:flex;flex-direction:column;gap:10px">${!has?`<div class="card" style="padding:15px;text-align:center;border-color:rgba(212,175,55,.25)"><h3>🔒 المهام مقفلة</h3><p class="small">فعّل التجربة المجانية أو أي مستوى لتشغيل المهام.</p><button onclick="setTab('plans')" class="btn gold" style="margin-top:10px">تفعيل التجربة المجانية</button></div>`:''}${list.map(t=>taskCard(t,has)).join('')}${!has?`<div class="card" style="padding:14px;text-align:center"><p class="small">هذه معاينة فقط. بعد التفعيل ستظهر كل المهام.</p></div>`:''}</section>`}
-function taskCard(t,has){let act=S.active===t.id&&t.status==='active',prog=t.status==='done'?100:act?(t.sec-S.cd)/t.sec*100:0;return`<div class="card ${t.status==='failed'?'locked':''}" style="padding:14px"><div class="row"><div class="row"><div class="gold" style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center">🚀</div><div><b>${t.n}</b><p class="small">مكافأة: ${t.reward} د.ج · ${t.sec} ثانية</p></div></div><b class="money" style="color:var(--gold)">+${t.reward}</b></div><div style="height:5px;background:rgba(255,255,255,.07);border-radius:4px;margin:10px 0"><div style="height:100%;width:${prog}%;background:var(--gold);border-radius:4px"></div></div>${act?`<div style="text-align:center"><h1 class="gt money">${S.cd}</h1><button class="btn" onclick="cancelTask(${t.id})" style="background:rgba(239,68,68,.1);color:var(--red)">إلغاء</button></div>`:t.status==='available'?`<button class="btn ${has?'gold':'card'}" onclick="startTask(${t.id})">${has?'ابدأ — 40 ثانية':'فعّل المستوى أولاً'}</button>`:t.status==='done'?`<div class="btn" style="background:rgba(34,197,94,.1);color:var(--green)">مكتملة +${t.reward} د.ج</div>`:`<div class="btn" style="background:rgba(239,68,68,.1);color:var(--red)">ألغيت</div>`}</div>`}
-function startTask(id){if(!S.user.level){toast('فعّل المستوى أولاً','warning');S.tab='plans';save();return render()}if(S.active)return toast('مهمة جارية','warning');let t=S.tasks.find(x=>x.id===id);t.status='active';S.active=id;S.cd=t.sec;save();render();timer=setInterval(()=>{S.cd--;if(S.cd<=0){clearInterval(timer);completeTask(id)}else{save();render()}},1000)}
-function completeTask(id){let t=S.tasks.find(x=>x.id===id);t.status='done';S.active=null;S.user.balance+=t.reward;S.user.taskBal+=t.reward;S.user.totalEarned+=t.reward;S.user.activityLog.push('task +'+t.reward+' د.ج');syncUserOnly();save();toast('+'+t.reward+' د.ج','success');render()}
-function cancelTask(id){let t=S.tasks.find(x=>x.id===id);t.status='failed';S.active=null;clearInterval(timer);save();render()}
-function plans(){return`${header('خطط الاستثمار','◇')}<section style="padding:12px;display:flex;flex-direction:column;gap:10px"><div class="card" style="padding:14px"><p class="small">الترقية تتم عبر طاقم الشركة و CCP. لا يتم الدفع داخل التطبيق.</p></div>${LEVELS.map(l=>`<div class="card" style="padding:14px"><div class="row"><div><h3>${l.n}</h3><b style="color:${l.p?'var(--gold)':'var(--green)'}">${l.p?dzd(l.p):'مجاني'}</b></div><div class="gold" style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center">◇</div></div><div class="grid3" style="margin:12px 0">${[[l.dy+' د.ج','يومي'],[l.d,'أيام'],[l.tot,'الإجمالي']].map(x=>`<div style="background:rgba(255,255,255,.03);border-radius:10px;padding:8px;text-align:center"><b>${x[0]}</b><p class="small">${x[1]}</p></div>`).join('')}</div>${S.user.level===l.id?`<div class="btn" style="background:rgba(34,197,94,.1);color:var(--green)">مفعّل</div>`:l.id==='trial'?`<button onclick="activateTrial()" class="btn" style="background:rgba(34,197,94,.1);color:var(--green)">بدء التجربة المجانية</button>`:`<button onclick="upgrade('${l.id}')" class="btn gold">طلب ترقية عبر الشركة</button>`}</div>`).join('')}</section>`}
-function activateTrial(){S.user.level='trial';S.user.notifs.push({id:Date.now(),title:'✅ تم التفعيل',desc:'تم تفعيل التجربة المجانية',t:new Date().toLocaleTimeString(),r:false});S.user.activityLog.push('free trial activated');save();toast('تم التفعيل','success');render()}
-function upgrade(id){let l=LEVELS.find(x=>x.id===id),ref='UP-'+Date.now().toString().slice(-6);modal(`<h2>طلب ترقية ${l.n}</h2><div class="card" style="padding:14px;margin:12px 0">${[['المستوى',l.n],['المبلغ',dzd(l.p)],['كود الحساب',S.user.code],['رقم الطلب',ref],['طريقة الدفع','CCP / بريد الجزائر']].map(r=>`<div class="row" style="padding:8px 0;border-bottom:1px solid var(--line)"><span class="small">${r[0]}</span><b>${r[1]}</b></div>`).join('')}</div><p class="small" style="line-height:1.8">ادفع للطاقم عبر CCP ثم أرسل وصل الدفع مع رقم الطلب.</p><button class="btn gold" onclick="saveUpgrade('${id}','${ref}')">حفظ الطلب</button><button class="btn" style="background:#25D366;color:#fff;margin-top:8px" onclick="window.open('https://wa.me/213555123456?text=${encodeURIComponent('طلب ترقية '+l.n+' كود '+S.user.code+' رقم '+ref)}')">واتساب</button>`,'ترقية')}
-function saveUpgrade(id,ref){let l=LEVELS.find(x=>x.id===id);S.user.upgradeRequests=[...(S.user.upgradeRequests||[]),{id:Date.now(),levelId:id,levelName:l.n,amount:l.p,date:new Date().toISOString(),status:'pending',ref}];S.user.notifs.push({id:Date.now(),title:'💎 طلب ترقية',desc:l.n+' '+ref,t:new Date().toLocaleTimeString(),r:false});closeModal();save();toast('تم حفظ طلب الترقية','success')}
-function acc(){let u=S.user;return`${header('حسابي','♙')}<section style="padding:12px;display:flex;flex-direction:column;gap:10px"><div class="card" style="padding:22px;text-align:center">${u.avatar?`<img onclick="avatarPicker()" class="avatar" src="${u.avatar}">`:`<div onclick="avatarPicker()" class="gold" style="width:78px;height:78px;border-radius:50%;margin:auto;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#020509">${u.un[0]}</div>`}<h2>${u.un}</h2><p class="small">BLK-${String(u.id).slice(-6)}</p><b style="color:var(--gold)">${lvN(u.level)}</b></div><div class="grid2">${[[dzd(u.balance),'💰 الرصيد','#D4AF37'],[u.teamCount,'👥 الفريق','#3B82F6'],[dzd(u.totalEarned),'📈 الأرباح','#22C55E'],[u.wheelSpins,'🎡 عجلة الحظ','#A855F7'],[u.loginStreak||0,'🔥 حضور متتالي','#F59E0B'],[(u.investments||[]).length,'📈 استثمارات','#14B8A6']].map(x=>`<div class="card" style="padding:12px;text-align:center"><b style="color:${x[2]}">${x[0]}</b><p class="small">${x[1]}</p></div>`).join('')}</div>${accountMenu()}</section>`}
-function accountMenu(){let items=[['👥','دعوة الأصدقاء','team()'],['🖼','صورة الحساب','avatarPicker()'],['📋','نشاطاتي','activity()'],['🏆','الإنجازات','achievements()'],['🎡','عجلة الحظ','wheel()'],['🛡','الأمان والعقد','company()'],['⚙','الإعدادات','settings()']];return`<div class="card" style="overflow:hidden">${items.map((x,i)=>`<button onclick="${x[2]}" style="width:100%;background:none;border:0;border-bottom:${i<items.length-1?'1px solid var(--line)':'0'};padding:14px;color:#fff;font-family:Tajawal;font-weight:900;display:flex;justify-content:space-between"><span>${x[0]} ${x[1]}</span><span>‹</span></button>`).join('')}</div><button onclick="logout()" class="btn" style="background:rgba(239,68,68,.1);color:var(--red)">تسجيل الخروج</button>`}
-function team(){let u=S.user;modal(`<div class="grid2"><div class="card" style="padding:14px;text-align:center"><h2 class="gt">${u.teamCount}</h2><p class="small">إجمالي الفريق</p></div><div class="card" style="padding:14px;text-align:center"><h2 style="color:var(--green)">${fmt(u.refEarn)} د.ج</h2><p class="small">أرباح الإحالات</p></div></div><div class="card" style="padding:14px;margin:10px 0"><b>🏆 مسابقة الدعوة</b><div style="height:6px;background:rgba(255,255,255,.07);border-radius:4px;margin:10px 0"><div style="height:100%;width:${((u.m1Refs||0)%10)*10}%;background:linear-gradient(90deg,#A855F7,#D4AF37)"></div></div><p class="small">كل صديق = دورة لك + دورة له</p></div><div class="card" style="padding:14px;text-align:center"><p class="small">رابطك</p><div style="direction:ltr;word-break:break-all;color:var(--mut);font-size:12px">${u.ref}</div><button class="btn gold" onclick="copyRef()" style="margin-top:10px">نسخ</button></div><h3 style="margin:12px 0">أعضاء الفريق</h3>${(u.team||[]).length?u.team.map(m=>`<div class="card" style="padding:10px;margin-bottom:8px;display:flex;align-items:center;gap:10px">${m.avatar?`<img src="${m.avatar}" style="width:36px;height:36px;border-radius:12px">`:`<div class="gold" style="width:36px;height:36px;border-radius:12px"></div>`}<div><b>${m.username}</b><p class="small">BLK-${m.code}</p></div><b style="margin-right:auto;color:var(--green)">نشط</b></div>`).join(''):'<p class="small">لا يوجد أعضاء بعد</p>'}`,'دعوة الأصدقاء')}
-function activity(){modal(`<div class="grid2"><div class="card" style="padding:14px;text-align:center"><h2 style="color:var(--blue)">${S.user.loginStreak||0}</h2><p class="small">حضور متتالي</p></div><div class="card" style="padding:14px;text-align:center"><h2 style="color:#14B8A6">${(S.user.investments||[]).length}</h2><p class="small">استثمارات</p></div></div><h3 style="margin:12px 0">سجل النشاطات</h3>${(S.user.activityLog||[]).slice().reverse().map(a=>`<div class="card" style="padding:10px;margin-bottom:8px;color:var(--mut);font-size:12px">${a}</div>`).join('')||'<p class="small">لا توجد نشاطات</p>'}`,'نشاطاتي')}
-function achievements(){let u=S.user,items=[['✅','البداية','أكمل أول مهمة',u.totalEarned>0,'50 د.ج'],['🤝','أول إحالة','ادع صديقاً واحداً',u.teamCount>=1,'100 د.ج'],['👥','فريق صغير','ادع 5 أصدقاء',u.teamCount>=5,'250 د.ج'],['🏆','قائد الفريق','ادع 10 أصدقاء',u.teamCount>=10,'500 د.ج'],['🔥','سلسلة الدخول','ادخل 7 أيام',u.loginStreak>=7,'300 د.ج'],['📈','مستثمر','ابدأ أول استثمار',(u.investments||[]).length>0,'200 د.ج']];modal(`<div class="card" style="padding:15px;margin-bottom:10px"><div class="row"><h3>🏆 الإنجازات</h3><b class="gt">${items.filter(x=>x[3]).length}/${items.length}</b></div></div>${items.map(x=>`<div class="card" style="padding:14px;margin-bottom:9px;display:flex;align-items:center;gap:12px;opacity:${x[3]?1:.55}"><span style="font-size:32px">${x[0]}</span><div><h3>${x[1]}</h3><p class="small">${x[2]}</p><b style="color:var(--gold)">+${x[4]}</b></div><b style="margin-right:auto;color:${x[3]?'var(--green)':'var(--mut)'}">${x[3]?'مفتوح':'مقفل 🔒'}</b></div>`).join('')}`,'الإنجازات')}
-function avatarPicker(){let styles=['avataaars','lorelei','micah','adventurer','notionists'],seeds=['Ahmed','Amina','Karim','Lina','Yacine','Sofia'];modal(`<h2 style="text-align:center">✨ اختر صورتك</h2><p class="small" style="text-align:center">صور مولدة بالذكاء الاصطناعي</p><div class="grid3" style="margin:15px 0">${seeds.map((s,i)=>{let src=av(styles[i%styles.length],s);return`<button onclick="setAvatar('${src}')" style="border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:16px;overflow:hidden;padding:0"><img src="${src}" style="width:100%;display:block"></button>`}).join('')}</div><button onclick="setAvatar('')" class="btn card">الحرف الافتراضي</button>`,'صورة الحساب')}
-function setAvatar(src){S.user.avatar=src||null;save();closeModal();render()}
-function deposit(){modal(`<h2>شحن الرصيد</h2><p class="small">تواصل مع فريق الشحن. لا يوجد شحن مباشر داخل التطبيق.</p><div class="card" style="padding:14px;margin:12px 0;line-height:2;color:var(--mut)">📱 واتساب: +213 555 123 456<br>✈️ تلقرام: @BlackRockDZ_Deposit<br>📧 deposit@blackrock.app<br>كود حسابك: <b style="color:var(--gold)">${S.user.code}</b></div><button class="btn" style="background:#25D366;color:#fff" onclick="window.open('https://wa.me/213555123456?text=${encodeURIComponent('أريد شحن حسابي '+S.user.code)}')">تواصل عبر واتساب</button>`,'شحن الرصيد')}
-function withdraw(){if(!S.user.level||S.user.level==='trial')return toast('يتطلب M1','warning'),setTab('plans');if(S.user.balance<215)return toast('الحد الأدنى 215 د.ج','warning');modal(`<h2>سحب الأموال</h2><p class="small">السحب عبر CCP بريد الجزائر فقط. المعالجة 48 إلى 72 ساعة.</p><input id="ccp" class="inp" placeholder="رقم CCP"><input id="name" class="inp" placeholder="الاسم الكامل" style="margin-top:8px"><input id="amt" class="inp" type="number" placeholder="المبلغ" style="margin-top:8px"><button onclick="sendWithdraw()" class="btn gold" style="margin-top:10px">تأكيد السحب</button>`,'سحب')}
-function sendWithdraw(){let amt=+$('#amt').value,ccp=$('#ccp').value,name=$('#name').value;if(!ccp||!name||amt<215||amt>S.user.balance)return toast('تحقق من البيانات','error');S.user.balance-=amt;S.user.withdrawals=[...(S.user.withdrawals||[]),{id:Date.now(),amount:amt,ccp,name,date:new Date().toISOString(),status:'pending'}];S.user.activityLog.push('withdraw '+amt);save();closeModal();toast('تم إرسال طلب السحب','success')}
-function invest(){S.modal='invest';renderInvest()}
-function renderInvest(){app(`<div class="app"><div class="scr">${investHtml()}</div></div>`)}
-function investHtml(){let u=S.user;return`<div class="top"><div class="row"><button onclick="closeInvest()" class="btn card" style="width:44px">×</button><div><b style="font-size:17px;color:var(--gold)">استثمار BlackRock</b><p class="small">صناديق استثمارية مضمونة</p></div><div class="logo gold">↗</div></div></div><section style="padding:12px;display:flex;flex-direction:column;gap:10px"><div class="card" style="padding:16px;text-align:center;border-color:rgba(34,197,94,.18)"><b style="color:var(--green)">✅ الأموال آمنة ومأمنة</b></div><div class="card" style="padding:18px;text-align:center"><p class="small">رصيدك المتاح</p><h1 class="gt money">${fmt(u.balance)} <small>د.ج</small></h1></div>${FUNDS.map(f=>fundCard(f)).join('')}</section>`}
-function fundCard(f){let amt=S['amt'+f.id]||'';return`<div class="card" style="padding:16px;border-color:${f.c}44"><div class="row" onclick="S.openFund=S.openFund===${f.id}?null:${f.id};renderInvest()"><div class="row"><span style="font-size:30px">${f.e}</span><div><h3>${f.n}</h3><p class="small"><b style="color:${f.c}">${f.rate}%</b> يومياً · ${f.days} يوم</p></div></div><span>${S.openFund===f.id?'⌃':'⌄'}</span></div>${S.openFund===f.id?`<p class="small" style="margin:12px 0;line-height:1.8">${f.d}</p><div class="grid3">${[[f.days,'المدة',f.c],[f.rate+'%','يومي','#22C55E'],[f.total+'%','إجمالي','#D4AF37']].map(x=>`<div style="background:rgba(255,255,255,.03);border-radius:10px;padding:10px;text-align:center"><b style="color:${x[2]}">${x[0]}</b><p class="small">${x[1]}</p></div>`).join('')}</div><div style="height:7px;background:rgba(255,255,255,.07);border-radius:4px;margin:12px 0"><div style="height:100%;width:${f.sold}%;background:${f.c};border-radius:4px"></div></div><p class="small">حد الشراء: ${fmt(1000)} د.ج ~ حسب رصيدك</p><input class="inp" type="number" placeholder="1000" value="${amt}" oninput="S['amt${f.id}']=this.value;save()"><div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0">${[1000,5000,10000,50000,S.user.balance].filter(v=>v>=1000&&v<=S.user.balance).map(v=>`<button class="btn card" style="padding:6px 10px;width:auto" onclick="S['amt${f.id}']='${v}';save();renderInvest()">${fmt(v)}</button>`).join('')}</div><button class="btn gold" onclick="buyFund(${f.id})">اشتري الآن 🚀</button>`:''}</div>`}
-function buyFund(id){let f=FUNDS.find(x=>x.id===id),amt=+S['amt'+id];if(!amt||amt<1000)return toast('الحد الأدنى 1000 د.ج','warning');if(amt>S.user.balance)return toast('رصيد غير كافي','error');S.user.balance-=amt;S.user.investments=[...(S.user.investments||[]),{id:Date.now(),fundId:id,amount:amt,date:new Date().toISOString(),days:f.days,daily:f.rate,status:'active',earned:0}];S.user.activityLog.push('investment '+f.n+' '+amt);S['amt'+id]='';save();toast('تم الاستثمار','success');renderInvest()}
-function closeInvest(){S.modal=null;render()}
-function company(){modal(`<h2>BLACKROCK</h2><div class="card" style="padding:15px;line-height:1.9;color:var(--mut)">تأسست BlackRock عام 1988 في نيويورك وهي أكبر شركة إدارة أصول في العالم.<br><br>🇩🇿 عقد الجزائر: يناير 2025 → ديسمبر 2027<br>🛡 AES-256 + SSL/TLS 3.0<br>📈 NYSE: BLK<br>🌐 blackrock.com</div>`,'الشركة')}
-function wheel(){if(S.user.wheelSpins<=0)return toast('ادع صديقاً للحصول على دورة','warning');let prize=[43,86,215,430][Math.floor(Math.random()*4)];S.user.wheelSpins--;S.user.balance+=prize;S.user.totalEarned+=prize;S.user.activityLog.push('wheel +'+prize);save();toast('🎉 +'+prize+' د.ج','success');render()}
-function settings(){modal(`<button class="btn card" onclick="lang()">تبديل اللغة</button><button class="btn" style="background:rgba(239,68,68,.1);color:var(--red);margin-top:8px" onclick="localStorage.clear();location.reload()">مسح البيانات</button>`,'الإعدادات')}
-function copyRef(){navigator.clipboard.writeText(S.user.ref);toast('تم النسخ','success')}
-function shareRef(){let msg='BlackRock Investment\\n'+S.user.ref;navigator.share?navigator.share({text:msg,url:S.user.ref}):navigator.clipboard.writeText(msg);toast('تمت المشاركة','success')}
-function logout(){S.user=null;S.tab='home';save();auth()}
-function modal(html,title=''){document.body.insertAdjacentHTML('beforeend',`<div class="sheet" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="panel"><div style="width:38px;height:4px;background:rgba(212,175,55,.2);border-radius:2px;margin:0 auto 12px"></div>${title?`<h3 style="text-align:center;margin-bottom:12px">${title}</h3>`:''}${html}</div></div>`)}
-function closeModal(){let m=$('#modal');if(m)m.remove()}
-function ai(){modal(`<div id="msgs" style="max-height:60vh;overflow:auto">${(S.chat||[]).map(m=>`<div style="margin:8px 0;text-align:${m.r==='user'?'left':'right'}"><span class="card" style="display:inline-block;padding:12px;max-width:86%;white-space:pre-wrap">${m.text}</span></div>`).join('')||'<div class="card" style="padding:12px">أهلاً! أنا مساعد BlackRock الذكي. اسألني عن الربح، المهام، السحب، الشحن، الشركة.</div>'}</div><div style="display:flex;gap:6px;margin-top:10px"><input id="aii" class="inp" placeholder="اكتب سؤالك..."><button onclick="sendAI()" class="btn gold" style="width:52px">➤</button></div>`,'AI ASSISTANT')}
-function sendAI(){let v=$('#aii').value.trim();if(!v)return;S.chat=[...(S.chat||[]),{r:'user',text:v},{r:'ai',text:aiResp(v)}];save();closeModal();ai()}
-function aiResp(v){v=v.toLowerCase();if(v.includes('سحب'))return'السحب عبر CCP فقط، المعالجة من 48 إلى 72 ساعة، الحد الأدنى 215 د.ج.';if(v.includes('شحن'))return'الشحن يكون بالتواصل مع طاقم الشركة عبر واتساب أو تلقرام. لا يوجد دفع مباشر داخل التطبيق.';if(v.includes('استثمار'))return'افتح استثمار BlackRock واختر صندوقاً، الحد الأدنى 1000 د.ج ويمكنك وضع كل رصيدك.';if(v.includes('شركة'))return'BlackRock شركة عالمية، تأسست سنة 1988، مدرجة في NYSE: BLK.';return'جرب: كيف أربح؟ المهام، الاستثمار، السحب، الشحن، الشركة.'}
-document.documentElement.lang='ar';document.documentElement.dir='rtl';S.user=normalize(S.user);render();
-</script>
+        // ==================== UTILS ====================
+        const formatNumber = (num) => {
+            if (!num || isNaN(num)) return '0';
+            if (num >= 1000000000000) return (num / 1000000000000).toFixed(2) + 'T';
+            if (num >= 1000000000) return (num / 1000000000).toFixed(2) + 'B';
+            if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(2) + 'K';
+            return num.toLocaleString('en-DZ');
+        };
+
+        const generateReferralCode = () => {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+            return code;
+        };
+
+        // ==================== ICONS ====================
+        const Icon = ({ name, size = 24, className = '' }) => {
+            const icons = {
+                home: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+                tasks: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
+                diamond: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M6 3h12l4 6-10 13L2 9l4-6z"/><path d="M11 3 5 9l6 13V3z"/><path d="m13 22 6-13-6-6V22z"/><path d="m2 9 10 4 10-4"/></svg>,
+                user: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+                robot: <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}><rect x="4" y="4" width="16" height="12" rx="2"/><circle cx="9" cy="9" r="1.5" fill="#050810"/><circle cx="15" cy="9" r="1.5" fill="#050810"/><rect x="8" y="14" width="8" height="2" rx="1"/><path d="M12 2v2" stroke="currentColor" strokeWidth="2"/><circle cx="12" cy="2" r="1"/><path d="M7 20h10" stroke="currentColor" strokeWidth="2"/></svg>,
+                bell: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>,
+                lock: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
+                check: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>,
+                close: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
+                send: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg>,
+                copy: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>,
+                share: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>,
+                arrowUp: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m18 15-6-6-6 6"/></svg>,
+                arrowLeft: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15 18-6-6 6-6"/></svg>,
+                calendar: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>,
+                clock: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+                money: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>,
+                building: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9h1"/><path d="M9 13h1"/><path d="M9 17h1"/></svg>,
+                users: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+                rocket: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>,
+                star: <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+                logout: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>,
+                settings: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>,
+                shield: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+                info: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>,
+                play: <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}><polygon points="5 3 19 12 5 21 5 3"/></svg>,
+                pause: <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>,
+                x: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
+                gift: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 2.5 2.5v5"/><path d="M16.5 8v-2.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1-2.5 2.5h-5"/></svg>,
+                trend: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+                award: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>,
+                globe: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+                phone: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
+                mail: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
+                file: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>,
+                credit: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" x2="23" y1="10" y2="10"/></svg>,
+            };
+            return icons[name] || null;
+        };
+
+        // ==================== TOAST ====================
+        const Toast = ({ message, type, onClose }) => {
+            useEffect(() => { const t = setTimeout(onClose, 3000); return () => clearTimeout(t); }, [onClose]);
+            return (
+                <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] fade-in">
+                    <div className={`px-6 py-3 rounded-full shadow-2xl flex items-center gap-2 ${type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : type === 'warning' ? 'bg-orange-500' : 'bg-blue-500'} text-white font-bold text-sm`}>
+                        {type === 'success' && <Icon name="check" size={16} />}
+                        {message}
+                    </div>
+                </div>
+            );
+        };
+
+        // ==================== BOTTOM SHEET ====================
+        const BottomSheet = ({ isOpen, onClose, title, children }) => {
+            if (!isOpen) return null;
+            return (
+                <div className="fixed inset-0 z-[80] flex items-end" onClick={onClose}>
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+                    <div className="relative w-full bg-[#0d1220] rounded-t-3xl slide-up max-h-[85vh] overflow-y-auto hide-scrollbar border-t border-white/10" onClick={e => e.stopPropagation()}>
+                        <div className="sticky top-0 bg-[#0d1220] pt-4 pb-2 px-4 rounded-t-3xl z-10 border-b border-white/5">
+                            <div className="w-12 h-1 bg-white/20 rounded-full mx-auto mb-4" />
+                            {title && <h3 className="text-white font-bold text-lg mb-2 text-center">{title}</h3>}
+                        </div>
+                        <div className="p-4 pb-8">{children}</div>
+                    </div>
+                </div>
+            );
+        };
+
+        // ==================== DATA ====================
+        const INVESTMENT_LEVELS = [
+            { id: 'trial', name: 'تجريب المبتدئ', price: 0, days: 3, dailyProfit: 43, totalProfit: 215, monthly: '-----', yearly: '-----', memberLevel: 'المستوى العضوية', sellLevel: '-----' },
+            { id: 'm1', name: 'M1', price: 7000, days: 5, dailyProfit: 43, totalProfit: 215, monthly: 6450, yearly: 77400, memberLevel: 'M1', sellLevel: 7000 },
+            { id: 'm2', name: 'M2', price: 26600, days: 10, dailyProfit: 86, totalProfit: 860, monthly: 25800, yearly: 309600, memberLevel: 'M2', sellLevel: 26600 },
+            { id: 'm3', name: 'M3', price: 95000, days: 25, dailyProfit: 131, totalProfit: 3275, monthly: 98250, yearly: 1179000, memberLevel: 'M3', sellLevel: 95000 },
+            { id: 'm4', name: 'M4', price: 300000, days: 50, dailyProfit: 222, totalProfit: 11100, monthly: 333000, yearly: 3996000, memberLevel: 'M4', sellLevel: 300000 },
+            { id: 'm5', name: 'M5', price: 780000, days: 80, dailyProfit: 390, totalProfit: 31200, monthly: 936000, yearly: 11232000, memberLevel: 'M5', sellLevel: 780000 },
+            { id: 'm6', name: 'M6', price: 1950000, days: 130, dailyProfit: 652, totalProfit: 84760, monthly: 2542800, yearly: 30513600, memberLevel: 'M6', sellLevel: 1950000 },
+            { id: 'g7', name: 'G7', price: 4485000, days: 200, dailyProfit: 1068, totalProfit: 213600, monthly: 6408000, yearly: 76896000, memberLevel: 'G7', sellLevel: 4485000 },
+        ];
+
+        const AI_RESPONSES = {
+            'مرحبا': 'مرحباً بك في BlackRock! 👋 أنا مساعدك الذكي. كيف يمكنني مساعدتك في رحلتك الاستثمارية اليوم؟',
+            'hello': 'Hello! Welcome to BlackRock Investment Platform. How can I assist you today?',
+            'كيف احصل على المال': '💡 ابدأ بـ 3 خطوات بسيطة:\n1. سجل حسابك المجاني\n2. ابدأ المهام اليومية (40 ثانية = 43 DZD)\n3. ادعُ أصدقاءك واربح 5% من دخلهم اليومي!\n\nهل تريد البدء الآن؟',
+            'how to earn': '💡 Start with 3 simple steps:\n1. Register your free account\n2. Complete daily tasks (40 seconds = 43 DZD)\n3. Invite friends and earn 5% of their daily income!',
+            'ما هي الشركة': '🏢 **BlackRock, Inc** هي أكبر شركة إدارة أصول في العالم:\n\n• تأسست عام **1988** في نيويورك\n• تدير أصولاً بقيمة **10.2 تريليون دولار**\n• مدرجة في بورصة نيويورك (NYSE: BLK)\n• عقد رسمي مع الجزائر 2025-2028\n• حماية أموال 100% مضمونة\n\nهل تريد معرفة المزيد؟',
+            'what is the company': '🏢 **BlackRock, Inc** is the world\'s largest asset management company:\n\n• Founded in **1988** in New York\n• Manages **$10.2 trillion** in assets\n• Listed on NYSE (BLK)\n• Official contract with Algeria 2025-2028\n• 100% guaranteed fund protection',
+            'كيف اسحب': '💳 **نظام السحب:**\n\n• الحد الأدنى: **215 DZD** (رصيد المهام)\n• يتطلب الترقية إلى **M1** على الأقل\n• وقت المعالجة: **24-48 ساعة**\n• طرق السحب: CCP, DZ Bank, PayPal\n\n⚠️ ملاحظة: رصيد الترقية لا يسحب، يعمل كرأس مال استثماري.',
+            'how to withdraw': '💳 **Withdrawal System:**\n\n• Minimum: **215 DZD** (task balance)\n• Requires **M1** upgrade minimum\n• Processing time: **24-48 hours**\n• Methods: CCP, DZ Bank, PayPal',
+            'نظام الاحالات': '🎯 **نظام الإحالات (الذهبي):**\n\n• كل صديق يدخل برابطك = **عجلة حظ** 🎡\n• تربح **5%** من دخله اليومي مدى الحياة!\n• إذا دخل 10 أصدقاء = **43 DZD × 10 × 5% = 21.5 DZD/يوم**\n• إذا دخل 100 صديق = **215 DZD/يوم** بدون مجهود!\n\nهل تريد رابط الإحالة الخاص بك؟',
+            'referral system': '🎯 **Referral System (Gold):**\n\n• Each friend who joins via your link = **Lucky Wheel** 🎡\n• You earn **5%** of their daily income for life!\n• 10 friends = **43 DZD × 10 × 5% = 21.5 DZD/day**\n• 100 friends = **215 DZD/day** passive income!\n\nWant your referral link?',
+            'المهام': '⏱️ **نظام المهام:**\n\n• **40 ثانية** انتظار = **43 DZD**\n• 5 مهام يومية = **215 DZD/يوم**\n• إذا ضغطت ❌ أو ألغيت = تخسر المهمة\n• تُعاد المهام كل **24 ساعة** (منتصف الليل)\n\n💡 **نصيحة:** ابدأ المهمة وانتظر، لا تغلق التطبيق!',
+            'tasks': '⏱️ **Task System:**\n\n• **40 seconds** wait = **43 DZD**\n• 5 daily tasks = **215 DZD/day**\n• If you press ❌ or cancel = lose the task\n• Tasks reset every **24 hours** (midnight)\n\n💡 **Tip:** Start the task and wait, don\'t close the app!',
+            'default': '🤔 فهمت! يمكنني مساعدتك في:\n\n• 💰 **الاستثمار** والمستويات (M1-G7)\n• ⏱️ **المهام** اليومية (40 ثانية)\n• 🎯 **نظام الإحالات** (5% مدى الحياة)\n• 🎡 **عجلة الحظ** (للكود المدعو)\n• 💳 **السحب** والتحويلات\n• 🏢 **معلومات الشركة**\n\nما الذي تريده بالتحديد؟ اكتب سؤالك!'
+        };
+
+        // ==================== AUTH SCREEN ====================
+        const AuthScreen = ({ onLogin, onShowToast }) => {
+            const [isLogin, setIsLogin] = useState(true);
+            const [username, setUsername] = useState('');
+            const [password, setPassword] = useState('');
+            const [confirmPass, setConfirmPass] = useState('');
+            const [showPassword, setShowPassword] = useState(false);
+            const [isLoading, setIsLoading] = useState(false);
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (!username.trim() || !password.trim()) {
+                    onShowToast('يرجى ملء جميع الحقول', 'error');
+                    return;
+                }
+                if (!isLogin && password !== confirmPass) {
+                    onShowToast('كلمتا المرور غير متطابقتين', 'error');
+                    return;
+                }
+                
+                setIsLoading(true);
+                setTimeout(() => {
+                    const users = JSON.parse(localStorage.getItem('br_users') || '[]');
+                    if (isLogin) {
+                        const user = users.find(u => u.username === username && u.password === password);
+                        if (user) {
+                            localStorage.setItem('br_current', JSON.stringify(user));
+                            onShowToast('تم تسجيل الدخول بنجاح! 🎉', 'success');
+                            onLogin(user);
+                        } else {
+                            onShowToast('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
+                            setIsLoading(false);
+                        }
+                    } else {
+                        if (users.find(u => u.username === username)) {
+                            onShowToast('اسم المستخدم موجود بالفعل', 'error');
+                            setIsLoading(false);
+                            return;
+                        }
+                        const referralCode = generateReferralCode();
+                        const newUser = {
+                            id: Date.now(),
+                            username,
+                            password,
+                            referralCode,
+                            referralLink: `https://blackrock.app/ref/${referralCode}`,
+                            balance: 0,
+                            taskBalance: 0,
+                            referralEarnings: 0,
+                            teamCount: 0,
+                            teamEarnings: 0,
+                            investmentLevel: null,
+                            dailyProfit: 0,
+                            tasksCompleted: 0,
+                            totalEarned: 0,
+                            wheelSpins: 0,
+                            lastTaskReset: new Date().toDateString(),
+                            joinedAt: new Date().toISOString(),
+                            notifications: [
+                                { id: 1, title: 'مرحباً بك في BlackRock! 🎉', desc: 'ابدأ رحلتك الاستثمارية الآن. أكمل المهام اليومية وادعُ أصدقاءك!', time: 'الآن', read: false },
+                                { id: 2, title: '🎁 هدية ترحيبية!', desc: 'لديك 5 مهام يومية جاهزة. كل مهمة = 43 DZD!', time: 'الآن', read: false },
+                                { id: 3, title: '💡 نصيحة ذهبية', desc: 'ادعُ أصدقاءك برابطك الخاص واربح 5% من دخلهم مدى الحياة!', time: 'الآن', read: false }
+                            ]
+                        };
+                        users.push(newUser);
+                        localStorage.setItem('br_users', JSON.stringify(users));
+                        localStorage.setItem('br_current', JSON.stringify(newUser));
+                        onShowToast('تم إنشاء الحساب بنجاح! 🎉', 'success');
+                        onLogin(newUser);
+                    }
+                }, 1000);
+            };
+
+            return (
+                <div className="h-screen bg-[#050810] flex flex-col items-center justify-center p-6 relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-10">
+                        <div className="absolute top-10 left-10 w-40 h-40 bg-yellow-500 rounded-full blur-3xl animate-pulse"></div>
+                        <div className="absolute bottom-20 right-10 w-48 h-48 bg-orange-500 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+                        <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-blue-500 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+                    </div>
+                    
+                    <div className="relative z-10 w-full max-w-sm">
+                        <div className="text-center mb-10">
+                            <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-2xl shadow-orange-500/30 pulse-glow">
+                                <Icon name="diamond" size={50} className="text-white" />
+                            </div>
+                            <h1 className="text-4xl font-black gold-gradient mb-2 tracking-wider">BLACKROCK</h1>
+                            <p className="text-white/40 text-sm font-medium">BlackRock, Inc — Investment Platform</p>
+                            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 secure-badge rounded-full">
+                                <Icon name="shield" size={12} className="text-green-400" />
+                                <span className="text-green-400 text-xs font-bold">SECURE V3</span>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div className="glass-card rounded-xl p-1">
+                                <input 
+                                    type="text" 
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    placeholder="اسم المستخدم"
+                                    className="w-full bg-transparent py-3.5 px-4 text-white text-sm placeholder-white/30 focus:outline-none text-center font-bold"
+                                />
+                            </div>
+                            <div className="glass-card rounded-xl p-1 relative">
+                                <input 
+                                    type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="كلمة المرور"
+                                    className="w-full bg-transparent py-3.5 px-4 text-white text-sm placeholder-white/30 focus:outline-none text-center font-bold"
+                                />
+                                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-xs hover:text-white/70">
+                                    {showPassword ? 'إخفاء' : 'عرض'}
+                                </button>
+                            </div>
+                            {!isLogin && (
+                                <div className="glass-card rounded-xl p-1">
+                                    <input 
+                                        type="password"
+                                        value={confirmPass}
+                                        onChange={(e) => setConfirmPass(e.target.value)}
+                                        placeholder="تأكيد كلمة المرور"
+                                        className="w-full bg-transparent py-3.5 px-4 text-white text-sm placeholder-white/30 focus:outline-none text-center font-bold"
+                                    />
+                                </div>
+                            )}
+                            <button 
+                                type="submit" 
+                                disabled={isLoading}
+                                className="w-full invest-btn text-white font-bold py-4 rounded-xl hover:opacity-90 transition-all btn-press mt-6 text-lg shadow-lg"
+                            >
+                                {isLoading ? 'جاري التحميل...' : isLogin ? 'تسجيل الدخول' : 'إنشاء حساب جديد'}
+                            </button>
+                        </form>
+
+                        <div className="mt-6 text-center">
+                            <button onClick={() => setIsLogin(!isLogin)} className="text-white/50 text-sm hover:text-yellow-400 transition-colors">
+                                {isLogin ? 'ليس لديك حساب؟ سجل الآن مجاناً' : 'لديك حساب؟ سجل الدخول'}
+                            </button>
+                        </div>
+
+                        <div className="mt-8 glass-card rounded-xl p-4">
+                            <div className="flex items-center gap-3 mb-3">
+                                <Icon name="shield" size={20} className="text-green-400" />
+                                <span className="text-green-400 text-sm font-bold">منصة آمنة 100%</span>
+                            </div>
+                            <div className="space-y-2 text-xs text-white/40">
+                                <p>• SSL/TLS 3.0 — AES-256 Encryption</p>
+                                <p>• NYSE: BLK — EIN: 32-0174431</p>
+                                <p>• عقد الجزائر: يناير 2025 — ديسمبر 2028</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // ==================== AI CHAT ====================
+        const AIChat = ({ isOpen, onClose, user }) => {
+            const [messages, setMessages] = useState([
+                { id: 1, type: 'ai', text: '👋 مرحباً! أنا **مساعد BlackRock الذكي**.\n\nيمكنني مساعدتك في:\n• 💰 الاستثمار والمستويات\n• ⏱️ المهام اليومية\n• 🎯 نظام الإحالات (5%)\n• 🎡 عجلة الحظ\n• 💳 السحب\n• 🏢 معلومات الشركة\n\n**كيف يمكنني مساعدتك اليوم؟**' }
+            ]);
+            const [input, setInput] = useState('');
+            const [isTyping, setIsTyping] = useState(false);
+            const messagesEndRef = useRef(null);
+
+            const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            useEffect(() => { scrollToBottom(); }, [messages]);
+
+            const getAIResponse = (text) => {
+                const lower = text.toLowerCase();
+                for (const [key, value] of Object.entries(AI_RESPONSES)) {
+                    if (lower.includes(key)) return value;
+                }
+                return AI_RESPONSES.default;
+            };
+
+            const handleSend = () => {
+                if (!input.trim()) return;
+                const userMsg = { id: Date.now(), type: 'user', text: input };
+                setMessages(prev => [...prev, userMsg]);
+                setInput('');
+                setIsTyping(true);
+
+                setTimeout(() => {
+                    const aiResponse = { id: Date.now() + 1, type: 'ai', text: getAIResponse(input) };
+                    setMessages(prev => [...prev, aiResponse]);
+                    setIsTyping(false);
+                }, 1500 + Math.random() * 1000);
+            };
+
+            const quickReplies = ['كيف احصل على المال', 'نظام الاحالات', 'المهام', 'ما هي الشركة', 'كيف اسحب'];
+
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 z-[90] bg-[#050810] flex flex-col">
+                    <div className="flex items-center justify-between p-4 border-b border-white/10 bg-[#050810]/95 backdrop-blur-xl">
+                        <button onClick={onClose} className="w-10 h-10 glass-card rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
+                            <Icon name="close" size={20} className="text-white" />
+                        </button>
+                        <div className="text-center">
+                            <h3 className="text-white font-bold text-lg">مساعد BlackRock الذكي</h3>
+                            <div className="flex items-center justify-center gap-1.5 mt-0.5">
+                                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                <span className="text-green-400 text-xs font-bold">متصل — مدعوم بـ AI</span>
+                            </div>
+                        </div>
+                        <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg">
+                            <Icon name="robot" size={20} className="text-white" />
+                        </div>
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4 hide-scrollbar">
+                        {messages.map(msg => (
+                            <div key={msg.id} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} gap-2`}>
+                                {msg.type === 'ai' && (
+                                    <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-yellow-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
+                                        <Icon name="robot" size={16} className="text-white" />
+                                    </div>
+                                )}
+                                <div className={`max-w-[82%] px-4 py-3 rounded-2xl ${msg.type === 'user' ? 'bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-tr-sm' : 'glass-card text-white/90 rounded-tl-sm'}`}>
+                                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+                                </div>
+                            </div>
+                        ))}
+                        {isTyping && (
+                            <div className="flex gap-2 items-center">
+                                <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-yellow-500 rounded-full flex items-center justify-center">
+                                    <Icon name="robot" size={16} className="text-white" />
+                                </div>
+                                <div className="glass-card px-4 py-3 rounded-2xl rounded-tl-sm">
+                                    <div className="flex gap-1">
+                                        <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce"></span>
+                                        <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                                        <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        <div ref={messagesEndRef} />
+                    </div>
+
+                    <div className="p-4 border-t border-white/10 bg-[#050810]">
+                        <div className="flex gap-2 overflow-x-auto hide-scrollbar mb-3 pb-1">
+                            {quickReplies.map((reply, i) => (
+                                <button key={i} onClick={() => { setInput(reply); }} className="px-3 py-1.5 glass-card rounded-full text-white/70 text-xs whitespace-nowrap hover:text-yellow-400 hover:border-yellow-400/30 transition-all">
+                                    {reply}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="flex gap-2 items-center">
+                            <button className="p-2 text-white/40 hover:text-white transition-colors">
+                                <Icon name="gift" size={20} />
+                            </button>
+                            <input 
+                                type="text" 
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                placeholder="اكتب سؤالك هنا..."
+                                className="flex-1 glass-card rounded-full py-2.5 px-4 text-white text-sm placeholder-white/30 focus:border-yellow-400/30 transition-all border border-transparent"
+                                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                            />
+                            <button 
+                                onClick={handleSend}
+                                disabled={!input.trim()}
+                                className={`p-2.5 rounded-full transition-all ${input.trim() ? 'bg-gradient-to-r from-orange-400 to-yellow-500 text-white shadow-lg' : 'glass-card text-white/30'}`}
+                            >
+                                <Icon name="send" size={18} />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // ==================== LUCKY WHEEL ====================
+        const LuckyWheel = ({ isOpen, onClose, user, onUpdateUser, onShowToast }) => {
+            const [isSpinning, setIsSpinning] = useState(false);
+            const [rotation, setRotation] = useState(0);
+            const [result, setResult] = useState(null);
+            const [showResult, setShowResult] = useState(false);
+
+            const prizes = [
+                { label: '43 DZD', value: 43, color: '#FFD700', icon: 'money' },
+                { label: '86 DZD', value: 86, color: '#FF6F00', icon: 'money' },
+                { label: '215 DZD', value: 215, color: '#FFD700', icon: 'money' },
+                { label: 'عجلة أخرى', value: 0, color: '#FF6F00', icon: 'gift' },
+                { label: '430 DZD', value: 430, color: '#FFD700', icon: 'money' },
+                { label: '86 DZD', value: 86, color: '#FF6F00', icon: 'money' },
+                { label: '215 DZD', value: 215, color: '#FFD700', icon: 'money' },
+            ];
+
+            const spinWheel = () => {
+                if (isSpinning) return;
+                setIsSpinning(true);
+                setShowResult(false);
+                
+                const randomDeg = 1800 + Math.random() * 1800;
+                const finalRotation = rotation + randomDeg;
+                setRotation(finalRotation);
+
+                setTimeout(() => {
+                    const actualRotation = finalRotation % 360;
+                    const segmentAngle = 360 / prizes.length;
+                    const winningIndex = Math.floor((360 - actualRotation + (segmentAngle / 2)) % 360 / segmentAngle) % prizes.length;
+                    const prize = prizes[winningIndex];
+                    
+                    setResult(prize);
+                    setShowResult(true);
+                    setIsSpinning(false);
+                    
+                    if (prize.value > 0) {
+                        onUpdateUser({ 
+                            balance: user.balance + prize.value,
+                            totalEarned: (user.totalEarned || 0) + prize.value,
+                            wheelSpins: (user.wheelSpins || 0) + 1
+                        });
+                        onShowToast(`🎉 ربحت ${prize.value} DZD من عجلة الحظ!`, 'success');
+                    } else {
+                        onShowToast('🎁 حصلت على فرصة أخرى للدوران!', 'warning');
+                    }
+                }, 4000);
+            };
+
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 z-[90] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 fade-in">
+                    <div className="relative w-full max-w-sm">
+                        <button onClick={onClose} className="absolute -top-12 left-1/2 -translate-x-1/2 w-10 h-10 glass-card rounded-full flex items-center justify-center z-10">
+                            <Icon name="close" size={20} className="text-white" />
+                        </button>
+                        
+                        <div className="text-center mb-6">
+                            <h2 className="text-2xl font-black gold-gradient mb-2">🎡 عجلة الحظ</h2>
+                            <p className="text-white/60 text-sm">ادعُ صديقاً واربح من العجلة!</p>
+                        </div>
+
+                        <div className="relative flex justify-center mb-6">
+                            <div className="wheel-pointer"></div>
+                            <div 
+                                className="wheel-container flex items-center justify-center"
+                                style={{ transform: `rotate(${rotation}deg)`, transition: isSpinning ? 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none' }}
+                            >
+                                {prizes.map((prize, i) => (
+                                    <div 
+                                        key={i}
+                                        className="absolute text-center"
+                                        style={{ 
+                                            transform: `rotate(${i * (360 / prizes.length)}deg) translateY(-90px)`,
+                                            width: '80px'
+                                        }}
+                                    >
+                                        <span className="text-white text-xs font-bold" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                                            {prize.label}
+                                        </span>
+                                    </div>
+                                ))}
+                                <div className="wheel-center">
+                                    <Icon name="diamond" size={28} className="text-yellow-400" />
+                                </div>
+                            </div>
+                        </div>
+
+                        {showResult && result && (
+                            <div className="glass-card rounded-xl p-4 mb-4 text-center fade-in">
+                                <p className="text-white/60 text-sm mb-1">النتيجة:</p>
+                                <p className={`text-2xl font-black ${result.value > 0 ? 'gold-gradient' : 'text-white/60'}`}>
+                                    {result.value > 0 ? `+${result.value} DZD` : result.label}
+                                </p>
+                            </div>
+                        )}
+
+                        <button 
+                            onClick={spinWheel}
+                            disabled={isSpinning}
+                            className="w-full invest-btn text-white font-bold py-4 rounded-xl hover:opacity-90 transition-all btn-press text-lg shadow-xl"
+                        >
+                            {isSpinning ? 'جاري الدوران...' : '🎯 اضغط للدوران'}
+                        </button>
+
+                        <p className="text-white/40 text-xs text-center mt-4">
+                            كل صديق يدخل برابطك = دورة واحدة مجانية!
+                        </p>
+                    </div>
+                </div>
+            );
+        };
+
+        // ==================== HOME SCREEN ====================
+        const HomeScreen = ({ user, onUpdateUser, onShowToast, onNavigate }) => {
+            const [showNotifications, setShowNotifications] = useState(false);
+            const [showAI, setShowAI] = useState(false);
+            const [showWheel, setShowWheel] = useState(false);
+            const [showCompanyProof, setShowCompanyProof] = useState(false);
+            const [animatedBalance, setAnimatedBalance] = useState(0);
+
+            useEffect(() => {
+                const target = user.balance || 0;
+                let current = 0;
+                const increment = target / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    setAnimatedBalance(Math.floor(current));
+                }, 30);
+                return () => clearInterval(timer);
+            }, [user.balance]);
+
+            const unreadCount = user.notifications?.filter(n => !n.read).length || 0;
+
+            const markNotificationsRead = () => {
+                const updated = { ...user, notifications: user.notifications?.map(n => ({ ...n, read: true })) || [] };
+                onUpdateUser(updated);
+                setShowNotifications(true);
+            };
+
+            const handleWithdraw = () => {
+                if (!user.investmentLevel || user.investmentLevel === 'trial') {
+                    onShowToast('⚠️ يتطلب الترقية إلى M1 على الأقل للسحب', 'warning');
+                    onNavigate('upgrade');
+                    return;
+                }
+                if ((user.taskBalance || 0) < 215) {
+                    onShowToast('⚠️ الحد الأدنى للسحب هو 215 DZD (من المهام)', 'warning');
+                    return;
+                }
+                onShowToast('💳 تم إرسال طلب السحب! سيتم المعالجة خلال 24-48 ساعة', 'success');
+            };
+
+            const handleDeposit = () => {
+                onShowToast('📞 للشحن أو الترقية، تواصل مع فريق الدعم الفني', 'warning');
+                setShowCompanyProof(true);
+            };
+
+            const companyProofs = [
+                { icon: 'building', title: 'شركة عالمية', desc: 'تأسست 1988 في نيويورك، أكبر مدير أصول في العالم بـ 10.2 تريليون دولار' },
+                { icon: 'trend', title: 'NYSE: BLK', desc: 'مدرجة في بورصة نيويورك منذ 1999، رمز التداول BLK' },
+                { icon: 'shield', title: 'عقد رسمي', desc: 'عقد رسمي مع الجزائر يناير 2025 - ديسمبر 2028، مسجل لدى السلطات' },
+                { icon: 'award', title: 'حماية 100%', desc: 'أموال المستثمرين مضمونة وفق أعلى معايير الأمان الدولية' },
+                { icon: 'globe', title: '10.2 تريليون دولار', desc: 'إجمالي الأصول المدارة (AUM) حسب تقرير 2025' },
+                { icon: 'users', title: '+19,000 موظف', desc: 'فريق عالمي من الخبراء الماليين في 38 دولة' },
+            ];
+
+            return (
+                <div className="h-screen overflow-y-auto hide-scrollbar bg-[#050810] pb-28">
+                    {/* Header */}
+                    <div className="sticky top-0 z-40 bg-[#050810]/95 backdrop-blur-xl px-4 py-3 border-b border-white/5">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <button onClick={markNotificationsRead} className="relative p-1">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                                        <Icon name="bell" size={20} className="text-white" />
+                                    </div>
+                                    {unreadCount > 0 && (
+                                        <span className="absolute -top-0.5 -right-0.5 w-5 h-5 notification-badge rounded-full text-white text-[10px] font-bold flex items-center justify-center border-2 border-[#050810] animate-pulse">
+                                            {unreadCount}
+                                        </span>
+                                    )}
+                                </button>
+                                <div>
+                                    <h1 className="text-2xl font-black gold-gradient tracking-wider">BLACKROCK</h1>
+                                    <p className="text-white/40 text-xs">BlackRock, Inc — Investment Platform</p>
+                                </div>
+                            </div>
+                            <div className="secure-badge px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                                <span className="text-green-400 text-xs font-bold">SECURE V3</span>
+                                <Icon name="lock" size={12} className="text-green-400" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* User Card */}
+                    <div className="mx-4 mt-4 glass-card rounded-2xl p-5 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-yellow-500/5 rounded-full blur-3xl"></div>
+                        <div className="relative z-10">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="text-right">
+                                    <p className="text-white/50 text-sm mb-1">المستخدم</p>
+                                    <p className="text-white font-bold text-lg">ID: #{String(user.id).slice(-5)} | {user.username}</p>
+                                </div>
+                                <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-2xl font-black text-white shadow-lg">
+                                    {user.username.charAt(0).toUpperCase()}
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="px-4 py-1.5 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-full text-yellow-400 text-sm font-bold flex items-center gap-1.5">
+                                    {user.investmentLevel ? INVESTMENT_LEVELS.find(l => l.id === user.investmentLevel)?.name || 'المستوى التجريبي' : 'المستوى التجريبي'}
+                                    <Icon name="star" size={14} className="star-icon" />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Balance */}
+                    <div className="mx-4 mt-4 grid grid-cols-3 gap-3">
+                        <div className="glass-card rounded-xl p-3 text-center col-span-1 relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-b from-yellow-500/5 to-transparent"></div>
+                            <p className="text-yellow-400 font-black text-xl glow-text count-up">{formatNumber(animatedBalance)}</p>
+                            <p className="text-white/40 text-xs mt-1">DZD</p>
+                        </div>
+                        <div className="glass-card rounded-xl p-3 text-center">
+                            <p className="text-yellow-400 font-black text-xl">{user.tasksCompleted || 0}</p>
+                            <p className="text-white/40 text-xs mt-1">المهام</p>
+                        </div>
+                        <div className="glass-card rounded-xl p-3 text-center">
+                            <p className="text-yellow-400 font-black text-xl">{user.teamCount || 0}</p>
+                            <p className="text-white/40 text-xs mt-1">الفريق</p>
+                        </div>
+                    </div>
+
+                    {/* Referral Banner */}
+                    <div className="mx-4 mt-4 glass-card rounded-xl p-4 border border-yellow-500/20">
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                                <Icon name="gift" size={20} className="text-white" />
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="text-white font-bold text-sm">🎯 ادعُ أصدقاءك واربح 5%</h3>
+                                <p className="text-white/50 text-xs">من دخلهم اليومي مدى الحياة!</p>
+                            </div>
+                        </div>
+                        <div className="bg-white/5 rounded-lg p-2 flex items-center gap-2 mb-2">
+                            <input 
+                                type="text" 
+                                value={`blackrock.app/ref/${user.referralCode}`}
+                                readOnly
+                                className="flex-1 bg-transparent text-white/70 text-xs text-center"
+                            />
+                            <button 
+                                onClick={() => {
+                                    navigator.clipboard?.writeText(`https://blackrock.app/ref/${user.referralCode}`);
+                                    onShowToast('تم نسخ الرابط!', 'success');
+                                }}
+                                className="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-lg text-xs font-bold hover:bg-yellow-500/30 transition-all"
+                            >
+                                نسخ
+                            </button>
+                        </div>
+                        <p className="text-white/40 text-xs text-center">
+                            كل صديق يدخل = 🎡 عجلة حظ مجانية لك ولَه!
+                        </p>
+                    </div>
+
+                    {/* Operations */}
+                    <div className="mx-4 mt-6">
+                        <h3 className="text-white font-bold text-lg mb-3">العمليات المالية</h3>
+                        <div className="space-y-2">
+                            {[
+                                { id: 'balance', title: 'رصيدي', desc: `${formatNumber(user.balance)} DZD`, icon: 'money', color: 'from-yellow-500 to-orange-500', action: () => onShowToast(`رصيدك: ${formatNumber(user.balance)} DZD`, 'info') },
+                                { id: 'withdraw', title: 'سحب', desc: 'سحب الأرباح (من M1)', icon: 'share', color: 'from-green-500 to-emerald-500', action: handleWithdraw },
+                                { id: 'deposit', title: 'شحن / ترقية', desc: 'تواصل مع الدعم الفني', icon: 'arrowUp', color: 'from-blue-500 to-cyan-500', action: handleDeposit },
+                                { id: 'transfer', title: 'تحويل', desc: 'تحويل بين الحسابات', icon: 'users', color: 'from-purple-500 to-pink-500', action: () => onShowToast('قريباً', 'info') },
+                            ].map(op => (
+                                <button key={op.id} onClick={op.action} className="w-full glass-card rounded-xl p-4 flex items-center gap-4 hover:bg-white/5 transition-all btn-press text-right">
+                                    <div className={`w-12 h-12 bg-gradient-to-br ${op.color} rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg`}>
+                                        <Icon name={op.icon} size={24} className="text-white" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="text-white font-bold">{op.title}</h4>
+                                        <p className="text-white/50 text-sm">{op.desc}</p>
+                                    </div>
+                                    <Icon name="arrowLeft" size={20} className="text-white/30" />
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Company Proof */}
+                    <div className="mx-4 mt-6">
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-white font-bold text-lg">🏢 براهين الشركة</h3>
+                            <button onClick={() => setShowCompanyProof(true)} className="text-yellow-400 text-xs font-bold hover:text-yellow-300">
+                                عرض الكل
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                            {companyProofs.slice(0, 4).map((proof, i) => (
+                                <button key={i} onClick={() => setShowCompanyProof(true)} className="glass-card rounded-xl p-3 text-center hover:bg-white/5 transition-all">
+                                    <Icon name={proof.icon} size={24} className="text-yellow-400 mx-auto mb-2" />
+                                    <p className="text-white text-xs font-bold mb-1">{proof.title}</p>
+                                    <p className="text-white/40 text-[10px] line-clamp-2">{proof.desc}</p>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Recent Activity */}
+                    <div className="mx-4 mt-6 mb-4">
+                        <h3 className="text-white font-bold text-lg mb-3">📊 آخر النشاطات</h3>
+                        <div className="glass-card rounded-xl overflow-hidden">
+                            {[
+                                { type: 'task', title: 'مهمة يومية 1', amount: '+43 DZD', time: 'اليوم 14:30', icon: 'tasks', color: 'text-green-400' },
+                                { type: 'referral', title: 'إحالة جديدة', amount: '+5%', time: 'اليوم 12:15', icon: 'users', color: 'text-yellow-400' },
+                                { type: 'task', title: 'مهمة يومية 2', amount: '+43 DZD', time: 'أمس 20:45', icon: 'tasks', color: 'text-green-400' },
+                            ].map((tx, i) => (
+                                <div key={i} className={`flex items-center gap-4 p-4 ${i !== 2 ? 'border-b border-white/5' : ''}`}>
+                                    <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center">
+                                        <Icon name={tx.icon} size={20} className={tx.color} />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="text-white font-bold text-sm">{tx.title}</h4>
+                                        <p className="text-white/40 text-xs">{tx.time}</p>
+                                    </div>
+                                    <span className={`font-bold text-sm ${tx.color}`}>{tx.amount}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Notifications Sheet */}
+                    <BottomSheet isOpen={showNotifications} onClose={() => setShowNotifications(false)} title="الإشعارات 🔔">
+                        <div className="space-y-3">
+                            {user.notifications?.map(notif => (
+                                <div key={notif.id} className={`glass-card rounded-xl p-4 flex items-start gap-3 ${!notif.read ? 'border-yellow-500/20' : ''}`}>
+                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${notif.title.includes('🎁') ? 'bg-yellow-500/20' : notif.title.includes('💡') ? 'bg-blue-500/20' : 'bg-green-500/20'}`}>
+                                        <Icon name={notif.title.includes('🎁') ? 'gift' : notif.title.includes('💡') ? 'info' : 'check'} size={24} className={notif.title.includes('🎁') ? 'text-yellow-400' : notif.title.includes('💡') ? 'text-blue-400' : 'text-green-400'} />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="text-white font-bold text-sm mb-1">{notif.title}</h4>
+                                        <p className="text-white/60 text-xs mb-2">{notif.desc}</p>
+                                        <span className="text-white/30 text-xs">{notif.time}</span>
+                                    </div>
+                                    {!notif.read && <div className="w-2 h-2 bg-yellow-400 rounded-full flex-shrink-0 mt-1"></div>}
+                                </div>
+                            )) || <p className="text-white/40 text-center py-8">لا توجد إشعارات</p>}
+                        </div>
+                    </BottomSheet>
+
+                    {/* Company Proof Sheet */}
+                    <BottomSheet isOpen={showCompanyProof} onClose={() => setShowCompanyProof(false)} title="🏢 براهين شركة BlackRock">
+                        <div className="space-y-4">
+                            <div className="proof-card rounded-xl p-4 text-center mb-4">
+                                <Icon name="building" size={40} className="text-green-400 mx-auto mb-3" />
+                                <h3 className="text-white font-bold text-lg mb-2">BlackRock, Inc</h3>
+                                <p className="text-white/60 text-sm">أكبر شركة إدارة أصول في العالم</p>
+                            </div>
+                            
+                            {companyProofs.map((proof, i) => (
+                                <div key={i} className="glass-card rounded-xl p-4 flex items-start gap-3">
+                                    <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <Icon name={proof.icon} size={24} className="text-yellow-400" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-white font-bold text-sm mb-1">{proof.title}</h4>
+                                        <p className="text-white/50 text-xs leading-relaxed">{proof.desc}</p>
+                                    </div>
+                                </div>
+                            ))}
+
+                            <div className="glass-card rounded-xl p-4 border border-green-500/20">
+                                <h4 className="text-green-400 font-bold text-sm mb-2 flex items-center gap-2">
+                                    <Icon name="shield" size={16} />
+                                    وثيقة الأمان الرسمية
+                                </h4>
+                                <div className="space-y-2 text-xs text-white/60">
+                                    <p>• دولة التسجيل: 🇺🇸 New York, USA</p>
+                                    <p>• رقم التسجيل: NYSE: BLK — EIN: 32-0174431</p>
+                                    <p>• بروتوكول التشفير: SSL/TLS 3.0 — AES-256</p>
+                                    <p>• عقد الجزائر: يناير 2025 — ديسمبر 2028 ✅</p>
+                                    <p>• حماية الأموال: مضمونة 100% ✅</p>
+                                </div>
+                            </div>
+
+                            <div className="glass-card rounded-xl p-4">
+                                <p className="text-white/70 text-sm leading-relaxed text-center">
+                                    تقر شركة <span className="text-green-400 font-bold">BlackRock, Inc</span> المسجلة في نيويورك بالولايات المتحدة الأمريكية عام <span className="text-yellow-400 font-bold">1988</span>، بأنها أبرمت عقداً رسمياً مع الجانب الجزائري في <span className="text-yellow-400 font-bold">يناير 2025</span> لمدة <span className="text-yellow-400 font-bold">3 سنوات</span> (تنتهي ديسمبر 2028).
+                                </p>
+                            </div>
+
+                            <button 
+                                onClick={() => {
+                                    window.open('https://www.blackrock.com', '_blank');
+                                    onShowToast('جاري فتح الموقع الرسمي...', 'info');
+                                }}
+                                className="w-full invest-btn text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all"
+                            >
+                                🌐 زيارة الموقع الرسمي
+                            </button>
+                        </div>
+                    </BottomSheet>
+
+                    {/* AI Chat */}
+                    <AIChat isOpen={showAI} onClose={() => setShowAI(false)} user={user} />
+                    
+                    {/* Lucky Wheel */}
+                    <LuckyWheel isOpen={showWheel} onClose={() => setShowWheel(false)} user={user} onUpdateUser={onUpdateUser} onShowToast={onShowToast} />
+
+                    {/* Floating AI Button */}
+                    <button 
+                        onClick={() => setShowAI(true)}
+                        className="fixed bottom-28 left-4 z-40 w-14 h-14 bg-gradient-to-br from-orange-400 to-yellow-500 rounded-full flex items-center justify-center shadow-xl shadow-orange-500/30 robot-float"
+                    >
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-[#050810] animate-pulse"></div>
+                        <Icon name="robot" size={28} className="text-white" />
+                    </button>
+                </div>
+            );
+        };
+
+        // ==================== TASKS SCREEN ====================
+        const TasksScreen = ({ user, onUpdateUser, onShowToast }) => {
+            const [tasks, setTasks] = useState(() => {
+                const saved = localStorage.getItem(`br_tasks_${user.id}`);
+                if (saved) return JSON.parse(saved);
+                return [
+                    { id: 1, name: 'مهمة يومية 1', reward: 43, status: 'available', completedAt: null, failedAt: null },
+                    { id: 2, name: 'مهمة يومية 2', reward: 43, status: 'locked', completedAt: null, failedAt: null },
+                    { id: 3, name: 'مهمة يومية 3', reward: 43, status: 'locked', completedAt: null, failedAt: null },
+                    { id: 4, name: 'مهمة يومية 4', reward: 43, status: 'locked', completedAt: null, failedAt: null },
+                    { id: 5, name: 'مهمة يومية 5', reward: 43, status: 'locked', completedAt: null, failedAt: null },
+                ];
+            });
+
+            const [activeTask, setActiveTask] = useState(null);
+            const [countdown, setCountdown] = useState(40);
+            const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+            const [cancelTaskId, setCancelTaskId] = useState(null);
+
+            // Save tasks to localStorage
+            useEffect(() => {
+                localStorage.setItem(`br_tasks_${user.id}`, JSON.stringify(tasks));
+            }, [tasks, user.id]);
+
+            // Check daily reset
+            useEffect(() => {
+                const today = new Date().toDateString();
+                if (user.lastTaskReset !== today) {
+                    const resetTasks = tasks.map(t => ({
+                        ...t,
+                        status: t.id === 1 ? 'available' : 'locked',
+                        completedAt: null,
+                        failedAt: null
+                    }));
+                    setTasks(resetTasks);
+                    onUpdateUser({ lastTaskReset: today });
+                    onShowToast('🌅 تم تجديد المهام اليومية!', 'success');
+                }
+            }, []);
+
+            // Countdown timer
+            useEffect(() => {
+                let interval;
+                if (activeTask && countdown > 0) {
+                    interval = setInterval(() => {
+                        setCountdown(c => {
+                            if (c <= 1) {
+                                completeTask();
+                                return 0;
+                            }
+                            return c - 1;
+                        });
+                    }, 1000);
+                }
+                return () => clearInterval(interval);
+            }, [activeTask, countdown]);
+
+            const startTask = (taskId) => {
+                // Check if previous task is completed
+                const taskIndex = tasks.findIndex(t => t.id === taskId);
+                if (taskIndex > 0 && tasks[taskIndex - 1].status !== 'completed') {
+                    onShowToast('⚠️ أكمل المهمة السابقة أولاً!', 'warning');
+                    return;
+                }
+
+                setActiveTask(taskId);
+                setCountdown(40);
+                setTasks(tasks.map(t => t.id === taskId ? { ...t, status: 'active' } : t));
+                onShowToast('⏱️ المهمة بدأت! انتظر 40 ثانية...', 'info');
+            };
+
+            const completeTask = () => {
+                const task = tasks.find(t => t.id === activeTask);
+                if (task) {
+                    const updatedTasks = tasks.map(t => {
+                        if (t.id === activeTask) {
+                            return { ...t, status: 'completed', completedAt: new Date().toISOString() };
+                        }
+                        if (t.id === activeTask + 1) {
+                            return { ...t, status: 'available' };
+                        }
+                        return t;
+                    });
+                    
+                    setTasks(updatedTasks);
+                    onUpdateUser({ 
+                        balance: (user.balance || 0) + task.reward,
+                        taskBalance: (user.taskBalance || 0) + task.reward,
+                        tasksCompleted: (user.tasksCompleted || 0) + 1,
+                        totalEarned: (user.totalEarned || 0) + task.reward
+                    });
+                    onShowToast(`🎉 تم إكمال المهمة! ربحت ${task.reward} DZD`, 'success');
+                }
+                setActiveTask(null);
+            };
+
+            const cancelTask = (taskId) => {
+                setCancelTaskId(taskId);
+                setShowCancelConfirm(true);
+            };
+
+            const confirmCancel = () => {
+                const updatedTasks = tasks.map(t => {
+                    if (t.id === cancelTaskId) {
+                        return { ...t, status: 'failed', failedAt: new Date().toISOString() };
+                    }
+                    return t;
+                });
+                setTasks(updatedTasks);
+                setShowCancelConfirm(false);
+                setActiveTask(null);
+                setCancelTaskId(null);
+                onShowToast('❌ تم إلغاء المهمة! ستُعاد غداً', 'error');
+            };
+
+            const getTaskProgress = (task) => {
+                if (task.status === 'completed') return 100;
+                if (task.status === 'active') return ((40 - countdown) / 40) * 100;
+                return 0;
+            };
+
+            return (
+                <div className="h-screen overflow-y-auto hide-scrollbar bg-[#050810] pb-28">
+                    <div className="sticky top-0 z-40 bg-[#050810]/95 backdrop-blur-xl px-4 py-4 border-b border-white/5">
+                        <h2 className="text-white font-bold text-xl text-center">⚡ المهام اليومية</h2>
+                    </div>
+
+                    <div className="mx-4 mt-4">
+                        {/* Stats */}
+                        <div className="grid grid-cols-3 gap-3 mb-6">
+                            <div className="glass-card rounded-xl p-3 text-center">
+                                <Icon name="calendar" size={24} className="text-yellow-400 mx-auto mb-2" />
+                                <p className="text-yellow-400 font-black text-2xl">3</p>
+                                <p className="text-white/40 text-xs">الأيام المتبقية</p>
+                            </div>
+                            <div className="glass-card rounded-xl p-3 text-center">
+                                <Icon name="users" size={24} className="text-blue-400 mx-auto mb-2" />
+                                <p className="text-yellow-400 font-black text-2xl">{user.teamCount || 0}</p>
+                                <p className="text-white/40 text-xs">الإحالات</p>
+                            </div>
+                            <div className="glass-card rounded-xl p-3 text-center">
+                                <Icon name="tasks" size={24} className="text-green-400 mx-auto mb-2" />
+                                <p className="text-yellow-400 font-black text-2xl">{tasks.filter(t => t.status === 'completed').length}/5</p>
+                                <p className="text-white/40 text-xs">المهام المكتملة</p>
+                            </div>
+                        </div>
+
+                        {/* Withdraw Lock */}
+                        <div className="glass-card rounded-xl p-4 mb-6 border border-red-500/20">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Icon name="lock" size={16} className="text-red-400" />
+                                <span className="text-red-400 text-sm font-bold">السحب مقفل — يتطلب الترقية إلى M1 على الأقل</span>
+                            </div>
+                            <div className="w-full bg-white/10 rounded-full h-1.5">
+                                <div className="progress-bar-red h-1.5 rounded-full" style={{ width: `${(user.taskBalance || 0) / 215 * 100}%` }}></div>
+                            </div>
+                            <p className="text-white/40 text-xs mt-2 text-center">
+                                {user.taskBalance || 0} / 215 DZD (الحد الأدنى للسحب)
+                            </p>
+                        </div>
+
+                        {/* Tasks */}
+                        {tasks.map(task => {
+                            const isLocked = task.status === 'locked';
+                            const isActive = task.status === 'active' && activeTask === task.id;
+                            const isCompleted = task.status === 'completed';
+                            const isFailed = task.status === 'failed';
+                            const progress = getTaskProgress(task);
+
+                            return (
+                                <div key={task.id} className={`level-card rounded-xl p-4 mb-3 ${isLocked || isFailed ? 'locked' : ''} ${isCompleted ? 'border-green-500/30' : ''}`}>
+                                    <div className="flex items-center justify-between mb-3">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isLocked || isFailed ? 'bg-red-500/20' : isCompleted ? 'bg-green-500/20' : 'bg-gradient-to-br from-yellow-400 to-orange-500'}`}>
+                                                {isLocked || isFailed ? <Icon name="x" size={24} className="text-red-400" /> : 
+                                                 isCompleted ? <Icon name="check" size={24} className="text-green-400" /> :
+                                                 <Icon name="rocket" size={24} className="text-white" />}
+                                            </div>
+                                            <div>
+                                                <h3 className={`font-bold ${isLocked || isFailed ? 'text-white/50' : 'text-white'}`}>{task.name}</h3>
+                                                <p className="text-white/50 text-sm">DZD {task.reward}+</p>
+                                            </div>
+                                        </div>
+                                        <span className="text-yellow-400 font-bold text-lg">{task.reward}+</span>
+                                    </div>
+
+                                    <div className="w-full bg-white/10 rounded-full h-2 mb-3">
+                                        <div className={`h-2 rounded-full transition-all duration-1000 ${isCompleted ? 'bg-green-500' : isFailed ? 'bg-red-500' : 'progress-bar-gold'}`} 
+                                             style={{ width: `${progress}%` }}></div>
+                                    </div>
+
+                                    {isActive && (
+                                        <div className="space-y-3">
+                                            <div className="glass-card rounded-xl p-4 text-center border border-yellow-500/20">
+                                                <p className="text-white/60 text-sm mb-2">انتظر...</p>
+                                                <p className="text-4xl font-black gold-gradient task-timer">{countdown}</p>
+                                                <p className="text-white/40 text-xs mt-1">ثانية</p>
+                                            </div>
+                                            <button 
+                                                onClick={() => cancelTask(task.id)}
+                                                className="w-full bg-red-500/20 border border-red-500/30 text-red-400 font-bold py-3 rounded-xl hover:bg-red-500/30 transition-all btn-press flex items-center justify-center gap-2"
+                                            >
+                                                <Icon name="x" size={20} />
+                                                إلغاء المهمة (تخسرها)
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {task.status === 'available' && (
+                                        <button 
+                                            onClick={() => startTask(task.id)}
+                                            className="w-full invest-btn text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all btn-press flex items-center justify-center gap-2 shadow-lg"
+                                        >
+                                            <Icon name="play" size={20} />
+                                            ابدأ المهمة (40 ثانية)
+                                        </button>
+                                    )}
+                                    
+                                    {isCompleted && (
+                                        <div className="w-full bg-green-500/20 text-green-400 font-bold py-3 rounded-xl text-center border border-green-500/30 flex items-center justify-center gap-2">
+                                            <Icon name="check" size={20} />
+                                            تم الإكمال ✅
+                                        </div>
+                                    )}
+
+                                    {isFailed && (
+                                        <div className="w-full bg-red-500/20 text-red-400 font-bold py-3 rounded-xl text-center border border-red-500/30">
+                                            ❌ أُلغيت — تُعاد غداً
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Cancel Confirmation */}
+                    {showCancelConfirm && (
+                        <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 fade-in">
+                            <div className="bg-[#0d1220] w-full max-w-sm rounded-2xl p-6 border border-red-500/20">
+                                <div className="text-center mb-4">
+                                    <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <Icon name="x" size={32} className="text-red-400" />
+                                    </div>
+                                    <h3 className="text-white font-bold text-lg mb-2">تأكيد الإلغاء</h3>
+                                    <p className="text-white/60 text-sm">
+                                        إذا ألغيت المهمة الآن، ستخسر <span className="text-red-400 font-bold">43 DZD</span> ولا يمكنك إعادتها إلا غداً!
+                                    </p>
+                                </div>
+                                <div className="flex gap-3">
+                                    <button onClick={() => setShowCancelConfirm(false)} className="flex-1 py-3 glass-card text-white rounded-xl font-bold hover:bg-white/10 transition-all">
+                                        إكمال المهمة
+                                    </button>
+                                    <button onClick={confirmCancel} className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition-all btn-press">
+                                        إلغاء Anyway
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // ==================== UPGRADE SCREEN ====================
+        const UpgradeScreen = ({ user, onUpdateUser, onShowToast }) => {
+            const [selectedLevel, setSelectedLevel] = useState(null);
+            const [showContact, setShowContact] = useState(false);
+
+            const handleUpgrade = () => {
+                if (!selectedLevel) return;
+                setShowContact(true);
+            };
+
+            return (
+                <div className="h-screen overflow-y-auto hide-scrollbar bg-[#050810] pb-28">
+                    <div className="sticky top-0 z-40 bg-[#050810]/95 backdrop-blur-xl px-4 py-4 border-b border-white/5">
+                        <h2 className="text-white font-bold text-xl text-center">💎 الترقية</h2>
+                    </div>
+
+                    <div className="mx-4 mt-4">
+                        <div className="glass-card rounded-xl p-4 mb-4 border border-yellow-500/20">
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="text-white/60 text-sm">الرصيد المتاح</span>
+                                <span className="text-yellow-400 font-bold">{formatNumber(user.balance)} DZD</span>
+                            </div>
+                            <div className="w-full bg-white/10 rounded-full h-2">
+                                <div className="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full" style={{ width: '100%' }}></div>
+                            </div>
+                        </div>
+
+                        <div className="glass-card rounded-xl p-4 mb-4 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
+                            <div className="flex items-center gap-3">
+                                <Icon name="info" size={24} className="text-blue-400" />
+                                <div>
+                                    <h4 className="text-white font-bold text-sm">كيفية الشحن/الترقية؟</h4>
+                                    <p className="text-white/50 text-xs">تواصل مع فريق الدعم الفني للشحن والترقية</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {INVESTMENT_LEVELS.map(level => {
+                            const isLocked = (user.balance || 0) < level.price && level.price > 0;
+                            const isCurrent = user.investmentLevel === level.id;
+                            
+                            return (
+                                <div key={level.id} className={`level-card rounded-xl p-4 mb-3 ${isLocked ? 'locked' : ''} ${isCurrent ? 'border-yellow-500/50 bg-yellow-500/5' : ''}`}>
+                                    <div className="flex items-center justify-between mb-3">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isLocked ? 'bg-red-500/20' : 'bg-gradient-to-br from-yellow-400 to-orange-500'}`}>
+                                                {isLocked ? <Icon name="lock" size={24} className="text-red-400" /> : <Icon name={level.id === 'trial' ? 'star' : 'rocket'} size={24} className="text-white" />}
+                                            </div>
+                                            <div>
+                                                <h3 className={`font-bold text-lg ${isLocked ? 'text-white/50' : 'text-white'}`}>{level.name}</h3>
+                                                {level.price > 0 && <p className="text-yellow-400 text-sm font-bold">{formatNumber(level.price)} DZD</p>}
+                                                {level.price === 0 && <p className="text-green-400 text-sm font-bold">مجاني</p>}
+                                            </div>
+                                        </div>
+                                        {isCurrent && <span className="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full border border-green-500/30">مفعل</span>}
+                                    </div>
+
+                                    <div className="grid grid-cols-4 gap-2 mb-3">
+                                        <div className="bg-white/5 rounded-lg p-2 text-center">
+                                            <p className="text-green-400 font-bold text-sm">{level.dailyProfit}</p>
+                                            <p className="text-white/40 text-[10px]">يومي</p>
+                                        </div>
+                                        <div className="bg-white/5 rounded-lg p-2 text-center">
+                                            <p className="text-yellow-400 font-bold text-sm">{level.days}</p>
+                                            <p className="text-white/40 text-[10px]">أيام</p>
+                                        </div>
+                                        <div className="bg-white/5 rounded-lg p-2 text-center">
+                                            <p className="text-yellow-400 font-bold text-sm">{level.totalProfit}</p>
+                                            <p className="text-white/40 text-[10px]">إجمالي</p>
+                                        </div>
+                                        <div className="bg-white/5 rounded-lg p-2 text-center">
+                                            <p className="text-yellow-400 font-bold text-sm">{formatNumber(level.monthly)}</p>
+                                            <p className="text-white/40 text-[10px]">شهري</p>
+                                        </div>
+                                    </div>
+
+                                    {!isLocked && level.price > 0 && !isCurrent && (
+                                        <button 
+                                            onClick={() => { setSelectedLevel(level); handleUpgrade(); }}
+                                            className="w-full invest-btn text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all btn-press shadow-lg"
+                                        >
+                                            ترقية إلى {level.name} ⬆️
+                                        </button>
+                                    )}
+                                    
+                                    {level.id === 'trial' && !isCurrent && (
+                                        <button 
+                                            onClick={() => {
+                                                onUpdateUser({ investmentLevel: 'trial', dailyProfit: 43 });
+                                                onShowToast('تم تفعيل التجربة المجانية!', 'success');
+                                            }}
+                                            className="w-full bg-green-500/20 border border-green-500/30 text-green-400 font-bold py-3 rounded-xl hover:bg-green-500/30 transition-all btn-press"
+                                        >
+                                            بدء التجربة المجانية ✅
+                                        </button>
+                                    )}
+
+                                    {isCurrent && (
+                                        <div className="w-full bg-green-500/20 text-green-400 font-bold py-3 rounded-xl text-center border border-green-500/30">
+                                            ✅ المستوى الحالي
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Contact Support Modal */}
+                    <BottomSheet isOpen={showContact} onClose={() => setShowContact(false)} title="📞 تواصل مع الدعم الفني">
+                        <div className="space-y-4">
+                            <div className="glass-card rounded-xl p-4 text-center border border-yellow-500/20">
+                                <Icon name="phone" size={32} className="text-yellow-400 mx-auto mb-3" />
+                                <h3 className="text-white font-bold text-lg mb-2">فريق الدعم الفني</h3>
+                                <p className="text-white/60 text-sm mb-4">للشحن أو الترقية، تواصل معنا عبر:</p>
+                            </div>
+
+                            <button onClick={() => { onShowToast('جاري فتح واتساب...', 'info'); }} className="w-full glass-card rounded-xl p-4 flex items-center gap-4 hover:bg-white/5 transition-all text-right">
+                                <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                                    <Icon name="phone" size={24} className="text-green-400" />
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="text-white font-bold">واتساب</h4>
+                                    <p className="text-white/50 text-sm">+213 555 123 456</p>
+                                </div>
+                            </button>
+
+                            <button onClick={() => { onShowToast('جاري فتح التليجرام...', 'info'); }} className="w-full glass-card rounded-xl p-4 flex items-center gap-4 hover:bg-white/5 transition-all text-right">
+                                <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                                    <Icon name="send" size={24} className="text-blue-400" />
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="text-white font-bold">تليجرام</h4>
+                                    <p className="text-white/50 text-sm">@BlackRockSupport</p>
+                                </div>
+                            </button>
+
+                            <button onClick={() => { onShowToast('جاري فتح البريد...', 'info'); }} className="w-full glass-card rounded-xl p-4 flex items-center gap-4 hover:bg-white/5 transition-all text-right">
+                                <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center">
+                                    <Icon name="mail" size={24} className="text-red-400" />
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="text-white font-bold">البريد الإلكتروني</h4>
+                                    <p className="text-white/50 text-sm">support@blackrock.app</p>
+                                </div>
+                            </button>
+
+                            <div className="glass-card rounded-xl p-4 border border-yellow-500/20">
+                                <p className="text-white/70 text-sm text-center leading-relaxed">
+                                    ⚠️ <span className="text-yellow-400 font-bold">تنبيه:</span> لا تقم بإرسال أموال لأي شخص خارج هذه القنوات الرسمية. نحن غير مسؤولين عن عمليات النصب.
+                                </p>
+                            </div>
+                        </div>
+                    </BottomSheet>
+                </div>
+            );
+        };
+
+        // ==================== PROFILE SCREEN ====================
+        const ProfileScreen = ({ user, onUpdateUser, onShowToast, onLogout }) => {
+            const [showReferral, setShowReferral] = useState(false);
+            const [showSecurity, setShowSecurity] = useState(false);
+            const [showCompany, setShowCompany] = useState(false);
+            const [showSettings, setShowSettings] = useState(false);
+            const [copied, setCopied] = useState(false);
+            const [showWheel, setShowWheel] = useState(false);
+
+            const referralLink = `https://blackrock.app/ref/${user.referralCode}`;
+
+            const copyReferral = () => {
+                navigator.clipboard?.writeText(referralLink);
+                setCopied(true);
+                onShowToast('تم نسخ رابط الإحالة!', 'success');
+                setTimeout(() => setCopied(false), 2000);
+            };
+
+            const shareReferral = () => {
+                const text = `🎯 انضم إلى BlackRock Investment Platform!\n\nاستخدم رابطي الخاص واحصل على مكافأة ترحيبية:\n${referralLink}\n\n💰 اربح يومياً من المهام البسيطة!\n🎡 عجلة حظ مجانية عند التسجيل!`;
+                
+                if (navigator.share) {
+                    navigator.share({ title: 'BlackRock Investment', text, url: referralLink });
+                } else {
+                    navigator.clipboard?.writeText(text);
+                    onShowToast('تم نسخ الرسالة!', 'success');
+                }
+            };
+
+            return (
+                <div className="h-screen overflow-y-auto hide-scrollbar bg-[#050810] pb-28">
+                    <div className="sticky top-0 z-40 bg-[#050810]/95 backdrop-blur-xl px-4 py-4 border-b border-white/5">
+                        <h2 className="text-white font-bold text-xl text-center">👤 حسابي</h2>
+                    </div>
+
+                    <div className="mx-4 mt-4">
+                        {/* Referral Code */}
+                        <div className="glass-card rounded-xl p-5 mb-4 text-center border border-yellow-500/20">
+                            <h3 className="text-white font-bold mb-3">كود الدعوة الخاص بك</h3>
+                            <div className="bg-white/5 rounded-xl p-4 mb-3 border border-white/10">
+                                <p className="text-3xl font-black gold-gradient tracking-widest">{user.referralCode}</p>
+                            </div>
+                            <p className="text-white/50 text-sm mb-4">شارك هذا الكود مع أصدقائك واربح 5% من أرباحهم</p>
+                            
+                            <div className="bg-white/5 rounded-lg p-2 flex items-center gap-2 mb-3">
+                                <input type="text" value={referralLink} readOnly className="flex-1 bg-transparent text-white/60 text-xs text-center" />
+                                <button onClick={copyReferral} className="px-3 py-1.5 bg-yellow-500/20 text-yellow-400 rounded-lg text-xs font-bold hover:bg-yellow-500/30 transition-all">
+                                    {copied ? '✓ تم' : 'نسخ'}
+                                </button>
+                            </div>
+                            
+                            <button onClick={shareReferral} className="w-full invest-btn text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all btn-press flex items-center justify-center gap-2 shadow-lg">
+                                <Icon name="share" size={18} />
+                                مشاركة الرابط
+                            </button>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="glass-card rounded-xl p-4 mb-4">
+                            <h3 className="text-white font-bold mb-3">📊 إحصائياتي</h3>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-white/5 rounded-lg p-3 text-center">
+                                    <p className="text-yellow-400 font-bold text-lg">{formatNumber(user.balance)}</p>
+                                    <p className="text-white/40 text-xs">الرصيد</p>
+                                </div>
+                                <div className="bg-white/5 rounded-lg p-3 text-center">
+                                    <p className="text-yellow-400 font-bold text-lg">{user.teamCount || 0}</p>
+                                    <p className="text-white/40 text-xs">الفريق</p>
+                                </div>
+                                <div className="bg-white/5 rounded-lg p-3 text-center">
+                                    <p className="text-yellow-400 font-bold text-lg">{formatNumber(user.totalEarned || 0)}</p>
+                                    <p className="text-white/40 text-xs">إجمالي الربح</p>
+                                </div>
+                                <div className="bg-white/5 rounded-lg p-3 text-center">
+                                    <p className="text-yellow-400 font-bold text-lg">{user.wheelSpins || 0}</p>
+                                    <p className="text-white/40 text-xs">دورات العجلة</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Menu */}
+                        <div className="glass-card rounded-xl p-4 mb-4">
+                            <h3 className="text-white font-bold mb-3">الشركة والمزيد</h3>
+                            <div className="space-y-1">
+                                {[
+                                    { id: 'security', icon: 'shield', title: 'وثيقة الأمان', desc: 'SECURE V3 — BlackRock, Inc', color: 'text-green-400', action: () => setShowSecurity(true) },
+                                    { id: 'company', icon: 'building', title: 'عن الشركة', desc: 'BlackRock, Inc — 1988 أمريكا', color: 'text-blue-400', action: () => setShowCompany(true) },
+                                    { id: 'referrals', icon: 'users', title: 'الإحالات', desc: `${user.teamCount || 0} مدعو`, color: 'text-yellow-400', action: () => setShowReferral(true) },
+                                    { id: 'wheel', icon: 'gift', title: 'عجلة الحظ', desc: 'ادعُ صديقاً وادور!', color: 'text-purple-400', action: () => setShowWheel(true) },
+                                    { id: 'settings', icon: 'settings', title: 'الإعدادات', desc: 'إعدادات الحساب', color: 'text-white', action: () => setShowSettings(true) },
+                                ].map(item => (
+                                    <button key={item.id} onClick={item.action} className="w-full flex items-center justify-between p-3 hover:bg-white/5 rounded-xl transition-all text-right">
+                                        <div className="flex items-center gap-3">
+                                            <Icon name={item.icon} size={20} className={item.color} />
+                                            <div>
+                                                <p className="text-white font-bold text-sm">{item.title}</p>
+                                                <p className="text-white/40 text-xs">{item.desc}</p>
+                                            </div>
+                                        </div>
+                                        <Icon name="arrowLeft" size={16} className="text-white/30" />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Logout */}
+                        <button onClick={onLogout} className="w-full glass-card rounded-xl p-4 flex items-center justify-center gap-2 text-red-400 hover:bg-red-500/10 transition-all border border-red-500/20 btn-press">
+                            <Icon name="logout" size={20} />
+                            <span className="font-bold">تسجيل الخروج</span>
+                        </button>
+                    </div>
+
+                    {/* Sheets */}
+                    <BottomSheet isOpen={showSecurity} onClose={() => setShowSecurity(false)} title="🛡️ وثيقة الأمان">
+                        <div className="space-y-3">
+                            {[
+                                { label: 'دولة التسجيل', value: '🇺🇸 New York, USA', color: 'text-white' },
+                                { label: 'رقم التسجيل', value: 'NYSE: BLK — EIN: 32-0174431', color: 'text-yellow-400' },
+                                { label: 'بروتوكول التشفير', value: 'SSL/TLS 3.0 — AES-256', color: 'text-green-400' },
+                                { label: 'عقد الجزائر', value: 'يناير 2025 — ديسمبر 2028 ✅', color: 'text-green-400' },
+                                { label: 'حماية الأموال', value: 'مضمونة 100% ✅', color: 'text-green-400' },
+                            ].map((item, i) => (
+                                <div key={i} className="glass-card rounded-xl p-4 flex items-center justify-between">
+                                    <span className="text-white/60 text-sm">{item.label}</span>
+                                    <span className={`font-bold text-sm ${item.color}`}>{item.value}</span>
+                                </div>
+                            ))}
+                            <div className="glass-card rounded-xl p-4">
+                                <p className="text-white/70 text-sm leading-relaxed text-center">
+                                    تقر شركة <span className="text-green-400 font-bold">BlackRock, Inc</span> المسجلة في نيويورك بالولايات المتحدة الأمريكية عام <span className="text-yellow-400 font-bold">1988</span>، بأنها أبرمت عقداً رسمياً مع الجانب الجزائري في <span className="text-yellow-400 font-bold">يناير 2025</span> لمدة <span className="text-yellow-400 font-bold">3 سنوات</span> (تنتهي ديسمبر 2028).
+                                </p>
+                            </div>
+                        </div>
+                    </BottomSheet>
+
+                    <BottomSheet isOpen={showCompany} onClose={() => setShowCompany(false)} title="🏢 معلومات الشركة">
+                        <div className="space-y-3">
+                            {[
+                                { label: 'الاسم القانوني', value: 'BlackRock, Inc' },
+                                { label: 'المقر الرئيسي', value: '🇺🇸 New York, USA' },
+                                { label: 'سنة التأسيس', value: '1988' },
+                                { label: 'المجال', value: 'إدارة الأصول والاستثمار' },
+                                { label: 'عقد الجزائر', value: 'يناير 2025 ✅' },
+                                { label: 'انتهاء العقد', value: 'ديسمبر 2028' },
+                            ].map((item, i) => (
+                                <div key={i} className="glass-card rounded-xl p-4 flex items-center justify-between">
+                                    <span className="text-white/60 text-sm">{item.label}</span>
+                                    <span className="text-white font-bold text-sm">{item.value}</span>
+                                </div>
+                            ))}
+                            <button onClick={() => window.open('https://www.blackrock.com', '_blank')} className="w-full invest-btn text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all">
+                                🌐 الموقع الرسمي
+                            </button>
+                        </div>
+                    </BottomSheet>
+
+                    <BottomSheet isOpen={showSettings} onClose={() => setShowSettings(false)} title="⚙️ الإعدادات">
+                        <div className="space-y-3">
+                            <div className="glass-card rounded-xl p-4">
+                                <h4 className="text-white font-bold mb-3">معلومات الحساب</h4>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between">
+                                        <span className="text-white/60 text-sm">اسم المستخدم</span>
+                                        <span className="text-white text-sm font-bold">{user.username}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-white/60 text-sm">الرصيد</span>
+                                        <span className="text-yellow-400 text-sm font-bold">{formatNumber(user.balance)} DZD</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-white/60 text-sm">الإحالات</span>
+                                        <span className="text-white text-sm font-bold">{user.teamCount || 0}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-white/60 text-sm">تاريخ الانضمام</span>
+                                        <span className="text-white text-sm">{new Date(user.joinedAt).toLocaleDateString('ar-DZ')}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button onClick={() => { localStorage.clear(); onShowToast('تم مسح جميع البيانات', 'success'); window.location.reload(); }} className="w-full glass-card rounded-xl p-4 text-red-400 font-bold hover:bg-red-500/10 transition-all border border-red-500/20">
+                                🗑️ مسح جميع البيانات
+                            </button>
+                        </div>
+                    </BottomSheet>
+
+                    <LuckyWheel isOpen={showWheel} onClose={() => setShowWheel(false)} user={user} onUpdateUser={onUpdateUser} onShowToast={onShowToast} />
+                </div>
+            );
+        };
+
+        // ==================== MAIN APP ====================
+        const App = () => {
+            const [user, setUser] = useState(null);
+            const [activeTab, setActiveTab] = useState('home');
+            const [toast, setToast] = useState(null);
+            const [isLoading, setIsLoading] = useState(true);
+
+            useEffect(() => {
+                const saved = localStorage.getItem('br_current');
+                if (saved) {
+                    try { setUser(JSON.parse(saved)); } catch (e) {}
+                }
+                setTimeout(() => setIsLoading(false), 1500);
+            }, []);
+
+            useEffect(() => {
+                if (user) {
+                    localStorage.setItem('br_current', JSON.stringify(user));
+                    const users = JSON.parse(localStorage.getItem('br_users') || '[]');
+                    const updated = users.map(u => u.id === user.id ? user : u);
+                    localStorage.setItem('br_users', JSON.stringify(updated));
+                }
+            }, [user]);
+
+            const showToast = (message, type = 'info') => setToast({ message, type });
+            
+            const updateUser = (updates) => {
+                setUser(prev => {
+                    const updated = { ...prev, ...updates };
+                    return updated;
+                });
+            };
+
+            const handleLogin = (userData) => setUser(userData);
+
+            const handleLogout = () => {
+                localStorage.removeItem('br_current');
+                setUser(null);
+                setActiveTab('home');
+                showToast('تم تسجيل الخروج بنجاح', 'success');
+            };
+
+            if (isLoading) {
+                return (
+                    <div className="h-screen bg-[#050810] flex items-center justify-center">
+                        <div className="text-center">
+                            <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 rounded-3xl mx-auto mb-6 flex items-center justify-center animate-pulse shadow-2xl shadow-orange-500/30">
+                                <Icon name="diamond" size={50} className="text-white" />
+                            </div>
+                            <h1 className="text-3xl font-black gold-gradient mb-2">BLACKROCK</h1>
+                            <p className="text-white/40 text-sm">جاري التحميل...</p>
+                            <div className="mt-4 w-48 h-1 bg-white/10 rounded-full mx-auto overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full animate-pulse" style={{ width: '60%' }}></div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (!user) {
+                return <AuthScreen onLogin={handleLogin} onShowToast={showToast} />;
+            }
+
+            const tabs = [
+                { id: 'home', icon: 'home', label: 'الرئيسية', badge: 0 },
+                { id: 'tasks', icon: 'tasks', label: 'المهام', badge: 5 },
+                { id: 'upgrade', icon: 'diamond', label: 'الترقية', badge: 0 },
+                { id: 'profile', icon: 'user', label: 'حسابي', badge: 0 },
+            ];
+
+            const renderContent = () => {
+                switch(activeTab) {
+                    case 'home': return <HomeScreen user={user} onUpdateUser={updateUser} onShowToast={showToast} onNavigate={setActiveTab} />;
+                    case 'tasks': return <TasksScreen user={user} onUpdateUser={updateUser} onShowToast={showToast} />;
+                    case 'upgrade': return <UpgradeScreen user={user} onUpdateUser={updateUser} onShowToast={showToast} />;
+                    case 'profile': return <ProfileScreen user={user} onUpdateUser={updateUser} onShowToast={showToast} onLogout={handleLogout} />;
+                    default: return <HomeScreen user={user} onUpdateUser={updateUser} onShowToast={showToast} onNavigate={setActiveTab} />;
+                }
+            };
+
+            return (
+                <div className="relative h-screen w-full max-w-md mx-auto bg-[#050810] overflow-hidden shadow-2xl">
+                    {renderContent()}
+
+                    {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+
+                    {/* Bottom Navigation */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-[#050810]/95 backdrop-blur-xl border-t border-white/5 z-50">
+                        <div className="flex justify-around items-center py-2">
+                            {tabs.map(tab => (
+                                <button 
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`nav-item relative flex flex-col items-center gap-1 p-2 transition-all ${activeTab === tab.id ? 'active' : 'text-white/40 hover:text-white/70'}`}
+                                >
+                                    <div className="relative">
+                                        <Icon name={tab.icon} size={24} />
+                                        {tab.badge > 0 && (
+                                            <span className="absolute -top-2 -right-2 w-5 h-5 notification-badge rounded-full text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
+                                                {tab.badge}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <span className="text-[10px] font-medium">{tab.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                        <div className="h-1.5 bg-[#050810]"></div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
+طور كل شئ
