@@ -3,191 +3,336 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BlackRock Investment - بلاك روك</title>
+  <title>BlackRock Investment | بلاك روك</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
     body { font-family: 'Segoe UI', system-ui, sans-serif; }
-    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); }
+    .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); }
+    .nav-active { background: linear-gradient(90deg, #0ea5e9, #22d3ee); color: black; font-weight: 600; }
+    .price-up { animation: priceUp 0.6s; }
+    .price-down { animation: priceDown 0.6s; }
+    @keyframes priceUp { 0% { transform: translateY(-8px); color: #22c55e; } }
+    @keyframes priceDown { 0% { transform: translateY(8px); color: #ef4444; } }
   </style>
 </head>
-<body class="bg-zinc-950 text-zinc-200 min-h-screen">
+<body class="bg-zinc-950 text-zinc-200">
 
 <div class="flex h-screen overflow-hidden">
 
   <!-- Sidebar -->
-  <div class="w-72 bg-black p-6 flex flex-col">
-    <div class="flex items-center gap-3 mb-10">
-      <div class="w-9 h-9 bg-white rounded-full flex items-center justify-center text-black font-bold text-2xl">B</div>
+  <div class="w-72 bg-black p-6 flex flex-col border-l-4 border-red-600">
+    <div class="flex items-center gap-3 mb-12">
+      <div class="w-10 h-10 bg-white text-black rounded-2xl flex items-center justify-center text-3xl font-black">B</div>
       <div>
-        <h1 class="text-2xl font-bold text-white">BlackRock</h1>
-        <p class="text-[10px] text-zinc-500 -mt-1">INVESTMENT</p>
+        <h1 class="text-3xl font-bold tracking-tight">BlackRock</h1>
+        <p class="text-xs text-zinc-500 -mt-1">INVESTMENTS</p>
       </div>
     </div>
 
-    <nav class="space-y-2">
-      <a href="#" class="flex items-center gap-3 px-4 py-3 bg-white/10 rounded-xl text-white font-medium"><i class="fa-solid fa-chart-line"></i> النظرة العامة</a>
-      <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition"><i class="fa-solid fa-briefcase"></i> المحفظة</a>
-      <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition"><i class="fa-solid fa-coins"></i> الاستثمارات</a>
-      <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition"><i class="fa-solid fa-chart-pie"></i> التخصيص</a>
-      <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition"><i class="fa-solid fa-newspaper"></i> الأخبار والتحليلات</a>
+    <nav id="sidebar" class="space-y-1 text-sm">
+      <a onclick="navigate(0)" class="nav-active flex items-center gap-3 px-5 py-3.5 rounded-2xl cursor-pointer"><i class="fa-solid fa-house w-5"></i> الرئيسية</a>
+      <a onclick="navigate(1)" class="flex items-center gap-3 px-5 py-3.5 hover:bg-white/5 rounded-2xl cursor-pointer"><i class="fa-solid fa-briefcase w-5"></i> محفظتي</a>
+      <a onclick="navigate(2)" class="flex items-center gap-3 px-5 py-3.5 hover:bg-white/5 rounded-2xl cursor-pointer"><i class="fa-solid fa-chart-line w-5"></i> الأسواق</a>
+      <a onclick="navigate(3)" class="flex items-center gap-3 px-5 py-3.5 hover:bg-white/5 rounded-2xl cursor-pointer"><i class="fa-solid fa-robot w-5"></i> المستشار الذكي</a>
+      <a onclick="navigate(4)" class="flex items-center gap-3 px-5 py-3.5 hover:bg-white/5 rounded-2xl cursor-pointer"><i class="fa-solid fa-receipt w-5"></i> المعاملات</a>
     </nav>
 
-    <div class="mt-auto">
-      <div class="glass p-4 rounded-2xl">
-        <p class="text-sm text-emerald-400 font-medium">مستشار الذكاء الاصطناعي</p>
-        <p class="text-xs text-zinc-400 mt-1">اسألني عن أي استثمار أو استراتيجية</p>
-      </div>
+    <div class="mt-auto pt-8 border-t border-zinc-800">
+      <button onclick="showDepositModal()" 
+              class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-semibold py-4 rounded-3xl flex items-center justify-center gap-2">
+        <i class="fa-solid fa-plus"></i> إيداع أموال
+      </button>
     </div>
   </div>
 
   <!-- Main Content -->
-  <div class="flex-1 overflow-auto">
+  <div class="flex-1 flex flex-col">
     <!-- Top Bar -->
-    <div class="bg-zinc-900 border-b border-zinc-800 px-8 py-5 flex items-center justify-between">
-      <h2 class="text-3xl font-semibold text-white">لوحة الاستثمار</h2>
+    <div class="h-16 bg-zinc-900 border-b border-zinc-800 px-8 flex items-center justify-between">
+      <div class="flex items-center gap-8">
+        <h2 id="pageTitle" class="text-2xl font-semibold">لوحة التحكم</h2>
+      </div>
       <div class="flex items-center gap-6">
-        <div class="bg-zinc-800 px-4 py-2 rounded-2xl text-sm flex items-center gap-2">
-          <i class="fa-solid fa-wallet"></i>
-          <span>الحساب الرئيسي</span>
+        <div onclick="fakeLiveUpdate()" class="flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-3xl text-sm cursor-pointer hover:bg-zinc-700">
+          <div class="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
+          <span id="liveStatus">الأسواق مفتوحة • مباشر</span>
         </div>
+        
+        <div class="text-right">
+          <p class="text-lg font-semibold text-emerald-400" id="totalBalance">$487,392.74</p>
+          <p class="text-xs text-emerald-500 flex items-center gap-1 justify-end">
+            +2.84% <span class="text-zinc-400">($13,478)</span>
+          </p>
+        </div>
+        
         <div class="flex items-center gap-3">
           <div class="text-right">
-            <p class="text-sm font-medium">أحمد محمد</p>
-            <p class="text-xs text-emerald-500">مستثمر مميز</p>
+            <p class="font-medium">أحمد العتيبي</p>
+            <p class="text-[10px] text-zinc-500">مستثمر VIP</p>
           </div>
-          <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl"></div>
+          <div class="w-9 h-9 bg-gradient-to-br from-red-600 to-orange-500 rounded-2xl flex items-center justify-center text-white font-bold">AO</div>
         </div>
       </div>
     </div>
 
-    <div class="p-8">
+    <!-- Pages -->
+    <div class="flex-1 overflow-auto p-8" id="pages">
 
-      <!-- Key Metrics -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-        <div class="bg-zinc-900 rounded-3xl p-6">
-          <p class="text-zinc-400 text-sm">إجمالي قيمة المحفظة</p>
-          <p class="text-4xl font-bold text-white mt-2">$248,732</p>
-          <p class="text-emerald-400 flex items-center gap-1 mt-3">
-            <i class="fa-solid fa-arrow-trend-up"></i> +4.82% ($11,487)
-          </p>
+      <!-- Page 1: Dashboard -->
+      <div id="page-0">
+        <div class="grid grid-cols-4 gap-6 mb-8">
+          <div class="glass rounded-3xl p-6"><p class="text-zinc-400">إجمالي المحفظة</p><p class="text-4xl font-bold mt-2">$487,393</p><p class="text-emerald-400 text-sm mt-4">↑ 2.84% هذا الشهر</p></div>
+          <div class="glass rounded-3xl p-6"><p class="text-zinc-400">عائد اليوم</p><p class="text-4xl font-bold text-emerald-400 mt-2">+$4,872</p><p class="text-sm mt-4">+1.01%</p></div>
+          <div class="glass rounded-3xl p-6"><p class="text-zinc-400">عدد الأصول</p><p class="text-4xl font-bold mt-2">24</p><p class="text-amber-400 text-sm mt-4">3 أصول جديدة</p></div>
+          <div class="glass rounded-3xl p-6"><p class="text-zinc-400">أفضل أداء</p><p class="text-4xl font-bold mt-2">NVDA</p><p class="text-emerald-400 text-sm mt-4">+12.4% هذا الأسبوع</p></div>
         </div>
-        <div class="bg-zinc-900 rounded-3xl p-6">
-          <p class="text-zinc-400 text-sm">عائد اليوم</p>
-          <p class="text-4xl font-bold text-emerald-400 mt-2">+1.24%</p>
-          <p class="text-zinc-400 text-sm mt-3">$2,987</p>
-        </div>
-        <div class="bg-zinc-900 rounded-3xl p-6">
-          <p class="text-zinc-400 text-sm">عائد هذا العام</p>
-          <p class="text-4xl font-bold text-white mt-2">+18.7%</p>
-          <p class="text-amber-400 text-sm mt-3">أفضل من السوق</p>
-        </div>
-        <div class="bg-zinc-900 rounded-3xl p-6">
-          <p class="text-zinc-400 text-sm">القيمة المستهدفة 2026</p>
-          <p class="text-4xl font-bold text-white mt-2">$320,000</p>
-          <div class="h-2 bg-zinc-700 rounded-full mt-4 overflow-hidden">
-            <div class="h-full w-[78%] bg-gradient-to-r from-blue-500 to-cyan-400"></div>
+
+        <div class="grid grid-cols-7 gap-6">
+          <div class="col-span-5 glass rounded-3xl p-8">
+            <h3 class="font-semibold mb-6">أداء المحفظة (آخر 6 أشهر)</h3>
+            <canvas id="mainChart" height="95"></canvas>
           </div>
+          <div class="col-span-2 glass rounded-3xl p-8">
+            <h3 class="font-semibold mb-6">توزيع الأصول</h3>
+            <canvas id="pieChart" height="220"></canvas>
+          </div>
+        </div>
+
+        <div class="mt-8 glass rounded-3xl p-8">
+          <h3 class="font-semibold mb-6">أبرز الاستثمارات</h3>
+          <div class="grid grid-cols-4 gap-6" id="topHoldings"></div>
         </div>
       </div>
 
-      <!-- Charts -->
-      <div class="grid grid-cols-1 lg:grid-cols-7 gap-6">
-        <!-- Performance Chart -->
-        <div class="lg:col-span-5 bg-zinc-900 rounded-3xl p-8">
-          <h3 class="text-lg font-semibold mb-6">أداء المحفظة (آخر 12 شهر)</h3>
-          <canvas id="performanceChart" height="100"></canvas>
-        </div>
-
-        <!-- Allocation -->
-        <div class="lg:col-span-2 bg-zinc-900 rounded-3xl p-8">
-          <h3 class="text-lg font-semibold mb-6">تخصيص الأصول</h3>
-          <canvas id="allocationChart" height="220"></canvas>
-        </div>
+      <!-- Page 2: Portfolio -->
+      <div id="page-1" class="hidden">
+        <h2 class="text-2xl font-bold mb-6">محفظتي</h2>
+        <table class="w-full text-sm">
+          <thead><tr class="border-b border-zinc-700 text-zinc-400"><th class="py-4 text-right">الأصل</th><th class="py-4 text-right">الكمية</th><th class="py-4 text-right">السعر الحالي</th><th class="py-4 text-right">القيمة</th><th class="py-4 text-right">العائد</th></tr></thead>
+          <tbody id="portfolioTable" class="text-zinc-300"></tbody>
+        </table>
       </div>
 
-      <!-- Holdings + Market -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        <!-- Top Holdings -->
-        <div class="bg-zinc-900 rounded-3xl p-8">
-          <h3 class="text-lg font-semibold mb-6">أبرز الاستثمارات</h3>
-          <div class="space-y-6">
-            <div class="flex justify-between items-center">
-              <div class="flex items-center gap-4">
-                <div class="w-9 h-9 bg-blue-600 rounded-2xl flex items-center justify-center text-xs font-bold">AAPL</div>
-                <div>
-                  <p class="font-medium">Apple Inc.</p>
-                  <p class="text-xs text-zinc-500">235 سهم</p>
-                </div>
-              </div>
-              <div class="text-right">
-                <p class="font-medium">$42,890</p>
-                <p class="text-emerald-400 text-sm">+3.2%</p>
-              </div>
-            </div>
-            <!-- Add more holdings similarly -->
-            <div class="flex justify-between items-center">
-              <div class="flex items-center gap-4">
-                <div class="w-9 h-9 bg-black rounded-2xl flex items-center justify-center text-xs font-bold">BRK</div>
-                <div>
-                  <p class="font-medium">iShares Core S&P 500</p>
-                  <p class="text-xs text-zinc-500">IVV</p>
-                </div>
-              </div>
-              <div class="text-right">
-                <p class="font-medium">$68,420</p>
-                <p class="text-emerald-400 text-sm">+2.1%</p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <!-- Page 3: Markets -->
+      <div id="page-2" class="hidden">
+        <h2 class="text-2xl font-bold mb-6">الأسواق المباشرة</h2>
+        <table class="w-full" id="marketsTable"></table>
+      </div>
 
-        <!-- Market Movers -->
-        <div class="bg-zinc-900 rounded-3xl p-8">
-          <h3 class="text-lg font-semibold mb-6">مؤشرات السوق</h3>
-          <div class="space-y-5 text-sm">
-            <div class="flex justify-between"><span class="text-zinc-400">S&P 500</span><span class="text-emerald-400">5,487.21 (+0.87%)</span></div>
-            <div class="flex justify-between"><span class="text-zinc-400">Nasdaq</span><span class="text-emerald-400">17,892.4 (+1.34%)</span></div>
-            <div class="flex justify-between"><span class="text-zinc-400">iShares MSCI Emerging Markets</span><span class="text-red-400">-0.42%</span></div>
-          </div>
+      <!-- Page 4: AI Advisor -->
+      <div id="page-3" class="hidden h-full flex flex-col">
+        <h2 class="text-2xl font-bold mb-6">مستشار BlackRock الذكي</h2>
+        <div id="chatMessages" class="flex-1 overflow-auto glass rounded-3xl p-6 space-y-6 mb-6"></div>
+        <div class="flex gap-3">
+          <input id="chatInput" type="text" placeholder="اكتب سؤالك عن الاستثمار..." 
+                 class="flex-1 bg-zinc-900 border border-zinc-700 rounded-3xl px-6 py-4 focus:outline-none focus:border-cyan-400">
+          <button onclick="sendMessage()" class="bg-cyan-500 text-black px-10 rounded-3xl font-semibold">إرسال</button>
         </div>
+        <div class="text-xs text-center text-zinc-500 mt-4">هذا محادثة تجريبية - لا يُقدم نصيحة استثمارية حقيقية</div>
+      </div>
+
+      <!-- Page 5: Transactions -->
+      <div id="page-4" class="hidden">
+        <h2 class="text-2xl font-bold mb-6">سجل المعاملات</h2>
+        <div class="space-y-4" id="transactionsList"></div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Deposit Modal -->
+<div id="depositModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+  <div class="bg-zinc-900 rounded-3xl w-full max-w-md p-8">
+    <h3 class="text-2xl font-bold mb-6">إيداع أموال جديدة</h3>
+    <div class="space-y-6">
+      <div><label class="block text-sm mb-2">المبلغ (دولار أمريكي)</label><input type="text" value="5000" class="w-full bg-zinc-800 rounded-2xl px-5 py-4"></div>
+      <div>
+        <label class="block text-sm mb-3">طريقة الدفع</label>
+        <div class="grid grid-cols-3 gap-4">
+          <div class="bg-zinc-800 rounded-2xl p-4 text-center cursor-pointer hover:bg-zinc-700">بنك</div>
+          <div class="bg-cyan-500/20 border border-cyan-400 rounded-2xl p-4 text-center cursor-pointer">USDT</div>
+          <div class="bg-zinc-800 rounded-2xl p-4 text-center cursor-pointer hover:bg-zinc-700">بطاقة</div>
+        </div>
+      </div>
+      <button onclick="completeDeposit()" class="w-full py-4 bg-emerald-500 text-black font-bold rounded-3xl">تأكيد الإيداع</button>
+      <button onclick="hideDepositModal()" class="w-full py-4 text-zinc-400">إلغاء</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// Performance Line Chart
-new Chart(document.getElementById('performanceChart'), {
-  type: 'line',
-  data: {
-    labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
-    datasets: [{
-      label: 'قيمة المحفظة',
-      data: [198000, 205000, 212000, 218000, 229000, 235000, 241000, 238000, 245000, 252000, 247000, 248732],
-      borderColor: '#22d3ee',
-      tension: 0.4,
-      borderWidth: 3,
-      pointRadius: 0
-    }]
-  },
-  options: { plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#27272a' }}}}
-});
+// Navigation
+let currentPage = 0;
+const pages = document.querySelectorAll('#pages > div');
 
-// Allocation Pie Chart
-new Chart(document.getElementById('allocationChart'), {
-  type: 'doughnut',
-  data: {
-    labels: ['أسهم أمريكية', 'صناديق مؤشرات', 'سندات', 'أسواق ناشئة', 'ذهب وسلع'],
-    datasets: [{
-      data: [45, 25, 15, 10, 5],
-      backgroundColor: ['#22d3ee', '#a5b4fc', '#64748b', '#f472b6', '#fbbf24']
-    }]
-  },
-  options: { cutout: '70%', plugins: { legend: { position: 'bottom' } } }
-});
+function navigate(page) {
+  pages.forEach((p, i) => p.classList.toggle('hidden', i !== page));
+  document.querySelectorAll('#sidebar a').forEach((el, i) => {
+    el.classList.toggle('nav-active', i === page);
+  });
+  currentPage = page;
+  document.getElementById('pageTitle').textContent = ['لوحة التحكم', 'محفظتي', 'الأسواق المباشرة', 'المستشار الذكي', 'سجل المعاملات'][page];
+}
+
+// Charts
+let mainChart, pieChart;
+
+function initCharts() {
+  mainChart = new Chart(document.getElementById('mainChart'), {
+    type: 'line',
+    data: {
+      labels: ['يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر', 'يناير'],
+      datasets: [{ label: 'قيمة المحفظة', data: [412000, 429000, 451000, 462000, 475000, 481000, 487393], borderColor: '#22d3ee', tension: 0.4, borderWidth: 4, pointRadius: 0 }]
+    },
+    options: { plugins: { legend: { display: false }}, scales: { y: { grid: { color: '#27272a'}}}}
+  });
+
+  pieChart = new Chart(document.getElementById('pieChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['أسهم أمريكية', 'صناديق ETF', 'سندات', 'أسواق ناشئة', 'سلع'],
+      datasets: [{ data: [42, 28, 15, 10, 5], backgroundColor: ['#22d3ee','#6366f1','#64748b','#ec4899','#f59e0b'] }]
+    },
+    options: { cutout: '75%', plugins: { legend: { position: 'bottom', labels: { color: '#a3a3a3', padding: 20 }}}}
+  });
+}
+
+// Fake Portfolio Data
+const holdings = [
+  {name:"Apple Inc.", symbol:"AAPL", qty:245, price:237.45, value:58175, return:12.4},
+  {name:"iShares Core S&P 500", symbol:"IVV", qty:87, price:582.10, value:50643, return:8.7},
+  {name:"NVIDIA", symbol:"NVDA", qty:65, price:142.80, value:9282, return:28.3},
+  {name:"Microsoft", symbol:"MSFT", qty:92, price:418.90, value:38539, return:5.9},
+];
+
+function renderPortfolio() {
+  const tbody = document.getElementById('portfolioTable');
+  tbody.innerHTML = holdings.map(h => `
+    <tr class="border-b border-zinc-800 hover:bg-white/5">
+      <td class="py-5 font-medium">${h.name}<span class="text-xs text-zinc-500 block">${h.symbol}</span></td>
+      <td class="py-5">${h.qty}</td>
+      <td class="py-5">$${h.price}</td>
+      <td class="py-5 font-semibold">$${h.value.toLocaleString()}</td>
+      <td class="py-5 ${h.return>0?'text-emerald-400':'text-red-400'}">${h.return > 0 ? '+' : ''}${h.return}%</td>
+    </tr>
+  `).join('');
+}
+
+// Fake Markets
+function renderMarkets() {
+  const assets = [
+    {symbol:"AAPL", price:237.45, change:1.24},
+    {symbol:"NVDA", price:142.80, change:-0.87},
+    {symbol:"TSLA", price:412.67, change:3.91},
+    {symbol:"BTC", price:68420, change:2.34},
+    {symbol:"IVV", price:582.10, change:0.65},
+  ];
+  
+  let html = `<thead><tr class="text-zinc-400 border-b"><th class="text-right py-4">الرمز</th><th class="text-right py-4">السعر</th><th class="text-right py-4">التغيير</th></tr></thead><tbody>`;
+  assets.forEach(a => {
+    const isUp = a.change > 0;
+    html += `<tr class="border-b border-zinc-800 hover:bg-white/5">
+      <td class="py-5 font-medium">${a.symbol}</td>
+      <td class="py-5">$${a.price.toLocaleString()}</td>
+      <td class="py-5 ${isUp ? 'text-emerald-400' : 'text-red-400'}">${isUp ? '↑' : '↓'} ${Math.abs(a.change)}%</td>
+    </tr>`;
+  });
+  html += `</tbody>`;
+  document.getElementById('marketsTable').innerHTML = html;
+}
+
+// Simple AI Chat
+const responses = {
+  "مرحبا": "مرحبا! كيف يمكنني مساعدتك في استثماراتك اليوم؟",
+  "ما رأيك في البيتكوين": "البيتكوين يشهد حالياً اتجاهاً صعودياً قوياً، لكن يجب مراعاة المخاطر العالية. التخصيص المقترح لا يتجاوز 5-8% من المحفظة.",
+  "استثمر في": "أفضل الفرص الحالية حسب تحليلنا: NVDA، IVV، و بعض السندات الحكومية للتوازن.",
+  "default": "شكراً لسؤالك. يمكنني تقديم تحليلات حول الأسهم، الصناديق، أو استراتيجيات الاستثمار طويلة الأجل."
+};
+
+function addMessage(text, isUser) {
+  const chat = document.getElementById('chatMessages');
+  const msg = document.createElement('div');
+  msg.className = isUser ? 'flex justify-end' : 'flex justify-start';
+  msg.innerHTML = `<div class="${isUser ? 'bg-cyan-500 text-black' : 'bg-zinc-800'} max-w-[75%] rounded-3xl px-6 py-3">${text}</div>`;
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  addMessage(text, true);
+  input.value = '';
+
+  setTimeout(() => {
+    let reply = responses.default;
+    for (let key in responses) {
+      if (text.includes(key)) { reply = responses[key]; break; }
+    }
+    addMessage(reply, false);
+  }, 800);
+}
+
+// Modals
+function showDepositModal() {
+  document.getElementById('depositModal').classList.remove('hidden');
+}
+
+function hideDepositModal() {
+  document.getElementById('depositModal').classList.add('hidden');
+}
+
+function completeDeposit() {
+  hideDepositModal();
+  alert('تمت عملية الإيداع بنجاح! (هذا تطبيق تجريبي)');
+  document.getElementById('totalBalance').textContent = '$492,392.74';
+}
+
+// Fake live price update
+function fakeLiveUpdate() {
+  const balance = document.getElementById('totalBalance');
+  let val = parseFloat(balance.textContent.replace(/[$,]/g,''));
+  val += Math.random() * 800 + 200;
+  balance.textContent = '$' + val.toFixed(2);
+  balance.classList.add('price-up');
+  setTimeout(() => balance.classList.remove('price-up'), 800);
+}
+
+// Render top holdings cards
+function renderTopHoldings() {
+  const container = document.getElementById('topHoldings');
+  container.innerHTML = holdings.slice(0,4).map(h => `
+    <div class="glass rounded-3xl p-5">
+      <div class="flex justify-between">
+        <div><span class="font-semibold">${h.symbol}</span><br><span class="text-xs text-zinc-400">${h.name}</span></div>
+        <div class="text-right"><span class="text-emerald-400 text-sm">+${h.return}%</span><br><span class="font-bold">$${h.value.toLocaleString()}</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Initialize everything
+window.onload = () => {
+  initCharts();
+  renderPortfolio();
+  renderMarkets();
+  renderTopHoldings();
+  
+  // Add some initial chat messages
+  setTimeout(() => {
+    if (currentPage === 3) return;
+    const chat = document.getElementById('chatMessages');
+    chat.innerHTML = `<div class="text-zinc-400 text-center py-8">مرحباً بك في مستشار BlackRock الذكي.<br>كيف يمكنني مساعدتك اليوم؟</div>`;
+  }, 500);
+
+  // Simulate live updates
+  setInterval(() => {
+    if (Math.random() > 0.7) fakeLiveUpdate();
+  }, 7000);
+};
 </script>
-
 </body>
 </html>
