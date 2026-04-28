@@ -1,643 +1,86 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>BlackRock Investment Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#060912;--c1:#0d1225;--gold:#F5C518;--gold2:#FF9800;--gold3:#FF6D00;--grn:#00E676;--red:#FF1744;--blu:#2979FF;--br:rgba(255,255,255,.07);}
-*{font-family:'Tajawal',sans-serif;-webkit-tap-highlight-color:transparent;box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
-html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:#fff;}
-#root{height:100%;display:flex;justify-content:center;}
-.app{width:100%;max-width:430px;height:100%;position:relative;overflow:hidden;background:var(--bg);}
-.scr{position:absolute;top:0;left:0;right:0;bottom:74px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
-.scr::-webkit-scrollbar{display:none;}
-@keyframes fadeUp{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes float{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-6px,0)}}
-@keyframes glow{0%,100%{box-shadow:0 0 15px rgba(245,197,24,.3)}50%{box-shadow:0 0 35px rgba(245,197,24,.6)}}
-@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
-@keyframes progressFill{from{width:0}to{width:100%}}
-@keyframes td{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
-.fu{animation:fadeUp .22s ease both;}
-.fi{animation:fadeIn .18s ease both;}
-.float{animation:float 3s ease-in-out infinite;}
-.glow{animation:glow 2.5s infinite;}
-.card{background:linear-gradient(135deg,rgba(17,24,39,.97),rgba(13,18,37,.99));border:1px solid var(--br);border-radius:15px;}
-.card-gold{border-color:rgba(245,197,24,.2);}
-.card-green{border-color:rgba(0,230,118,.15);}
-.card-red{border-color:rgba(255,23,68,.2);}
-.gt{background:linear-gradient(135deg,#F5C518,#FF9800,#FF6D00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.btn{display:flex;align-items:center;justify-content:center;gap:7px;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:800;border-radius:12px;padding:12px 16px;font-size:14px;width:100%;}
-.btn-gold{background:linear-gradient(135deg,#F5C518,#FF9800,#FF6D00);color:#fff;box-shadow:0 4px 14px rgba(245,197,24,.28);}
-.btn-gold:active{opacity:.85;transform:scale(.98);}
-.btn-ghost{background:rgba(255,255,255,.06);border:1px solid var(--br);color:#fff;}
-.btn-red{background:rgba(255,23,68,.1);border:1px solid rgba(255,23,68,.22);color:#FF1744;}
-.btn-green{background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.22);color:#00E676;}
-.nav{position:absolute;bottom:0;left:0;right:0;height:74px;background:rgba(6,9,18,.97);border-top:1px solid var(--br);display:flex;justify-content:space-around;align-items:center;z-index:100;}
-.nb{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;color:rgba(255,255,255,.32);padding:4px 12px;position:relative;}
-.nb.active{color:var(--gold);}
-.nb.active::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:16px;height:2px;background:linear-gradient(90deg,#F5C518,#FF9800);border-radius:2px;}
-.nb-lbl{font-size:10px;font-weight:700;margin-top:1px;}
-.bdg{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;background:var(--red);border-radius:8px;border:1.5px solid var(--bg);font-size:9px;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 3px;}
-.inp{background:rgba(255,255,255,.04);border:1px solid var(--br);border-radius:12px;color:#fff;padding:12px 15px;font-size:14px;font-family:'Tajawal',sans-serif;font-weight:700;outline:none;width:100%;}
-.inp:focus{border-color:rgba(245,197,24,.38);}
-.inp::placeholder{color:rgba(255,255,255,.24);}
-.sho{position:fixed;inset:0;background:rgba(4,6,14,.82);z-index:200;display:flex;align-items:flex-end;}
-.sh{background:linear-gradient(180deg,#0d1225,#080d1a);border-radius:22px 22px 0 0;border:1px solid var(--br);border-bottom:none;width:100%;max-height:88vh;overflow-y:auto;animation:sheetUp .28s cubic-bezier(.16,1,.3,1);}
-.sh::-webkit-scrollbar{display:none;}
-.sec{background:rgba(0,230,118,.09);border:1px solid rgba(0,230,118,.18);border-radius:100px;padding:3px 9px;display:inline-flex;align-items:center;gap:3px;}
-.prog{background:rgba(255,255,255,.07);border-radius:6px;height:6px;overflow:hidden;}
-.pg{height:100%;border-radius:6px;}
-.pg-gold{background:linear-gradient(90deg,#F5C518,#FF9800);}
-.pg-green{background:linear-gradient(90deg,#00E676,#00C853);}
-.pg-red{background:linear-gradient(90deg,#FF1744,#D50000);}
-.stat{background:linear-gradient(135deg,rgba(245,197,24,.07),rgba(255,152,0,.04));border:1px solid rgba(245,197,24,.13);border-radius:13px;padding:11px 7px;text-align:center;}
-.money{font-family:'Montserrat',sans-serif;font-weight:900;letter-spacing:-0.5px;}
-.task-avail{border-color:rgba(245,197,24,.18)!important;}
-.task-active{border-color:rgba(245,197,24,.48)!important;background:linear-gradient(135deg,rgba(24,19,4,.45),rgba(13,18,37,.99))!important;}
-.task-done{border-color:rgba(0,230,118,.32)!important;background:linear-gradient(135deg,rgba(0,18,9,.3),rgba(13,18,37,.99))!important;}
-.task-fail{border-color:rgba(255,23,68,.22)!important;opacity:.75;}
-.lvc{background:linear-gradient(135deg,rgba(17,24,39,.97),rgba(13,18,37,.99));border:1px solid rgba(245,197,24,.1);border-radius:15px;padding:13px;margin-bottom:9px;}
-.lvc.locked{border-color:rgba(255,23,68,.09);opacity:.68;}
-.lvc.current{border-color:rgba(0,230,118,.38);}
-.bubble-ai{background:rgba(16,22,38,.97);border:1px solid var(--br);border-radius:13px;border-top-left-radius:4px;padding:10px 13px;max-width:84%;font-size:13px;line-height:1.65;color:rgba(255,255,255,.87);white-space:pre-wrap;}
-.bubble-u{background:linear-gradient(135deg,#F5C518,#FF6D00);border-radius:13px;border-top-right-radius:4px;padding:10px 13px;max-width:84%;font-size:13px;line-height:1.65;color:#fff;white-space:pre-wrap;}
-.td span{display:inline-block;width:7px;height:7px;background:rgba(255,255,255,.38);border-radius:50%;margin:0 2px;}
-.td span:nth-child(1){animation:td 1.1s .0s infinite ease}
-.td span:nth-child(2){animation:td 1.1s .2s infinite ease}
-.td span:nth-child(3){animation:td 1.1s .4s infinite ease}
-.ai-fab{position:absolute;bottom:82px;left:12px;z-index:99;width:50px;height:50px;background:linear-gradient(135deg,#F5C518,#FF6D00);border-radius:14px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;box-shadow:0 6px 18px rgba(245,197,24,.32);}
-.ai-dot{position:absolute;top:-2px;right:-2px;width:11px;height:11px;background:#00E676;border-radius:50%;border:2px solid var(--bg);animation:dotPulse 1.5s infinite;}
-.av-ring{background:linear-gradient(135deg,#F5C518,#FF9800,#FF6D00);padding:2.5px;border-radius:50%;display:inline-block;}
-.proof{background:linear-gradient(135deg,rgba(0,230,118,.06),rgba(0,200,83,.03));border:1px solid rgba(0,230,118,.13);}
-.cd-num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:44px;line-height:1;background:linear-gradient(135deg,#F5C518,#FF9800);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.wheel-outer{width:268px;height:268px;border-radius:50%;position:relative;box-shadow:0 0 40px rgba(245,197,24,.18);}
-.wheel-ptr{position:absolute;top:-11px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:22px solid #FF1744;z-index:10;filter:drop-shadow(0 0 5px rgba(255,23,68,.55));}
-.wheel-hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50px;height:50px;background:linear-gradient(135deg,#080d1a,#04060e);border-radius:50%;border:2.5px solid #F5C518;display:flex;align-items:center;justify-content:center;z-index:5;box-shadow:0 0 12px rgba(245,197,24,.28);}
-.toast-el{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:999;padding:9px 18px;border-radius:100px;font-size:13px;font-weight:800;color:#fff;white-space:nowrap;max-width:88vw;overflow:hidden;text-overflow:ellipsis;animation:fadeUp .18s ease;display:none;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arena | BlackRock</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+        body { background-color: #0d0d0d; color: #f3f3f3; font-family: 'Tajawal', sans-serif; padding-bottom: 70px; }
+        .gold-primary { color: #f7bf28; }
+        .bg-gold-btn { background: linear-gradient(90deg, #f7bf28 0%, #dab44f 100%); }
+        .card-dark { background-color: #171717; border-radius: 12px; border: 1px solid #262626; }
+        .tab-bar { background-color: #171717; border-top: 1px solid #262626; position: fixed; bottom: 0; width: 100%; right: 0; z-index: 100; }
+        .nav-item { color: #a3a3a3; }
+        .nav-item.active { color: #f7bf28; }
+        .green-status { color: #2ecc71; }
+        .pulse { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.7; } }
+    </style>
 </head>
-<body>
-<div id="root"></div>
-<div class="toast-el" id="toast"></div>
-<script>
-// ═══════════════════════════════════════════════
-// BLACKROCK v3 — Pure Vanilla JS, Zero Lag
-// ═══════════════════════════════════════════════
+<body class="p-4">
 
-// ── DB ──
-const DB={
-  g(k){try{const v=localStorage.getItem('br3_'+k);return v?JSON.parse(v):null;}catch{return null;}},
-  s(k,v){try{localStorage.setItem('br3_'+k,JSON.stringify(v));}catch{}},
-  d(k){try{localStorage.removeItem('br3_'+k);}catch{}}
-};
-
-// ── STATE ──
-const S={user:null,tab:'home',activeTask:null,cdVal:40,cdTimer:null,tasks:null,sheetEl:null,aiOpen:false,wheelRot:0,wheelSpinning:false};
-
-// ── UTILS ──
-function fmt(n){n=parseFloat(n)||0;if(n>=1e12)return(n/1e12).toFixed(2)+'T';if(n>=1e9)return(n/1e9).toFixed(2)+'B';if(n>=1e6)return(n/1e6).toFixed(2)+'M';if(n>=1e3)return(n/1e3).toFixed(1)+'K';return n.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});}
-function genCode(){const c='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';return Array.from({length:6},()=>c[Math.floor(Math.random()*c.length)]).join('');}
-function today(){return new Date().toDateString();}
-let _tt;
-function toast(msg,type='info'){
-  clearTimeout(_tt);
-  const colors={success:'#00A846',error:'#C62828',warning:'#E65100',info:'#1565C0'};
-  const icons={success:'✓ ',error:'✗ ',warning:'⚠ ',info:'ℹ '};
-  const el=document.getElementById('toast');
-  el.style.background=colors[type]||colors.info;
-  el.textContent=(icons[type]||'')+msg;
-  el.style.display='block';
-  el.style.animation='none';void el.offsetWidth;el.style.animation='fadeUp .18s ease';
-  _tt=setTimeout(()=>{el.style.display='none';},2800);
-}
-function $(id){return document.getElementById(id);}
-
-// ── USER ──
-function saveUser(){
-  DB.s('cur',S.user);
-  const users=DB.g('users')||[];
-  const i=users.findIndex(u=>u.id===S.user.id);
-  if(i>=0)users[i]=S.user;else users.push(S.user);
-  DB.s('users',users);
-}
-function upd(ch){Object.assign(S.user,ch);saveUser();}
-
-// ── TASKS ──
-function loadTasks(){
-  const saved=DB.g('tk_'+S.user.id);
-  if(saved&&saved.date===today())return saved.tasks;
-  const t=[1,2,3,4,5].map(id=>({id,status:'available'}));
-  DB.s('tk_'+S.user.id,{date:today(),tasks:t});
-  return t;
-}
-function saveTasks(){DB.s('tk_'+S.user.id,{date:today(),tasks:S.tasks});}
-
-// ── SHEET ──
-function openSheet(html,title=''){
-  closeSheet();
-  const ov=document.createElement('div');
-  ov.className='sho fi';ov.id='sho';
-  ov.onclick=e=>{if(e.target===ov)closeSheet();};
-  const sh=document.createElement('div');sh.className='sh';
-  sh.innerHTML=`<div style="width:34px;height:3.5px;background:rgba(255,255,255,.14);border-radius:2px;margin:11px auto 8px"></div>${title?`<div style="text-align:center;font-size:16px;font-weight:900;color:#fff;padding:0 16px 11px;border-bottom:1px solid var(--br)">${title}</div>`:''}<div style="padding:14px 14px 40px">${html}</div>`;
-  ov.appendChild(sh);document.body.appendChild(ov);S.sheetEl=ov;
-}
-function closeSheet(){if(S.sheetEl){S.sheetEl.remove();S.sheetEl=null;}}
-window.closeSheet=closeSheet;
-
-// ── LEVELS ──
-const LVS=[
-  {id:'trial',name:'تجريب المبتدئ',price:0,days:3,daily:43,total:215,monthly:'—',yearly:'—'},
-  {id:'m1',name:'M1',price:7000,days:5,daily:43,total:215,monthly:6450,yearly:77400},
-  {id:'m2',name:'M2',price:26600,days:10,daily:86,total:860,monthly:25800,yearly:309600},
-  {id:'m3',name:'M3',price:95000,days:25,daily:131,total:3275,monthly:98250,yearly:1179000},
-  {id:'m4',name:'M4',price:300000,days:50,daily:222,total:11100,monthly:333000,yearly:3996000},
-  {id:'m5',name:'M5',price:780000,days:80,daily:390,total:31200,monthly:936000,yearly:11232000},
-  {id:'m6',name:'M6',price:1950000,days:130,daily:652,total:84760,monthly:2542800,yearly:30513600},
-  {id:'g7',name:'G7',price:4485000,days:200,daily:1068,total:213600,monthly:6408000,yearly:76896000},
-];
-function lvName(id){return LVS.find(l=>l.id===id)?.name||'تجريب المبتدئ';}
-
-// ── AI KB ──
-const KB=[
-  {k:['مرحبا','مرحب','هلا','اهلا','أهلا','السلام'],r:`أهلاً وسهلاً بك في BlackRock! 🌟\n\nأنا مساعدك الذكي المتخصص في الاستثمار. يسعدني مساعدتك في:\n\n💰 كيف تربح من المهام والإحالات\n🏢 معلومات شركة BlackRock\n💎 مستويات الاستثمار M1 حتى G7\n🎯 نظام الإحالات 5% مدى الحياة\n💳 السحب والتحويلات\n\nاكتب سؤالك وسأجيبك فوراً! 😊`},
-  {k:['hello','hi','hey','good'],r:`Hello! Welcome to BlackRock Investment Platform! 🌟\n\nI'm your AI assistant. I can help with:\n💰 Earning methods\n🏢 BlackRock company info\n💎 Investment levels M1-G7\n🎯 Referral system (5% lifetime)\n💳 Withdrawals\n\nWhat would you like to know?`},
-  {k:['شركة','blackrock','بلاك','عن التطبيق','من انتم','معلومات الشركة'],r:`🏢 شركة BlackRock, Inc\n\nتأسست عام 1988 في نيويورك على يد لاري فينك.\n\n📊 أرقام حقيقية موثقة:\n• تدير 10.2 تريليون دولار من الأصول\n• مدرجة في بورصة نيويورك NYSE: BLK\n• EIN: 32-0174431\n• تعمل في 38 دولة حول العالم\n• +19,000 موظف متخصص\n\n🇩🇿 عقد الجزائر الرسمي:\nعقد رسمي مع الجزائر يناير 2025 — ديسمبر 2028.\n\n🛡️ الأمان: SSL/TLS 3.0 — AES-256\n\nاستثمار حقيقي وموثوق 100%! ✅`},
-  {k:['كيف ربح','كيف اكسب','كيف احصل على المال','اكسب','طريقة الربح','من اين المال'],r:`💡 طرق الربح في BlackRock:\n\n1️⃣ المهام اليومية (الأسرع):\n• 5 مهام يومياً × 43 DZD = 215 DZD/يوم\n• كل مهمة تستغرق 40 ثانية فقط!\n• تتجدد كل يوم تلقائياً عند منتصف الليل\n\n2️⃣ نظام الإحالات (الأذكى):\n• شارك رابطك مع أصدقائك\n• تربح 5% من أرباحهم اليومية مدى الحياة!\n• 10 أصدقاء = ~107 DZD/يوم تلقائياً بدون مجهود!\n\n3️⃣ الترقية الاستثمارية (الأكثر ربحاً):\n• M1: 43 DZD/يوم\n• G7: 1,068 DZD/يوم!\n\n💪 ابدأ بالمهام اليومية الآن وادعُ أصدقاءك فوراً!`},
-  {k:['مهمة','مهام','task','يومية','40 ثانية'],r:`⏱️ نظام المهام اليومية:\n\n• لديك 5 مهام يومياً مستقلة\n• كل مهمة = 40 ثانية انتظار = 43 DZD\n• يمكنك لعب أي مهمة بشكل مستقل دون الحاجة لإكمال الأخرى\n• إجمالي اليوم: 215 DZD\n• تتجدد المهام كل يوم عند منتصف الليل\n\n⚠️ تنبيه مهم:\nإذا ضغطت "إلغاء" أثناء المهمة تخسرها حتى الغد!\n\n💡 نصيحة احترافية:\nلا تغلق التطبيق أثناء المهمة. انتظر الـ40 ثانية بصبر وخذ المكافأة كاملة!\n\nابدأ الآن من تبويب المهام ⚡`},
-  {k:['احال','إحال','رابط','صديق','فريق','5%','خمسة'],r:`🎯 نظام الإحالات الذهبي:\n\nكيف يعمل؟\n• شارك رابطك الشخصي مع أصدقائك\n• عندما يسجل أي صديق برابطك تحصل على:\n  ✅ دورة عجلة حظ مجانية 🎡\n  ✅ 5% من أرباحه اليومية مدى الحياة!\n\n💰 حسابات حقيقية:\n• صديق واحد يربح 215 DZD/يوم → تكسب 10.75 DZD\n• 10 أصدقاء → ~107 DZD/يوم بدون أي مجهود\n• 50 صديقاً → ~537 DZD/يوم!\n\n🚀 الإحالة هي أقوى طريقة للربح السلبي!\nانشر رابطك في كل مجموعة واتساب وتيليجرام الآن!`},
-  {k:['سحب','اسحب','withdraw','استرجاع'],r:`💳 نظام السحب:\n\nالشروط:\n• يجب أن تكون مرقياً إلى M1 على الأقل\n• الحد الأدنى للسحب: 215 DZD من رصيد المهام\n• وقت المعالجة: 24-48 ساعة\n\nطرق السحب:\n💳 CCP (بريد الجزائر)\n🏦 DZ Bank\n💻 PayPal\n\n⚠️ ملاحظة مهمة:\nرصيد الترقية لا يُسحب مباشرةً، بل هو رأس مال يولّد أرباحاً يومية تُسحب لاحقاً.\n\nللسحب: اذهب الرئيسية → سحب`},
-  {k:['عجلة','lucky','wheel','دوران'],r:`🎡 عجلة الحظ:\n\nكيف تحصل على دورات؟\n• فقط عندما يسجل صديق جديد برابطك الشخصي\n• كل صديق جديد = دورة واحدة مجانية فقط!\n\nالجوائز الممكنة:\n🥇 430 DZD\n🥈 215 DZD\n🥉 86 DZD\n🎁 43 DZD\n🎠 دورة مجانية إضافية\n\n💡 كلما دعوت أكثر، كلما دارت العجلة أكثر!\nشارك رابطك الآن وابدأ الفوز 🎉`},
-  {k:['ترقية','upgrade','مستوى','m1','m2','g7','استثمار'],r:`💎 مستويات الاستثمار:\n\nالمستوى | السعر | الربح اليومي\n━━━━━━━━━━━━━━━━━━━━\nتجريب | مجاني | 43 DZD (3 أيام)\nM1 | 7,000 DZD | 43 DZD/يوم\nM2 | 26,600 DZD | 86 DZD/يوم\nM3 | 95,000 DZD | 131 DZD/يوم\nM4 | 300,000 DZD | 222 DZD/يوم\nM5 | 780,000 DZD | 390 DZD/يوم\nM6 | 1,950,000 DZD | 652 DZD/يوم\nG7 | 4,485,000 DZD | 1,068 DZD/يوم\n\n💡 ابدأ بالتجربة المجانية ثم رقِّ إلى M1!\nللترقية تواصل مع الدعم في قسم الترقية 📞`},
-];
-function aiResp(txt){
-  const lo=txt.toLowerCase();
-  for(const e of KB)if(e.k.some(k=>lo.includes(k)))return e.r;
-  return `🤔 سؤال ممتاز!\n\nأعد كتابة سؤالك بشكل أوضح. يمكنني مساعدتك في:\n\n💰 "كيف أربح؟"\n🏢 "ما هي الشركة؟"\n⏱️ "المهام"\n🎯 "الإحالات"\n💳 "السحب"\n💎 "الترقية"\n🎡 "عجلة الحظ"\n\nاكتب سؤالك وسأجيبك! 😊`;
-}
-
-// ── AVATARS ──
-const AVS=[
-  {id:1,url:'https://api.dicebear.com/7.x/lorelei/svg?seed=sofia&backgroundColor=b6e3f4',l:'امرأة 1'},
-  {id:2,url:'https://api.dicebear.com/7.x/lorelei/svg?seed=alex&backgroundColor=d1d4f9',l:'رجل 1'},
-  {id:3,url:'https://api.dicebear.com/7.x/lorelei/svg?seed=luna&backgroundColor=ffdfbf',l:'امرأة 2'},
-  {id:4,url:'https://api.dicebear.com/7.x/lorelei/svg?seed=marcus&backgroundColor=c0aede',l:'رجل 2'},
-  {id:5,url:'https://api.dicebear.com/7.x/lorelei/svg?seed=zara&backgroundColor=b6e3f4',l:'امرأة 3'},
-];
-function avHtml(u,sz=54){
-  const av=AVS.find(a=>a.id===u.avatar);
-  if(av)return`<div class="av-ring" style="padding:2.5px;border-radius:50%"><img src="${av.url}" style="width:${sz}px;height:${sz}px;border-radius:50%;display:block;border:2px solid var(--bg)"></div>`;
-  const ini=(u.un||'?').charAt(0).toUpperCase();
-  return`<div style="width:${sz}px;height:${sz}px;background:linear-gradient(135deg,#F5C518,#FF6D00);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${Math.round(sz*.38)}px;font-weight:900;color:#fff">${ini}</div>`;
-}
-
-// ── ICONS ──
-const I={
-  home:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
-  tasks:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
-  diamond:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/><path d="M11 3 5 9l6 13V3z"/><path d="m13 22 6-13-6-6V22z"/><path d="m2 9 10 4 10-4"/></svg>`,
-  user:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
-  bell:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>`,
-  shield:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
-  lock:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
-  check:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
-  x:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`,
-  send:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg>`,
-  copy:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`,
-  share:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>`,
-  arrowL:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>`,
-  up:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>`,
-  wallet:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><circle cx="16" cy="12" r="2"/></svg>`,
-  download:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>`,
-  bldg:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9h1"/><path d="M9 13h1"/><path d="M9 17h1"/></svg>`,
-  users:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
-  rocket:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>`,
-  star:`<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
-  logout:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>`,
-  settings:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
-  gift:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A2.5 2.5 0 0 1 10 5.5V8"/><path d="M16.5 8V5.5A2.5 2.5 0 0 1 19 3a2.5 2.5 0 0 1 0 5h-5"/></svg>`,
-  trend:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`,
-  globe:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
-  award:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>`,
-  info:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>`,
-  robot:`<svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="5" width="16" height="11" rx="2"/><circle cx="9" cy="10" r="1.5" fill="#060912"/><circle cx="15" cy="10" r="1.5" fill="#060912"/><rect x="8" y="14" width="8" height="1.5" rx="1" fill="#060912"/><path d="M12 3v2" stroke="white" stroke-width="2" fill="none"/><circle cx="12" cy="2.5" r="1" fill="white"/><path d="M6 19h12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
-  phone:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.13 12 19.79 19.79 0 0 1 1.06 3.38 2 2 0 0 1 3.03 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
-  mail:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,
-  camera:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
-  profit:`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="1" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
-};
-
-// ═══════════════════════════════════════════════
-// SCREENS
-// ═══════════════════════════════════════════════
-
-// ── AUTH ──────────────────────────────────────
-function renderAuth(){
-  const app=$('app');
-  app.innerHTML=`
-  <div class="scr" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;bottom:0">
-    <div style="position:absolute;top:-5%;left:20%;width:160px;height:160px;background:rgba(245,197,24,.05);border-radius:50%;filter:blur(50px);animation:float 4s ease-in-out infinite;pointer-events:none"></div>
-    <div style="position:absolute;bottom:8%;right:8%;width:140px;height:140px;background:rgba(255,109,0,.04);border-radius:50%;filter:blur(40px);animation:float 5s 2s ease-in-out infinite;pointer-events:none"></div>
-    <div style="position:relative;z-index:1;width:100%;max-width:340px" class="fu">
-      <div style="text-align:center;margin-bottom:26px">
-        <div class="glow" style="width:84px;height:84px;background:linear-gradient(135deg,#F5C518,#FF9800,#FF6D00);border-radius:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 13px;box-shadow:0 10px 32px rgba(245,197,24,.22)">
-          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/><path d="M11 3 5 9l6 13V3z"/><path d="m13 22 6-13-6-6V22z"/><path d="m2 9 10 4 10-4"/></svg>
+    <div class="flex justify-between items-center mb-6 mt-2 text-xs text-neutral-400">
+        <span>Arena | Ben...</span>
+        <div class="flex items-center gap-1">
+            <span class="w-3 h-3 bg-neutral-700 rounded-full"></span>
+            <span>22:00</span>
         </div>
-        <div style="font-family:Montserrat,sans-serif;font-size:31px;font-weight:900;letter-spacing:2px" class="gt">BLACKROCK</div>
-        <div style="color:rgba(255,255,255,.33);font-size:11.5px;margin-top:5px">BlackRock, Inc — Investment Platform</div>
-        <div class="sec" style="margin-top:8px"><span style="color:#00E676">${I.shield}</span><span style="color:#00E676;font-size:9.5px;font-weight:900;letter-spacing:.5px">SECURE V3</span></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:9px">
-        <input class="inp" id="a-un" placeholder="اسم المستخدم" style="text-align:center">
-        <div style="position:relative">
-          <input class="inp" id="a-pw" type="password" placeholder="كلمة المرور" style="text-align:center;width:100%">
-          <button onclick="authTogglePw()" id="pw-tog" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.28);font-size:11px;font-weight:700;cursor:pointer">عرض</button>
+    </div>
+
+    <div class="text-center mb-10 mt-6">
+        <h1 class="text-4xl font-bold uppercase gold-primary tracking-wider">BlackRock</h1>
+        <p class="text-xs text-neutral-400 mt-1">منصة الاستثمار</p>
+    </div>
+
+    <div class="space-y-5 px-3 mb-10">
+        <div class="space-y-1">
+            <label class="text-neutral-300 text-sm">اسم المستخدم</label>
+            <input type="text" placeholder="اسم المستخدم" class="w-full card-dark p-4 text-sm text-neutral-200 placeholder-neutral-600 focus:outline-none focus:ring-1 focus:ring-gold-primary">
         </div>
-        <div id="cp-w" style="display:none"><input class="inp" id="a-cp" type="password" placeholder="تأكيد كلمة المرور" style="text-align:center"></div>
-        <button class="btn btn-gold" id="auth-btn" onclick="doAuth()" style="margin-top:3px;font-size:15px">تسجيل الدخول</button>
-      </div>
-      <button onclick="authToggleMode()" id="mode-btn" style="display:block;margin:11px auto 0;background:none;border:none;color:rgba(255,255,255,.38);font-size:12px;cursor:pointer;font-weight:700">ليس لديك حساب؟ سجل الآن مجاناً</button>
-      <div class="card card-green" style="border-radius:13px;padding:13px;margin-top:16px">
-        <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px"><span style="color:#00E676">${I.shield}</span><span style="color:#00E676;font-size:13px;font-weight:800">منصة آمنة 100%</span></div>
-        <div style="font-size:11px;color:rgba(255,255,255,.38);line-height:1.7">• SSL/TLS 3.0 — AES-256 Encryption<br>• NYSE: BLK — EIN: 32-0174431<br>• عقد الجزائر: يناير 2025 — ديسمبر 2028</div>
-      </div>
-    </div>
-  </div>`;
-  let loginMode=true;
-  window.authTogglePw=()=>{const i=$('a-pw'),b=$('pw-tog');i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'عرض':'إخفاء';};
-  window.authToggleMode=()=>{loginMode=!loginMode;$('cp-w').style.display=loginMode?'none':'block';$('auth-btn').textContent=loginMode?'تسجيل الدخول':'إنشاء حساب مجاني';$('mode-btn').textContent=loginMode?'ليس لديك حساب؟ سجل الآن مجاناً':'لديك حساب؟ سجل الدخول';};
-  window.doAuth=()=>{
-    const un=$('a-un').value.trim(),pw=$('a-pw').value.trim(),cp=$('a-cp')?.value.trim()||'';
-    if(!un||!pw){toast('يرجى ملء جميع الحقول','error');return;}
-    if(!loginMode&&pw!==cp){toast('كلمتا المرور غير متطابقتين','error');return;}
-    $('auth-btn').textContent='جاري...';$('auth-btn').disabled=true;
-    setTimeout(()=>{
-      const users=DB.g('users')||[];
-      if(loginMode){
-        const u=users.find(x=>x.un===un&&x.pw===pw);
-        if(u){DB.s('cur',u);S.user=u;toast('مرحباً! 🎉','success');launchApp();}
-        else{toast('بيانات غير صحيحة','error');$('auth-btn').textContent='تسجيل الدخول';$('auth-btn').disabled=false;}
-      } else {
-        if(users.find(x=>x.un===un)){toast('اسم المستخدم موجود','error');$('auth-btn').textContent='إنشاء حساب مجاني';$('auth-btn').disabled=false;return;}
-        const code=genCode();
-        const u={id:Date.now(),un,pw,code,ref:'blackrock.app/ref/'+code,
-          balance:0,taskBal:0,refEarn:0,teamCount:0,wheelSpins:0,level:null,
-          totalEarned:0,avatar:null,joined:new Date().toISOString(),
-          notifs:[
-            {id:1,title:'مرحباً بك في BlackRock! 🎉',desc:'ابدأ رحلتك الاستثمارية. أكمل 5 مهام يومياً وادعُ أصدقاءك!',t:'الآن',r:false},
-            {id:2,title:'💡 نصيحة ذهبية',desc:'ادعُ أصدقاءك برابطك الخاص واربح 5% من دخلهم مدى الحياة مجاناً!',t:'الآن',r:false},
-          ]};
-        users.push(u);DB.s('users',users);DB.s('cur',u);S.user=u;
-        toast('تم إنشاء الحساب! 🎉','success');launchApp();
-      }
-    },500);
-  };
-}
-
-// ── NAV ───────────────────────────────────────
-function navHtml(){
-  return`<nav class="nav">${[
-    {id:'home',ic:'home',lbl:'الرئيسية'},
-    {id:'tasks',ic:'tasks',lbl:'المهام',b:5},
-    {id:'up',ic:'diamond',lbl:'الترقية'},
-    {id:'profile',ic:'user',lbl:'حسابي'},
-  ].map(t=>`<button class="nb${S.tab===t.id?' active':''}" onclick="setTab('${t.id}')"><div style="position:relative">${I[t.ic]}${t.b?`<span class="bdg">${t.b}</span>`:''}</div><span class="nb-lbl">${t.lbl}</span></button>`).join('')}</nav>`;
-}
-
-function fabHtml(){
-  return`<button class="ai-fab float" onclick="openAI()" style="position:absolute;bottom:82px;left:12px;z-index:99"><div class="ai-dot"></div><span style="color:white">${I.robot}</span></button>`;
-}
-
-// ── HOME ──────────────────────────────────────
-function homeHtml(){
-  const u=S.user,lv=lvName(u.level),unread=(u.notifs||[]).filter(n=>!n.r).length;
-  const doneTasks=(S.tasks||[]).filter(t=>t.status==='done').length;
-  return`<div class="fu" style="padding:0 14px 16px">
-  <div style="position:sticky;top:0;background:rgba(6,9,18,.96);backdrop-filter:blur(20px);padding:10px 0;margin:0 -14px;padding-left:14px;padding-right:14px;border-bottom:1px solid var(--br);z-index:50;display:flex;align-items:center;justify-content:space-between;margin-bottom:13px">
-    <button onclick="openNotifs()" style="position:relative;background:none;border:none;cursor:pointer">
-      <div style="width:40px;height:40px;background:linear-gradient(135deg,#F5C518,#FF6D00);border-radius:11px;display:flex;align-items:center;justify-content:center"><span style="color:white">${I.bell}</span></div>
-      ${unread>0?`<span class="bdg" style="top:-2px;right:-2px">${unread}</span>`:''}
-    </button>
-    <div style="text-align:center">
-      <div style="font-family:Montserrat,sans-serif;font-size:21px;font-weight:900;letter-spacing:1.5px" class="gt">BLACKROCK</div>
-      <div style="font-size:9.5px;color:rgba(255,255,255,.28)">BlackRock, Inc — Investment Platform</div>
-    </div>
-    <div class="sec">${I.lock}<span style="color:#00E676;font-size:9px;font-weight:900;margin-right:2px">V3</span></div>
-  </div>
-  <!-- User card -->
-  <div class="card card-gold" style="padding:15px;margin-bottom:11px">
-    <div style="display:flex;align-items:center;justify-content:space-between">
-      <div>
-        <div style="color:rgba(255,255,255,.38);font-size:10.5px;margin-bottom:3px">المستخدم</div>
-        <div style="color:white;font-weight:900;font-size:14.5px">ID: #${String(u.id).slice(-5)} | ${u.un}</div>
-        <div style="margin-top:7px"><span style="display:inline-flex;align-items:center;gap:4px;padding:3px 11px;background:linear-gradient(135deg,rgba(245,197,24,.13),rgba(255,152,0,.08));border:1px solid rgba(245,197,24,.26);border-radius:100px;color:#F5C518;font-size:10.5px;font-weight:800">${I.star}${lv}</span></div>
-      </div>
-      <div style="flex-shrink:0">${avHtml(u,52)}</div>
-    </div>
-  </div>
-  <!-- Stats -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:11px">
-    <div class="stat"><span style="color:#2979FF">${I.users}</span><div class="money" style="color:#2979FF;font-size:19px;margin-top:3px">${u.teamCount||0}</div><div style="color:rgba(255,255,255,.38);font-size:10px;margin-top:2px">الفريق</div></div>
-    <div class="stat"><span style="color:#F5C518">${I.tasks}</span><div class="money" style="font-size:19px;color:#F5C518;margin-top:3px">${doneTasks}</div><div style="color:rgba(255,255,255,.38);font-size:10px;margin-top:2px">المهام</div></div>
-    <div class="stat"><span style="color:#00E676">${I.wallet}</span><div class="money" style="color:#00E676;font-size:19px;margin-top:3px">${fmt(u.balance).replace('.00','')}</div><div style="color:rgba(255,255,255,.38);font-size:10px;margin-top:2px">الرصيد</div></div>
-  </div>
-  <!-- Balance display -->
-  <div class="card" style="padding:16px;margin-bottom:11px;text-align:center">
-    <div style="color:rgba(255,255,255,.38);font-size:11px;margin-bottom:5px">إجمالي رصيدك</div>
-    <div class="money gt" style="font-size:36px">${fmt(u.balance)}</div>
-    <div style="font-size:10.5px;color:rgba(255,255,255,.35);margin-top:1px">DZD</div>
-    <div style="display:inline-flex;align-items:center;gap:4px;margin-top:8px;padding:4px 12px;background:rgba(245,197,24,.09);border:1px solid rgba(245,197,24,.22);border-radius:100px"><span style="color:#F5C518;font-size:12px;font-weight:800">أرباح اليوم: +${LVS.find(l=>l.id===u.level)?.daily||43} DZD</span></div>
-  </div>
-  <!-- Referral -->
-  <div class="card card-gold" style="padding:13px;margin-bottom:11px">
-    <div style="display:flex;align-items:flex-start;gap:9px;margin-bottom:9px">
-      <div style="width:38px;height:38px;background:linear-gradient(135deg,#F5C518,#FF6D00);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:white">${I.gift}</span></div>
-      <div><div style="color:white;font-weight:900;font-size:13.5px">🎯 ادعُ أصدقاءك واربح 5%</div><div style="color:rgba(255,255,255,.43);font-size:11px;margin-top:1px">من دخلهم اليومي مدى الحياة!</div></div>
-    </div>
-    <div style="background:rgba(255,255,255,.04);border-radius:9px;padding:7px 9px;display:flex;align-items:center;gap:7px;margin-bottom:7px;border:1px solid rgba(255,255,255,.06)">
-      <span style="flex:1;color:rgba(255,255,255,.5);font-size:11.5px;text-align:center;direction:ltr;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.ref}</span>
-      <button onclick="copyRef()" style="padding:4px 9px;background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.25);border-radius:7px;color:#F5C518;font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0">نسخ</button>
-    </div>
-    <div style="color:rgba(255,255,255,.32);font-size:10.5px;text-align:center">كل صديق يدخل = 🎡 عجلة حظ مجانية!</div>
-  </div>
-  <!-- Operations -->
-  <div style="margin-bottom:13px">
-    <div style="color:white;font-weight:900;font-size:15.5px;margin-bottom:9px">العمليات المالية</div>
-    ${[
-      {t:'رصيدي',d:fmt(u.balance)+' DZD',ic:'wallet',bg:'rgba(245,197,24,.08)',fn:"toast('رصيدك: "+fmt(u.balance)+" DZD','info')"},
-      {t:'سحب',d:'سحب الأرباح (من M1)',ic:'download',bg:'rgba(0,230,118,.07)',fn:'doWithdraw()'},
-      {t:'شحن / ترقية',d:'تواصل مع الدعم الفني',ic:'up',bg:'rgba(41,121,255,.07)',fn:"setTab('up')"},
-      {t:'تحويل',d:'قريباً',ic:'users',bg:'rgba(156,39,176,.07)',fn:"toast('قريباً','info')"},
-    ].map(op=>`
-    <button onclick="${op.fn}" style="width:100%;border-radius:12px;padding:11px 12px;display:flex;align-items:center;gap:10px;background:${op.bg};border:1px solid rgba(255,255,255,.05);cursor:pointer;text-align:right;margin-bottom:6px">
-      <div style="width:40px;height:40px;background:rgba(255,255,255,.06);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:rgba(255,255,255,.65)">${I[op.ic]}</div>
-      <div style="flex:1"><div style="color:white;font-weight:800;font-size:13.5px">${op.t}</div><div style="color:rgba(255,255,255,.38);font-size:11.5px">${op.d}</div></div>
-      <span style="color:rgba(255,255,255,.2)">${I.arrowL}</span>
-    </button>`).join('')}
-  </div>
-  <!-- Proofs -->
-  <div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px">
-      <div style="color:white;font-weight:900;font-size:15.5px">🏢 براهين الشركة</div>
-      <button onclick="openProof()" style="color:#F5C518;font-size:12px;font-weight:800;background:none;border:none;cursor:pointer">عرض الكل</button>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
-      ${[
-        {ic:'bldg',t:'شركة عالمية',d:'1988 — نيويورك'},
-        {ic:'trend',t:'NYSE: BLK',d:'بورصة نيويورك'},
-        {ic:'shield',t:'عقد رسمي',d:'يناير 2025 ✅'},
-        {ic:'award',t:'حماية 100%',d:'AES-256 مضمون'},
-      ].map(p=>`
-      <button onclick="openProof()" class="card" style="border-radius:12px;padding:11px;text-align:center;cursor:pointer;border:1px solid rgba(255,255,255,.05)">
-        <span style="color:#F5C518">${I[p.ic]}</span>
-        <div style="color:white;font-size:11.5px;font-weight:800;margin-top:5px;margin-bottom:1px">${p.t}</div>
-        <div style="color:rgba(255,255,255,.33);font-size:10px">${p.d}</div>
-      </button>`).join('')}
-    </div>
-  </div>
-  </div>`;
-}
-
-// ── TASKS ─────────────────────────────────────
-function taskCardHtml(t){
-  const isAct=S.activeTask===t.id&&t.status==='active';
-  const cls=t.status==='available'?'task-avail':t.status==='active'?'task-active':t.status==='done'?'task-done':t.status==='failed'?'task-fail':'';
-  const prog=t.status==='done'?100:isAct?((40-S.cdVal)/40*100):0;
-  return`
-  <div class="card ${cls}" style="border-radius:14px;padding:12px;margin-bottom:8px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <div style="display:flex;align-items:center;gap:9px">
-        <div style="width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:${t.status==='done'?'rgba(0,230,118,.13)':t.status==='failed'?'rgba(255,23,68,.1)':'linear-gradient(135deg,#F5C518,#FF6D00)'}">
-          <span style="color:${t.status==='done'?'#00E676':t.status==='failed'?'#FF1744':'white'}">${t.status==='done'?I.check:t.status==='failed'?I.x:I.rocket}</span>
-        </div>
-        <div>
-          <div style="color:${t.status==='failed'?'rgba(255,255,255,.4)':'white'};font-weight:800;font-size:13.5px">مهمة يومية ${t.id}</div>
-          <div style="color:rgba(255,255,255,.38);font-size:11.5px">+DZD 43</div>
-        </div>
-      </div>
-      <div class="money" style="font-size:19px;font-weight:900;color:${t.status==='done'?'#00E676':t.status==='failed'?'rgba(255,80,100,.6)':'#F5C518'}">+43</div>
-    </div>
-    <div class="prog" style="margin-bottom:8px"><div class="pg ${t.status==='done'?'pg-green':t.status==='failed'?'pg-red':'pg-gold'}" style="width:${prog}%"></div></div>
-    ${isAct?`
-    <div class="card card-gold" style="padding:11px;text-align:center;margin-bottom:7px;border-radius:10px">
-      <div style="color:rgba(255,255,255,.43);font-size:11px;margin-bottom:3px">انتظر...</div>
-      <div class="cd-num" id="cd-${t.id}">${S.cdVal}</div>
-      <div style="color:rgba(255,255,255,.33);font-size:10.5px;margin-top:1px">ثانية</div>
-      <div class="prog" style="margin-top:7px;height:4px"><div class="pg pg-gold" id="cb-${t.id}" style="width:${(40-S.cdVal)/40*100}%"></div></div>
-    </div>
-    <button class="btn btn-red" onclick="cancelTask(${t.id})" style="font-size:13px">${I.x}<span>إلغاء المهمة (تخسرها)</span></button>
-    `:''}
-    ${t.status==='available'?`<button class="btn btn-gold" onclick="startTask(${t.id})" style="font-size:13.5px">${I.rocket}<span>ابدأ المهمة — 40 ثانية</span></button>`:''}
-    ${t.status==='done'?`<div class="btn btn-green" style="pointer-events:none;font-size:13px">${I.check}<span>تم الإكمال ✅ — +43 DZD</span></div>`:''}
-    ${t.status==='failed'?`<div class="btn btn-red" style="pointer-events:none;font-size:13px;opacity:.6">${I.x}<span>أُلغيت — تُعاد غداً</span></div>`:''}
-  </div>`;
-}
-
-function tasksHtml(){
-  if(!S.tasks)S.tasks=loadTasks();
-  const done=S.tasks.filter(t=>t.status==='done').length;
-  const pct=Math.min((S.user.taskBal||0)/215*100,100);
-  return`<div class="fu">
-  <div style="position:sticky;top:0;background:rgba(6,9,18,.96);backdrop-filter:blur(20px);padding:12px 16px;border-bottom:1px solid var(--br);text-align:center;z-index:50"><div style="color:white;font-weight:900;font-size:18px">⚡ المهام اليومية</div></div>
-  <div style="padding:13px">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:11px">
-      <div class="stat">${I.check}<div class="money" style="color:#00E676;font-size:17px;margin-top:3px">${done}/5</div><div style="color:rgba(255,255,255,.36);font-size:10px;margin-top:1px">مكتملة</div></div>
-      <div class="stat">${I.profit}<div class="money" style="font-size:17px;color:#F5C518;margin-top:3px">${done*43}</div><div style="color:rgba(255,255,255,.36);font-size:10px;margin-top:1px">DZD اليوم</div></div>
-      <div class="stat">${I.users}<div class="money" style="color:#2979FF;font-size:17px;margin-top:3px">${S.user.teamCount||0}</div><div style="color:rgba(255,255,255,.36);font-size:10px;margin-top:1px">الفريق</div></div>
-    </div>
-    <div class="card card-red" style="padding:10px 12px;margin-bottom:11px">
-      <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px"><span style="color:#FF1744">${I.lock}</span><span style="color:rgba(255,70,90,.88);font-size:11.5px;font-weight:800">السحب مقفل — يتطلب M1 وحد أدنى 215 DZD</span></div>
-      <div class="prog"><div class="pg pg-red" style="width:${pct}%"></div></div>
-      <div style="display:flex;justify-content:space-between;color:rgba(255,255,255,.33);font-size:10.5px;margin-top:3px"><span>${fmt(S.user.taskBal||0)} DZD</span><span>215 DZD</span></div>
-    </div>
-    ${S.tasks.map(t=>taskCardHtml(t)).join('')}
-  </div>
-  </div>`;
-}
-
-// ── UPGRADE ───────────────────────────────────
-function upgradeHtml(){
-  return`<div class="fu">
-  <div style="position:sticky;top:0;background:rgba(6,9,18,.96);backdrop-filter:blur(20px);padding:12px 16px;border-bottom:1px solid var(--br);text-align:center;z-index:50"><div style="color:white;font-weight:900;font-size:18px">💎 الترقية</div></div>
-  <div style="padding:13px">
-    <div class="card card-gold" style="padding:12px;margin-bottom:11px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="color:rgba(255,255,255,.45);font-size:12.5px">رصيدك</span><span class="money gt" style="font-size:19px">${fmt(S.user.balance)} <span style="font-size:11px;color:rgba(245,197,24,.55)">DZD</span></span></div>
-      <div class="prog"><div class="pg pg-gold" style="width:100%"></div></div>
-    </div>
-    <div class="card" style="padding:11px;margin-bottom:12px;background:linear-gradient(135deg,rgba(41,121,255,.07),rgba(0,200,255,.04));border:1px solid rgba(41,121,255,.14);display:flex;gap:9px">
-      <span style="color:#2979FF">${I.info}</span>
-      <div><div style="color:white;font-weight:800;font-size:12.5px">كيفية الشحن/الترقية؟</div><div style="color:rgba(255,255,255,.42);font-size:11.5px;margin-top:1px">تواصل مع فريق الدعم الفني</div></div>
-    </div>
-    ${LVS.map(lv=>{
-      const locked=(S.user.balance||0)<lv.price&&lv.price>0;
-      const current=S.user.level===lv.id;
-      return`<div class="lvc ${locked?'locked':''} ${current?'current':''}">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">
-          <div style="display:flex;align-items:center;gap:9px">
-            <div style="width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:${locked?'rgba(255,23,68,.08)':current?'rgba(0,230,118,.13)':'linear-gradient(135deg,#F5C518,#FF6D00)'}">
-              <span style="color:${locked?'#FF1744':current?'#00E676':'white'}">${locked?I.lock:I.rocket}</span>
+        <div class="space-y-1">
+            <label class="text-neutral-300 text-sm">كلمة المرور</label>
+            <div class="relative">
+                <input type="password" placeholder="كلمة المرور" class="w-full card-dark p-4 text-sm text-neutral-200 placeholder-neutral-600 focus:outline-none focus:ring-1 focus:ring-gold-primary">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-600">👁️</span>
             </div>
-            <div><div style="color:${locked?'rgba(255,255,255,.38)':'white'};font-weight:900;font-size:15px">${lv.name}</div><div style="color:${lv.price===0?'#00E676':'#F5C518'};font-size:12.5px;font-weight:800">${lv.price===0?'مجاني':fmt(lv.price)+' DZD'}</div></div>
-          </div>
-          ${current?`<span style="padding:3px 9px;background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.26);border-radius:100px;color:#00E676;font-size:10.5px;font-weight:900">✅ مفعّل</span>`:''}
         </div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:9px">
-          ${[['يومي','#00E676',lv.daily+' DZD'],['أيام','#F5C518',lv.days],['الإجمالي','#FF9800',lv.total],['شهري','#2979FF',typeof lv.monthly==='number'?fmt(lv.monthly):lv.monthly]].map(([k,c,v])=>`<div style="background:rgba(255,255,255,.04);border-radius:7px;padding:6px 3px;text-align:center"><div style="color:${c};font-weight:900;font-size:11px">${v}</div><div style="color:rgba(255,255,255,.28);font-size:9px;margin-top:1px">${k}</div></div>`).join('')}
+        <button class="w-full bg-gold-btn text-black font-bold py-4 rounded-xl text-lg mt-4 active:scale-95 transition-transform">
+            تسجيل الدخول
+        </button>
+        <div class="text-center mt-4">
+            <a href="#" class="text-neutral-400 text-sm">ليس لديك حساب؟ <span class="gold-primary font-medium">سجل مجاناً</span></a>
         </div>
-        ${!locked&&lv.price>0&&!current?`<button class="btn btn-gold" onclick="openContact('${lv.name}','${lv.price}')" style="font-size:13px">${I.rocket}<span>ترقية إلى ${lv.name} ⬆️</span></button>`:''}
-        ${lv.id==='trial'&&!current?`<button class="btn btn-green" onclick="activateTrial()" style="font-size:13px">${I.check}<span>بدء التجربة المجانية ✅</span></button>`:''}
-        ${current?`<div class="btn btn-green" style="pointer-events:none;font-size:13px">${I.check}<span>المستوى الحالي</span></div>`:''}
-      </div>`;
-    }).join('')}
-  </div>
-  </div>`;
-}
-
-// ── PROFILE ───────────────────────────────────
-function profileHtml(){
-  const u=S.user,lv=lvName(u.level);
-  return`<div class="fu">
-  <div style="position:sticky;top:0;background:rgba(6,9,18,.96);backdrop-filter:blur(20px);padding:12px 16px;border-bottom:1px solid var(--br);text-align:center;z-index:50"><div style="color:white;font-weight:900;font-size:18px">👤 حسابي</div></div>
-  <div style="padding:13px">
-    <div class="card card-gold" style="padding:19px;text-align:center;margin-bottom:12px">
-      <button onclick="openAvatarPicker()" style="position:relative;display:inline-block;background:none;border:none;cursor:pointer;margin-bottom:10px">
-        ${avHtml(u,76)}
-        <div style="position:absolute;bottom:0;right:0;width:21px;height:21px;background:linear-gradient(135deg,#F5C518,#FF6D00);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)"><span style="color:white">${I.camera}</span></div>
-      </button>
-      <div style="color:white;font-weight:900;font-size:16.5px;margin-bottom:2px">${u.un}</div>
-      <div style="color:rgba(255,255,255,.38);font-size:11.5px;margin-bottom:8px">ID: #${String(u.id).slice(-5)}</div>
-      <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;background:linear-gradient(135deg,rgba(245,197,24,.12),rgba(255,152,0,.08));border:1px solid rgba(245,197,24,.24);border-radius:100px;color:#F5C518;font-size:10.5px;font-weight:800">${I.star}${lv}</span>
-      <div style="color:rgba(255,255,255,.22);font-size:11px;margin-top:8px">انضم: ${new Date(u.joined||Date.now()).toLocaleDateString('ar-DZ')}</div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px">
-      ${[['الرصيد',fmt(u.balance)+' DZD','#F5C518'],['الفريق',u.teamCount||0,'#2979FF'],['إجمالي الربح',fmt(u.totalEarned||0)+' DZD','#00E676'],['دورات العجلة',u.wheelSpins||0,'#FF9800']].map(([l,v,c])=>`<div class="card" style="border-radius:12px;padding:11px;text-align:center"><div class="money" style="color:${c};font-size:14px;font-weight:900">${v}</div><div style="color:rgba(255,255,255,.38);font-size:10.5px;margin-top:2px">${l}</div></div>`).join('')}
+
+    <div class="card-dark p-5 flex items-start gap-4 mb-8">
+        <span class="text-3xl green-status">🛡️</span>
+        <div>
+            <h4 class="text-white font-bold text-sm">Platform Security</h4>
+            <p class="text-xs text-neutral-400">عقد رسمي: يناير 2025 - ديسمبر 2027</p>
+            <p class="text-xs text-neutral-400">AES-256 + SSL/TLS 3.0</p>
+        </div>
     </div>
-    <div class="card card-gold" style="padding:13px;margin-bottom:12px">
-      <div style="color:white;font-weight:900;font-size:13.5px;text-align:center;margin-bottom:10px">كود الدعوة الخاص بك</div>
-      <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px;text-align:center;border:1px solid rgba(245,197,24,.13);margin-bottom:8px"><div class="money gt" style="font-size:27px;letter-spacing:5px">${u.code}</div></div>
-      <div style="background:rgba(255,255,255,.04);border-radius:9px;padding:7px 9px;display:flex;align-items:center;gap:7px;margin-bottom:8px;border:1px solid rgba(255,255,255,.05)">
-        <span style="flex:1;color:rgba(255,255,255,.48);font-size:11px;text-align:center;direction:ltr;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.ref}</span>
-        <button onclick="copyRef()" style="padding:4px 9px;background:rgba(245,197,24,.09);border:1px solid rgba(245,197,24,.22);border-radius:7px;color:#F5C518;font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0">نسخ</button>
-      </div>
-      <button class="btn btn-gold" onclick="shareRef()" style="font-size:13px">${I.share}<span>مشاركة الرابط</span></button>
+
+    <div class="tab-bar p-3 grid grid-cols-4 text-center">
+        <div class="nav-item active flex flex-col items-center">
+            <span class="text-xl">🏠</span>
+            <span class="text-xs mt-1">الرئيسية</span>
+        </div>
+        <div class="nav-item flex flex-col items-center">
+            <span class="text-xl">⚡</span>
+            <span class="text-xs mt-1">المهام</span>
+        </div>
+        <div class="nav-item flex flex-col items-center">
+            <span class="text-xl">📈</span>
+            <span class="text-xs mt-1">الترقية</span>
+        </div>
+        <div class="nav-item flex flex-col items-center">
+            <span class="text-xl">👤</span>
+            <span class="text-xs mt-1">حسابی</span>
+        </div>
     </div>
-    <div class="card" style="border-radius:14px;overflow:hidden;margin-bottom:12px">
-      ${[
-        {ic:'shield',t:'وثيقة الأمان',d:'SECURE V3',c:'#00E676',fn:'openSecurity()'},
-        {ic:'bldg',t:'عن الشركة',d:'BlackRock Inc — 1988',c:'#2979FF',fn:'openCompany()'},
-        {ic:'users',t:'إحالاتي',d:(u.teamCount||0)+' مدعو',c:'#F5C518',fn:'openReferrals()'},
-        {ic:'gift',t:'عجلة الحظ',d:'مع كل صديق جديد',c:'#AA00FF',fn:'tryOpenWheel()'},
-        {ic:'settings',t:'الإعدادات',d:'إعدادات الحساب',c:'rgba(255,255,255,.45)',fn:'openSettingsSheet()'},
-      ].map((m,i)=>`<button onclick="${m.fn}" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:none;border:none;cursor:pointer;${i>0?'border-top:1px solid rgba(255,255,255,.04)':''};text-align:right"><div style="display:flex;align-items:center;gap:9px"><span style="color:${m.c}">${I[m.ic]}</span><div><div style="color:white;font-weight:800;font-size:13px">${m.t}</div><div style="color:rgba(255,255,255,.33);font-size:11px">${m.d}</div></div></div><span style="color:rgba(255,255,255,.18)">${I.arrowL}</span></button>`).join('')}
-    </div>
-    <button class="btn btn-red" onclick="doLogout()" style="font-size:13.5px">${I.logout}<span>تسجيل الخروج</span></button>
-  </div>
-  </div>`;
-}
 
-// ═══════════════════════════════════════════════
-// ACTIONS
-// ═══════════════════════════════════════════════
-
-window.setTab=function(id){if(S.tab===id)return;S.tab=id;render();};
-
-window.startTask=function(id){
-  if(S.activeTask!==null){toast('هناك مهمة جارية! أكملها أولاً','warning');return;}
-  const t=S.tasks.find(x=>x.id===id);
-  if(!t||t.status!=='available')return;
-  t.status='active';S.activeTask=id;S.cdVal=40;saveTasks();render();
-  toast('⏱️ المهمة بدأت! انتظر 40 ثانية...','info');
-  S.cdTimer=setInterval(()=>{
-    S.cdVal--;
-    const cdEl=$('cd-'+id),cbEl=$('cb-'+id);
-    if(cdEl)cdEl.textContent=S.cdVal;
-    if(cbEl)cbEl.style.width=((40-S.cdVal)/40*100)+'%';
-    if(S.cdVal<=0){clearInterval(S.cdTimer);S.cdTimer=null;completeTask(id);}
-  },1000);
-};
-
-function completeTask(id){
-  const t=S.tasks.find(x=>x.id===id);
-  if(!t)return;
-  t.status='done';S.activeTask=null;saveTasks();
-  upd({balance:(S.user.balance||0)+43,taskBal:(S.user.taskBal||0)+43,totalEarned:(S.user.totalEarned||0)+43});
-  toast('🎉 تم إكمال المهمة! +43 DZD','success');
-  render();
-}
-
-window.cancelTask=function(id){
-  openSheet(`<div style="text-align:center;padding-bottom:6px">
-    <div style="width:54px;height:54px;background:rgba(255,23,68,.11);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 11px"><span style="color:#FF1744"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span></div>
-    <div style="color:white;font-weight:900;font-size:16px;margin-bottom:7px">تأكيد الإلغاء</div>
-    <div style="color:rgba(255,255,255,.52);font-size:13px;line-height:1.6;margin-bottom:16px">إذا ألغيت الآن ستخسر <span style="color:#FF1744;font-weight:900">43 DZD</span> حتى الغد!</div>
-    <div style="display:flex;gap:9px">
-      <button class="btn btn-ghost" onclick="closeSheet()" style="flex:1;font-size:13px">إكمال المهمة</button>
-      <button class="btn btn-red" onclick="confirmCancel(${id})" style="flex:1;background:#C62828;border-color:#C62828;color:white;font-size:13px">إلغاء نهائي</button>
-    </div>
-  </div>`,'');
-};
-
-window.confirmCancel=function(id){
-  clearInterval(S.cdTimer);S.cdTimer=null;
-  const t=S.tasks.find(x=>x.id===id);
-  if(t){t.status='failed';}
-  S.activeTask=null;saveTasks();closeSheet();
-  toast('❌ المهمة أُلغيت — تُعاد غداً','error');render();
-};
-
-window.activateTrial=function(){upd({level:'trial'});toast('تم تفعيل التجربة المجانية!','success');render();};
-
-window.openContact=function(name,price){
-  openSheet(`<div style="text-align:center;padding:4px 0 12px">
-    <div style="width:50px;height:50px;background:linear-gradient(135deg,#F5C518,#FF6D00);border-radius:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 9px"><span style="color:white">${I.phone}</span></div>
-    <div style="color:white;font-weight:900;font-size:15px">ترقية إلى ${name}</div>
-    <div style="color:rgba(255,255,255,.45);font-size:12px;margin-top:4px;margin-bottom:15px">السعر: ${parseFloat(price)===0?'مجاني':fmt(parseFloat(price))+' DZD'}</div>
-  </div>
-  ${[
-    {ic:'phone',t:'واتساب',d:'+213 555 123 456',bg:'rgba(0,230,118,.08)'},
-    {ic:'send',t:'تليجرام',d:'@BlackRockDZSupport',bg:'rgba(41,121,255,.08)'},
-    {ic:'mail',t:'البريد الإلكتروني',d:'support@blackrock.app',bg:'rgba(255,23,68,.07)'},
-  ].map(ch=>`<button onclick="toast('جاري الاتصال...','info')" style="width:100%;border-radius:12px;padding:11px;display:flex;align-items:center;gap:10px;background:${ch.bg};border:1px solid rgba(255,255,255,.05);cursor:pointer;text-align:right;margin-bottom:7px"><div style="width:40px;height:40px;background:rgba(255,255,255,.05);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:rgba(255,255,255,.65)">${I[ch.ic]}</div><div style="flex:1"><div style="color:white;font-weight:800;font-size:13px">${ch.t}</div><div style="color:rgba(255,255,255,.38);font-size:11.5px;direction:ltr;text-align:right">${ch.d}</div></div></button>`).join('')}
-  <div class="card card-gold" style="border-radius:11px;padding:10px;margin-top:5px"><div style="color:rgba(255,255,255,.55);font-size:11px;text-align:center;line-height:1.65">⚠️ <span style="color:#F5C518;font-weight:900">تنبيه:</span> لا ترسل أموالاً خارج القنوات الرسمية فقط.</div></div>`,'📞 تواصل مع الدعم');
-};
-
-window.doWithdraw=function(){
-  if(!S.user.level||S.user.level==='trial'){toast('⚠️ يتطلب الترقية إلى M1 أولاً','warning');setTab('up');return;}
-  if((S.user.taskBal||0)<215){toast('⚠️ الحد الأدنى للسحب 215 DZD','warning');return;}
-  toast('تم إرسال طلب السحب! 24-48 ساعة','success');
-};
-
-window.copyRef=function(){try{navigator.clipboard.writeText('https://'+S.user.ref);}catch{}toast('تم نسخ الرابط!','success');};
-window.shareRef=function(){
-  const txt=`🎯 انضم إلى BlackRock Investment Platform!\n\nاستخدم رابطي:\nhttps://${S.user.ref}\n\n💰 اربح يومياً من المهام البسيطة!\n🎡 عجلة حظ مجانية عند التسجيل!`;
-  if(navigator.share)navigator.share({title:'BlackRock Investment',text:txt,url:'https://'+S.user.ref});
-  else{try{navigator.clipboard.writeText(txt);}catch{}toast('تم نسخ الرسالة!','success');}
-};
-
-window.doLogout=function(){
-  clearInterval(S.cdTimer);DB.d('cur');S.user=null;S.tab='home';S.tasks=null;
-  toast('تم تسجيل الخروج','success');boot();
-};
-
-// ── SHEETS ────────────────────────────────────
-window.openNotifs=function(){
-  upd({notifs:(S.user.notifs||[]).map(n=>({...n,r:true}))});
-  const notifs=S.user.notifs||[];
-  openSheet(notifs.length?notifs.map(n=>`<div class="card" style="border-radius:12px;padding:11px;display:flex;gap:9px;align-items:flex-start;margin-bottom:8px"><div style="width:36px;height:36px;background:${n.title.includes('🎁')?'rgba(245,197,24,.1)':n.title.includes('💡')?'rgba(41,121,255,.1)':'rgba(0,230,118,.1)'};border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:${n.title.includes('🎁')?'#F5C518':n.title.includes('💡')?'#2979FF':'#00E676'}">${n.title.includes('🎁')?I.gift:n.title.includes('💡')?I.info:I.check}</span></div><div style="flex:1"><div style="color:white;font-weight:800;font-size:12.5px;margin-bottom:2px">${n.title}</div><div style="color:rgba(255,255,255,.48);font-size:11.5px;line-height:1.5">${n.desc}</div><div style="color:rgba(255,255,255,.22);font-size:10px;margin-top:4px">${n.t}</div></div></div>`).join(''):`<div style="text-align:center;padding:22px 0;color:rgba(255,255,255,.28)">لا توجد إشعارات</div>`,'🔔 الإشعارات');
-  render();
-};
-
-window.openProof=function(){
-  openSheet(`<div class="proof" style="border-radius:12px;padding:13px;text-align:center;margin-bottom:11px"><span style="color:#00E676">${I.bldg.replace('19','32')}</span><div style="color:white;font-weight:900;font-size:15px;margin-top:7px;margin-bottom:3px">BlackRock, Inc</div><div style="color:rgba(255,255,255,.45);font-size:12px">أكبر شركة إدارة أصول في العالم</div></div>
-  ${[
-    {ic:'bldg',t:'شركة عالمية',d:'تأسست 1988 في نيويورك. أكبر مدير أصول بـ 10.2 تريليون دولار'},
-    {ic:'trend',t:'NYSE: BLK',d:'مدرجة في بورصة نيويورك منذ 1999. رمز التداول BLK'},
-    {ic:'shield',t:'عقد رسمي مع الجزائر',d:'عقد رسمي يناير 2025 — ديسمبر 2028'},
-    {ic:'award',t:'حماية 100%',d:'أموال المستثمرين مضمونة بأعلى معايير الأمان الدولية'},
-    {ic:'globe',t:'10.2 تريليون دولار',d:'إجمالي الأصول المدارة حسب تقرير 2025'},
-    {ic:'users',t:'+19,000 موظف',d:'فريق عالمي من الخبراء الماليين في 38 دولة'},
-  ].map(p=>`<div class="card" style="border-radius:12px;padding:11px;display:flex;gap:9px;margin-bottom:7px"><div style="width:40px;height:40px;background:rgba(255,255,255,.04);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:#F5C518">${I[p
+</body>
+</html>
