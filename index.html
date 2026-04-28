@@ -3,125 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlackRock Global</title>
+    <title>BlackRock Algeria | نظام الاستثمار</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
-        body { background-color: #0d0d0d; color: #f3f3f3; font-family: 'Tajawal', sans-serif; overflow-x: hidden; }
-        .page { display: none; min-height: 100vh; padding: 20px; animation: fadeIn 0.3s ease-in-out; }
+        body { background-color: #080808; color: #f3f3f3; font-family: 'Tajawal', sans-serif; margin: 0; padding-bottom: 80px; }
+        .page { display: none; min-height: 100vh; padding: 20px; animation: slideIn 0.3s ease-out; }
         .active-page { display: block; }
-        .gold-primary { color: #f7bf28; }
-        .bg-gold-btn { background: linear-gradient(90deg, #f7bf28 0%, #dab44f 100%); color: black; font-weight: bold; }
-        .card-dark { background-color: #171717; border-radius: 12px; border: 1px solid #262626; }
-        .input-field { background-color: #171717; border: 1px solid #262626; color: white; border-radius: 10px; padding: 15px; width: 100%; outline: none; }
-        .input-field:focus { border-color: #f7bf28; }
-        .tab-bar { background-color: #171717; border-top: 1px solid #262626; position: fixed; bottom: 0; width: 100%; right: 0; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .gold-text { color: #f7bf28; }
+        .bg-gold { background: linear-gradient(90deg, #f7bf28 0%, #b38728 100%); color: #000; font-weight: 700; }
+        .card { background: #121212; border: 1px solid #222; border-radius: 16px; }
+        .input-box { background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 12px; padding: 16px; width: 100%; outline: none; transition: 0.3s; }
+        .input-box:focus { border-color: #f7bf28; box-shadow: 0 0 10px rgba(247, 191, 40, 0.2); }
+        .tab-nav { background: #121212; border-top: 1px solid #222; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 12px; z-index: 1000; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
 <body>
 
-    <div id="login-page" class="page active-page">
-        <div class="text-center mb-10 mt-8">
-            <h1 class="text-4xl font-bold uppercase gold-primary tracking-widest">BlackRock</h1>
-            <p class="text-xs text-neutral-400 mt-1 italic">منصة الاستثمار الاحترافية</p>
+    <div id="login" class="page active-page">
+        <div class="text-center my-12">
+            <h1 class="text-5xl font-black gold-text tracking-tighter">BLACKROCK</h1>
+            <p class="text-gray-500 text-sm mt-2">المنصة الأولى للاستثمار في الجزائر</p>
         </div>
         <div class="space-y-4 px-2">
-            <input type="text" placeholder="اسم المستخدم" class="input-field">
-            <input type="password" placeholder="كلمة المرور" class="input-field">
-            <button onclick="navigateTo('dashboard-page')" class="w-full bg-gold-btn py-4 rounded-xl text-lg shadow-lg active:scale-95 transition-all">تسجيل الدخول</button>
-            <p class="text-center text-sm text-neutral-400 mt-4">
-                ليس لديك حساب؟ <span class="gold-primary cursor-pointer" onclick="navigateTo('register-page')">سجل مجاناً</span>
-            </p>
-        </div>
-        <div class="card-dark p-4 flex items-center gap-4 mt-10">
-            <span class="text-2xl text-green-500">🛡️</span>
-            <div class="text-xs text-neutral-400">
-                <p class="text-white font-bold">Platform Security</p>
-                <p>عقد رسمي: 2025 - 2027</p>
-                <p>تشفير AES-256 + SSL/TLS</p>
-            </div>
+            <input type="text" id="log-user" placeholder="اسم المستخدم أو رقم الهاتف" class="input-box">
+            <input type="password" id="log-pass" placeholder="كلمة المرور" class="input-box">
+            <button onclick="handleLogin()" class="w-full bg-gold py-4 rounded-xl text-lg shadow-xl active:scale-95 transition-all">دخول الحساب</button>
+            <p class="text-center text-gray-400 mt-6">عضو جديد؟ <span class="gold-text font-bold cursor-pointer" onclick="showPage('register')">إنشاء حساب</span></p>
         </div>
     </div>
 
-    <div id="register-page" class="page">
-        <div class="flex items-center gap-2 mb-8" onclick="navigateTo('login-page')">
-            <span class="gold-primary text-xl">➡️</span>
-            <span class="text-neutral-400 text-sm">العودة للخلف</span>
-        </div>
-        <h2 class="text-2xl font-bold mb-6 text-white">إنشاء حساب جديد</h2>
-        <div class="space-y-4 px-2">
-            <input type="text" placeholder="الاسم الكامل" class="input-field">
-            <input type="text" placeholder="اسم المستخدم" class="input-field">
+    <div id="register" class="page">
+        <div class="mb-8" onclick="showPage('login')"> <span class="gold-text text-2xl">←</span> العودة </div>
+        <h2 class="text-2xl font-bold mb-6">فتح حساب مستثمر جديد</h2>
+        <div class="space-y-4">
+            <input type="text" placeholder="الاسم الكامل" class="input-box">
             <div class="flex gap-2">
-                <input type="text" value="+213" class="input-field w-20 text-center" disabled>
-                <input type="number" placeholder="رقم الهاتف" class="input-field">
+                <input type="text" value="+213" class="input-box w-24 text-center text-gray-500" disabled>
+                <input type="number" id="phone" placeholder="رقم الهاتف (05/06/07)" class="input-box">
             </div>
-            <select class="input-field">
-                <option disabled selected>اختر ولايتك</option>
-                <option>06 - بجاية</option>
-                <option>09 - البليدة</option>
-                <option>16 - الجزائر العاصمة</option>
+            <select id="wilaya" class="input-box">
+                <option disabled selected>-- اختر ولايتك (58 ولاية) --</option>
+                <script>
+                    const wilayas = ["أدرار","الشلف","الأغواط","أم البواقي","باتنة","بجاية","بسكرة","بشار","البليدة","البويرة","تمنراست","تبسة","تلمسان","تيارت","تيزي وزو","الجزائر","الجلفة","جيجل","سطيف","سعيدة","سكيكدة","سيدي بلعباس","عنابة","قالمة","قسنطينة","المدية","مستغانم","المسيلة","معسكر","ورقلة","وهران","البيض","إليزي","برج بوعريريج","الطارف","تندوف","تيسمسيلت","الوادي","خنشلة","سوق أهراس","تيبازة","ميلة","عين الدفلى","النعامة","عين تموشنت","غرداية","غليزان","تيميمون","برج باجي مختار","أولاد جلال","بني عباس","إن صالح","إن قزام","تقرت","جانت","المغير","المنيعة"];
+                    wilayas.forEach((w, i) => {
+                        document.write(`<option value="${i+1}">${i+1} - ${w}</option>`);
+                    });
+                </script>
             </select>
-            <input type="password" placeholder="كلمة المرور" class="input-field">
-            <button onclick="navigateTo('dashboard-page')" class="w-full bg-gold-btn py-4 rounded-xl text-lg shadow-lg active:scale-95">إنشاء الحساب</button>
+            <input type="password" id="reg-pass" placeholder="تعيين كلمة مرور قوية" class="input-box">
+            <button onclick="handleRegister()" class="w-full bg-gold py-4 rounded-xl text-lg font-bold">تأكيد التسجيل</button>
         </div>
     </div>
 
-    <div id="dashboard-page" class="page">
+    <div id="main" class="page">
         <div class="flex justify-between items-center mb-6">
-            <div class="bg-neutral-800/50 p-1 px-3 rounded-full text-[10px] text-green-400 border border-green-900/30">
-                ● 3,801 مستخدم نشط
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-full bg-gold flex items-center justify-center font-bold">R</div>
+                <div><p class="text-xs text-gray-500">مرحباً بك،</p><p class="text-sm font-bold">مستثمر محترف</p></div>
             </div>
-            <div class="w-8 h-8 rounded-full bg-gold-btn flex items-center justify-center text-black font-bold">R</div>
+            <div class="bg-green-900/20 text-green-500 text-[10px] px-3 py-1 rounded-full border border-green-500/20 pulse">آمن ومتصل</div>
         </div>
-        
-        <div class="card-dark p-6 mb-6 relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-2 text-[10px] bg-gold-btn text-black font-bold rounded-bl-lg">STARTER</div>
-            <p class="text-neutral-400 text-xs">إجمالي الرصيد</p>
-            <h2 class="text-4xl font-bold text-white my-2">0.00 <span class="text-sm gold-primary">د.ج</span></h2>
-            <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-neutral-800 text-center">
-                <div><p class="text-[10px] text-neutral-500">الفريق</p><p class="font-bold">0</p></div>
-                <div><p class="text-[10px] text-neutral-500">المهام</p><p class="font-bold text-green-500">0/5</p></div>
-                <div><p class="text-[10px] text-neutral-500">اليومي</p><p class="font-bold">+43</p></div>
+
+        <div class="card p-6 mb-6 bg-gradient-to-br from-[#1a1a1a] to-[#080808]">
+            <p class="text-gray-400 text-xs">الرصيد الكلي (د.ج)</p>
+            <h2 class="text-4xl font-black mt-2">0.00 <span class="text-sm gold-text">DZD</span></h2>
+            <div class="flex gap-4 mt-6">
+                <button class="flex-1 bg-white/5 py-3 rounded-lg border border-white/10 text-xs font-bold">سحب الأرباح</button>
+                <button class="flex-1 bg-gold py-3 rounded-lg text-xs font-bold">إيداع جديد</button>
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4 mb-6">
-            <button class="card-dark py-4 flex flex-col items-center gap-2 border-green-900/20">
-                <span class="text-2xl">📥</span>
-                <span class="text-sm font-bold">شحن الرصيد</span>
-            </button>
-            <button class="card-dark py-4 flex flex-col items-center gap-2 border-red-900/20">
-                <span class="text-2xl">📤</span>
-                <span class="text-sm font-bold">سحب CCP فقط</span>
-            </button>
-        </div>
-
-        <div class="bg-gradient-to-r from-yellow-900/20 to-transparent p-4 rounded-xl border border-yellow-500/20 flex justify-between items-center mb-6">
-            <div class="flex items-center gap-3">
-                <span class="text-2xl">📈</span>
-                <div>
-                    <h4 class="text-sm font-bold gold-primary">استثمار BlackRock</h4>
-                    <p class="text-[10px] text-neutral-400">صناديق بعوائد يومية مضمونة</p>
-                </div>
+            <div class="card p-4">
+                <p class="text-gray-500 text-[10px]">أرباح اليوم</p>
+                <p class="text-green-500 font-bold">+150.00</p>
             </div>
-            <span class="text-xl">⬅️</span>
+            <div class="card p-4">
+                <p class="text-gray-500 text-[10px]">رصيد المهام</p>
+                <p class="gold-text font-bold">500.00</p>
+            </div>
         </div>
 
-        <div class="tab-bar">
-            <div class="flex flex-col items-center gold-primary"><span>🏠</span><span class="text-[10px]">الرئيسية</span></div>
-            <div class="flex flex-col items-center text-neutral-500"><span>⚡</span><span class="text-[10px]">المهام</span></div>
-            <div class="flex flex-col items-center text-neutral-500"><span>📊</span><span class="text-[10px]">الترقية</span></div>
-            <div class="flex flex-col items-center text-neutral-500"><span>👤</span><span class="text-[10px]">حسابي</span></div>
+        <div class="card p-4 flex items-center justify-between border-l-4 border-l-yellow-500">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🔥</span>
+                <div><p class="text-sm font-bold">باقة STARTER</p><p class="text-[10px] text-gray-500">عائد يومي 5%</p></div>
+            </div>
+            <button class="text-xs gold-text font-bold">تفعيل الآن</button>
+        </div>
+
+        <div class="tab-nav">
+            <div class="flex flex-col items-center gold-text"><span>🏠</span><span class="text-[10px]">الرئيسية</span></div>
+            <div class="flex flex-col items-center text-gray-600"><span>💰</span><span class="text-[10px]">الاستثمار</span></div>
+            <div class="flex flex-col items-center text-gray-600"><span>👥</span><span class="text-[10px]">الفريق</span></div>
+            <div class="flex flex-col items-center text-gray-600"><span>👤</span><span class="text-[10px]">حسابي</span></div>
         </div>
     </div>
 
     <script>
-        function navigateTo(pageId) {
+        function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById(pageId).classList.add('active-page');
-            window.scrollTo(0, 0);
+            document.getElementById(id).classList.add('active-page');
+            window.scrollTo(0,0);
+        }
+
+        function handleLogin() {
+            const user = document.getElementById('log-user').value;
+            const pass = document.getElementById('log-pass').value;
+            if(user && pass) {
+                showPage('main');
+            } else {
+                alert("يرجى إدخال البيانات كاملة");
+            }
+        }
+
+        function handleRegister() {
+            const phone = document.getElementById('phone').value;
+            if(phone.length < 10) {
+                alert("رقم الهاتف غير صحيح!");
+            } else {
+                alert("تم إنشاء الحساب بنجاح!");
+                showPage('main');
+            }
         }
     </script>
 </body>
