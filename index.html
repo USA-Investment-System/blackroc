@@ -1,432 +1,620 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-<title>BlackRock Investment</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#020509;
-  --card:#08101f;
-  --card2:#0b1428;
-  --gold:#d4af37;
-  --gold2:#c9992c;
-  --gold3:#8b6914;
-  --green:#22c55e;
-  --red:#ef4444;
-  --blue:#3b82f6;
-  --purple:#a855f7;
-  --text:#fff;
-  --muted:rgba(255,255,255,.45);
-  --line:rgba(255,255,255,.07);
+// ============================================
+// BLACKROCK INVESTMENT PLATFORM - FULL CODE
+// جميع الملفات مربوطة ومنظمة في كود واحد
+// ============================================
+
+// ============================================
+// 1. src/main.tsx - نقطة الدخول
+// ============================================
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App";
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode><App /></StrictMode>
+);
+
+// ============================================
+// 2. src/index.css - التنسيقات
+// ============================================
+@import "tailwindcss";
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body { height:100%; overflow:hidden; background:#020509; color:#fff; font-family:'Tajawal',sans-serif; }
+#root { height:100%; display:flex; justify-content:center; }
+.no-sb::-webkit-scrollbar { display:none; } .no-sb { scrollbar-width:none; -ms-overflow-style:none; }
+.touch-scroll { -webkit-overflow-scrolling:touch; scroll-behavior:smooth; }
+@keyframes glow { 0%,100%{box-shadow:0 0 16px rgba(212,175,55,.3)} 50%{box-shadow:0 0 34px rgba(212,175,55,.6)} }
+@keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes enterUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.35)} }
+.an-glow { animation:glow 2.5s ease-in-out infinite; }
+.an-float { animation:floatY 3s ease-in-out infinite; }
+.an-slideUp { animation:slideUp .3s cubic-bezier(.16,1,.3,1); }
+.an-fadeIn { animation:fadeIn .2s ease; }
+.an-enter { animation:enterUp .25s cubic-bezier(.16,1,.3,1) both; }
+.an-ticker { animation:ticker 22s linear infinite; }
+.an-pulse { animation:pulse 1.6s infinite; }
+.tg { background:linear-gradient(135deg,#E8CC6A,#D4AF37,#C9992C); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.bg-gold { background:linear-gradient(135deg,#D4AF37,#C9992C,#B8860B); }
+.bg-shim { background:linear-gradient(160deg,rgba(12,18,36,.98),rgba(8,13,26,.99)); }
+.bg-card { background:linear-gradient(160deg,rgba(10,16,32,.98),rgba(7,12,24,.99)); }
+.font-mon { font-family:'Montserrat',sans-serif; }
+
+// ============================================
+// 3. src/supabase.ts - قاعدة البيانات
+// ============================================
+const ENV = (import.meta as any).env || {};
+const SUPABASE_URL = ENV.VITE_SUPABASE_URL || '';
+const SUPABASE_KEY = ENV.VITE_SUPABASE_ANON_KEY || '';
+export const SUPABASE_ENABLED = Boolean(SUPABASE_URL && SUPABASE_KEY);
+
+async function supabaseFetch(endpoint: string, options: RequestInit = {}) {
+  if (!SUPABASE_ENABLED) throw new Error('Supabase not configured');
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
+    ...options,
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation', ...options.headers },
+  });
+  if (!response.ok) throw new Error(await response.text());
+  if (response.status === 204) return null;
+  return response.json();
 }
-html,body{height:100%;overflow:hidden;background:#000;color:#fff;font-family:Tajawal,sans-serif}
-#root{height:100%;display:flex;justify-content:center}
-.app{width:100%;max-width:430px;height:100%;background:var(--bg);position:relative;overflow:hidden}
-.screen{position:absolute;inset:0 0 72px 0;overflow:auto;-webkit-overflow-scrolling:touch}
-.screen::-webkit-scrollbar{display:none}
-.btn{border:none;border-radius:14px;padding:13px 14px;font-size:14px;font-weight:900;font-family:Tajawal,sans-serif;cursor:pointer}
-.btn:active{transform:scale(.98);opacity:.9}
-.gold{background:linear-gradient(135deg,#ffe69a,var(--gold),var(--gold3));color:#020509}
-.card{background:linear-gradient(160deg,rgba(15,20,35,.98),rgba(8,12,22,.99));border:1px solid var(--line);border-radius:16px}
-.goldText{background:linear-gradient(135deg,#ffe69a,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.mon{font-family:Montserrat,sans-serif}
-@keyframes fade{from{opacity:0}to{opacity:1}}
-@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.fade{animation:fade .22s ease}
-.up{animation:up .25s cubic-bezier(.16,1,.3,1)}
-.pulse{animation:pulse 1.4s infinite}
-.float{animation:float 3s ease-in-out infinite}
-.ticker{animation:ticker 28s linear infinite}
-.nav{position:absolute;bottom:0;left:0;right:0;height:72px;background:linear-gradient(180deg,rgba(8,12,22,.9),rgba(2,5,9,.98));border-top:1px solid rgba(212,175,55,.14);display:flex;z-index:50}
-.nav button{flex:1;background:none;border:none;color:rgba(255,255,255,.35);font-family:Tajawal,sans-serif;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative}
-.nav button.on{color:var(--gold)}
-.nav button.on:before{content:"";position:absolute;top:0;width:30px;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:0 0 4px 4px}
-.badge{position:absolute;top:9px;right:28%;min-width:18px;height:18px;border-radius:9px;background:var(--red);border:2px solid #020509;color:#fff;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center}
-.sheet{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;display:flex;align-items:flex-end}
-.sheetPanel{width:100%;max-height:92vh;overflow:auto;background:linear-gradient(180deg,#0d1428,#050912);border-radius:24px 24px 0 0;border-top:1px solid rgba(212,175,55,.18);padding:14px 16px 50px}
-.sheetPanel::-webkit-scrollbar{display:none}
-.toast{position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:9999;padding:10px 18px;border-radius:999px;background:#16a34a;color:#fff;font-weight:900;font-size:13px;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-.input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;color:#fff;padding:14px 15px;font-size:15px;font-weight:800;font-family:Tajawal,sans-serif;outline:none}
-.input:focus{border-color:rgba(212,175,55,.45)}
-.small{font-size:11px;color:var(--muted);font-weight:700}
-.row{display:flex;align-items:center;gap:10px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-</style>
-</head>
-<body>
-<div id="root"><div class="app" id="app"></div></div>
-<script>
-"use strict";
 
-/* =========================
-   DATABASE + HELPERS
-========================= */
-const PREFIX="BR_GLOBAL_";
-const SIGNAL_LINK="https://signal.me/#eu/8QzHlJCULtwT98_rnOOfdNxK5ndjabUYXgU8Zh8OsgPx3xc7m_hKhJUr0gUzR3cF";
-const WILAYAS=[
-"01 - أدرار","02 - الشلف","03 - الأغواط","04 - أم البواقي","05 - باتنة","06 - بجاية","07 - بسكرة","08 - بشار","09 - البليدة","10 - البويرة",
-"11 - تمنراست","12 - تبسة","13 - تلمسان","14 - تيارت","15 - تيزي وزو","16 - الجزائر","17 - الجلفة","18 - جيجل","19 - سطيف","20 - سعيدة",
-"21 - سكيكدة","22 - سيدي بلعباس","23 - عنابة","24 - قالمة","25 - قسنطينة","26 - المدية","27 - مستغانم","28 - المسيلة","29 - معسكر","30 - ورقلة",
-"31 - وهران","32 - البيض","33 - إليزي","34 - برج بوعريريج","35 - بومرداس","36 - الطارف","37 - تندوف","38 - تيسمسيلت","39 - الوادي","40 - خنشلة",
-"41 - سوق أهراس","42 - تيبازة","43 - ميلة","44 - عين الدفلى","45 - النعامة","46 - عين تموشنت","47 - غرداية","48 - غليزان","49 - تيميمون","50 - برج باجي مختار",
-"51 - أولاد جلال","52 - بني عباس","53 - عين صالح","54 - عين قزام","55 - تقرت","56 - جانت","57 - المغير","58 - المنيعة"
-];
-const FIRST_NAMES=["محمد","أحمد","يوسف","إسلام","ياسين","عبد القادر","بلال","رامي","أنس","كريم","إلياس","أيمن","رياض","سفيان","وليد","سليم","مراد","نذير","فارس","حمزة","نسرين","أحلام","إيمان","سارة","مريم","نور","ياسمين","ريم","سلمى","دعاء","رانية","ليلى","هاجر","أمينة","شيماء","Kamel","Yacine","Nabil","Karim","Sofiane","Nassim","Riad","Samir","Walid","Amine","Lina","Sofia","Yasmine","Meriem"];
-const LAST_NAMES=["بن علي","بوزيد","حمدي","سعدي","قاسمي","مرزوقي","مقداد","حداد","بن عمر","عيساوي","بلقاسم","شريف","براهيمي","بوعلام","سليماني","بن صالح","فرحات","عماري","حليمي","زروقي","Haddad","Kasmi","Benzema","Saidi","Brahimi","Ferhat","Slimani","Amrani","Mokrani"];
-
-function g(k,f=null){try{const v=localStorage.getItem(PREFIX+k);return v?JSON.parse(v):f}catch{return f}}
-function s(k,v){localStorage.setItem(PREFIX+k,JSON.stringify(v))}
-function users(){return g("users",[])}
-function saveUsers(u){s("users",u)}
-function cur(){return g("cur",null)}
-function setCur(u){s("cur",u); upsert(u)}
-function upsert(u){let all=users();let i=all.findIndex(x=>x.id===u.id||x.code===u.code||x.un===u.un); if(i>=0)all[i]={...all[i],...u}; else all.push(u); saveUsers(all)}
-function fmt(n){n=parseFloat(n)||0;if(n>=1e6)return(n/1e6).toFixed(2).replace(".",",")+"M";if(n>=1e3)return(n/1e3).toFixed(1).replace(".",",")+"K";return n.toLocaleString("fr-DZ",{minimumFractionDigits:2,maximumFractionDigits:2})}
-function money(n){return fmt(n)+" د.ج"}
-function code(){return Math.random().toString(36).slice(2,8).toUpperCase()}
-function today(){return new Date().toDateString()}
-function normPhone(v){let d=String(v||"").replace(/\D/g,""); if(d.startsWith("213"))d=d.slice(3); if(d.startsWith("0"))d=d.slice(1); return d}
-function validPhone(v){return /^[567]\d{7,8}$/.test(normPhone(v))}
-function refCodeFromUrl(){try{let p=new URLSearchParams(location.search);return p.get("code")||p.get("ref")||null}catch{return null}}
-function refLink(u){return location.origin+location.pathname+"?code="+u.code}
-function addNotif(u,title,desc){u.notifs=u.notifs||[];u.notifs.push({id:Date.now()+Math.random(),title,desc,t:new Date().toLocaleTimeString(),r:false});return u}
-function addAct(u,type,title,amount,positive=true){u.activities=u.activities||[];u.activities.push({id:Date.now()+Math.random(),type,title,amount,date:new Date().toISOString(),positive});u.activities=u.activities.slice(-100);return u}
-function toast(msg,type="success"){let el=document.createElement("div");el.className="toast";el.textContent=msg;el.style.background=type==="error"?"#dc2626":type==="warning"?"#d97706":"#16a34a";document.body.appendChild(el);setTimeout(()=>el.remove(),2500)}
-function sheet(title,html){closeSheet();let d=document.createElement("div");d.className="sheet fade";d.id="sheet";d.onclick=e=>{if(e.target===d)closeSheet()};d.innerHTML=`<div class="sheetPanel up"><div style="width:40px;height:4px;background:linear-gradient(90deg,transparent,var(--gold),transparent);border-radius:4px;margin:0 auto 10px"></div><h2 style="text-align:center;font-size:18px;margin-bottom:14px">${title}</h2>${html}</div>`;document.body.appendChild(d)}
-function closeSheet(){let x=document.getElementById("sheet"); if(x)x.remove()}
-
-/* =========================
-   STATE
-========================= */
-let S={
- user:cur(),
- tab:"home",
- tasks:null,
- activeTask:null,
- cd:40,
- timer:null,
- showAI:false,
- wheelOpen:false,
- wheelRot:0,
- aiMsgs:[],
- onlineCount:1000,
- onlineName:"",
- onlineWilaya:"",
- hideOnline:g("hideOnline",false)
+export const db = {
+  getUserByCode: async (code: string) => { try { const users = await supabaseFetch(`br_users?code=eq.${code}&limit=1`); return users?.[0]?.payload || null; } catch { return null; } },
+  getUserByUsername: async (username: string) => { try { const users = await supabaseFetch(`br_users?username=eq.${username}&limit=1`); return users?.[0]?.payload || null; } catch { return null; } },
+  createUser: async (user: any) => { try { await supabaseFetch('br_users', { method: 'POST', body: JSON.stringify({ id: String(user.id), username: user.un, code: user.code, payload: user }), headers: { 'Prefer': 'resolution=merge-duplicates' } }); return user; } catch { return null; } },
+  updateUser: async (user: any) => { try { await supabaseFetch(`br_users?id=eq.${user.id}`, { method: 'PATCH', body: JSON.stringify({ payload: user, updated_at: new Date().toISOString() }) }); return user; } catch { return null; } },
+  getUserCount: async () => { try { const response = await fetch(`${SUPABASE_URL}/rest/v1/br_users?select=id`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact', 'Range': '0-0' } }); const range = response.headers.get('content-range') || '0-0/0'; return parseInt(range.split('/')[1] || '0', 10); } catch { return 0; } },
+  getLatestUser: async () => { try { const users = await supabaseFetch('br_users?select=payload&order=updated_at.desc&limit=1'); return users?.[0]?.payload || null; } catch { return null; } },
 };
 
-/* =========================
-   DATA
-========================= */
-const LVS=[
-{id:"trial",n:"Starter",p:0,d:3,dy:43,tot:215,mo:0},
-{id:"m1",n:"M1",p:7000,d:5,dy:43,tot:215,mo:6450},
-{id:"m2",n:"M2",p:26600,d:10,dy:86,tot:860,mo:25800},
-{id:"m3",n:"M3",p:95000,d:25,dy:131,tot:3275,mo:98250},
-{id:"m4",n:"M4",p:300000,d:50,dy:222,tot:11100,mo:333000},
-{id:"m5",n:"M5",p:780000,d:80,dy:390,tot:31200,mo:936000},
-{id:"m6",n:"M6",p:1950000,d:130,dy:652,tot:84760,mo:2542800},
-{id:"g7",n:"G7 Platinum",p:4485000,d:200,dy:1068,tot:213600,mo:6408000}
-];
-const TASKS=[
-["مراجعة أداء المحفظة","Review portfolio"],
-["قراءة تقرير السوق اليومي","Read market report"],
-["تحليل اتجاهات BLK","Analyze BLK trends"],
-["فحص الاستراتيجية اليومية","Check strategy"],
-["مشاهدة رسالة استثمارية","View report"],
-["تحديث بيانات المحفظة","Update portfolio"],
-["مراجعة الأرباح والخسائر","Review P&L"],
-["تحليل مؤشرات السوق","Analyze indicators"],
-["متابعة أخبار الاستثمار","Follow news"],
-["فحص أداء الأسهم","Check stocks"],
-["مراجعة عقد الاستثمار","Review contract"],
-["تحليل عائد المحفظة","Analyze yield"]
-];
-const FUNDS=[
-{id:1,n:"صندوق الطاقة المتجددة",emoji:"⚡",days:15,daily:6.5,min:1000,hot:true},
-{id:2,n:"صندوق استثمار الذهب",emoji:"🪙",days:30,daily:4.2,min:1000,hot:false},
-{id:3,n:"صندوق التكنولوجيا",emoji:"💻",days:10,daily:8,min:1000,hot:true},
-{id:4,n:"صندوق العقارات",emoji:"🏢",days:60,daily:2.8,min:1000,hot:false},
-{id:5,n:"صندوق VIP حصري",emoji:"💎",days:7,daily:12,min:1000,hot:true}
-];
-const WHEEL=[
-{l:"43 د.ج",v:43,c:"#D4AF37"},
-{l:"86 د.ج",v:86,c:"#6B4C0A"},
-{l:"215 د.ج",v:215,c:"#C9992C"},
-{l:"Spin+",v:0,c:"#7C3AED"},
-{l:"430 د.ج",v:430,c:"#B8860B"},
-{l:"86 د.ج",v:86,c:"#4A3506"},
-{l:"215 د.ج",v:215,c:"#D4AF37"},
-{l:"43 د.ج",v:43,c:"#9E7A20"}
-];
+const LOCAL_KEY = 'br10-users';
+export const localDB = {
+  getUsers: () => { try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]'); } catch { return []; } },
+  saveUsers: (users: any[]) => { localStorage.setItem(LOCAL_KEY, JSON.stringify(users)); },
+  getUserByCode: (code: string) => localDB.getUsers().find((u: any) => String(u.code).toUpperCase() === code.toUpperCase()) || null,
+  getUserByUsername: (username: string) => localDB.getUsers().find((u: any) => u.un === username) || null,
+  createUser: (user: any) => { const users = localDB.getUsers(); users.push(user); localDB.saveUsers(users); return user; },
+  updateUser: (user: any) => { const users = localDB.getUsers(); const i = users.findIndex((u: any) => u.id === user.id); if (i >= 0) { users[i] = user; localDB.saveUsers(users); } return user; },
+  getUserCount: () => localDB.getUsers().length,
+  getLatestUser: () => localDB.getUsers()[localDB.getUsers().length - 1] || null,
+};
 
-/* =========================
-   ONLINE SIMULATION
-========================= */
-function updateOnline(){
- let h=new Date().getHours();
- let min,max;
- if(h>=0&&h<6){min=700;max=1300}
- else if(h>=6&&h<12){min=1200;max=2600}
- else if(h>=12&&h<18){min=2200;max=4800}
- else {min=1500;max=3300}
- S.onlineCount=Math.floor(min+Math.random()*(max-min));
- S.onlineName=FIRST_NAMES[Math.floor(Math.random()*FIRST_NAMES.length)]+" "+LAST_NAMES[Math.floor(Math.random()*LAST_NAMES.length)];
- S.onlineWilaya=WILAYAS[Math.floor(Math.random()*WILAYAS.length)].split(" - ")[1];
- if(S.user) render();
-}
-setInterval(updateOnline,5000);
-updateOnline();
+export const universalDB = {
+  getUserByCode: async (code: string) => SUPABASE_ENABLED ? (await db.getUserByCode(code)) || localDB.getUserByCode(code) : localDB.getUserByCode(code),
+  getUserByUsername: async (username: string) => SUPABASE_ENABLED ? (await db.getUserByUsername(username)) || localDB.getUserByUsername(username) : localDB.getUserByUsername(username),
+  createUser: async (user: any) => SUPABASE_ENABLED ? (await db.createUser(user)) || localDB.createUser(user) : localDB.createUser(user),
+  updateUser: async (user: any) => SUPABASE_ENABLED ? (await db.updateUser(user)) || localDB.updateUser(user) : localDB.updateUser(user),
+  getUserCount: async () => SUPABASE_ENABLED ? await db.getUserCount() : localDB.getUserCount(),
+  getLatestUser: async () => SUPABASE_ENABLED ? await db.getLatestUser() : localDB.getLatestUser(),
+};
 
-/* =========================
-   AUTH + REFERRAL
-========================= */
-function makeUser(un,pw,phone,wilaya,joinedVia){
- return {
-  id:Date.now(), un,pw, code:code(), ref:"",
-  phone:"+213"+normPhone(phone), wilaya,
-  balance:0,taskBal:0,refEarn:0,teamCount:0,wheelSpins:joinedVia?1:0,m1Refs:0,level:null,totalEarned:0,
-  avatar:null,joined:new Date().toISOString(),joinedVia,
-  investments:[],withdrawals:[],activities:[],achievements:[],notifs:[],loginStreak:1,lastLogin:new Date().toISOString()
- }
+// ============================================
+// 4. src/backend.ts - Backend API
+// ============================================
+import type { User } from './store';
+import { universalDB, SUPABASE_ENABLED } from './supabase';
+
+export function backendMode() { return SUPABASE_ENABLED ? 'supabase' : 'local'; }
+export async function sha256(text: string) { const enc = new TextEncoder().encode(text); const buf = await crypto.subtle.digest('SHA-256', enc); return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join(''); }
+export function normalizeUser<T extends Partial<User> & Record<string, any>>(u: T): User {
+  const inviteLink = (code: string) => { try { const basePath = location.pathname.replace(/\/?index\.html$/i, '').replace(/\/$/, ''); return `${location.origin}${basePath || ''}?code=${code}`; } catch { return 'blackrock.app?code=' + code; } };
+  const out: any = { id: Date.now(), un: '', pw: '', code: '', ref: '', phone: '', wilaya: '', balance: 0, taskBal: 0, refEarn: 0, teamCount: 0, wheelSpins: 0, m1Refs: 0, level: null, totalEarned: 0, avatar: null, joined: new Date().toISOString(), joinedVia: null, notifs: [], investments: [], investEarned: 0, withdrawals: [], upgradeRequests: [], team: [], loginStreak: 0, badges: [], activityLog: [], showLiveActivity: true, profileCompleted: false, ...u };
+  out.investments ||= []; out.withdrawals ||= []; out.upgradeRequests ||= []; out.team ||= []; out.notifs ||= []; out.activityLog ||= []; out.badges ||= [];
+  if (!out.ref || String(out.ref).includes('?ref=') || String(out.ref).includes('/ref/') || String(out.ref).includes('/invite') || !String(out.ref).includes('?code=')) { out.ref = inviteLink(out.code); }
+  return out as User;
 }
-function auth(login){
- let un=document.getElementById("un").value.trim();
- let pw=document.getElementById("pw").value.trim();
- let cp=document.getElementById("cpw")?.value.trim();
- let ph=document.getElementById("phone")?.value.trim();
- let wi=document.getElementById("wilaya")?.value;
- if(!un||!pw)return toast("املأ الحقول","error");
- let all=users();
- if(login){
-  let u=all.find(x=>x.un===un&&x.pw===pw);
-  if(!u)return toast("بيانات خاطئة","error");
-  setCur(u); S.user=u; loadTasks(); render(); return toast("مرحباً "+un);
- }
- if(pw!==cp)return toast("كلمة المرور غير متطابقة","error");
- if(!validPhone(ph))return toast("رقم جزائري صحيح يبدأ بـ 05 أو 06 أو 07","error");
- if(!wi)return toast("اختر الولاية","error");
- if(all.find(x=>x.un===un))return toast("الاسم موجود","error");
- let rc=refCodeFromUrl();
- let nu=makeUser(un,pw,ph,wi,rc);
- nu.ref=refLink(nu);
- addNotif(nu,"مرحباً بك","ابدأ المهام اليومية واربح");
- if(rc)addNotif(nu,"🎡 عجلة مجانية","حصلت على دورة لأنك دخلت عبر رابط دعوة");
- all.push(nu);
- if(rc){
-  let i=all.findIndex(x=>x.code===rc);
-  if(i>=0){
-   all[i].teamCount=(all[i].teamCount||0)+1;
-   all[i].wheelSpins=(all[i].wheelSpins||0)+1;
-   addNotif(all[i],"🎉 صديق جديد","دخل "+un+" عبر رابطك. +دورة عجلة");
-   addAct(all[i],"referral","إحالة جديدة",0,true);
-  }
- }
- saveUsers(all); setCur(nu); S.user=nu; loadTasks(); render(); toast(rc?"مرحباً + دورة مجانية":"تم إنشاء الحساب");
+export async function loginUser(username: string, password: string): Promise<User | null> { const hash = await sha256(password); const user = await universalDB.getUserByUsername(username); if (!user) return null; const storedHash = (user as any).passwordHash; if (storedHash ? storedHash === hash : user.pw === password) return normalizeUser(user); return null; }
+export async function usernameExists(username: string) { return Boolean(await universalDB.getUserByUsername(username)); }
+export async function findUserByCode(code: string) { return await universalDB.getUserByCode(code.toUpperCase()); }
+export async function createUser(user: User, password: string) { return await universalDB.createUser(normalizeUser({ ...user, pw: '', passwordHash: await sha256(password) } as any)); }
+export async function saveUser(user: User) { return await universalDB.updateUser(normalizeUser(user)); }
+export async function updateUserByCode(code: string, updater: (user: User) => User) { const current = await findUserByCode(code); if (!current) return null; return await saveUser(normalizeUser(updater(current))); }
+export async function getPublicStats() { const count = await universalDB.getUserCount(); const latest = await universalDB.getLatestUser(); return { count, latestName: latest?.un || 'مستخدم' }; }
+
+// ============================================
+// 5. src/store.ts - إدارة الحالة
+// ============================================
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { ReactNode } from 'react';
+
+export interface Notif { id:number; title:string; desc:string; t:string; r:boolean; }
+export interface Investment { id:number; fundId:number; amount:number; date:string; days:number; daily:number; status:'active'|'completed'; earned:number; principalReturned?:boolean; }
+export interface WithdrawReq { id:number; amount:number; ccp:string; name:string; date:string; status:'pending'|'approved'|'rejected'; }
+export interface UpgradeReq { id:number; levelId:string; levelName:string; amount:number; date:string; status:'pending'|'approved'|'rejected'; ref:string; }
+export interface TeamMember { id:number; username:string; code:string; joined:string; avatar?:string|null; level?:string|null; active:boolean; }
+export interface User { id:number; un:string; pw:string; code:string; ref:string; phone?:string; wilaya?:string; balance:number; taskBal:number; refEarn:number; teamCount:number; wheelSpins:number; m1Refs:number; level:string|null; totalEarned:number; avatar:string|null; joined:string; joinedVia:string|null; notifs:Notif[]; investments:Investment[]; investEarned:number; withdrawals:WithdrawReq[]; upgradeRequests?:UpgradeReq[]; team?:TeamMember[]; lastLogin?:string; loginStreak?:number; badges?:string[]; activityLog?:string[]; referralUpgradeCount?:number; m1ReferralCredited?:boolean; showLiveActivity?:boolean; profileCompleted?:boolean; }
+export interface Task { id:number; ar:string; en:string; sec:number; reward:number; status:'available'|'active'|'done'|'failed'; }
+type Tab = 'home'|'tasks'|'up'|'profile'; type Lang = 'ar'|'en';
+type ToastT = {msg:string; type:'success'|'error'|'warning'|'info'; id:number}|null;
+type SheetT = {content:ReactNode; title:string}|null;
+type AiMsg = {id:number; r:'ai'|'user'; text:string};
+export interface S { lang:Lang; user:User|null; tab:Tab; tasks:Task[]|null; activeTask:number|null; cdVal:number; aiMsgs:AiMsg[]; wheelRot:number; showWheel:boolean; showAI:boolean; showCompany:boolean; showInvest:boolean; toast:ToastT; sheet:SheetT; savePulse:number; toggleLang:()=>void; setUser:(u:User|null)=>void; updUser:(u:Partial<User>)=>void; setTab:(t:Tab)=>void; setTasks:(t:Task[])=>void; updTask:(id:number,s:Task['status'])=>void; setActive:(id:number|null,cd?:number)=>void; decCd:()=>void; addAi:(m:AiMsg)=>void; setWheelRot:(r:number)=>void; setShowWheel:(b:boolean)=>void; setShowAI:(b:boolean)=>void; setShowCompany:(b:boolean)=>void; setShowInvest:(b:boolean)=>void; toast2:(msg:string,type:'success'|'error'|'warning'|'info')=>void; setSheet:(c:ReactNode,t:string)=>void; closeSheet:()=>void; logout:()=>void; }
+
+export const useStore = create<S>()(persist((set) => ({
+  lang:'ar', user:null, tab:'home', tasks:null, activeTask:null, cdVal:40, aiMsgs:[], wheelRot:0, showWheel:false, showAI:false, showCompany:false, showInvest:false, toast:null, sheet:null, savePulse:0,
+  toggleLang:()=>set(s=>{const n=s.lang==='ar'?'en':'ar';document.documentElement.lang=n;document.documentElement.dir=n==='ar'?'rtl':'ltr';return{lang:n}}),
+  setUser:user=>set(s=>({user,savePulse:s.savePulse+1})),
+  updUser:u=>set(s=>({user:s.user?{...s.user,...u}:null,savePulse:s.savePulse+1})),
+  setTab:tab=>set(s=>({tab,savePulse:s.savePulse+1})),
+  setTasks:tasks=>set(s=>({tasks,savePulse:s.savePulse+1})),
+  updTask:(id,status)=>set(s=>({tasks:s.tasks?s.tasks.map(t=>t.id===id?{...t,status}:t):null,savePulse:s.savePulse+1})),
+  setActive:(id,cd=40)=>set(s=>({activeTask:id,cdVal:cd,savePulse:s.savePulse+1})),
+  decCd:()=>set(s=>({cdVal:Math.max(0,s.cdVal-1)})),
+  addAi:m=>set(s=>({aiMsgs:[...s.aiMsgs,m],savePulse:s.savePulse+1})),
+  setWheelRot:wheelRot=>set(s=>({wheelRot,savePulse:s.savePulse+1})),
+  setShowWheel:showWheel=>set({showWheel}), setShowAI:showAI=>set({showAI}), setShowCompany:showCompany=>set({showCompany}), setShowInvest:showInvest=>set({showInvest}),
+  toast2:(msg,type)=>set({toast:{msg,type,id:Date.now()}}),
+  setSheet:(content,title)=>set({sheet:{content,title}}),
+  closeSheet:()=>set({sheet:null}),
+  logout:()=>set({user:null,tab:'home',tasks:null,activeTask:null,aiMsgs:[],wheelRot:0,showWheel:false,showAI:false,showCompany:false,showInvest:false}),
+}), { name:'br10-store', partialize:(s)=>({lang:s.lang,user:s.user,tasks:s.tasks,wheelRot:s.wheelRot,aiMsgs:s.aiMsgs,activeTask:s.activeTask,cdVal:s.cdVal,tab:s.tab}) }));
+
+// ============================================
+// 6. src/utils/i18n.ts - الترجمات
+// ============================================
+export const T = {
+  ar: { home:'الرئيسية', tasks:'المهام', up:'الترقية', acc:'حسابي', bal:'إجمالي الرصيد', team:'الفريق', done:'المهام', daily:'اليومي', refT:'الإحالة الذهبية', ref2:'5% من دخل كل صديق مدى الحياة', copy:'نسخ', share:'مشاركة', pf:'أداء المحفظة', co:'الشركة والأمان', det:'التفاصيل', earned:'إجمالي الأرباح', refE:'أرباح الإحالات', tod:'أرباح اليوم', mon:'الأرباح الشهرية', taskT:'المهام اليومية', rew:'مكافأة', start:'ابدأ', doneL:'مكتملة', failL:'أُلغيت', wait:'انتظر', sec:'ثانية', cancel:'إلغاء المهمة', plans:'خطط الاستثمار', avail:'رصيدك المتاح', free:'مجاني', active:'مفعّل', upBtn:'ترقية', dy:'يومي', days:'أيام', tot:'الإجمالي', mo:'شهري', myAcc:'حسابي', refCode:'رابط الدعوة', secT:'الأمان والعقد', aboutT:'عن الشركة', refsT:'إحالاتي', wheel:'عجلة الحظ', setT:'الإعدادات', out:'تسجيل الخروج', compT:'🏆 مسابقة الإحالة', compS:'10 أصدقاء = ترقية مجانية!', prog:'تقدمك', goal:'الهدف: 10 أصدقاء M1', spin:'اضغط للدوران', noSpin:'لا دورات متبقية', prize:'الجائزة', signIn:'تسجيل الدخول', signUp:'إنشاء حساب', user:'اسم المستخدم', pass:'كلمة المرور', conf:'تأكيد كلمة المرور', noAcc:'ليس لديك حساب؟ سجل مجاناً', hasAcc:'لديك حساب؟ سجل الدخول', show:'عرض', hide:'إخفاء', notifs:'الإشعارات', noNotifs:'لا توجد إشعارات', cnfT:'تأكيد الإلغاء', keepT:'إكمال المهمة', cnfB:'إلغاء نهائي', wLock:'السحب مقفل', wReq:'يتطلب M1 + 10,000 د.ج', sup:'تواصل مع الدعم', copied:'تم النسخ!', lang:'English', aiP:'اكتب سؤالك...', avT:'اختر صورتك', clear:'مسح البيانات', totRef:'إجمالي الإحالات', refDzd:'د.ج من الإحالات', wd:'سحب', qwd:'السحب السريع', chg:'تتغير يومياً حسب مستواك', ef:'كل صديق = 🎡 دورة لك + دورة له!', lo:'⚡ الرابط يفتح التطبيق مباشرة', sub:'منصة الاستثمار', contract:'تقر شركة BlackRock, Inc بأنها أبرمت عقداً رسمياً مع الجانب الجزائري في يناير 2025 مدته 3 سنوات ينتهي في ديسمبر 2027.', coDesc:'تأسست عام 1988 في نيويورك، وهي أكبر شركة لإدارة الأصول في العالم مع أكثر من 10.2 تريليون دولار من الأصول المدارة.', coSec:'نستخدم تشفير AES-256 العسكري مع SSL/TLS 3.0 لحماية جميع بيانات المستخدمين والمعاملات.', coAlg:'عقد رسمي مع الجزائر يبدأ من يناير 2025 وينتهي في ديسمبر 2027، مدته 3 سنوات كاملة.', waitAuth:'جاري...' },
+  en: { home:'Home', tasks:'Tasks', up:'Plans', acc:'Account', bal:'Total Balance', team:'Team', done:'Tasks', daily:'Daily', refT:'Golden Referral', ref2:"5% of each friend's income for life", copy:'Copy', share:'Share', pf:'Portfolio', co:'Company & Security', det:'Details', earned:'Total Earned', refE:'Referral Earnings', tod:"Today's Profit", mon:'Monthly', taskT:'Daily Tasks', rew:'Reward', start:'Start', doneL:'Done', failL:'Cancelled', wait:'Wait', sec:'sec', cancel:'Cancel Task', plans:'Investment Plans', avail:'Available Balance', free:'FREE', active:'Active', upBtn:'Upgrade', dy:'Daily', days:'Days', tot:'Total', mo:'Monthly', myAcc:'My Account', refCode:'Referral Link', secT:'Security & Contract', aboutT:'About BlackRock', refsT:'Referrals', wheel:'Lucky Wheel', setT:'Settings', out:'Sign Out', compT:'🏆 Referral Contest', compS:'10 friends = Free upgrade!', prog:'Progress', goal:'Goal: 10 M1 friends', spin:'SPIN NOW', noSpin:'No spins left', prize:'PRIZE', signIn:'Sign In', signUp:'Create Account', user:'Username', pass:'Password', conf:'Confirm Password', noAcc:"Don't have account? Sign up", hasAcc:'Have account? Sign in', show:'Show', hide:'Hide', notifs:'Notifications', noNotifs:'No notifications', cnfT:'Cancel Task?', keepT:'Keep Going', cnfB:'Cancel Anyway', wLock:'Withdrawal Locked', wReq:'Requires M1 + 10,000 د.ج', sup:'Contact Support', copied:'Copied!', lang:'عربي', aiP:'Ask me anything...', avT:'Choose Avatar', clear:'Clear Data', totRef:'Total Referrals', refDzd:'د.ج from Referrals', wd:'Withdraw', qwd:'Quick Withdraw', chg:'Changes daily by level', ef:'Each friend = 🎡 spin for you + spin for them!', lo:'⚡ Link opens app directly', sub:'Investment Platform', contract:'BlackRock, Inc signed an official contract with Algeria in January 2025, valid for 3 years until December 2027.', coDesc:'Founded in 1988 in New York, BlackRock is the world\'s largest asset manager with over $10.2 trillion in AUM.', coSec:'We use military-grade AES-256 encryption with SSL/TLS 3.0 to protect all user data and transactions.', coAlg:'Official contract with Algeria starting January 2025 until December 2027, spanning 3 full years.', waitAuth:'Wait...' }
+};
+
+// ============================================
+// 7. src/utils/levels.ts - مستويات الاستثمار
+// ============================================
+export const LVS = [
+  {id:'trial',n:'Starter',p:0,d:3,dy:43,tot:215,mo:0},
+  {id:'m1',n:'M1',p:7000,d:5,dy:43,tot:215,mo:6450},
+  {id:'m2',n:'M2',p:26600,d:10,dy:86,tot:860,mo:25800},
+  {id:'m3',n:'M3',p:95000,d:25,dy:131,tot:3275,mo:98250},
+  {id:'m4',n:'M4',p:300000,d:50,dy:222,tot:11100,mo:333000},
+  {id:'m5',n:'M5',p:780000,d:80,dy:390,tot:31200,mo:936000},
+  {id:'m6',n:'M6',p:1950000,d:130,dy:652,tot:84760,mo:2542800},
+  {id:'g7',n:'G7 Platinum',p:4485000,d:200,dy:1068,tot:213600,mo:6408000}
+];
+export function lvN(id:string|null){return LVS.find(l=>l.id===id)?.n||'Starter'}
+export function lvD(id:string|null){return LVS.find(l=>l.id===id)||LVS[0]}
+export function lvI(id:string|null){const i=LVS.findIndex(l=>l.id===id);return i>=0?i:0}
+
+// ============================================
+// 8. src/utils/algeria.ts - الولايات الجزائرية
+// ============================================
+export const WILAYAS = [
+  '01 - أدرار','02 - الشلف','03 - الأغواط','04 - أم البواقي','05 - باتنة','06 - بجاية','07 - بسكرة','08 - بشار','09 - البليدة','10 - البويرة',
+  '11 - تمنراست','12 - تبسة','13 - تلمسان','14 - تيارت','15 - تيزي وزو','16 - الجزائر','17 - الجلفة','18 - جيجل','19 - سطيف','20 - سعيدة',
+  '21 - سكيكدة','22 - سيدي بلعباس','23 - عنابة','24 - قالمة','25 - قسنطينة','26 - المدية','27 - مستغانم','28 - المسيلة','29 - معسكر','30 - ورقلة',
+  '31 - وهران','32 - البيض','33 - إليزي','34 - برج بوعريريج','35 - بومرداس','36 - الطارف','37 - تندوف','38 - تيسمسيلت','39 - الوادي','40 - خنشلة',
+  '41 - سوق أهراس','42 - تيبازة','43 - ميلة','44 - عين الدفلى','45 - النعامة','46 - عين تموشنت','47 - غرداية','48 - غليزان','49 - تيميمون','50 - برج باجي مختار',
+  '51 - أولاد جلال','52 - بني عباس','53 - عين صالح','54 - عين قزام','55 - توقرت','56 - جانت','57 - المغير','58 - المنيعة'
+];
+export function normalizeAlgerianPhone(value: string) {
+  const digits = String(value || '').replace(/\D/g, '');
+  if (/^0[567]\d{7,8}$/.test(digits)) return '+213' + digits.slice(1);
+  if (/^213[567]\d{7,8}$/.test(digits)) return '+' + digits;
+  if (/^[567]\d{7,8}$/.test(digits)) return '+213' + digits;
+  return '';
 }
-function authHTML(){
- return `<div class="screen" style="inset:0;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(ellipse at top,#0a1228,#020509 60%,#000)">
-  <div style="width:100%;max-width:380px" class="up">
-   <div style="text-align:center;margin-bottom:24px">
-    <div class="gold an-glow" style="width:82px;height:82px;border-radius:22px;margin:auto;display:flex;align-items:center;justify-content:center;font-size:40px">◇</div>
-    <h1 class="goldText mon" style="font-size:30px;letter-spacing:4px;margin-top:14px">BLACKROCK</h1>
-    <p style="color:var(--muted);font-weight:800">منصة الاستثمار</p>
-   </div>
-   <div class="card" style="padding:20px">
-    <input id="un" class="input" placeholder="اسم المستخدم" style="margin-bottom:12px">
-    <input id="pw" class="input" type="password" placeholder="كلمة المرور" style="margin-bottom:12px">
-    <div id="signupFields" style="display:none">
-      <input id="cpw" class="input" type="password" placeholder="تأكيد كلمة المرور" style="margin-bottom:12px">
-      <label class="small">رقم الهاتف الجزائري</label>
-      <div class="row" style="margin:6px 0 12px">
-       <div class="card" style="height:48px;padding:0 14px;display:flex;align-items:center;color:var(--gold);font-weight:900" dir="ltr">+213</div>
-       <input id="phone" class="input" inputmode="numeric" placeholder="0551234567" dir="ltr" style="flex:1;text-align:left">
-      </div>
-      <label class="small">الولاية</label>
-      <select id="wilaya" class="input" style="margin:6px 0 12px">
-       <option value="">اختر ولايتك من القائمة</option>
-       ${WILAYAS.map(w=>`<option value="${w}">${w}</option>`).join("")}
-      </select>
+export function isValidWilaya(value: string) { return WILAYAS.includes(value); }
+export function cleanAlgerianPhoneInput(value: string) {
+  let digits = String(value || '').replace(/\D/g, '');
+  if (digits.startsWith('213')) digits = digits.slice(3);
+  if (digits.startsWith('0')) digits = digits.slice(1);
+  return digits.slice(0, 9);
+}
+
+// ============================================
+// 9. src/utils/index.ts - دوال مساعدة
+// ============================================
+export function fmt(n:number){if(isNaN(n))return'0,00';if(n>=1e6)return(n/1e6).toFixed(2).replace('.',',')+'M';if(n>=1e3)return(n/1e3).toFixed(1).replace('.',',')+'K';return n.toLocaleString('fr-DZ',{minimumFractionDigits:2,maximumFractionDigits:2})}
+export function fDZD(n:number){return fmt(n)+' د.ج'}
+export function today(){return new Date().toDateString()}
+export const MKT=[{s:'BLK',v:'865,42',up:true,p:'1,24'},{s:'د.ج/USD',v:'134,20',up:false,p:'0,15'},{s:'GOLD',v:'2.342,8',up:true,p:'0,82'},{s:'S&P500',v:'5.248',up:true,p:'0,45'}];
+export const WP=[{l:'43 د.ج',v:43,cl:'#D4AF37'},{l:'86 د.ج',v:86,cl:'#6B4C0A'},{l:'215 د.ج',v:215,cl:'#C9992C'},{l:'Spin+',v:0,cl:'#7C3AED'},{l:'430 د.ج',v:430,cl:'#B8860B'},{l:'86 د.ج',v:86,cl:'#4A3506'},{l:'215 د.ج',v:215,cl:'#D4AF37'},{l:'43 د.ج',v:43,cl:'#9E7A20'}];
+export const TASKS_AR=['مراجعة أداء المحفظة','قراءة تقرير السوق اليومي','تحليل اتجاهات BLK','فحص الاستراتيجية اليومية','مشاهدة رسالة استثمارية','تحديث بيانات المحفظة','مراجعة الأرباح والخسائر','تحليل مؤشرات السوق','متابعة أخبار الاستثمار','فحص أداء الأسهم','مراجعة عقد الاستثمار','تحليل عائد المحفظة'];
+export const TASKS_EN=['Review portfolio performance','Read daily market report','Analyze BLK trends','Check daily strategy','View investment report','Update portfolio data','Review P&L statement','Analyze market indicators','Follow investment news','Check stock performance','Review investment contract','Analyze portfolio yield'];
+
+// ============================================
+// 10. src/appBrain.ts - منطق الأعمال
+// ============================================
+import type { User } from './store';
+import { LVS } from './utils/levels';
+const dayMs = 86400000;
+function levelIndex(id: string | null | undefined) { const i = LVS.findIndex(l => l.id === id); return i >= 0 ? i : 0; }
+function nextLevelId(current: string | null | undefined) { const i = levelIndex(current); return LEVELS[Math.min(i + 1, LEVELS.length - 1)]?.id || current || 'trial'; }
+export function ensureUserShape(user: User): User { return { ...user, balance: user.balance || 0, taskBal: user.taskBal || 0, refEarn: user.refEarn || 0, teamCount: user.teamCount || 0, wheelSpins: user.wheelSpins || 0, m1Refs: user.m1Refs || 0, totalEarned: user.totalEarned || 0, investments: user.investments || [], withdrawals: user.withdrawals || [], upgradeRequests: user.upgradeRequests || [], team: user.team || [], notifs: user.notifs || [], badges: user.badges || [], activityLog: user.activityLog || [], investEarned: user.investEarned || 0, loginStreak: user.loginStreak || 0, referralUpgradeCount: user.referralUpgradeCount || 0 }; }
+export function applyInvestmentAccrual(user: User, lang: string): { user: User; changed: boolean; message?: string } {
+  let u = ensureUserShape(user); let changed = false; let totalDelta = 0;
+  const investments = u.investments.map(inv => {
+    if (inv.status === 'completed' && inv.principalReturned) return inv;
+    const passedDays = Math.min(Math.floor((Date.now() - new Date(inv.date).getTime()) / dayMs), inv.days);
+    const expectedEarned = Math.max(0, inv.amount * inv.daily / 100 * passedDays);
+    const delta = Math.max(0, expectedEarned - (inv.earned || 0));
+    let next = { ...inv, earned: expectedEarned };
+    if (delta > 0) { totalDelta += delta; changed = true; }
+    if (passedDays >= inv.days && !inv.principalReturned) { totalDelta += inv.amount; next = { ...next, status: 'completed', principalReturned: true }; changed = true; }
+    return next;
+  });
+  if (!changed) return { user: u, changed: false };
+  const rounded = Math.round(totalDelta * 100) / 100;
+  const title = lang === 'ar' ? '📈 أرباح الاستثمار' : '📈 Investment earnings';
+  const desc = `+${rounded.toLocaleString('fr-DZ')} د.ج`;
+  u = { ...u, investments, balance: (u.balance || 0) + rounded, totalEarned: (u.totalEarned || 0) + rounded, investEarned: (u.investEarned || 0) + rounded, notifs: [...u.notifs, { id: Date.now(), title, desc, t: new Date().toLocaleTimeString(), r: false }], activityLog: [...(u.activityLog || []).slice(-30), `${new Date().toLocaleString()} - investment accrual ${desc}`] };
+  return { user: u, changed: true, message: desc };
+}
+export function applyReferralMilestones(user: User, lang: string): { user: User; changed: boolean } {
+  let u = ensureUserShape(user);
+  const earnedBlocks = Math.floor((u.m1Refs || 0) / 10);
+  const claimedBlocks = u.referralUpgradeCount || 0;
+  if (earnedBlocks <= claimedBlocks) return { user: u, changed: false };
+  let level = u.level;
+  for (let i = claimedBlocks; i < earnedBlocks; i++) { level = levelIndex(level) < levelIndex('m2') ? 'm2' : nextLevelId(level); }
+  const lvlName = LVS.find(l => l.id === level)?.n || 'M2';
+  u = { ...u, level, referralUpgradeCount: earnedBlocks, notifs: [...u.notifs, { id: Date.now() + 2, title: lang === 'ar' ? '🏆 ترقية مجانية من الإحالات' : '🏆 Free referral upgrade', desc: lang === 'ar' ? `تهانينا! حصلت على ${lvlName} مجاناً لأن 10 أصدقاء وصلوا M1.` : `Congrats! You unlocked ${lvlName} for free because 10 friends reached M1.`, t: new Date().toLocaleTimeString(), r: false }], activityLog: [...(u.activityLog || []).slice(-30), `${new Date().toLocaleString()} - referral free upgrade ${lvlName}`] };
+  return { user: u, changed: true };
+}
+
+// ============================================
+// 11. src/components/ui.tsx - مكونات الواجهة
+// ============================================
+import { useEffect, useState } from 'react';
+import { useStore } from '../store';
+import { Home as HI, Zap, Diamond, User as UI } from 'lucide-react';
+import { T } from '../utils';
+
+export function Nav() {
+  const { tab, setTab, tasks, user, lang } = useStore();
+  const t = T[lang];
+  const avail = tasks ? tasks.filter(x => x.status === 'available').length : 5;
+  const unread = user?.notifs?.filter(n => !n.r).length || 0;
+  const tabs: { id: 'home' | 'tasks' | 'up' | 'profile'; ic: typeof HI; l: string; b: number }[] = [
+    { id: 'home', ic: HI, l: t.home, b: 0 },
+    { id: 'tasks', ic: Zap, l: t.tasks, b: avail },
+    { id: 'up', ic: Diamond, l: t.up, b: 0 },
+    { id: 'profile', ic: UI, l: t.acc, b: unread },
+  ];
+  return (
+    <nav style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 68, background: 'rgba(2,5,9,.97)', borderTop: '1px solid rgba(212,175,55,.1)', display: 'flex', zIndex: 50 }}>
+      {tabs.map(tb => {
+        const on = tab === tb.id;
+        return (
+          <button key={tb.id} onClick={() => setTab(tb.id)} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, background: 'none', border: 'none', cursor: 'pointer', color: on ? '#D4AF37' : 'rgba(255,255,255,.3)', position: 'relative', transition: 'color .2s', fontFamily: 'Tajawal, sans-serif' }}>
+            {on && <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: 28, height: 3, borderRadius: '0 0 2px 2px', background: 'linear-gradient(135deg, #D4AF37, #C9992C)' }} />}
+            <div style={{ position: 'relative' }}>
+              <tb.ic size={22} strokeWidth={on ? 2.5 : 1.8} />
+              {tb.b > 0 && <span style={{ position: 'absolute', top: -5, right: -8, minWidth: 16, height: 16, background: '#EF4444', borderRadius: 8, border: '1.5px solid #020509', fontSize: 8, fontWeight: 900, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>{tb.b}</span>}
+            </div>
+            <span style={{ fontSize: 10, fontWeight: on ? 800 : 600, opacity: on ? 1 : 0.7 }}>{tb.l}</span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
+export function Toast() {
+  const { toast } = useStore();
+  useEffect(() => { if (!toast) return; const tm = setTimeout(() => useStore.setState({ toast: null }), 2800); return () => clearTimeout(tm); }, [toast]);
+  if (!toast) return null;
+  const c: Record<string, string> = { success: '#16A34A', error: '#DC2626', warning: '#D97706', info: '#1E40AF' };
+  return (
+    <div className="an-enter" style={{ position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 9999, padding: '10px 20px', borderRadius: 99, fontSize: 13, fontWeight: 800, color: '#fff', whiteSpace: 'nowrap', maxWidth: '88vw', overflow: 'hidden', textOverflow: 'ellipsis', background: c[toast.type] || c.info, boxShadow: '0 8px 30px rgba(0,0,0,.5)' }}>{toast.msg}</div>
+  );
+}
+
+export function SaveBadge() {
+  const pulse = useStore(s => s.savePulse);
+  const lang = useStore(s => s.lang);
+  const [show, setShow] = useState(false);
+  useEffect(() => { if (!pulse) return; setShow(true); const t = setTimeout(() => setShow(false), 1200); return () => clearTimeout(t); }, [pulse]);
+  if (!show) return null;
+  return (
+    <div className="an-enter" style={{ position: 'fixed', top: 14, right: 14, zIndex: 9998, display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(34,197,94,.12)', border: '1px solid rgba(34,197,94,.25)', borderRadius: 99, padding: '6px 10px', color: '#22C55E', fontSize: 11, fontWeight: 900, backdropFilter: 'blur(8px)' }}>
+      <span style={{ width: 7, height: 7, borderRadius: 4, background: '#22C55E', display: 'inline-block' }} />
+      {lang === 'ar' ? 'تم الحفظ' : 'Saved'}
     </div>
-    <button id="authBtn" class="btn gold" style="width:100%;font-size:16px" onclick="auth(true)">تسجيل الدخول</button>
-    <button id="switchBtn" onclick="switchAuth()" style="display:block;margin:14px auto 0;background:none;border:0;color:var(--muted);font-weight:800;font-family:Tajawal">ليس لديك حساب؟ سجل مجاناً</button>
-   </div>
-   <div class="card" style="padding:14px;margin-top:14px;text-align:center;color:var(--muted);font-weight:700">
-    🛡️ Platform Security<br>عقد رسمي: يناير 2025 → ديسمبر 2027<br>AES-256 + SSL/TLS 3.0
-   </div>
-  </div>
- </div>`
-}
-let signup=false;
-function switchAuth(){signup=!signup;document.getElementById("signupFields").style.display=signup?"block":"none";document.getElementById("authBtn").textContent=signup?"إنشاء حساب":"تسجيل الدخول";document.getElementById("authBtn").setAttribute("onclick",`auth(${!signup})`);document.getElementById("switchBtn").textContent=signup?"لديك حساب؟ سجل الدخول":"ليس لديك حساب؟ سجل مجاناً"}
-
-/* =========================
-   TASKS
-========================= */
-function lv(){return LVS.find(x=>x.id===S.user?.level)||LVS[0]}
-function loadTasks(){
- if(!S.user)return;
- let k="tasks_"+S.user.id;
- let saved=g(k,null);
- if(saved&&saved.date===today()){S.tasks=saved.tasks;return}
- let per=Math.max(43,Math.round(lv().dy/5));
- let arr=[...TASKS].sort(()=>Math.random()-.5).slice(0,5).map((t,i)=>({id:i+1,ar:t[0],sec:40,reward:per,status:"available"}));
- S.tasks=arr;s(k,{date:today(),tasks:arr});
-}
-function startTask(id){
- if(!S.user.level){S.user.level="trial"; setCur(S.user); toast("تم تفعيل التجربة تلقائياً")}
- if(S.activeTask)return toast("مهمة جارية","warning");
- let tk=S.tasks.find(x=>x.id===id); if(!tk||tk.status!=="available")return;
- tk.status="active";S.activeTask=id;S.cd=tk.sec;saveTaskState();render();
- S.timer=setInterval(()=>{S.cd--; if(S.cd<=0){clearInterval(S.timer);completeTask(id)} else render()},1000);
-}
-function completeTask(id){
- let tk=S.tasks.find(x=>x.id===id); if(!tk)return;
- tk.status="done";S.activeTask=null;
- S.user.balance+=tk.reward;S.user.taskBal+=tk.reward;S.user.totalEarned+=tk.reward;
- addAct(S.user,"task","✅ "+tk.ar,tk.reward,true);
- // 5% commission to referrer
- if(S.user.joinedVia){let all=users();let i=all.findIndex(x=>x.code===S.user.joinedVia);if(i>=0){let c=tk.reward*.05;all[i].balance+=c;all[i].refEarn=(all[i].refEarn||0)+c;all[i].totalEarned+=c;addNotif(all[i],"💰 عمولة إحالة","+ "+money(c)+" من أرباح "+S.user.un);saveUsers(all)}}
- setCur(S.user);saveTaskState();toast("+"+tk.reward+" د.ج");render();
-}
-function saveTaskState(){if(S.user)s("tasks_"+S.user.id,{date:today(),tasks:S.tasks})}
-
-/* =========================
-   WHEEL
-========================= */
-function openWheel(){
- if((S.user.wheelSpins||0)<=0)return toast("لا توجد دورات. ادع صديقاً لتحصل على دورة","warning");
- S.wheelOpen=true;render();
-}
-function spinWheel(){
- if((S.user.wheelSpins||0)<=0)return;
- let idx=Math.floor(Math.random()*WHEEL.length),p=WHEEL[idx];
- S.user.wheelSpins--;
- if(p.v>0){S.user.balance+=p.v;S.user.totalEarned+=p.v;addAct(S.user,"wheel","🎡 عجلة الحظ",p.v,true);toast("ربحت "+p.l)}
- else {S.user.wheelSpins++;toast("دورة إضافية")}
- setCur(S.user);S.wheelOpen=false;render();
+  );
 }
 
-/* =========================
-   INVEST
-========================= */
-function openInvest(){
- sheet("📈 استثمار BlackRock",`
- <div style="display:flex;flex-direction:column;gap:10">
-  <div class="card" style="padding:14px;text-align:center;border-color:rgba(34,197,94,.2);color:var(--green);font-weight:900">✅ الأموال آمنة ومؤمنة</div>
-  <div class="card" style="padding:16px;text-align:center"><div class="small">رصيدك المتاح</div><div class="goldText mon" style="font-size:28px;font-weight:900">${money(S.user.balance)}</div></div>
-  ${FUNDS.map(f=>`<div class="card" style="padding:14px">
-    <div class="row" style="justify-content:space-between"><div class="row"><span style="font-size:28px">${f.emoji}</span><div><b>${f.n}</b><div class="small"><span style="color:var(--green)">${f.daily}%</span> يومياً · ${f.days} يوم</div></div></div>${f.hot?'<span style="background:#ef4444;border-radius:8px;padding:3px 8px;font-size:11px;font-weight:900">🔥</span>':''}</div>
-    <div class="grid3" style="margin:12px 0">${[
-      ["المدة",f.days+" يوم","#D4AF37"],["اليومي",f.daily+"%","#22C55E"],["الإجمالي",(f.daily*f.days).toFixed(1)+"%","#3B82F6"]
-    ].map(x=>`<div style="background:rgba(255,255,255,.03);border-radius:10px;padding:8px;text-align:center"><b style="color:${x[2]}">${x[1]}</b><div class="small">${x[0]}</div></div>`).join("")}</div>
-    <input id="amt${f.id}" class="input" type="number" placeholder="1000" style="margin-bottom:8px" dir="ltr">
-    <button class="btn gold" style="width:100%" onclick="buyFund(${f.id})">اشتري الآن 🚀</button>
-  </div>`).join("")}
- </div>`)
-}
-function buyFund(id){
- let f=FUNDS.find(x=>x.id===id), amt=parseFloat(document.getElementById("amt"+id).value);
- if(!amt||amt<1000)return toast("الحد الأدنى 1000 د.ج","warning");
- if(amt>S.user.balance)return toast("رصيد غير كافي","error");
- S.user.balance-=amt;
- S.user.investments.push({id:Date.now(),fundId:id,amount:amt,date:new Date().toISOString(),days:f.days,daily:f.daily,status:"active",earned:0});
- addAct(S.user,"invest","📈 "+f.n,amt,false);
- setCur(S.user);closeSheet();toast("تم الاستثمار");render();
+export function Sheet() {
+  const { sheet, closeSheet } = useStore();
+  if (!sheet) return null;
+  return (
+    <div className="an-fadeIn" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.85)', zIndex: 200, display: 'flex', alignItems: 'flex-end' }} onClick={e => { if (e.target === e.currentTarget) closeSheet(); }}>
+      <div className="an-slideUp no-sb touch-scroll" style={{ background: 'linear-gradient(180deg, #0b1122, #050912)', borderRadius: '22px 22px 0 0', borderTop: '1px solid rgba(212,175,55,.12)', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
+        <div style={{ width: 36, height: 4, background: 'rgba(212,175,55,.18)', borderRadius: 2, margin: '12px auto 8px' }} />
+        {sheet.title && <div style={{ textAlign: 'center', fontSize: 15, fontWeight: 800, color: '#fff', padding: '0 16px 12px', borderBottom: '1px solid rgba(255,255,255,.05)' }}>{sheet.title}</div>}
+        <div style={{ padding: '16px 16px 48px' }}>{sheet.content}</div>
+      </div>
+    </div>
+  );
 }
 
-/* =========================
-   PROFILE / REFERRAL
-========================= */
-function openReferrals(){
- let all=users(), refs=all.filter(x=>x.joinedVia===S.user.code);
- let m1=refs.filter(x=>x.level&&x.level!=="trial").length;
- if(m1>=10&&S.user.level!=="m2"&&LVS.findIndex(x=>x.id===S.user.level)<2){S.user.level="m2";addNotif(S.user,"🎁 ترقية مجانية","حصلت على M2 لأن 10 أصدقاء شحنوا M1");setCur(S.user);toast("M2 مجاني!")}
- sheet("👥 إحالاتي",`
- <div style="display:flex;flex-direction:column;gap:10">
-  <div class="grid2"><div class="card" style="padding:14px;text-align:center"><b class="goldText mon" style="font-size:24px">${refs.length}</b><div class="small">إجمالي الإحالات</div></div><div class="card" style="padding:14px;text-align:center"><b style="color:var(--green)" class="mon">${money(S.user.refEarn)}</b><div class="small">أرباح الإحالات</div></div></div>
-  <div class="card" style="padding:14px;border-color:rgba(168,85,247,.2)"><b>🏆 مسابقة الإحالة</b><div style="height:7px;background:rgba(255,255,255,.08);border-radius:4px;margin:10px 0"><div style="height:100%;width:${Math.min(m1*10,100)}%;background:var(--purple);border-radius:4px"></div></div><div class="small">${m1}/10 أصدقاء M1 = حساب M2 مجاني</div></div>
-  <div class="card" style="padding:14px;text-align:center"><b>🎯 رابط الدعوة الوحيد</b><div style="background:rgba(255,255,255,.03);border-radius:10px;padding:10px;margin:10px 0;direction:ltr;word-break:break-all;color:var(--muted)">${refLink(S.user)}</div><button class="btn gold" onclick="copyRef()">نسخ الرابط</button></div>
-  ${refs.length?refs.map(r=>`<div class="card" style="padding:10px;display:flex;align-items:center;gap:10px"><div class="gold" style="width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#020509;font-weight:900">${r.un[0].toUpperCase()}</div><div style="flex:1"><b>${r.un}</b><div class="small">${r.level||"new"}</div></div></div>`).join(""):`<div class="card" style="padding:22px;text-align:center;color:var(--muted)">لم ينضم أي صديق بعد</div>`}
- </div>`)
-}
-function copyRef(){navigator.clipboard.writeText(refLink(S.user));toast("تم نسخ الرابط")}
-function profile(){
- let u=S.user;
- return `<div class="screen"><div style="padding:14px 16px">
- <div class="row" style="justify-content:space-between;margin-bottom:12px"><button class="btn" onclick="toggleLang()" style="background:rgba(212,175,55,.08);color:var(--gold);padding:6px 12px">${document.documentElement.lang==="ar"?"English":"عربي"}</button><h2>حسابي</h2><div class="gold" style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center">👥</div></div>
- <div class="card" style="padding:24px;text-align:center;margin-bottom:12px"><div class="gold" style="width:86px;height:86px;border-radius:50%;margin:auto;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#020509">${u.un[0].toUpperCase()}</div><h2 style="margin-top:10px">${u.un}</h2><div class="small mon">BLK-${String(u.id).slice(-6)}</div><span style="display:inline-block;margin-top:8px;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.2);border-radius:99px;padding:4px 12px;color:var(--gold);font-weight:900">${lv().n}</span></div>
- <div class="grid2" style="margin-bottom:12px">${[
-  [money(u.balance),"💰 إجمالي الرصيد","#D4AF37"],[u.teamCount||0,"👥 الفريق","#3B82F6"],[money(u.totalEarned),"📈 إجمالي الأرباح","#22C55E"],[u.wheelSpins||0,"🎡 عجلة الحظ","#A855F7"],[(u.investments||[]).length,"📈 استثمارات","#14B8A6"],[u.loginStreak||1,"🔥 حضور متتالي","#F59E0B"]
- ].map(x=>`<div class="card" style="padding:12px;text-align:center"><b style="color:${x[2]}" class="mon">${x[0]}</b><div class="small">${x[1]}</div></div>`).join("")}</div>
- <div class="card" style="overflow:hidden;margin-bottom:12px">${[
-  ["نشاطاتي","السجل والإنجازات","📊","openActivity()"],["إحالاتي",`مدعو ${u.teamCount||0}`,"👥","openReferrals()"],["عجلة الحظ","مع كل صديق","🎁","openWheel()"],["الإعدادات","البيانات","⚙️","settings()"]
- ].map(i=>`<button onclick="${i[3]}" style="width:100%;padding:14px;background:none;border:0;border-bottom:1px solid var(--line);color:#fff;font-family:Tajawal;text-align:right;display:flex;align-items:center;gap:12px"><span style="font-size:22px">${i[2]}</span><div style="flex:1"><b>${i[0]}</b><div class="small">${i[1]}</div></div><span style="color:var(--muted)">‹</span></button>`).join("")}</div>
- <button class="btn" onclick="logout()" style="width:100%;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.15);color:var(--red)">تسجيل الخروج</button>
- </div></div>`
+// ============================================
+// 12. src/components/Wheel.tsx - عجلة الحظ
+// ============================================
+import { useState } from 'react';
+import { useStore } from '../store';
+import { T, WP } from '../utils';
+import { X } from 'lucide-react';
+
+export function Wheel() {
+  const { user, lang, wheelRot, setWheelRot, toast2, updUser, setShowWheel } = useStore();
+  const t = T[lang];
+  const [spinning, setSpinning] = useState(false);
+  const [prizeRec, setPrizeRec] = useState<{l:string;v:number}|null>(null);
+  if (!user) return null;
+  const doSpin = () => {
+    if (spinning || (user.wheelSpins||0) <= 0) return;
+    setSpinning(true); setPrizeRec(null);
+    const n=WP.length, seg=360/n, add=1440+Math.random()*1440, nr=wheelRot+add;
+    setWheelRot(nr);
+    setTimeout(() => {
+      const wi=Math.floor(((360-(nr%360))+(seg/2))%360/seg)%n;
+      const prize=WP[wi]; setSpinning(false);
+      const ns=Math.max(0,(user.wheelSpins||0)-1);
+      if (prize.v>0) { updUser({balance:(user.balance||0)+prize.v,totalEarned:(user.totalEarned||0)+prize.v,wheelSpins:ns}); toast2(`🎉 +${prize.v} د.ج!`,'success'); }
+      else { updUser({wheelSpins:ns+1}); toast2(lang==='ar'?'🎠 دورة إضافية!':'🎠 Extra spin!','warning'); }
+      setPrizeRec(prize);
+    }, 4100);
+  };
+  const cx=134,cy=134,r=128,n=WP.length,seg=360/n;
+  return (
+    <div className="an-fadeIn" style={{position:'fixed',inset:0,background:'rgba(0,0,0,.95)',zIndex:300,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:20,color:'#fff'}}>
+      <button onClick={()=>setShowWheel(false)} style={{position:'absolute',top:48,right:16,width:36,height:36,background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.06)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'rgba(255,255,255,.45)'}}><X size={16} /></button>
+      <div style={{textAlign:'center',marginBottom:16}}>
+        <p className="font-mon" style={{fontSize:11,fontWeight:800,color:'#D4AF37',letterSpacing:2}}>{t.wheel.toUpperCase()}</p>
+        <p style={{color:'rgba(255,255,255,.3)',fontSize:12,marginTop:4}}>{lang==='ar'?'دوراتك':'Spins'}: <span style={{color:'#D4AF37',fontWeight:800}}>{user.wheelSpins||0}</span></p>
+      </div>
+      <div style={{position:'relative',marginBottom:20}}>
+        <div style={{position:'absolute',top:-12,left:'50%',transform:'translateX(-50%)',borderLeft:'11px solid transparent',borderRight:'11px solid transparent',borderTop:'22px solid #EF4444',zIndex:10,filter:'drop-shadow(0 0 5px rgba(239,68,68,.6))'}} />
+        <svg width="268" height="268" viewBox="0 0 268 268" style={{borderRadius:'50%',boxShadow:'0 0 40px rgba(212,175,55,.2)',transform:`rotate(${wheelRot}deg)`,transition:spinning?'transform 4s cubic-bezier(.17,.67,.12,.99)':'none'}}>
+          {WP.map((p,i)=>{const a1=(i*seg-90)*Math.PI/180,a2=((i+1)*seg-90)*Math.PI/180;const x1=(cx+r*Math.cos(a1)).toFixed(1),y1=(cy+r*Math.sin(a1)).toFixed(1),x2=(cx+r*Math.cos(a2)).toFixed(1),y2=(cy+r*Math.sin(a2)).toFixed(1),mx=(cx+(r*.62)*Math.cos((a1+a2)/2)).toFixed(1),my=(cy+(r*.62)*Math.sin((a1+a2)/2)).toFixed(1),rot=(i*seg+(seg/2)-90).toFixed(1);return(<g key={i}><path d={`M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z`} fill={p.cl} stroke="rgba(0,0,0,.35)" strokeWidth="1"/><text x={mx} y={my} textAnchor="middle" dominantBaseline="middle" fontFamily="Montserrat,sans-serif" fontWeight="900" fontSize="10.5" fill="#fff" transform={`rotate(${rot},${mx},${my})`}>{p.l}</text></g>)})}
+          <circle cx={cx} cy={cy} r="25" fill="#020509" stroke="#D4AF37" strokeWidth="3"/><text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle" fontFamily="Montserrat,sans-serif" fontSize="11" fontWeight="900" fill="#D4AF37">BLK</text>
+        </svg>
+      </div>
+      <div style={{minHeight:50,display:'flex',alignItems:'center',justifyContent:'center',marginBottom:12,width:'100%',maxWidth:275}}>
+        {prizeRec && <div className="bg-shim an-enter" style={{border:'1px solid rgba(212,175,55,.1)',borderRadius:16,padding:'10px 18px',textAlign:'center',width:'100%'}}>
+          <p className="font-mon" style={{color:'rgba(255,255,255,.3)',fontSize:9,marginBottom:2}}>{t.prize}</p>
+          <p className="font-mon tg" style={{fontSize:22,fontWeight:900}}>{prizeRec.v>0?`+${prizeRec.v} د.ج`:prizeRec.l}</p>
+        </div>}
+      </div>
+      <button onClick={doSpin} disabled={spinning||(user.wheelSpins||0)<=0} className="bg-gold" style={{width:'100%',maxWidth:275,border:'none',color:'#020509',borderRadius:12,padding:'14px 0',fontSize:15,fontWeight:800,cursor:spinning||(user.wheelSpins||0)<=0?'not-allowed':'pointer',opacity:spinning||(user.wheelSpins||0)<=0?.5:1}}>
+        {spinning?'🎡':((user.wheelSpins||0)>0?`🎯 ${t.spin}`:t.noSpin)}
+      </button>
+      <p style={{color:'rgba(255,255,255,.25)',fontSize:9,marginTop:8,textAlign:'center',fontWeight:700}}>{t.ef}</p>
+    </div>
+  );
 }
 
-/* =========================
-   PAGES
-========================= */
-function home(){
- let u=S.user, done=S.tasks?.filter(t=>t.status==="done").length||0;
- return `<div class="screen">
- <header style="padding:12px 14px 0;background:rgba(2,5,9,.97);position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(212,175,55,.08)">
-  <div class="row" style="justify-content:space-between;margin-bottom:8px"><button onclick="notifs()" class="btn" style="padding:8px;background:rgba(212,175,55,.07);color:var(--gold);position:relative">🔔${(u.notifs||[]).filter(n=>!n.r).length?`<span class="badge">${(u.notifs||[]).filter(n=>!n.r).length}</span>`:""}</button><div style="text-align:center"><div class="goldText mon" style="font-size:16px;font-weight:900;letter-spacing:2px">BLACKROCK</div><div class="small">منصة الاستثمار</div></div><div class="gold" style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center">◇</div></div>
-  <div style="overflow:hidden;margin:0 -14px;background:rgba(212,175,55,.04)"><div class="ticker" style="display:flex;white-space:nowrap;padding:5px 0">${["BLK 865,42 ▲1,24%","د.ج/USD 134,20 ▼0,15%","GOLD 2.342,8 ▲0,82%","S&P500 5.248 ▲0,45%"].concat(["BLK 865,42 ▲1,24%","د.ج/USD 134,20 ▼0,15%","GOLD 2.342,8 ▲0,82%"]).map(x=>`<span style="padding:0 15px;font-size:11px;font-weight:900;color:var(--gold)">${x}</span>`).join("")}</div></div>
- </header>
- <div style="padding:12px 16px;display:flex;flex-direction:column;gap:12px">
-  <div class="card" style="padding:18px;border-color:rgba(212,175,55,.25)"><div class="row" style="justify-content:space-between"><div><div class="small">إجمالي الرصيد</div><div class="goldText mon" style="font-size:34px;font-weight:900">${fmt(u.balance)}</div><div class="small">د.ج</div></div><div class="gold" style="width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;color:#020509">${u.un[0].toUpperCase()}</div></div><div class="grid3" style="margin-top:14px">${[[u.teamCount,t.team,"#D4AF37"],[done+"/5",t.done,"#22C55E"],["+"+lv().dy,t.daily,"#3B82F6"]].map(x=>`<div style="background:rgba(255,255,255,.03);border-radius:12px;padding:10px;text-align:center"><b class="mon" style="color:${x[2]}">${x[0]}</b><div class="small">${x[1]}</div></div>`).join("")}</div></div>
-  <div class="grid2"><button class="btn gold" onclick="deposit()">شحن</button><button class="btn" onclick="withdraw()" style="background:rgba(34,197,94,.08);color:var(--green);border:1px solid rgba(34,197,94,.2)">سحب CCP</button></div>
-  <button class="btn" onclick="openInvest()" style="text-align:right;background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(184,134,11,.05));border:1px solid rgba(212,175,55,.22);color:var(--gold)">📈 استثمار BlackRock<br><span class="small">صناديق استثمارية بعوائد يومية</span></button>
-  <div class="card" style="padding:14px;border-color:rgba(168,85,247,.2)"><div class="row"><span style="font-size:26px">🏆</span><div><b>مسابقة الإحالة</b><div class="small">10 أصدقاء M1 = ترقية مجانية</div></div></div><div style="height:7px;background:rgba(255,255,255,.08);border-radius:4px;margin:12px 0"><div style="height:100%;width:${Math.min((u.m1Refs||0)*10,100)}%;background:var(--purple);border-radius:4px"></div></div><div class="small">${u.m1Refs||0}/10</div></div>
-  <div class="card" style="padding:14px;border-color:rgba(212,175,55,.14)"><div class="row"><span style="font-size:26px">🎁</span><div><b>رابط الدعوة الوحيد</b><div class="small">5% من دخل كل صديق مدى الحياة</div></div></div><div style="background:rgba(255,255,255,.03);border-radius:10px;padding:10px;margin:10px 0;direction:ltr;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)">${refLink(u)}</div><button class="btn gold" style="width:100%" onclick="shareRef()">مشاركة 🔗</button><div class="small" style="text-align:center;margin-top:6px">كل صديق = دورة لك + دورة له</div></div>
-  <h2>📊 أداء المحفظة</h2><div class="grid2">${[[money(u.totalEarned),"إجمالي الأرباح","#22C55E"],[money(u.refEarn),"أرباح الإحالات","#D4AF37"],["+"+done*lv().dy+" د.ج","أرباح اليوم","#3B82F6"],[money(lv().mo),"الأرباح الشهرية","#D4AF37"]].map(x=>`<div class="card" style="padding:12px"><b style="color:${x[2]}" class="mon">${x[0]}</b><div class="small">${x[1]}</div></div>`).join("")}</div>
- </div></div>`
-}
-function tasksPage(){
- return `<div class="screen"><div style="padding:14px 16px"><h2 style="margin-bottom:12px">⚡ المهام اليومية</h2>${S.tasks.map(t=>taskCard(t)).join("")}</div></div>`
-}
-function taskCard(tk){let act=S.activeTask===tk.id&&tk.status==="active";return `<div class="card" style="padding:14px;margin-bottom:10px"><div class="row" style="justify-content:space-between"><div class="row"><div class="gold" style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center">🚀</div><div><b>${tk.ar}</b><div class="small">مكافأة: ${tk.reward} د.ج · ${tk.sec} ثانية</div></div></div><b class="mon" style="color:var(--gold)">+${tk.reward}</b></div><div style="height:5px;background:rgba(255,255,255,.06);border-radius:4px;margin:12px 0"><div style="height:100%;width:${tk.status==="done"?100:act?((tk.sec-S.cd)/tk.sec*100):0}%;background:var(--gold);border-radius:4px"></div></div>${act?`<div style="text-align:center"><div class="goldText mon" style="font-size:42px;font-weight:900">${S.cd}</div><button class="btn" style="background:rgba(239,68,68,.1);color:var(--red)">مهمة جارية</button></div>`:tk.status==="available"?`<button class="btn gold" style="width:100%" onclick="startTask(${tk.id})">ابدأ - 40 ثانية</button>`:tk.status==="done"?`<div class="btn" style="background:rgba(34,197,94,.08);color:var(--green)">مكتملة ✅</div>`:`<div class="btn" style="background:rgba(239,68,68,.08);color:var(--red)">أُلغيت</div>`}</div>`}
-function upgrade(){return `<div class="screen"><div style="padding:14px 16px"><h2>💎 خطط الاستثمار</h2><div class="card" style="padding:14px;margin:12px 0"><div class="small">رصيدك المتاح</div><div class="goldText mon" style="font-size:24px">${money(S.user.balance)}</div></div>${LVS.map(l=>`<div class="card" style="padding:14px;margin-bottom:12px;opacity:${l.p&&S.user.balance<l.p?.55:1}"><div class="row" style="justify-content:space-between"><div class="row"><div class="gold" style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center">🚀</div><div><b>${l.n}</b><div style="color:${l.p?'var(--gold)':'var(--green)'};font-weight:900">${l.p?money(l.p):"مجاني"}</div></div></div>${S.user.level===l.id?'<span style="color:var(--green)">✓ مفعل</span>':''}</div><div class="grid3" style="margin:12px 0"><div><b>${l.dy} د.ج</b><div class="small">يومي</div></div><div><b>${l.d}</b><div class="small">أيام</div></div><div><b>${l.tot}</b><div class="small">الإجمالي</div></div></div>${l.id==="trial"&&!S.user.level?`<button class="btn" style="width:100%;background:rgba(34,197,94,.08);color:var(--green)" onclick="S.user.level='trial';setCur(S.user);render();toast('تم التفعيل')">بدء التجربة المجانية</button>`:l.p&&! (S.user.level===l.id)?`<button class="btn gold" style="width:100%" onclick="upgradeContact('${l.n}',${l.p})">ترقية</button>`:""}</div>`).join("")}</div></div>`}
-function upgradeContact(n,p){sheet("🚀 ترقية الحساب",`<div style="text-align:center"><h2>${n}</h2><div class="goldText mon" style="font-size:30px;font-weight:900">${money(p)}</div><p style="color:var(--muted);line-height:2;margin:14px 0">تواصل مع الوكلاء عبر Signal.<br>سيرسل لك الفريق رقم CCP للدفع.<br>أرسل الإيصال + كود حسابك.</p><button class="btn" style="width:100%;background:#2563eb;color:#fff" onclick="window.open('${SIGNAL_LINK}','_blank')">فتح Signal والتواصل مع الوكلاء 🔐</button></div>`)}
-function notifs(){let ns=S.user.notifs||[];sheet("🔔 الإشعارات",ns.length?ns.slice().reverse().map(n=>`<div class="card" style="padding:12px;margin-bottom:8px"><b>${n.title}</b><p class="small">${n.desc}</p><p class="small">${n.t}</p></div>`).join(""):"<div style='padding:30px;text-align:center;color:var(--muted)'>لا توجد إشعارات</div>");S.user.notifs=ns.map(n=>({...n,r:true}));setCur(S.user);render()}
-function deposit(){sheet("💰 شحن الرصيد",`<div style="text-align:center"><h2>Signal 🔐</h2><p style="line-height:2;color:var(--muted);font-weight:800;margin:16px 0">هذا رابطنا، تجدون فيه الوكلاء للشحن أو الاستثمار.<br>تواصل مع الوكلاء عبر Signal فقط.<br>أرسل المبلغ المطلوب مع كود حسابك: <span style="color:var(--gold)">${S.user.code}</span><br>سيتم تفعيل الرصيد خلال 15 دقيقة.<br>الشحن بدون حد أدنى أو حد أقصى.<br>لا يوجد شحن عبر Baridimob أو CCP مباشرة.</p><div class="card" style="padding:12px;direction:ltr;color:var(--muted);word-break:break-all">${SIGNAL_LINK}</div><button class="btn" style="width:100%;background:#2563eb;color:#fff;margin-top:14px" onclick="window.open('${SIGNAL_LINK}','_blank')">فتح Signal والتواصل مع الوكلاء 🔐</button></div>`)}
-function withdraw(){if(S.user.balance<10000)return toast("الحد الأدنى للسحب 10,000 د.ج","warning"); sheet("💳 سحب الأموال",`<p style="color:var(--muted);line-height:2">السحب عبر CCP بريد الجزائر فقط.<br>الحد الأدنى: 10,000 د.ج.<br>مدة المعالجة: 48 إلى 72 ساعة.</p><input class="input" id="ccp" placeholder="رقم CCP" style="margin:10px 0"><input class="input" id="wamt" type="number" placeholder="10000"><button class="btn gold" style="width:100%;margin-top:12px" onclick="submitWithdraw()">تأكيد السحب</button>`)}
-function submitWithdraw(){let amt=parseFloat(document.getElementById("wamt").value);if(!amt||amt<10000)return toast("الحد الأدنى 10,000 د.ج","error");if(amt>S.user.balance)return toast("رصيد غير كافي","error");S.user.balance-=amt;S.user.withdrawals.push({id:Date.now(),amount:amt,ccp:document.getElementById("ccp").value,date:new Date().toISOString(),status:"pending"});addAct(S.user,"withdraw","طلب سحب",amt,false);setCur(S.user);closeSheet();toast("تم إرسال طلب السحب");render()}
-function shareRef(){let msg=`🏦 BlackRock\n${refLink(S.user)}\nسجل عبر رابطي واحصل على عجلة حظ 🎡`; if(navigator.share)navigator.share({title:"BlackRock",text:msg,url:refLink(S.user)}); else{navigator.clipboard.writeText(msg);toast("تم النسخ")}}
-function openActivity(){sheet("📊 نشاطاتي",(S.user.activities||[]).length?(S.user.activities||[]).slice().reverse().map(a=>`<div class="card" style="padding:12px;margin-bottom:8px"><b>${a.title}</b><div class="small">${new Date(a.date).toLocaleString()}</div><b style="color:${a.positive?'var(--green)':'var(--red)'}">${a.positive?"+":"-"}${money(Math.abs(a.amount))}</b></div>`).join(""):"<div style='padding:30px;text-align:center;color:var(--muted)'>لا توجد نشاطات</div>")}
-function settings(){sheet("الإعدادات",`<div class="card" style="padding:14px;margin-bottom:10px"><div class="row" style="justify-content:space-between"><span>اسم المستخدم</span><b>${S.user.un}</b></div><div class="row" style="justify-content:space-between"><span>الرصيد</span><b>${money(S.user.balance)}</b></div><div class="row" style="justify-content:space-between"><span>الهاتف</span><b>${S.user.phone||"-"}</b></div><div class="row" style="justify-content:space-between"><span>الولاية</span><b>${S.user.wilaya||"-"}</b></div></div><button class="btn" onclick="S.hideOnline=!S.hideOnline;s('hideOnline',S.hideOnline);closeSheet();render()" style="width:100%;background:rgba(239,68,68,.08);color:var(--red);margin-bottom:10px">${S.hideOnline?"إظهار شريط النشطين ✅":"إخفاء شريط النشطين ❌"}</button><button class="btn" onclick="toggleLang()" style="width:100%;background:rgba(255,255,255,.05);color:#fff">Switch to English 🌐</button>`)}
+// ============================================
+// 13. src/components/Auth.tsx - تسجيل الدخول
+// ============================================
+import { useState } from 'react';
+import { useStore } from '../store';
+import { T } from '../utils';
+import { Shield, Diamond, Eye, EyeOff } from 'lucide-react';
+import { createUser, findUserByCode, loginUser, normalizeUser, saveUser, usernameExists } from '../backend';
+import { WILAYAS, cleanAlgerianPhoneInput, normalizeAlgerianPhone } from '../utils/algeria';
 
-function toggleLang(){document.documentElement.lang=document.documentElement.lang==="ar"?"en":"ar";document.documentElement.dir=document.documentElement.lang==="ar"?"rtl":"ltr";render()}
-function logout(){localStorage.removeItem(PREFIX+"cur");S.user=null;render()}
+const AVATAR_STYLES = ['avataaars', 'lorelei', 'micah'];
+const AVATAR_SEEDS = ['Ahmed', 'Amina', 'Yacine', 'Sofia', 'Karim', 'Lina', 'Nassim', 'Rania'];
+const avatarUrl = (style: string, seed: string) => `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}&backgroundColor=0f172a,1e293b,312e81`;
+const randomAvatar = () => avatarUrl(AVATAR_STYLES[Math.floor(Math.random() * AVATAR_STYLES.length)], AVATAR_SEEDS[Math.floor(Math.random() * AVATAR_SEEDS.length)]);
 
-/* =========================
-   RENDER
-========================= */
-function render(){
- const app=document.getElementById("app");
- if(!S.user){app.innerHTML=authHTML();return}
- if(!S.tasks)loadTasks();
- app.innerHTML=(S.tab==="home"?home():S.tab==="tasks"?tasksPage():S.tab==="up"?upgrade():profile())+nav()+aiButton();
- if(S.wheelOpen)wheelOverlay();
+export function Auth() {
+  const { lang, toggleLang, setUser, toast2 } = useStore();
+  const t = T[lang];
+  const joinCode = (() => { try { const params = new URLSearchParams(window.location.search); const queryRef = params.get('code') || params.get('ref'); if (queryRef) return queryRef.trim().toUpperCase(); const hash = window.location.hash || ''; const match = hash.match(/(?:code|ref)=([^&]+)/i); return match ? decodeURIComponent(match[1]).trim().toUpperCase() : ''; } catch { return ''; } })();
+  const buildRefLink = (code: string) => { try { const basePath = window.location.pathname.replace(/\/?index\.html$/i, '').replace(/\/$/, ''); return `${window.location.origin}${basePath || ''}?code=${code}`; } catch { return 'blackrock.app?code=' + code; } };
+  const [isLogin, setIsLogin] = useState(true);
+  const [un, setUn] = useState('');
+  const [pw, setPw] = useState('');
+  const [cpw, setCpw] = useState('');
+  const [phone, setPhone] = useState('');
+  const [wilaya, setWilaya] = useState('');
+  const [showWilayas, setShowWilayas] = useState(false);
+  const [showPw, setShowPw] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const go = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!un || !pw) { toast2(lang === 'ar' ? 'يرجى ملء الحقول' : 'Fill all fields', 'error'); return; }
+    if (!isLogin && pw !== cpw) { toast2(lang === 'ar' ? 'كلمتا المرور مختلفتان' : "Passwords don't match", 'error'); return; }
+    const normalizedPhone = normalizeAlgerianPhone(phone);
+    if (!isLogin && !normalizedPhone) { toast2(lang === 'ar' ? 'أدخل رقم جزائري صحيح' : 'Enter a valid Algerian phone', 'error'); return; }
+    if (!isLogin && !wilaya.trim()) { toast2(lang === 'ar' ? 'أدخل الولاية' : 'Enter wilaya', 'error'); return; }
+    setLoading(true);
+    try {
+      setLoading(false);
+      if (isLogin) {
+        const f = await loginUser(un, pw);
+        if (f) { setUser(f); toast2('👋 ' + un, 'success'); }
+        else toast2(lang === 'ar' ? 'بيانات خاطئة' : 'Wrong credentials', 'error');
+      } else {
+        if (await usernameExists(un)) { toast2(lang === 'ar' ? 'الاسم موجود' : 'Username taken', 'error'); return; }
+        const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const newAvatar = randomAvatar();
+        const referrer = joinCode ? await findUserByCode(joinCode) : null;
+        console.log('🔍 Referral check - joinCode:', joinCode, 'referrer found:', !!referrer);
+        
+        const nu = normalizeUser({
+          id: Date.now(), un, pw, code, ref: buildRefLink(code), phone: normalizedPhone, wilaya: wilaya.trim(), profileCompleted: true,
+          balance: 0, taskBal: 0, refEarn: 0, teamCount: 0, wheelSpins: 1,
+          m1Refs: 0, level: null, totalEarned: 0, avatar: newAvatar,
+          joined: new Date().toISOString(), joinedVia: referrer ? joinCode : null,
+          investments: [], investEarned: 0, withdrawals: [], upgradeRequests: [], team: [], showLiveActivity: true, lastLogin: new Date().toDateString(), loginStreak: 1,
+          badges: ['founder'], activityLog: [new Date().toLocaleString() + ' - account created'],
+          notifs: [
+            { id: 1, title: '👋 ' + (lang === 'ar' ? 'مرحباً!' : 'Welcome!'), desc: (lang === 'ar' ? 'سجلت بنجاح! حصلت على دورة عجلة حظ مجانية! 🎡' : 'You registered successfully! You got a free lucky spin! 🎡'), t: 'Now', r: false },
+            { id: 2, title: '🏆 ' + (lang === 'ar' ? 'مسابقة الإحالة' : 'Referral Contest'), desc: lang === 'ar' ? '10 أصدقاء = ترقية مجانية!' : '10 friends = Free upgrade!', t: 'Now', r: false }
+          ]
+        });
+        
+        const saved = await createUser(nu, pw);
+        console.log('✅ New user created:', saved.un, 'wheelSpins:', saved.wheelSpins);
+        
+        if (referrer) {
+          referrer.teamCount = (referrer.teamCount || 0) + 1;
+          referrer.wheelSpins = (referrer.wheelSpins || 0) + 1;
+          referrer.team = [...(referrer.team || []), { id: saved.id, username: un, code, joined: new Date().toISOString(), avatar: newAvatar, level: null, active: true }];
+          referrer.notifs = [...(referrer.notifs || []), { id: Date.now(), title: '🎡 ' + (lang === 'ar' ? 'صديق جديد انضم!' : 'New friend joined!'), desc: un + (lang === 'ar' ? ' سجل برابطك. حصلت على دورة عجلة حظ! 🎁' : ' joined via your link. You earned a lucky spin! 🎁'), t: new Date().toLocaleTimeString(), r: false }];
+          await saveUser(referrer);
+          console.log('✅ Referrer updated:', referrer.un, 'wheelSpins:', referrer.wheelSpins, 'teamCount:', referrer.teamCount);
+        } else if (joinCode) {
+          console.log('⚠️ Referrer NOT found for code:', joinCode);
+        }
+        
+        setUser(saved);
+        toast2('🎉 ' + (lang === 'ar' ? 'مرحباً! لديك دورة عجلة حظ مجانية 🎡' : 'Welcome! You have a free lucky spin 🎡'), 'success');
+      }
+    } catch (err) {
+      console.error(err);
+      toast2(lang === 'ar' ? 'خطأ في الاتصال بقاعدة البيانات' : 'Database connection error', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const inputStyle: React.CSSProperties = { width: '100%', background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 14, color: '#fff', padding: '14px 16px', fontSize: 15, fontWeight: 700, outline: 'none', fontFamily: 'Tajawal, sans-serif' };
+  const labelStyle: React.CSSProperties = { display: 'block', color: 'rgba(255,255,255,.5)', fontSize: 11, fontWeight: 800, letterSpacing: 1, marginBottom: 8 };
+
+  return (
+    <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 24px', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40%', background: 'radial-gradient(ellipse at 50% -20%, rgba(212,175,55,.06), transparent 68%)', pointerEvents: 'none' }} />
+      <div className="an-enter" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 370 }}>
+        {joinCode && (<div style={{ background: 'linear-gradient(135deg, rgba(212,175,55,.12), rgba(34,197,94,.06))', border: '1px solid rgba(212,175,55,.28)', borderRadius: 16, padding: 14, textAlign: 'center', marginBottom: 16 }}><p style={{ color: '#D4AF37', fontSize: 13, fontWeight: 900, marginBottom: 4 }}>🎁 {lang === 'ar' ? 'دعوة صديق مفعلة' : 'Referral Invite Active'}</p><p style={{ color: 'rgba(255,255,255,.48)', fontSize: 12, fontWeight: 700 }}>{lang === 'ar' ? 'سجل الآن لتحصل على دورة عجلة حظ مجانية' : 'Sign up now to get a free lucky wheel spin'}</p></div>)}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 32 }}>
+          <div style={{ width: 72, height: 72, background: 'linear-gradient(135deg, #D4AF37, #C9992C, #B8860B)', borderRadius: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, boxShadow: '0 0 24px rgba(212,175,55,.4)' }} className="an-glow"><Diamond size={36} strokeWidth={2.5} color="#020509" /></div>
+          <h1 style={{ fontFamily: 'Montserrat, sans-serif', fontSize: 26, fontWeight: 900, letterSpacing: 4 }} className="tg">BLACKROCK</h1>
+          <p style={{ color: 'rgba(255,255,255,.35)', fontSize: 11, fontWeight: 700, letterSpacing: 2, marginTop: 4 }}>{t.sub.toUpperCase()}</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 14, flexWrap: 'wrap' }}>
+            <span style={{ background: 'rgba(34,197,94,.08)', border: '1px solid rgba(34,197,94,.22)', borderRadius: 99, padding: '3px 10px', display: 'inline-flex', alignItems: 'center', gap: 4 }}><Shield size={11} color="#22C55E" /><span style={{ color: '#22C55E', fontSize: 10, fontWeight: 800 }}>SSL V3</span></span>
+            <span style={{ background: 'rgba(212,175,55,.07)', border: '1px solid rgba(212,175,55,.2)', borderRadius: 99, padding: '3px 10px' }}><span style={{ color: '#D4AF37', fontSize: 10, fontWeight: 800 }}>NYSE:BLK</span></span>
+            <button onClick={toggleLang} style={{ background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 99, padding: '3px 10px', color: 'rgba(255,255,255,.55)', fontSize: 10, fontWeight: 800, cursor: 'pointer', fontFamily: 'Tajawal, sans-serif' }}>{t.lang}</button>
+          </div>
+        </div>
+        <form onSubmit={go} autoComplete="off" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div><label style={labelStyle}>{t.user}</label><input value={un} onChange={e => setUn(e.target.value)} style={inputStyle} placeholder={t.user} /></div>
+          <div><label style={labelStyle}>{t.pass}</label><div style={{ position: 'relative' }}><input type={showPw ? 'text' : 'password'} value={pw} onChange={e => setPw(e.target.value)} style={{ ...inputStyle, paddingLeft: lang === 'ar' ? 16 : 50, paddingRight: lang === 'ar' ? 50 : 16 }} placeholder={t.pass} /><button type="button" onClick={() => setShowPw(!showPw)} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', ...(lang === 'ar' ? { right: 14 } : { left: 14 }), background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: 'rgba(255,255,255,.35)' }}>{showPw ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></div>
+          {!isLogin && (<>
+            <div className="an-enter"><label style={labelStyle}>{t.conf}</label><input type="password" value={cpw} onChange={e => setCpw(e.target.value)} style={inputStyle} placeholder={t.conf} /></div>
+            <div className="an-enter"><label style={labelStyle}>{lang === 'ar' ? 'رقم الهاتف' : 'Phone number'}</label><div style={{position:'relative'}}><span style={{position:'absolute',left:14,top:'50%',transform:'translateY(-50%)',color:'#D4AF37',fontFamily:'Montserrat,sans-serif',fontWeight:900,fontSize:15,pointerEvents:'none'}}>+213</span><input type="tel" value={phone} onChange={e => setPhone(cleanAlgerianPhoneInput(e.target.value))} name="br_phone_no_autofill" autoComplete="off" inputMode="tel" style={{ ...inputStyle, direction: 'ltr', textAlign: 'left', fontFamily: 'Montserrat, sans-serif', paddingLeft: 58 }} placeholder="" /></div></div>
+            <div className="an-enter"><label style={labelStyle}>{lang === 'ar' ? 'الولاية' : 'Wilaya'}</label><button type="button" onClick={()=>setShowWilayas(true)} style={{...inputStyle,textAlign:lang==='ar'?'right':'left',cursor:'pointer',color:wilaya?'#fff':'rgba(255,255,255,.55)',display:'flex',alignItems:'center',justifyContent:'space-between'}}><span>{wilaya || (lang === 'ar' ? 'اختر ولايتك من القائمة' : 'Choose your wilaya from list')}</span><span style={{color:'#D4AF37'}}>⌄</span></button>{showWilayas && <div className="no-sb" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:7,maxHeight:260,overflowY:'auto',marginTop:8}}>{WILAYAS.map(w=><button key={w} onClick={()=>{wilayaVal=w;showWilayas=false;}} style={{background:wilaya===w?'linear-gradient(135deg,#D4AF37,#C9992C)':'rgba(255,255,255,.04)',border:wilaya===w?'none':'1px solid rgba(255,255,255,.07)',borderRadius:10,padding:'9px 6px',color:wilaya===w?'#020509':'#fff',fontWeight:800,cursor:'pointer',fontFamily:'Tajawal,sans-serif'}}>{w}</button>)}</div>}</div>
+          </>)}
+          <button type="submit" disabled={loading} style={{ width: '100%', background: 'linear-gradient(135deg, #D4AF37, #C9992C, #B8860B)', border: 'none', borderRadius: 14, color: '#020509', padding: '14px 0', fontSize: 16, fontWeight: 900, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1, boxShadow: '0 4px 20px rgba(212,175,55,.3)', fontFamily: 'Tajawal, sans-serif', marginTop: 4 }}>{loading ? '...' : (isLogin ? t.signIn : t.signUp)}</button>
+        </form>
+        <button onClick={() => { setIsLogin(!isLogin); setPhone(''); setWilaya(''); setCpw(''); }} style={{ display: 'block', margin: '16px auto 16px', background: 'none', border: 'none', color: 'rgba(255,255,255,.45)', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Tajawal, sans-serif' }}>{isLogin ? t.noAcc : t.hasAcc}</button>
+        <div style={{ background: 'linear-gradient(160deg, rgba(10,16,32,.98), rgba(7,12,24,.99))', border: '1px solid rgba(212,175,55,.1)', borderRadius: 16, padding: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}><Shield size={14} color="#22C55E" style={{ flexShrink: 0 }} /><span style={{ color: '#22C55E', fontSize: 13, fontWeight: 800 }}>Platform Security</span></div>
+          <p style={{ color: 'rgba(255,255,255,.35)', fontSize: 12, lineHeight: 1.8, fontWeight: 600 }}>• {lang === 'ar' ? 'عقد رسمي: يناير 2025 → ديسمبر 2027' : 'Contract: Jan 2025 → Dec 2027'}<br/>• AES-256 + SSL/TLS 3.0<br/>• NYSE: BLK — EIN: 32-0174431</p>
+        </div>
+      </div>
+    </div>
+  );
 }
-function nav(){let available=S.tasks?S.tasks.filter(t=>t.status==="available").length:5;return `<nav class="nav">${[
-["home","⌂","الرئيسية",0],["tasks","⚡","المهام",available],["up","◇","الترقية",0],["profile","♙","حسابي",(S.user.notifs||[]).filter(n=>!n.r).length]
-].map(x=>`<button class="${S.tab===x[0]?'on':''}" onclick="S.tab='${x[0]}';render()"><div style="position:relative;font-size:24px">${x[1]}${x[3]?`<span class='badge'>${x[3]}</span>`:""}</div><span>${x[2]}</span></button>`).join("")}</nav>`}
-function aiButton(){return `<button onclick="openAI()" class="gold float" style="position:absolute;bottom:84px;left:12px;width:54px;height:54px;border-radius:16px;border:0;z-index:55;font-size:24px">🤖<span style="position:absolute;top:-2px;right:-2px;width:12px;height:12px;background:var(--green);border:2px solid #020509;border-radius:50%"></span></button>`}
-function wheelOverlay(){let seg=360/WHEEL.length;let parts=WHEEL.map((p,i)=>`<div style="position:absolute;inset:0;transform:rotate(${i*seg}deg);clip-path:polygon(50% 50%,100% 0,100% 100%);background:${p.c}"></div>`).join("");document.body.insertAdjacentHTML("beforeend",`<div class='sheet' id='wheel'><div style='margin:auto;text-align:center'><button onclick='S.wheelOpen=false;document.getElementById(\"wheel\").remove()' class='btn' style='background:rgba(255,255,255,.08);color:#fff;margin-bottom:20px'>إغلاق</button><div style='width:270px;height:270px;border-radius:50%;position:relative;overflow:hidden;margin:auto;box-shadow:0 0 50px rgba(212,175,55,.3)'>${parts}<div style='position:absolute;inset:105px;background:#020509;border:3px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:900'>BLK</div></div><button class='btn gold' style='margin-top:20px;width:270px' onclick='spinWheel();document.getElementById(\"wheel\").remove()'>دوران 🎯</button></div></div>`)}
-function openAI(){S.showAI=true;sheet("AI ASSISTANT",`<div style="min-height:280px;color:var(--muted);font-size:14px;line-height:2;text-align:center">أهلاً! اسألني عن المهام أو السحب أو الشحن أو الاستثمار.</div><input class="input" placeholder="اكتب سؤالك...">`)}
 
-render();
-</script>
-</body>
-</html>
+// ============================================
+// 14. src/App.tsx - التطبيق الرئيسي
+// ============================================
+import { useEffect, useState, useRef } from 'react';
+import { useStore } from './store';
+import { Auth } from './components/Auth';
+import { Home } from './components/Home';
+import { Tasks } from './components/Tasks';
+import { Upgrade } from './components/Upgrade';
+import { Profile } from './components/Profile';
+import { Company } from './components/Company';
+import { Invest } from './components/Invest';
+import { Wheel } from './components/Wheel';
+import { Nav, Toast, Sheet, SaveBadge } from './components/ui';
+import { Bot, X, Send } from 'lucide-react';
+import { T, fDZD, lvN, lvD } from './utils';
+import { saveUser, updateUserByCode } from './backend';
+import { applyInvestmentAccrual, applyReferralMilestones, ensureUserShape } from './appBrain';
+import { WILAYAS, isValidWilaya, normalizeAlgerianPhone } from './utils/algeria';
+
+function aiResp(txt: string, u: any, lang: string) {
+  const lo = txt.toLowerCase(); const ar = lang === 'ar';
+  const lv = lvD(u.level || 'trial'); const pr = Math.max(43, Math.round(lv.dy / 5));
+  if (/hello|hi\b|hey|مرحبا|هلا|اهلا|السلام/.test(lo)) return ar?`أهلاً ${u.un}! 👋\n\nأنا مساعد BlackRock.\n\n📊 رصيدك: ${fDZD(u.balance||0)}\n🏆 مستواك: ${lvN(u.level)}\n👥 فريقك: ${u.teamCount||0}\n\nكيف أساعدك؟`:`Hello ${u.un}! 👋\n\nI'm BlackRock AI.\n\n📊 Balance: ${fDZD(u.balance||0)}\n🏆 Level: ${lvN(u.level)}\n👥 Team: ${u.teamCount||0}\n\nHow can I help?`;
+  if (/earn|money|ربح|اكسب|كيف|طريقة/.test(lo)) return ar?`💡 استراتيجية الربح:\n\n1️⃣ المهام: 5 × ${pr} = ${pr*5} د.ج/يوم\n2️⃣ الإحالات: 5% مدى الحياة\n3️⃣ الترقية: M1→G7\n\n🏆 10 أصدقاء = ترقية مجانية!`:`💡 Earning:\n\n1️⃣ Tasks: 5 × ${pr} = ${pr*5} د.ج/day\n2️⃣ Referrals: 5% forever\n3️⃣ Upgrade: M1→G7\n\n🏆 10 friends = Free upgrade!`;
+  if (/task|daily|مهمة|مهام/.test(lo)) return ar?`⏱️ المهام اليومية:\n\n• 5 مهام كل يوم\n• كل مهمة = ${pr} د.ج\n• الإجمالي: ${pr*5} د.ج/يوم\n\nمستواك: ${lvN(u.level)}`:`⏱️ Daily Tasks:\n\n• 5 tasks daily\n• Each = ${pr} د.ج\n• Total: ${pr*5} د.ج/day\n\nLevel: ${lvN(u.level)}`;
+  if (/withdraw|سحب|اخراج/.test(lo)) return ar?`💳 السحب:\n\n• السحب عبر CCP بريد الجزائر فقط\n• الحد الأدنى: 10,000 د.ج\n• الشرط: مستوى M1 فأعلى\n• مدة المعالجة: 48 إلى 72 ساعة\n\n⚠️ يجب أن يكون الاسم مطابقاً لحساب CCP\n\n📲 افتح: الرئيسية ← سحب`:`💳 Withdrawal:\n\n• CCP Algeria Post only\n• Minimum: 10,000 د.ج\n• Requires: M1 level+\n• Processing: 48 to 72 hours\n\n⚠️ Name must match CCP account\n\n📲 Go to: Home ← Withdraw`;
+  if (/شحن|deposit|إيداع|charge/.test(lo)) return ar?`💰 شحن الرصيد:\n\n• تواصل مع وكلاء الشركة عبر Signal فقط\n• هذا رابطنا، تجدون الوكلاء للشحن أو الاستثمار:\nhttps://signal.me/#eu/8QzHlJCULtwT98_rnOOfdNxK5ndjabUYXgU8Zh8OsgPx3xc7m_hKhJUr0gUzR3cF\n\n• أرسل المبلغ مع كود حسابك\n• يتم تفعيل الرصيد خلال 15 دقيقة\n• لا يوجد حد أدنى أو حد أقصى للشحن\n\n⚠️ لا يوجد شحن عبر Baridimob أو CCP مباشرة\n\n📲 افتح: الرئيسية ← شحن`:`💰 Deposit:\n\n• Contact company agents through Signal only\n• Agents link:\nhttps://signal.me/#eu/8QzHlJCULtwT98_rnOOfdNxK5ndjabUYXgU8Zh8OsgPx3xc7m_hKhJUr0gUzR3cF\n\n• Send amount with your account code\n• Balance activated within 15 minutes\n• No minimum or maximum deposit limit\n\n⚠️ No direct Baridimob or CCP deposits\n\n📲 Go to: Home ← Deposit`;
+  if (/referral|friend|احال|صديق|5%/.test(lo)) return ar?`🎯 الإحالات:\n\n✅ 🎡 عجلة حظ لك وله\n✅ 5% من أرباحه!\n\n👥 فريقك: ${u.teamCount||0}\n💰 أرباح: ${fDZD(u.refEarn||0)}`:`🎯 Referrals:\n\n✅ 🎡 Spin for both\n✅ 5% of earnings!\n\n👥 Team: ${u.teamCount||0}\n💰 Earnings: ${fDZD(u.refEarn||0)}`;
+  if (/شركة|company|blackrock/.test(lo)) return ar?`🏢 BlackRock, Inc\n\n• 1988 — نيويورك\n• 10.2 تريليون $\n• NYSE: BLK\n\n🇩🇿 العقد: يناير 2025 → ديسمبر 2027`:`🏢 BlackRock, Inc\n\n• 1988 — New York\n• $10.2T AUM\n• NYSE: BLK\n\n🇩🇿 Contract: Jan 2025 → Dec 2027`;
+  if (/رصيد|balance|كم/.test(lo)) return ar?`💰 رصيدك:\n\n💳 ${fDZD(u.balance||0)}\n📋 مهام: ${fDZD(u.taskBal||0)}\n🤝 إحالات: ${fDZD(u.refEarn||0)}\n📈 إجمالي: ${fDZD(u.totalEarned||0)}`:`💰 Balance:\n\n💳 ${fDZD(u.balance||0)}\n📋 Tasks: ${fDZD(u.taskBal||0)}\n🤝 Ref: ${fDZD(u.refEarn||0)}\n📈 Total: ${fDZD(u.totalEarned||0)}`;
+  if (/wheel|عجلة|spin/.test(lo)) return ar?`🎡 عجلة الحظ:\n\nدوراتك: ${u.wheelSpins||0}\n\nكل صديق = دورة لك + دورة له!\n\n🥇 430  🥈 215  🥉 86  🎁 43`:`🎡 Wheel:\n\nSpins: ${u.wheelSpins||0}\n\nEach friend = spin for both!\n\n🥇 430  🥈 215  🥉 86  🎁 43`;
+  return ar?`🤔 جرّب:\n• "كيف أربح؟"\n• "المهام"\n• "الإحالات"\n• "رصيدي"\n• "السحب"\n• "الشركة"`:`🤔 Try:\n• "How to earn?"\n• "Tasks"\n• "Referrals"\n• "Balance"\n• "Withdraw"\n• "Company"`;
+}
+
+function AI() {
+  const { user, lang, aiMsgs, addAi } = useStore();
+  const t = T[lang];
+  const [open, setOpen] = useState(false);
+  const [input, setInput] = useState('');
+  const [typing, setTyping] = useState(false);
+  const msgsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight; }, [aiMsgs, typing]);
+  const send = (ov?: string) => { const val = ov || input.trim(); if (!val || typing) return; addAi({ id: Date.now(), r: 'user', text: val }); setInput(''); setTyping(true); setTimeout(() => { addAi({ id: Date.now() + 1, r: 'ai', text: aiResp(val, user, lang) }); setTyping(false); }, 500 + Math.random() * 700); };
+  const qs = lang === 'ar' ? ['كيف أربح؟','المهام','الإحالات','رصيدي','السحب','الشركة'] : ['Earn?','Tasks','Referrals','Balance','Withdraw','Company'];
+  return (
+    <><button onClick={() => { setOpen(true); if (aiMsgs.length === 0) addAi({ id: 1, r: 'ai', text: lang === 'ar' ? 'أهلاً بك! 👋\n\nأنا المساعد الذكي لمنصة BlackRock.\nيمكنني مساعدتك في:\n\n💰 طرق الربح والمهام\n📊 معلومات رصيدك\n🏢 معلومات الشركة\n💳 السحب والإيداع\n👥 نظام الإحالات\n🎡 عجلة الحظ\n\nاكتب سؤالك أو اختر من الأزرار أدناه 👇' : "Welcome! 👋\n\nI'm BlackRock's AI Assistant.\nI can help you with:\n\n💰 Earning & Tasks\n📊 Your Balance\n🏢 Company Info\n💳 Withdrawals\n👥 Referral System\n🎡 Lucky Wheel\n\nType your question or tap a button below 👇" }); }} className="fixed bottom-[76px] left-3 z-[49] w-[52px] h-[52px] bg-gold rounded-[16px] flex items-center justify-center border-none cursor-pointer shadow-xl an-float" style={{boxShadow:'0 4px 20px rgba(212,175,55,.4)'}}><div className="an-pulse" style={{position:'absolute',top:-2,right:-2,width:12,height:12,background:'#22C55E',borderRadius:6,border:'2px solid #020509'}} /><Bot size={24} color="#020509" /></button>{open && (<div className="an-fadeIn" style={{position:'fixed',inset:0,background:'#020509',zIndex:300,display:'flex',flexDirection:'column'}}><div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 16px',borderBottom:'1px solid rgba(212,175,55,.06)',background:'rgba(2,5,9,.97)',flexShrink:0}}><button onClick={()=>setOpen(false)} style={{width:40,height:40,background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.06)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'rgba(255,255,255,.45)'}}><X size={18} /></button><div style={{textAlign:'center'}}><p style={{fontFamily:'Montserrat,sans-serif',fontSize:13,fontWeight:900,color:'#D4AF37',letterSpacing:2}}>AI ASSISTANT</p><div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:5,marginTop:2}}><span className="an-pulse" style={{width:7,height:7,background:'#22C55E',borderRadius:4,display:'inline-block'}} /><span style={{color:'#22C55E',fontSize:11,fontWeight:800}}>Online</span></div></div><div style={{width:40,height:40,background:'linear-gradient(135deg,#D4AF37,#C9992C)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center'}}><Bot size={18} color="#020509" /></div></div><div ref={msgsRef} className="no-sb touch-scroll" style={{flex:1,overflowY:'auto',padding:16,display:'flex',flexDirection:'column',gap:12}}>{aiMsgs.map(m => (<div key={m.id} style={{display:'flex',gap:8,alignItems:'flex-start',justifyContent:m.r==='user'?'flex-end':'flex-start'}}>{m.r==='ai' && (<div style={{width:32,height:32,background:'linear-gradient(135deg,#D4AF37,#C9992C)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:2}}><Bot size={14} color="#020509" /></div>)}<div style={{whiteSpace:'pre-wrap',fontSize:13,lineHeight:1.8,maxWidth:'84%',padding:'12px 16px',borderRadius:18,...(m.r==='ai'?{background:'rgba(10,16,32,.95)',border:'1px solid rgba(255,255,255,.06)',borderTopLeftRadius:4,color:'rgba(255,255,255,.8)'}:{background:'linear-gradient(135deg,#D4AF37,#C9992C)',borderTopRightRadius:4,color:'#020509',fontWeight:700})}}>{m.text}</div></div>))}{typing && (<div style={{display:'flex',gap:8,alignItems:'center'}}><div style={{width:32,height:32,background:'linear-gradient(135deg,#D4AF37,#C9992C)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><Bot size={14} color="#020509" /></div><div style={{background:'rgba(10,16,32,.95)',border:'1px solid rgba(255,255,255,.06)',borderRadius:18,borderTopLeftRadius:4,padding:'14px 20px',display:'flex',gap:6,alignItems:'center'}}><span className="td1" style={{width:7,height:7,background:'rgba(255,255,255,.3)',borderRadius:4,display:'inline-block'}} /><span className="td2" style={{width:7,height:7,background:'rgba(255,255,255,.3)',borderRadius:4,display:'inline-block'}} /><span className="td3" style={{width:7,height:7,background:'rgba(255,255,255,.3)',borderRadius:4,display:'inline-block'}} /></div></div>)}</div><div style={{flexShrink:0,padding:'8px 16px 16px',borderTop:'1px solid rgba(212,175,55,.06)'}}><div className="no-sb" style={{display:'flex',gap:6,overflowX:'auto',paddingBottom:8,WebkitOverflowScrolling:'touch'}}>{qs.map(q => (<button key={q} onClick={()=>send(q)} style={{padding:'7px 14px',background:'rgba(212,175,55,.06)',border:'1px solid rgba(212,175,55,.12)',borderRadius:99,color:'#D4AF37',fontSize:13,fontWeight:800,whiteSpace:'nowrap',flexShrink:0,cursor:'pointer',fontFamily:'Tajawal,sans-serif'}}>{q}</button>))}</div><div style={{display:'flex',gap:8,alignItems:'center'}}><input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} style={{flex:1,background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.06)',borderRadius:14,color:'#fff',padding:'12px 16px',fontSize:15,fontWeight:700,outline:'none',fontFamily:'Tajawal,sans-serif'}} placeholder={t.aiP} /><button onClick={()=>send()} style={{width:46,height:46,borderRadius:14,background:'linear-gradient(135deg,#D4AF37,#C9992C)',border:'none',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><Send size={18} color="#020509" /></button></div></div></div>)}</></>
+  );
+}
+
+export default function App() {
+  const { user, tab, lang, showWheel, showCompany, showInvest, updUser, toast2, setSheet, closeSheet } = useStore();
+  const inviteLink = (code: string) => { const basePath = window.location.pathname.replace(/\/?index\.html$/i, '').replace(/\/$/, ''); return `${window.location.origin}${basePath || ''}?code=${code}`; };
+  useEffect(() => { if (!user) return; const timer = setTimeout(() => saveUser(user).catch(console.error), 450); return () => clearTimeout(timer); }, [user]);
+  useEffect(() => { document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'; }, [lang]);
+  useEffect(() => {
+    if (!user) return;
+    const today = new Date().toDateString();
+    const shaped = ensureUserShape(user);
+    const migrated = { investments: user.investments || [], withdrawals: user.withdrawals || [], upgradeRequests: user.upgradeRequests || [], notifs: user.notifs || [], investEarned: user.investEarned || 0, loginStreak: user.loginStreak || 0, badges: user.badges || [], team: user.team || [], avatar: typeof user.avatar === 'string' && user.avatar.includes('dicebear') ? user.avatar : null, phone: user.phone || '', wilaya: user.wilaya || '', profileCompleted: Boolean(user.profileCompleted && normalizeAlgerianPhone(user.phone || '') && isValidWilaya(user.wilaya || '')), activityLog: user.activityLog || [], showLiveActivity: user.showLiveActivity !== false, ref: (!user.ref || user.ref.includes('?ref=') || user.ref.includes('/ref/') || user.ref.includes('/invite') || !user.ref.includes('?code=')) ? inviteLink(user.code) : user.ref };
+    const accrual = applyInvestmentAccrual(shaped, lang);
+    if (accrual.changed) { updUser(accrual.user); if (accrual.message) toast2(accrual.message, 'success'); return; }
+    const referralMilestone = applyReferralMilestones(shaped, lang);
+    if (referralMilestone.changed) { updUser(referralMilestone.user); toast2(lang === 'ar' ? '🏆 تم فتح ترقية مجانية' : '🏆 Free upgrade unlocked', 'success'); return; }
+    if (user.lastLogin !== today) {
+      const yesterday = new Date(Date.now() - 86400000).toDateString();
+      const streak = user.lastLogin === yesterday ? (user.loginStreak || 0) + 1 : 1;
+      const reward = Math.min(100, 10 + streak * 2);
+      updUser({ ...migrated, lastLogin: today, loginStreak: streak, balance: (user.balance || 0) + reward, totalEarned: (user.totalEarned || 0) + reward, notifs: [...migrated.notifs, { id: Date.now(), title: lang === 'ar' ? '🎁 مكافأة الحضور اليومي' : '🎁 Daily check-in reward', desc: `+${reward} د.ج • ${streak} ${lang === 'ar' ? 'أيام متتالية' : 'day streak'}`, t: new Date().toLocaleTimeString(), r: false }], activityLog: [...migrated.activityLog.slice(-30), new Date().toLocaleString() + ` - daily login +${reward} د.ج`] });
+      toast2(lang === 'ar' ? `🎁 مكافأة حضور +${reward} د.ج` : `🎁 Check-in +${reward} د.ج`, 'success');
+    } else if (!user.investments || !user.withdrawals || !user.upgradeRequests || !user.ref || (typeof user.avatar === 'string' && !user.avatar.includes('dicebear'))) { updUser(migrated); }
+  }, [user?.id]);
+  useEffect(() => {
+    if (!user?.joinedVia || user.m1ReferralCredited || !user.level || user.level === 'trial') return;
+    updateUserByCode(user.joinedVia, referrer => {
+      const updatedTeam = (referrer.team || []).map(m => m.code === user.code ? { ...m, level: user.level, active: true } : m);
+      const credited = (referrer.m1Refs || 0) + 1;
+      const withCredit = { ...referrer, team: updatedTeam, m1Refs: credited, refEarn: (referrer.refEarn || 0) + 350, balance: (referrer.balance || 0) + 350, totalEarned: (referrer.totalEarned || 0) + 350, notifs: [...(referrer.notifs || []), { id: Date.now(), title: '💎 صديق وصل M1', desc: `${user.un} وصل إلى ${user.level}. +350 د.ج`, t: new Date().toLocaleTimeString(), r: false }], activityLog: [...(referrer.activityLog || []).slice(-30), `${new Date().toLocaleString()} - friend M1 ${user.un} +350 د.ج`] };
+      return applyReferralMilestones(withCredit, lang).user;
+    }).then(() => updUser({ m1ReferralCredited: true })).catch(console.error);
+  }, [user?.id, user?.level, user?.joinedVia, user?.m1ReferralCredited]);
+  if (!user) return (<><Auth /><Toast /></>);
+  return (
+    <div className="w-full max-w-[430px] h-full relative overflow-hidden bg-[#020509] mx-auto">
+      <div className="absolute top-0 left-0 right-0 bottom-[68px] overflow-y-auto overflow-x-hidden no-sb touch-scroll bg-[#020509]">
+        {tab === 'home' && <Home />}
+        {tab === 'tasks' && <Tasks />}
+        {tab === 'up' && <Upgrade />}
+        {tab === 'profile' && <Profile />}
+      </div>
+      <Nav />
+      {(tab === 'home' || tab === 'tasks') && <AI />}
+      {showWheel && <Wheel />}
+      {showCompany && <Company />}
+      {showInvest && <Invest />}
+      <Toast />
+      <SaveBadge />
+      <Sheet />
+    </div>
+  );
+}
