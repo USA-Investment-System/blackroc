@@ -3,175 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlackRock Global | الجزائر</title>
+    <title>BlackRock Smart DZ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
-        body { background-color: #080808; color: #f3f3f3; font-family: 'Tajawal', sans-serif; margin: 0; overflow-x: hidden; }
-        .page { display: none; min-height: 100vh; padding: 20px 15px 100px 15px; }
-        .active-page { display: block; animation: fadeIn 0.3s ease-in; }
-        .gold-btn { background: linear-gradient(90deg, #f7bf28 0%, #dab44f 100%); color: black; font-weight: bold; border-radius: 12px; transition: 0.2s; }
-        .gold-btn:active { scale: 0.95; }
-        .card-dark { background: #121212; border: 1px solid #222; border-radius: 15px; padding: 20px; }
-        .input-field { background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 10px; padding: 15px; width: 100%; outline: none; }
-        .input-field:focus { border-color: #f7bf28; }
-        .nav-bar { background: #111; border-top: 1px solid #222; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #666; cursor: pointer; }
+        body { background-color: #080808; color: #f3f3f3; font-family: 'Tajawal', sans-serif; overflow-x: hidden; padding-bottom: 80px; }
+        .page { display: none; min-height: 100vh; animation: fadeIn 0.3s ease; }
+        .active-page { display: block; }
+        .gold-btn { background: linear-gradient(90deg, #f7bf28 0%, #dab44f 100%); color: #000; font-weight: bold; border-radius: 10px; transition: 0.2s; }
+        .card { background-color: #121212; border: 1px solid #222; border-radius: 15px; padding: 20px; }
+        .input-box { background-color: #1a1a1a; border: 1px solid #333; color: white; border-radius: 10px; padding: 15px; width: 100%; outline: none; }
+        .input-box:focus { border-color: #f7bf28; }
+        .nav-bar { background-color: #111; border-top: 1px solid #222; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
+        .nav-item { color: #666; text-align: center; font-size: 10px; cursor: pointer; }
         .nav-item.active { color: #f7bf28; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        th, td { text-align: right; padding: 10px; border-bottom: 1px solid #222; }
     </style>
 </head>
 <body>
 
-    <div id="login-page" class="page active-page">
+    <div id="login" class="page active-page p-6">
         <div class="text-center my-10">
-            <h1 class="text-4xl font-bold text-[#f7bf28] tracking-widest">BLACKROCK</h1>
-            <p class="text-xs text-gray-500 mt-2">منصة الاستثمار الاحترافية</p>
+            <h1 class="text-4xl font-bold text-[#f7bf28] tracking-wider">BLACKROCK</h1>
+            <p class="text-xs text-neutral-500 mt-2">منصة الاستثمار الذكية - الجزائر</p>
         </div>
         <div class="space-y-4">
-            <input type="text" placeholder="اسم المستخدم" class="input-field">
-            <input type="password" placeholder="كلمة المرور" class="input-field">
-            <button onclick="navigateTo('home-page')" class="w-full gold-btn py-4 text-lg">تسجيل الدخول</button>
-            <p class="text-center text-sm">ليس لديك حساب؟ <span class="text-[#f7bf28] cursor-pointer" onclick="navigateTo('reg-page')">سجل مجاناً</span></p>
-        </div>
-        <div class="card-dark mt-10 flex items-center gap-4">
-            <div class="text-green-500 text-2xl">🛡️</div>
-            <div class="text-[10px] text-gray-400">
-                <p class="text-white font-bold">Platform Security</p>
-                <p>عقد رسمي: 2025 - 2027</p>
-                <p>تشفير AES-256 + SSL/TLS 3.0</p>
-            </div>
+            <input type="text" id="log-user" placeholder="اسم المستخدم" class="input-box">
+            <input type="password" id="log-pass" placeholder="كلمة المرور" class="input-box">
+            <button onclick="login()" class="w-full gold-btn py-4 text-lg active:scale-95">تسجيل الدخول</button>
+            <p class="text-center text-sm text-neutral-400">عضو جديد؟ <span class="text-[#f7bf28] font-bold cursor-pointer" onclick="navigateTo('register')">سجل مجاناً</span></p>
         </div>
     </div>
 
-    <div id="reg-page" class="page">
-        <h2 class="text-2xl font-bold mb-6">إنشاء حساب جديد</h2>
+    <div id="register" class="page p-6">
+        <h2 class="text-2xl font-bold mb-6 text-white">إنشاء حساب مستثمر</h2>
         <div class="space-y-4">
-            <input type="text" placeholder="الاسم الكامل" class="input-field">
-            <div class="flex gap-2">
-                <input type="text" value="+213" class="input-field w-20 text-center" disabled>
-                <input type="number" placeholder="رقم الهاتف" class="input-field">
-            </div>
-            <select class="input-field">
-                <option disabled selected>اختر ولايتك</option>
-                <script>
-                    const wils = ["أدرار","الشلف","الأغواط","أم البواقي","باتنة","بجاية","بسكرة","بشار","البليدة","البويرة","تمنراست","تبسة","تلمسان","تيارت","تيزي وزو","الجزائر","الجلفة","جيجل","سطيف","سعيدة","سكيكدة","سيدي بلعباس","عنابة","قالمة","قسنطينة","المدية","مستغانم","المسيلة","معسكر","ورقلة","وهران","البيض","إليزي","برج بوعريريج","الطارف","تندوف","تيسمسيلت","الوادي","خنشلة","سوق أهراس","تيبازة","ميلة","عين الدفلى","النعامة","عين تموشنت","غرداية","غليزان","تيميمون","برج باجي مختار","أولاد جلال","بني عباس","إن صالح","إن قزام","تقرت","جانت","المغير","المنيعة"];
-                    wils.forEach((w, i) => document.write(`<option>${i+1 < 10 ? '0'+(i+1) : i+1} - ${w}</option>`));
-                </script>
+            <input type="text" placeholder="الاسم الكامل" class="input-box">
+            <select id="wilayas" class="input-box">
+                <option disabled selected>-- اختر ولايتك (58 ولاية) --</option>
             </select>
-            <input type="password" placeholder="كلمة المرور" class="input-field">
-            <button onclick="navigateTo('home-page')" class="w-full gold-btn py-4">إنشاء الحساب</button>
-            <button onclick="navigateTo('login-page')" class="w-full text-gray-500 text-sm">العودة للخلف</button>
+            <input type="number" placeholder="رقم الهاتف" class="input-box">
+            <input type="password" id="reg-pass" placeholder="كلمة المرور" class="input-box">
+            <button onclick="login()" class="w-full gold-btn py-4 active:scale-95">إنشاء الحساب</button>
+            <p class="text-center text-neutral-500 text-sm" onclick="navigateTo('login')">العودة للخلف</p>
         </div>
     </div>
 
-    <div id="home-page" class="page">
+    <div id="dashboard" class="page p-5">
         <div class="flex justify-between items-center mb-6">
-            <span class="bg-green-900/30 text-green-500 text-[10px] px-3 py-1 rounded-full border border-green-500/20">آمن ومتصل</span>
-            <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-gray-400">مستثمر محترف</span>
-                <div class="w-8 h-8 rounded-full bg-[#f7bf28] flex items-center justify-center text-black font-bold">R</div>
-            </div>
+            <div class="text-[10px] text-green-500 bg-green-950 px-3 py-1 rounded-full">● 3,801 مستخدم متصل</div>
+            <div class="w-8 h-8 rounded-full bg-[#f7bf28] flex items-center justify-center text-black font-bold">R</div>
         </div>
-
-        <div class="card-dark mb-6">
-            <p class="text-gray-500 text-xs text-center">الرصيد الكلي (د.ج)</p>
-            <h2 class="text-4xl font-bold text-center my-3">0.00 <span class="text-sm text-[#f7bf28]">DZD</span></h2>
+        <div class="card text-center mb-6">
+            <p class="text-neutral-500 text-xs">إجمالي رصيدك الحالي (د.ج)</p>
+            <h2 class="text-4xl font-bold text-white my-3"><span id="balance">0.00</span> <span class="text-sm text-[#f7bf28]">DZD</span></h2>
             <div class="flex gap-3 mt-4">
-                <button onclick="alert('قريباً: شحن الرصيد عبر CCP')" class="flex-1 gold-btn py-3 text-sm">إيداع جديد</button>
-                <button onclick="alert('رصيدك غير كافٍ للسحب')" class="flex-1 bg-[#222] py-3 rounded-xl text-sm font-bold">سحب الأرباح</button>
+                <button onclick="alert('شحن الرصيد متوفر عبر بريدي موب حالياً')" class="flex-1 gold-btn py-3 text-sm active:scale-95">إيداع</button>
+                <button onclick="withdraw()" class="flex-1 bg-[#222] py-3 rounded-xl text-sm font-bold active:scale-95">سحب (CCP)</button>
             </div>
         </div>
-
-        <div class="grid grid-cols-2 gap-4 mb-6">
-            <div class="card-dark text-center">
-                <p class="text-gray-500 text-[10px]">أرباح اليوم</p>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="card p-4 text-center">
+                <p class="text-[10px] text-neutral-500">أرباح اليوم</p>
                 <p class="text-green-500 font-bold">+150.00</p>
             </div>
-            <div class="card-dark text-center">
-                <p class="text-gray-500 text-[10px]">رصيد المهام</p>
-                <p class="text-[#f7bf28] font-bold">500.00</p>
+            <div class="card p-4 text-center">
+                <p class="text-[10px] text-neutral-500">المهام اليومية</p>
+                <p class="text-[#f7bf28] font-bold"><span id="tasks-done">0</span> / 5</p>
             </div>
-        </div>
-
-        <div class="card-dark flex justify-between items-center border-l-4 border-[#f7bf28]">
-            <div class="flex items-center gap-3">
-                <span class="text-2xl">🔥</span>
-                <div>
-                    <p class="text-sm font-bold">باقة STARTER</p>
-                    <p class="text-[10px] text-gray-500">عائد يومي 5%</p>
-                </div>
-            </div>
-            <button onclick="alert('تم تفعيل الباقة بنجاح!')" class="text-xs text-[#f7bf28] font-bold">تفعيل الآن</button>
         </div>
     </div>
 
-    <div id="tasks-page" class="page">
-        <h2 class="text-xl font-bold mb-6">المهام اليومية</h2>
+    <div id="upgrades" class="page p-5">
+        <h2 class="text-xl font-bold mb-6 text-[#f7bf28]">جدول مستويات VIP (الجزائر)</h2>
+        <div class="overflow-x-auto card p-2">
+            <table class="w-full text-xs">
+                <thead class="text-[#f7bf28]"><tr><th>المستوى</th><th>الإيداع</th><th>الدخل اليومي</th><th>القرار</th></tr></thead>
+                <tbody>
+                    <tr><td>M1</td><td>7000</td><td class="text-green-500">215</td><td><button onclick="buyVIP(7000)" class="gold-btn px-3 py-1 text-[10px]">انضم</button></td></tr>
+                    <tr><td>M2</td><td>26600</td><td class="text-green-500">860</td><td><button onclick="buyVIP(26600)" class="gold-btn px-3 py-1 text-[10px]">انضم</button></td></tr>
+                    <tr><td>G7</td><td>4485000</td><td class="text-green-500">213600</td><td><button onclick="buyVIP(4485000)" class="gold-btn px-3 py-1 text-[10px]">انضم</button></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tasks" class="page p-5">
+        <h2 class="text-xl font-bold mb-6">المهام المتاحة اليوم</h2>
         <div class="space-y-4">
-            <div class="card-dark flex justify-between items-center">
-                <p class="text-sm">مشاهدة فيديو ترويجي</p>
-                <button onclick="this.innerHTML='تمت'; this.disabled=true;" class="bg-[#f7bf28] text-black px-4 py-1 rounded-lg text-xs font-bold">بدء</button>
-            </div>
-            <p class="text-xs text-gray-500 text-center">أكمل المهام لزيادة أرباحك اليومية</p>
-        </div>
-    </div>
-
-    <div id="invest-page" class="page">
-        <h2 class="text-xl font-bold mb-6">صناديق الاستثمار</h2>
-        <div class="space-y-4">
-            <div class="card-dark">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="font-bold">الصندوق الفضي</span>
-                    <span class="text-green-500 text-xs">متاح</span>
-                </div>
-                <p class="text-[10px] text-gray-400">استثمار 2000 د.ج -> ربح 100 د.ج يومياً</p>
-                <button class="w-full gold-btn mt-3 py-2 text-xs">شراء الآن</button>
+            <div class="card flex justify-between items-center p-4">
+                <div><p class="text-sm font-bold">مشاهدة فيديو ترويجي</p><p class="text-[10px] text-neutral-500">الربح: 50.00 DZD</p></div>
+                <button onclick="startTask(this, 50)" class="gold-btn px-4 py-1 text-xs">بدء</button>
             </div>
         </div>
     </div>
 
-    <div id="profile-page" class="page">
-        <div class="text-center mb-8">
-            <div class="w-20 h-20 bg-[#222] rounded-full mx-auto mb-4 border-2 border-[#f7bf28] flex items-center justify-center text-3xl font-bold">R</div>
-            <h3 class="font-bold">المستخدم: Riad_Belaid</h3>
-            <p class="text-xs text-gray-500">ولاية ميلة (18)</p>
-        </div>
-        <div class="space-y-2">
-            <div class="card-dark flex justify-between text-sm"><span>إجمالي الإيداع</span><span class="text-[#f7bf28]">0.00 د.ج</span></div>
-            <div class="card-dark flex justify-between text-sm"><span>عدد الإحالات</span><span class="text-[#f7bf28]">0</span></div>
-            <button onclick="location.reload()" class="w-full bg-red-900/20 text-red-500 py-3 rounded-xl mt-10 font-bold">تسجيل الخروج</button>
-        </div>
-    </div>
-
-    <nav class="nav-bar">
-        <div class="nav-item active" id="btn-home" onclick="navigateTo('home-page', 'btn-home')"><span>🏠</span><span>الرئيسية</span></div>
-        <div class="nav-item" id="btn-tasks" onclick="navigateTo('tasks-page', 'btn-tasks')"><span>⚡</span><span>المهام</span></div>
-        <div class="nav-item" id="btn-invest" onclick="navigateTo('invest-page', 'btn-invest')"><span>💰</span><span>الاستثمار</span></div>
-        <div class="nav-item" id="btn-profile" onclick="navigateTo('profile-page', 'btn-profile')"><span>👤</span><span>حسابي</span></div>
+    <nav class="nav-bar" id="main-nav" style="display: none;">
+        <div class="nav-item active" onclick="navigateTo('dashboard', this)">🏠<p>الرئيسية</p></div>
+        <div class="nav-item" onclick="navigateTo('upgrades', this)">📊<p>الترقية</p></div>
+        <div class="nav-item" onclick="navigateTo('tasks', this)">⚡<p>المهام</p></div>
+        <div class="nav-item" onclick="navigateTo('profile', this)">👤<p>حسابي</p></div>
     </nav>
 
     <script>
-        function navigateTo(pageId, btnId) {
-            // إخفاء كل الصفحات
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            // إظهار الصفحة المطلوبة
-            document.getElementById(pageId).classList.add('active-page');
+        let balance = 0;
+        let tasksCompleted = 0;
 
-            // تحديث شكل الأزرار في الشريط السفلي
-            if(btnId) {
-                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-                document.getElementById(btnId).classList.add('active');
+        // نظام الولايات
+        const wilayas = ["أدرار","الشلف","الأغواط","أم البواقي","باتنة","بجاية","بسكرة","بشار","البليدة","البويرة","تمنراست","تبسة","تلمسان","تيارت","تيزي وزو","الجزائر","الجلفة","جيجل","سطيف","سعيدة","سكيكدة","سيدي بلعباس","عنابة","قالمة","قسنطينة","المدية","مستغانم","المسيلة","معسكر","ورقلة","وهران","البيض","إليزي","برج بوعريريج","الطارف","تندوف","تيسمسيلت","الوادي","خنشلة","سوق أهراس","تيبازة","ميلة","عين الدفلى","النعامة","عين تموشنت","غرداية","غليزان","تيميمون","برج باجي مختار","أولاد جلال","بني عباس","إن صالح","إن قزام","تقرت","جانت","المغير","المنيعة"];
+        const wSelect = document.getElementById('wilayas');
+        wilayas.forEach((w, i) => wSelect.innerHTML += `<option>${i+1} - ${w}</option>`);
+
+        function navigateTo(pageId, navItem) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(pageId).classList.add('active-page');
+            if(navItem) {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                navItem.classList.add('active');
             }
-            
-            // إخفاء الشريط السفلي في صفحات الدخول والتسجيل
-            const nav = document.querySelector('.nav-bar');
-            if(pageId === 'login-page' || pageId === 'reg-page') {
-                nav.style.display = 'none';
-            } else {
-                nav.style.display = 'flex';
-            }
-            window.scrollTo(0, 0);
+            // إخفاء الـ Nav في صفحات الدخول
+            document.getElementById('main-nav').style.display = (pageId === 'login' || pageId === 'register') ? 'none' : 'flex';
+        }
+
+        function login() { balance = 0; updateUI(); navigateTo('dashboard'); }
+
+        function updateUI() {
+            document.getElementById('balance').innerText = balance.toFixed(2);
+            document.getElementById('tasks-done').innerText = tasksCompleted;
+        }
+
+        function buyVIP(price) {
+            if (balance < price) { alert(`رصيدك غير كافٍ. تحتاج إلى ${price} د.ج.`); }
+            else { balance -= price; updateUI(); alert("تمت الترقية بنجاح!"); }
+        }
+
+        function startTask(btn, reward) {
+            btn.innerHTML = "جاري..."; btn.disabled = true;
+            setTimeout(() => {
+                btn.innerHTML = "تمت ✅"; btn.classList.replace('gold-btn', 'bg-neutral-800');
+                balance += reward; tasksCompleted++; updateUI();
+            }, 3000);
+        }
+
+        function withdraw() {
+            if (balance < 1000) { alert("الحد الأدنى للسحب هو 1000 د.ج"); }
+            else { alert("سيتم معالجة طلب السحب عبر CCP قريباً."); }
         }
     </script>
 </body>
