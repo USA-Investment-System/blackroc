@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body { 
+  height:100%; overflow:hidden; background:#020509; color:#fff; 
+  font-family:'Tajawal',sans-serif; -webkit-font-smoothing:antialiased; 
+  font-size:14px; line-height:1.5;
+}
+#root { height:100%; display:flex; justify-content:center; }
+.no-sb::-webkit-scrollbar { display:none; }
+.no-sb { scrollbar-width:none; -ms-overflow-style:none; }
+.touch-scroll { -webkit-overflow-scrolling:touch; scroll-behavior:smooth; }
+
+/* Animations */
+@keyframes glow { 0%,100%{box-shadow:0 0 16px rgba(212,175,55,.3)} 50%{box-shadow:0 0 34px rgba(212,175,55,.6)} }
+@keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes enterUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.35)} }
+@keyframes td1 { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+
+.an-glow { animation:glow 2.5s ease-in-out infinite; }
+.an-float { animation:floatY 3s ease-in-out infinite; }
+.an-slideUp { animation:slideUp .3s cubic-bezier(.16,1,.3,1); }
+.an-fadeIn { animation:fadeIn .2s ease; }
+.an-enter { animation:enterUp .25s cubic-bezier(.16,1,.3,1) both; }
+.an-ticker { animation:ticker 22s linear infinite; }
+.an-pulse { animation:pulse 1.6s infinite; }
+.td1 { animation:td1 1.1s 0s infinite; }
+.td2 { animation:td1 1.1s .22s infinite; }
+.td3 { animation:td1 1.1s .44s infinite; }
+
+/* Custom classes */
+.tg {
+  background: linear-gradient(135deg, #E8CC6A, #D4AF37, #C9992C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-gold {
+  background: linear-gradient(135deg, #D4AF37, #C9992C, #B8860B);
+}
+
+.bg-card {
+  background: linear-gradient(160deg, rgba(10,16,32,.98), rgba(7,12,24,.99));
+}
+
+.bg-shim {
+  background: linear-gradient(160deg, rgba(12,18,36,.98), rgba(8,13,26,.99));
+}
+
+.font-mon {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Fix for RTL text alignment */
+[dir="rtl"] .text-right-auto { text-align: right; }
+[dir="ltr"] .text-right-auto { text-align: left; }
