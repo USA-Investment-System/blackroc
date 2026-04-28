@@ -1,172 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>BlackRock Investment - منصة الاستثمار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#020509;color:#fff;font-family:'Tajawal',sans-serif}
+#root{height:100%;display:flex;justify-content:center}
+.no-sb::-webkit-scrollbar{display:none}.no-sb{scrollbar-width:none;-ms-overflow-style:none}
+.touch-scroll{-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+@keyframes glow{0%,100%{box-shadow:0 0 16px rgba(212,175,55,.3)}50%{box-shadow:0 0 34px rgba(212,175,55,.6)}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes enterUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+.an-glow{animation:glow 2.5s ease-in-out infinite}
+.an-float{animation:floatY 3s ease-in-out infinite}
+.an-slideUp{animation:slideUp .3s cubic-bezier(.16,1,.3,1)}
+.an-fadeIn{animation:fadeIn .2s ease}
+.an-enter{animation:enterUp .25s cubic-bezier(.16,1,.3,1) both}
+.an-ticker{animation:ticker 22s linear infinite}
+.an-pulse{animation:pulse 1.6s infinite}
+.tg{background:linear-gradient(135deg,#E8CC6A,#D4AF37,#C9992C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.bg-gold{background:linear-gradient(135deg,#D4AF37,#C9992C,#B8860B)}
+.bg-shim{background:linear-gradient(160deg,rgba(12,18,36,.98),rgba(8,13,26,.99))}
+.bg-card{background:linear-gradient(160deg,rgba(10,16,32,.98),rgba(7,12,24,.99))}
+.font-mon{font-family:'Montserrat',sans-serif}
+.btn{border:none;border-radius:14;padding:14px 0;font-size:15;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8;font-family:'Tajawal',sans-serif}
+.card{background:linear-gradient(160deg,rgba(10,16,32,.98),rgba(7,12,24,.99));border:1px solid rgba(255,255,255,.06);border-radius:16;padding:14}
+.inp{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14;color:#fff;padding:14px 16px;font-size:15;font-weight:700;outline:none;font-family:'Tajawal',sans-serif}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
 // ============================================
-// BLACKROCK INVESTMENT PLATFORM - FULL CODE
-// جميع الملفات مربوطة ومنظمة في كود واحد
+// BLACKROCK INVESTMENT PLATFORM - COMPLETE CODE
 // ============================================
 
-// ============================================
-// 1. src/main.tsx - نقطة الدخول
-// ============================================
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./index.css";
-import App from "./App";
-
-createRoot(document.getElementById("root")!).render(
-  <StrictMode><App /></StrictMode>
-);
-
-// ============================================
-// 2. src/index.css - التنسيقات
-// ============================================
-@import "tailwindcss";
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-html,body { height:100%; overflow:hidden; background:#020509; color:#fff; font-family:'Tajawal',sans-serif; }
-#root { height:100%; display:flex; justify-content:center; }
-.no-sb::-webkit-scrollbar { display:none; } .no-sb { scrollbar-width:none; -ms-overflow-style:none; }
-.touch-scroll { -webkit-overflow-scrolling:touch; scroll-behavior:smooth; }
-@keyframes glow { 0%,100%{box-shadow:0 0 16px rgba(212,175,55,.3)} 50%{box-shadow:0 0 34px rgba(212,175,55,.6)} }
-@keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-@keyframes fadeIn { from{opacity:0} to{opacity:1} }
-@keyframes enterUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.35)} }
-.an-glow { animation:glow 2.5s ease-in-out infinite; }
-.an-float { animation:floatY 3s ease-in-out infinite; }
-.an-slideUp { animation:slideUp .3s cubic-bezier(.16,1,.3,1); }
-.an-fadeIn { animation:fadeIn .2s ease; }
-.an-enter { animation:enterUp .25s cubic-bezier(.16,1,.3,1) both; }
-.an-ticker { animation:ticker 22s linear infinite; }
-.an-pulse { animation:pulse 1.6s infinite; }
-.tg { background:linear-gradient(135deg,#E8CC6A,#D4AF37,#C9992C); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.bg-gold { background:linear-gradient(135deg,#D4AF37,#C9992C,#B8860B); }
-.bg-shim { background:linear-gradient(160deg,rgba(12,18,36,.98),rgba(8,13,26,.99)); }
-.bg-card { background:linear-gradient(160deg,rgba(10,16,32,.98),rgba(7,12,24,.99)); }
-.font-mon { font-family:'Montserrat',sans-serif; }
-
-// ============================================
-// 3. src/supabase.ts - قاعدة البيانات
-// ============================================
-const ENV = (import.meta as any).env || {};
-const SUPABASE_URL = ENV.VITE_SUPABASE_URL || '';
-const SUPABASE_KEY = ENV.VITE_SUPABASE_ANON_KEY || '';
-export const SUPABASE_ENABLED = Boolean(SUPABASE_URL && SUPABASE_KEY);
-
-async function supabaseFetch(endpoint: string, options: RequestInit = {}) {
-  if (!SUPABASE_ENABLED) throw new Error('Supabase not configured');
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
-    ...options,
-    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation', ...options.headers },
-  });
-  if (!response.ok) throw new Error(await response.text());
-  if (response.status === 204) return null;
-  return response.json();
-}
-
-export const db = {
-  getUserByCode: async (code: string) => { try { const users = await supabaseFetch(`br_users?code=eq.${code}&limit=1`); return users?.[0]?.payload || null; } catch { return null; } },
-  getUserByUsername: async (username: string) => { try { const users = await supabaseFetch(`br_users?username=eq.${username}&limit=1`); return users?.[0]?.payload || null; } catch { return null; } },
-  createUser: async (user: any) => { try { await supabaseFetch('br_users', { method: 'POST', body: JSON.stringify({ id: String(user.id), username: user.un, code: user.code, payload: user }), headers: { 'Prefer': 'resolution=merge-duplicates' } }); return user; } catch { return null; } },
-  updateUser: async (user: any) => { try { await supabaseFetch(`br_users?id=eq.${user.id}`, { method: 'PATCH', body: JSON.stringify({ payload: user, updated_at: new Date().toISOString() }) }); return user; } catch { return null; } },
-  getUserCount: async () => { try { const response = await fetch(`${SUPABASE_URL}/rest/v1/br_users?select=id`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact', 'Range': '0-0' } }); const range = response.headers.get('content-range') || '0-0/0'; return parseInt(range.split('/')[1] || '0', 10); } catch { return 0; } },
-  getLatestUser: async () => { try { const users = await supabaseFetch('br_users?select=payload&order=updated_at.desc&limit=1'); return users?.[0]?.payload || null; } catch { return null; } },
+// State Management
+const S = {
+  lang: 'ar',
+  user: null,
+  tab: 'home',
+  tasks: null,
+  activeTask: null,
+  cdVal: 40,
+  aiMsgs: [],
+  wheelRot: 0,
+  showWheel: false,
+  showAI: false,
+  showCompany: false,
+  showInvest: false,
+  toast: null,
+  sheet: null,
+  savePulse: 0
 };
 
-const LOCAL_KEY = 'br10-users';
-export const localDB = {
-  getUsers: () => { try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]'); } catch { return []; } },
-  saveUsers: (users: any[]) => { localStorage.setItem(LOCAL_KEY, JSON.stringify(users)); },
-  getUserByCode: (code: string) => localDB.getUsers().find((u: any) => String(u.code).toUpperCase() === code.toUpperCase()) || null,
-  getUserByUsername: (username: string) => localDB.getUsers().find((u: any) => u.un === username) || null,
-  createUser: (user: any) => { const users = localDB.getUsers(); users.push(user); localDB.saveUsers(users); return user; },
-  updateUser: (user: any) => { const users = localDB.getUsers(); const i = users.findIndex((u: any) => u.id === user.id); if (i >= 0) { users[i] = user; localDB.saveUsers(users); } return user; },
-  getUserCount: () => localDB.getUsers().length,
-  getLatestUser: () => localDB.getUsers()[localDB.getUsers().length - 1] || null,
-};
+// Constants
+const WILAYAS = ['01 - أدرار','02 - الشلف','03 - الأغواط','04 - أم البواقي','05 - باتنة','06 - بجاية','07 - بسكرة','08 - بشار','09 - البليدة','10 - البويرة','11 - تمنراست','12 - تبسة','13 - تلمسان','14 - تيارت','15 - تيزي وزو','16 - الجزائر','17 - الجلفة','18 - جيجل','19 - سطيف','20 - سعيدة','21 - سكيكدة','22 - سيدي بلعباس','23 - عنابة','24 - قالمة','25 - قسنطينة','26 - المدية','27 - مستغانم','28 - المسيلة','29 - معسكر','30 - ورقلة','31 - وهران','32 - البيض','33 - إليزي','34 - برج بوعريريج','35 - بومرداس','36 - الطارف','37 - تندوف','38 - تيسمسيلت','39 - الوادي','40 - خنشلة','41 - سوق أهراس','42 - تيبازة','43 - ميلة','44 - عين الدفلى','45 - النعامة','46 - عين تموشنت','47 - غرداية','48 - غليزان','49 - تيميمون','50 - برج باجي مختار','51 - أولاد جلال','52 - بني عباس','53 - عين صالح','54 - عين قزام','55 - توقرت','56 - جانت','57 - المغير','58 - المنيعة'];
 
-export const universalDB = {
-  getUserByCode: async (code: string) => SUPABASE_ENABLED ? (await db.getUserByCode(code)) || localDB.getUserByCode(code) : localDB.getUserByCode(code),
-  getUserByUsername: async (username: string) => SUPABASE_ENABLED ? (await db.getUserByUsername(username)) || localDB.getUserByUsername(username) : localDB.getUserByUsername(username),
-  createUser: async (user: any) => SUPABASE_ENABLED ? (await db.createUser(user)) || localDB.createUser(user) : localDB.createUser(user),
-  updateUser: async (user: any) => SUPABASE_ENABLED ? (await db.updateUser(user)) || localDB.updateUser(user) : localDB.updateUser(user),
-  getUserCount: async () => SUPABASE_ENABLED ? await db.getUserCount() : localDB.getUserCount(),
-  getLatestUser: async () => SUPABASE_ENABLED ? await db.getLatestUser() : localDB.getLatestUser(),
-};
-
-// ============================================
-// 4. src/backend.ts - Backend API
-// ============================================
-import type { User } from './store';
-import { universalDB, SUPABASE_ENABLED } from './supabase';
-
-export function backendMode() { return SUPABASE_ENABLED ? 'supabase' : 'local'; }
-export async function sha256(text: string) { const enc = new TextEncoder().encode(text); const buf = await crypto.subtle.digest('SHA-256', enc); return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join(''); }
-export function normalizeUser<T extends Partial<User> & Record<string, any>>(u: T): User {
-  const inviteLink = (code: string) => { try { const basePath = location.pathname.replace(/\/?index\.html$/i, '').replace(/\/$/, ''); return `${location.origin}${basePath || ''}?code=${code}`; } catch { return 'blackrock.app?code=' + code; } };
-  const out: any = { id: Date.now(), un: '', pw: '', code: '', ref: '', phone: '', wilaya: '', balance: 0, taskBal: 0, refEarn: 0, teamCount: 0, wheelSpins: 0, m1Refs: 0, level: null, totalEarned: 0, avatar: null, joined: new Date().toISOString(), joinedVia: null, notifs: [], investments: [], investEarned: 0, withdrawals: [], upgradeRequests: [], team: [], loginStreak: 0, badges: [], activityLog: [], showLiveActivity: true, profileCompleted: false, ...u };
-  out.investments ||= []; out.withdrawals ||= []; out.upgradeRequests ||= []; out.team ||= []; out.notifs ||= []; out.activityLog ||= []; out.badges ||= [];
-  if (!out.ref || String(out.ref).includes('?ref=') || String(out.ref).includes('/ref/') || String(out.ref).includes('/invite') || !String(out.ref).includes('?code=')) { out.ref = inviteLink(out.code); }
-  return out as User;
-}
-export async function loginUser(username: string, password: string): Promise<User | null> { const hash = await sha256(password); const user = await universalDB.getUserByUsername(username); if (!user) return null; const storedHash = (user as any).passwordHash; if (storedHash ? storedHash === hash : user.pw === password) return normalizeUser(user); return null; }
-export async function usernameExists(username: string) { return Boolean(await universalDB.getUserByUsername(username)); }
-export async function findUserByCode(code: string) { return await universalDB.getUserByCode(code.toUpperCase()); }
-export async function createUser(user: User, password: string) { return await universalDB.createUser(normalizeUser({ ...user, pw: '', passwordHash: await sha256(password) } as any)); }
-export async function saveUser(user: User) { return await universalDB.updateUser(normalizeUser(user)); }
-export async function updateUserByCode(code: string, updater: (user: User) => User) { const current = await findUserByCode(code); if (!current) return null; return await saveUser(normalizeUser(updater(current))); }
-export async function getPublicStats() { const count = await universalDB.getUserCount(); const latest = await universalDB.getLatestUser(); return { count, latestName: latest?.un || 'مستخدم' }; }
-
-// ============================================
-// 5. src/store.ts - إدارة الحالة
-// ============================================
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import type { ReactNode } from 'react';
-
-export interface Notif { id:number; title:string; desc:string; t:string; r:boolean; }
-export interface Investment { id:number; fundId:number; amount:number; date:string; days:number; daily:number; status:'active'|'completed'; earned:number; principalReturned?:boolean; }
-export interface WithdrawReq { id:number; amount:number; ccp:string; name:string; date:string; status:'pending'|'approved'|'rejected'; }
-export interface UpgradeReq { id:number; levelId:string; levelName:string; amount:number; date:string; status:'pending'|'approved'|'rejected'; ref:string; }
-export interface TeamMember { id:number; username:string; code:string; joined:string; avatar?:string|null; level?:string|null; active:boolean; }
-export interface User { id:number; un:string; pw:string; code:string; ref:string; phone?:string; wilaya?:string; balance:number; taskBal:number; refEarn:number; teamCount:number; wheelSpins:number; m1Refs:number; level:string|null; totalEarned:number; avatar:string|null; joined:string; joinedVia:string|null; notifs:Notif[]; investments:Investment[]; investEarned:number; withdrawals:WithdrawReq[]; upgradeRequests?:UpgradeReq[]; team?:TeamMember[]; lastLogin?:string; loginStreak?:number; badges?:string[]; activityLog?:string[]; referralUpgradeCount?:number; m1ReferralCredited?:boolean; showLiveActivity?:boolean; profileCompleted?:boolean; }
-export interface Task { id:number; ar:string; en:string; sec:number; reward:number; status:'available'|'active'|'done'|'failed'; }
-type Tab = 'home'|'tasks'|'up'|'profile'; type Lang = 'ar'|'en';
-type ToastT = {msg:string; type:'success'|'error'|'warning'|'info'; id:number}|null;
-type SheetT = {content:ReactNode; title:string}|null;
-type AiMsg = {id:number; r:'ai'|'user'; text:string};
-export interface S { lang:Lang; user:User|null; tab:Tab; tasks:Task[]|null; activeTask:number|null; cdVal:number; aiMsgs:AiMsg[]; wheelRot:number; showWheel:boolean; showAI:boolean; showCompany:boolean; showInvest:boolean; toast:ToastT; sheet:SheetT; savePulse:number; toggleLang:()=>void; setUser:(u:User|null)=>void; updUser:(u:Partial<User>)=>void; setTab:(t:Tab)=>void; setTasks:(t:Task[])=>void; updTask:(id:number,s:Task['status'])=>void; setActive:(id:number|null,cd?:number)=>void; decCd:()=>void; addAi:(m:AiMsg)=>void; setWheelRot:(r:number)=>void; setShowWheel:(b:boolean)=>void; setShowAI:(b:boolean)=>void; setShowCompany:(b:boolean)=>void; setShowInvest:(b:boolean)=>void; toast2:(msg:string,type:'success'|'error'|'warning'|'info')=>void; setSheet:(c:ReactNode,t:string)=>void; closeSheet:()=>void; logout:()=>void; }
-
-export const useStore = create<S>()(persist((set) => ({
-  lang:'ar', user:null, tab:'home', tasks:null, activeTask:null, cdVal:40, aiMsgs:[], wheelRot:0, showWheel:false, showAI:false, showCompany:false, showInvest:false, toast:null, sheet:null, savePulse:0,
-  toggleLang:()=>set(s=>{const n=s.lang==='ar'?'en':'ar';document.documentElement.lang=n;document.documentElement.dir=n==='ar'?'rtl':'ltr';return{lang:n}}),
-  setUser:user=>set(s=>({user,savePulse:s.savePulse+1})),
-  updUser:u=>set(s=>({user:s.user?{...s.user,...u}:null,savePulse:s.savePulse+1})),
-  setTab:tab=>set(s=>({tab,savePulse:s.savePulse+1})),
-  setTasks:tasks=>set(s=>({tasks,savePulse:s.savePulse+1})),
-  updTask:(id,status)=>set(s=>({tasks:s.tasks?s.tasks.map(t=>t.id===id?{...t,status}:t):null,savePulse:s.savePulse+1})),
-  setActive:(id,cd=40)=>set(s=>({activeTask:id,cdVal:cd,savePulse:s.savePulse+1})),
-  decCd:()=>set(s=>({cdVal:Math.max(0,s.cdVal-1)})),
-  addAi:m=>set(s=>({aiMsgs:[...s.aiMsgs,m],savePulse:s.savePulse+1})),
-  setWheelRot:wheelRot=>set(s=>({wheelRot,savePulse:s.savePulse+1})),
-  setShowWheel:showWheel=>set({showWheel}), setShowAI:showAI=>set({showAI}), setShowCompany:showCompany=>set({showCompany}), setShowInvest:showInvest=>set({showInvest}),
-  toast2:(msg,type)=>set({toast:{msg,type,id:Date.now()}}),
-  setSheet:(content,title)=>set({sheet:{content,title}}),
-  closeSheet:()=>set({sheet:null}),
-  logout:()=>set({user:null,tab:'home',tasks:null,activeTask:null,aiMsgs:[],wheelRot:0,showWheel:false,showAI:false,showCompany:false,showInvest:false}),
-}), { name:'br10-store', partialize:(s)=>({lang:s.lang,user:s.user,tasks:s.tasks,wheelRot:s.wheelRot,aiMsgs:s.aiMsgs,activeTask:s.activeTask,cdVal:s.cdVal,tab:s.tab}) }));
-
-// ============================================
-// 6. src/utils/i18n.ts - الترجمات
-// ============================================
-export const T = {
-  ar: { home:'الرئيسية', tasks:'المهام', up:'الترقية', acc:'حسابي', bal:'إجمالي الرصيد', team:'الفريق', done:'المهام', daily:'اليومي', refT:'الإحالة الذهبية', ref2:'5% من دخل كل صديق مدى الحياة', copy:'نسخ', share:'مشاركة', pf:'أداء المحفظة', co:'الشركة والأمان', det:'التفاصيل', earned:'إجمالي الأرباح', refE:'أرباح الإحالات', tod:'أرباح اليوم', mon:'الأرباح الشهرية', taskT:'المهام اليومية', rew:'مكافأة', start:'ابدأ', doneL:'مكتملة', failL:'أُلغيت', wait:'انتظر', sec:'ثانية', cancel:'إلغاء المهمة', plans:'خطط الاستثمار', avail:'رصيدك المتاح', free:'مجاني', active:'مفعّل', upBtn:'ترقية', dy:'يومي', days:'أيام', tot:'الإجمالي', mo:'شهري', myAcc:'حسابي', refCode:'رابط الدعوة', secT:'الأمان والعقد', aboutT:'عن الشركة', refsT:'إحالاتي', wheel:'عجلة الحظ', setT:'الإعدادات', out:'تسجيل الخروج', compT:'🏆 مسابقة الإحالة', compS:'10 أصدقاء = ترقية مجانية!', prog:'تقدمك', goal:'الهدف: 10 أصدقاء M1', spin:'اضغط للدوران', noSpin:'لا دورات متبقية', prize:'الجائزة', signIn:'تسجيل الدخول', signUp:'إنشاء حساب', user:'اسم المستخدم', pass:'كلمة المرور', conf:'تأكيد كلمة المرور', noAcc:'ليس لديك حساب؟ سجل مجاناً', hasAcc:'لديك حساب؟ سجل الدخول', show:'عرض', hide:'إخفاء', notifs:'الإشعارات', noNotifs:'لا توجد إشعارات', cnfT:'تأكيد الإلغاء', keepT:'إكمال المهمة', cnfB:'إلغاء نهائي', wLock:'السحب مقفل', wReq:'يتطلب M1 + 10,000 د.ج', sup:'تواصل مع الدعم', copied:'تم النسخ!', lang:'English', aiP:'اكتب سؤالك...', avT:'اختر صورتك', clear:'مسح البيانات', totRef:'إجمالي الإحالات', refDzd:'د.ج من الإحالات', wd:'سحب', qwd:'السحب السريع', chg:'تتغير يومياً حسب مستواك', ef:'كل صديق = 🎡 دورة لك + دورة له!', lo:'⚡ الرابط يفتح التطبيق مباشرة', sub:'منصة الاستثمار', contract:'تقر شركة BlackRock, Inc بأنها أبرمت عقداً رسمياً مع الجانب الجزائري في يناير 2025 مدته 3 سنوات ينتهي في ديسمبر 2027.', coDesc:'تأسست عام 1988 في نيويورك، وهي أكبر شركة لإدارة الأصول في العالم مع أكثر من 10.2 تريليون دولار من الأصول المدارة.', coSec:'نستخدم تشفير AES-256 العسكري مع SSL/TLS 3.0 لحماية جميع بيانات المستخدمين والمعاملات.', coAlg:'عقد رسمي مع الجزائر يبدأ من يناير 2025 وينتهي في ديسمبر 2027، مدته 3 سنوات كاملة.', waitAuth:'جاري...' },
-  en: { home:'Home', tasks:'Tasks', up:'Plans', acc:'Account', bal:'Total Balance', team:'Team', done:'Tasks', daily:'Daily', refT:'Golden Referral', ref2:"5% of each friend's income for life", copy:'Copy', share:'Share', pf:'Portfolio', co:'Company & Security', det:'Details', earned:'Total Earned', refE:'Referral Earnings', tod:"Today's Profit", mon:'Monthly', taskT:'Daily Tasks', rew:'Reward', start:'Start', doneL:'Done', failL:'Cancelled', wait:'Wait', sec:'sec', cancel:'Cancel Task', plans:'Investment Plans', avail:'Available Balance', free:'FREE', active:'Active', upBtn:'Upgrade', dy:'Daily', days:'Days', tot:'Total', mo:'Monthly', myAcc:'My Account', refCode:'Referral Link', secT:'Security & Contract', aboutT:'About BlackRock', refsT:'Referrals', wheel:'Lucky Wheel', setT:'Settings', out:'Sign Out', compT:'🏆 Referral Contest', compS:'10 friends = Free upgrade!', prog:'Progress', goal:'Goal: 10 M1 friends', spin:'SPIN NOW', noSpin:'No spins left', prize:'PRIZE', signIn:'Sign In', signUp:'Create Account', user:'Username', pass:'Password', conf:'Confirm Password', noAcc:"Don't have account? Sign up", hasAcc:'Have account? Sign in', show:'Show', hide:'Hide', notifs:'Notifications', noNotifs:'No notifications', cnfT:'Cancel Task?', keepT:'Keep Going', cnfB:'Cancel Anyway', wLock:'Withdrawal Locked', wReq:'Requires M1 + 10,000 د.ج', sup:'Contact Support', copied:'Copied!', lang:'عربي', aiP:'Ask me anything...', avT:'Choose Avatar', clear:'Clear Data', totRef:'Total Referrals', refDzd:'د.ج from Referrals', wd:'Withdraw', qwd:'Quick Withdraw', chg:'Changes daily by level', ef:'Each friend = 🎡 spin for you + spin for them!', lo:'⚡ Link opens app directly', sub:'Investment Platform', contract:'BlackRock, Inc signed an official contract with Algeria in January 2025, valid for 3 years until December 2027.', coDesc:'Founded in 1988 in New York, BlackRock is the world\'s largest asset manager with over $10.2 trillion in AUM.', coSec:'We use military-grade AES-256 encryption with SSL/TLS 3.0 to protect all user data and transactions.', coAlg:'Official contract with Algeria starting January 2025 until December 2027, spanning 3 full years.', waitAuth:'Wait...' }
-};
-
-// ============================================
-// 7. src/utils/levels.ts - مستويات الاستثمار
-// ============================================
-export const LVS = [
+const LVS = [
   {id:'trial',n:'Starter',p:0,d:3,dy:43,tot:215,mo:0},
   {id:'m1',n:'M1',p:7000,d:5,dy:43,tot:215,mo:6450},
   {id:'m2',n:'M2',p:26600,d:10,dy:86,tot:860,mo:25800},
@@ -176,445 +74,361 @@ export const LVS = [
   {id:'m6',n:'M6',p:1950000,d:130,dy:652,tot:84760,mo:2542800},
   {id:'g7',n:'G7 Platinum',p:4485000,d:200,dy:1068,tot:213600,mo:6408000}
 ];
-export function lvN(id:string|null){return LVS.find(l=>l.id===id)?.n||'Starter'}
-export function lvD(id:string|null){return LVS.find(l=>l.id===id)||LVS[0]}
-export function lvI(id:string|null){const i=LVS.findIndex(l=>l.id===id);return i>=0?i:0}
 
-// ============================================
-// 8. src/utils/algeria.ts - الولايات الجزائرية
-// ============================================
-export const WILAYAS = [
-  '01 - أدرار','02 - الشلف','03 - الأغواط','04 - أم البواقي','05 - باتنة','06 - بجاية','07 - بسكرة','08 - بشار','09 - البليدة','10 - البويرة',
-  '11 - تمنراست','12 - تبسة','13 - تلمسان','14 - تيارت','15 - تيزي وزو','16 - الجزائر','17 - الجلفة','18 - جيجل','19 - سطيف','20 - سعيدة',
-  '21 - سكيكدة','22 - سيدي بلعباس','23 - عنابة','24 - قالمة','25 - قسنطينة','26 - المدية','27 - مستغانم','28 - المسيلة','29 - معسكر','30 - ورقلة',
-  '31 - وهران','32 - البيض','33 - إليزي','34 - برج بوعريريج','35 - بومرداس','36 - الطارف','37 - تندوف','38 - تيسمسيلت','39 - الوادي','40 - خنشلة',
-  '41 - سوق أهراس','42 - تيبازة','43 - ميلة','44 - عين الدفلى','45 - النعامة','46 - عين تموشنت','47 - غرداية','48 - غليزان','49 - تيميمون','50 - برج باجي مختار',
-  '51 - أولاد جلال','52 - بني عباس','53 - عين صالح','54 - عين قزام','55 - توقرت','56 - جانت','57 - المغير','58 - المنيعة'
-];
-export function normalizeAlgerianPhone(value: string) {
-  const digits = String(value || '').replace(/\D/g, '');
-  if (/^0[567]\d{7,8}$/.test(digits)) return '+213' + digits.slice(1);
-  if (/^213[567]\d{7,8}$/.test(digits)) return '+' + digits;
-  if (/^[567]\d{7,8}$/.test(digits)) return '+213' + digits;
-  return '';
-}
-export function isValidWilaya(value: string) { return WILAYAS.includes(value); }
-export function cleanAlgerianPhoneInput(value: string) {
-  let digits = String(value || '').replace(/\D/g, '');
-  if (digits.startsWith('213')) digits = digits.slice(3);
-  if (digits.startsWith('0')) digits = digits.slice(1);
-  return digits.slice(0, 9);
-}
+const WP = [{l:'43 د.ج',v:43,cl:'#D4AF37'},{l:'86 د.ج',v:86,cl:'#6B4C0A'},{l:'215 د.ج',v:215,cl:'#C9992C'},{l:'Spin+',v:0,cl:'#7C3AED'},{l:'430 د.ج',v:430,cl:'#B8860B'},{l:'86 د.ج',v:86,cl:'#4A3506'},{l:'215 د.ج',v:215,cl:'#D4AF37'},{l:'43 د.ج',v:43,cl:'#9E7A20'}];
 
-// ============================================
-// 9. src/utils/index.ts - دوال مساعدة
-// ============================================
-export function fmt(n:number){if(isNaN(n))return'0,00';if(n>=1e6)return(n/1e6).toFixed(2).replace('.',',')+'M';if(n>=1e3)return(n/1e3).toFixed(1).replace('.',',')+'K';return n.toLocaleString('fr-DZ',{minimumFractionDigits:2,maximumFractionDigits:2})}
-export function fDZD(n:number){return fmt(n)+' د.ج'}
-export function today(){return new Date().toDateString()}
-export const MKT=[{s:'BLK',v:'865,42',up:true,p:'1,24'},{s:'د.ج/USD',v:'134,20',up:false,p:'0,15'},{s:'GOLD',v:'2.342,8',up:true,p:'0,82'},{s:'S&P500',v:'5.248',up:true,p:'0,45'}];
-export const WP=[{l:'43 د.ج',v:43,cl:'#D4AF37'},{l:'86 د.ج',v:86,cl:'#6B4C0A'},{l:'215 د.ج',v:215,cl:'#C9992C'},{l:'Spin+',v:0,cl:'#7C3AED'},{l:'430 د.ج',v:430,cl:'#B8860B'},{l:'86 د.ج',v:86,cl:'#4A3506'},{l:'215 د.ج',v:215,cl:'#D4AF37'},{l:'43 د.ج',v:43,cl:'#9E7A20'}];
-export const TASKS_AR=['مراجعة أداء المحفظة','قراءة تقرير السوق اليومي','تحليل اتجاهات BLK','فحص الاستراتيجية اليومية','مشاهدة رسالة استثمارية','تحديث بيانات المحفظة','مراجعة الأرباح والخسائر','تحليل مؤشرات السوق','متابعة أخبار الاستثمار','فحص أداء الأسهم','مراجعة عقد الاستثمار','تحليل عائد المحفظة'];
-export const TASKS_EN=['Review portfolio performance','Read daily market report','Analyze BLK trends','Check daily strategy','View investment report','Update portfolio data','Review P&L statement','Analyze market indicators','Follow investment news','Check stock performance','Review investment contract','Analyze portfolio yield'];
+const TASKS_AR = ['مراجعة أداء المحفظة','قراءة تقرير السوق اليومي','تحليل اتجاهات BLK','فحص الاستراتيجية اليومية','مشاهدة رسالة استثمارية','تحديث بيانات المحفظة','مراجعة الأرباح والخسائر','تحليل مؤشرات السوق','متابعة أخبار الاستثمار','فحص أداء الأسهم','مراجعة عقد الاستثمار','تحليل عائد المحفظة'];
 
-// ============================================
-// 10. src/appBrain.ts - منطق الأعمال
-// ============================================
-import type { User } from './store';
-import { LVS } from './utils/levels';
-const dayMs = 86400000;
-function levelIndex(id: string | null | undefined) { const i = LVS.findIndex(l => l.id === id); return i >= 0 ? i : 0; }
-function nextLevelId(current: string | null | undefined) { const i = levelIndex(current); return LEVELS[Math.min(i + 1, LEVELS.length - 1)]?.id || current || 'trial'; }
-export function ensureUserShape(user: User): User { return { ...user, balance: user.balance || 0, taskBal: user.taskBal || 0, refEarn: user.refEarn || 0, teamCount: user.teamCount || 0, wheelSpins: user.wheelSpins || 0, m1Refs: user.m1Refs || 0, totalEarned: user.totalEarned || 0, investments: user.investments || [], withdrawals: user.withdrawals || [], upgradeRequests: user.upgradeRequests || [], team: user.team || [], notifs: user.notifs || [], badges: user.badges || [], activityLog: user.activityLog || [], investEarned: user.investEarned || 0, loginStreak: user.loginStreak || 0, referralUpgradeCount: user.referralUpgradeCount || 0 }; }
-export function applyInvestmentAccrual(user: User, lang: string): { user: User; changed: boolean; message?: string } {
-  let u = ensureUserShape(user); let changed = false; let totalDelta = 0;
-  const investments = u.investments.map(inv => {
-    if (inv.status === 'completed' && inv.principalReturned) return inv;
-    const passedDays = Math.min(Math.floor((Date.now() - new Date(inv.date).getTime()) / dayMs), inv.days);
-    const expectedEarned = Math.max(0, inv.amount * inv.daily / 100 * passedDays);
-    const delta = Math.max(0, expectedEarned - (inv.earned || 0));
-    let next = { ...inv, earned: expectedEarned };
-    if (delta > 0) { totalDelta += delta; changed = true; }
-    if (passedDays >= inv.days && !inv.principalReturned) { totalDelta += inv.amount; next = { ...next, status: 'completed', principalReturned: true }; changed = true; }
-    return next;
-  });
-  if (!changed) return { user: u, changed: false };
-  const rounded = Math.round(totalDelta * 100) / 100;
-  const title = lang === 'ar' ? '📈 أرباح الاستثمار' : '📈 Investment earnings';
-  const desc = `+${rounded.toLocaleString('fr-DZ')} د.ج`;
-  u = { ...u, investments, balance: (u.balance || 0) + rounded, totalEarned: (u.totalEarned || 0) + rounded, investEarned: (u.investEarned || 0) + rounded, notifs: [...u.notifs, { id: Date.now(), title, desc, t: new Date().toLocaleTimeString(), r: false }], activityLog: [...(u.activityLog || []).slice(-30), `${new Date().toLocaleString()} - investment accrual ${desc}`] };
-  return { user: u, changed: true, message: desc };
-}
-export function applyReferralMilestones(user: User, lang: string): { user: User; changed: boolean } {
-  let u = ensureUserShape(user);
-  const earnedBlocks = Math.floor((u.m1Refs || 0) / 10);
-  const claimedBlocks = u.referralUpgradeCount || 0;
-  if (earnedBlocks <= claimedBlocks) return { user: u, changed: false };
-  let level = u.level;
-  for (let i = claimedBlocks; i < earnedBlocks; i++) { level = levelIndex(level) < levelIndex('m2') ? 'm2' : nextLevelId(level); }
-  const lvlName = LVS.find(l => l.id === level)?.n || 'M2';
-  u = { ...u, level, referralUpgradeCount: earnedBlocks, notifs: [...u.notifs, { id: Date.now() + 2, title: lang === 'ar' ? '🏆 ترقية مجانية من الإحالات' : '🏆 Free referral upgrade', desc: lang === 'ar' ? `تهانينا! حصلت على ${lvlName} مجاناً لأن 10 أصدقاء وصلوا M1.` : `Congrats! You unlocked ${lvlName} for free because 10 friends reached M1.`, t: new Date().toLocaleTimeString(), r: false }], activityLog: [...(u.activityLog || []).slice(-30), `${new Date().toLocaleString()} - referral free upgrade ${lvlName}`] };
-  return { user: u, changed: true };
+const T = {
+  ar: { home:'الرئيسية', tasks:'المهام', up:'الترقية', acc:'حسابي', bal:'إجمالي الرصيد', team:'الفريق', done:'المهام', daily:'اليومي', refT:'الإحالة الذهبية', ref2:'5% من دخل كل صديق مدى الحياة', copy:'نسخ', share:'مشاركة', pf:'أداء المحفظة', co:'الشركة والأمان', det:'التفاصيل', earned:'إجمالي الأرباح', refE:'أرباح الإحالات', tod:'أرباح اليوم', mon:'الأرباح الشهرية', taskT:'المهام اليومية', rew:'مكافأة', start:'ابدأ', doneL:'مكتملة', failL:'أُلغيت', wait:'انتظر', sec:'ثانية', cancel:'إلغاء المهمة', plans:'خطط الاستثمار', avail:'رصيدك المتاح', free:'مجاني', active:'مفعّل', upBtn:'ترقية', dy:'يومي', days:'أيام', tot:'الإجمالي', mo:'شهري', myAcc:'حسابي', refCode:'رابط الدعوة', secT:'الأمان والعقد', aboutT:'عن الشركة', refsT:'إحالاتي', wheel:'عجلة الحظ', setT:'الإعدادات', out:'تسجيل الخروج', compT:'🏆 مسابقة الإحالة', compS:'10 أصدقاء = ترقية مجانية!', prog:'تقدمك', goal:'الهدف: 10 أصدقاء M1', spin:'اضغط للدوران', noSpin:'لا دورات متبقية', prize:'الجائزة', signIn:'تسجيل الدخول', signUp:'إنشاء حساب', user:'اسم المستخدم', pass:'كلمة المرور', conf:'تأكيد كلمة المرور', noAcc:'ليس لديك حساب؟ سجل مجاناً', hasAcc:'لديك حساب؟ سجل الدخول', show:'عرض', hide:'إخفاء', notifs:'الإشعارات', noNotifs:'لا توجد إشعارات', cnfT:'تأكيد الإلغاء', keepT:'إكمال المهمة', cnfB:'إلغاء نهائي', wLock:'السحب مقفل', wReq:'يتطلب M1 + 10,000 د.ج', sup:'تواصل مع الدعم', copied:'تم النسخ!', lang:'English', aiP:'اكتب سؤالك...', avT:'اختر صورتك', clear:'مسح البيانات', totRef:'إجمالي الإحالات', refDzd:'د.ج من الإحالات', wd:'سحب', qwd:'السحب السريع', chg:'تتغير يومياً حسب مستواك', ef:'كل صديق = 🎡 دورة لك + دورة له!', lo:'⚡ الرابط يفتح التطبيق مباشرة', sub:'منصة الاستثمار' },
+  en: { home:'Home', tasks:'Tasks', up:'Plans', acc:'Account', bal:'Total Balance', team:'Team', done:'Tasks', daily:'Daily', refT:'Golden Referral', ref2:"5% of each friend's income for life", copy:'Copy', share:'Share', pf:'Portfolio', co:'Company & Security', det:'Details', earned:'Total Earned', refE:'Referral Earnings', tod:"Today's Profit", mon:'Monthly', taskT:'Daily Tasks', rew:'Reward', start:'Start', doneL:'Done', failL:'Cancelled', wait:'Wait', sec:'sec', cancel:'Cancel Task', plans:'Investment Plans', avail:'Available Balance', free:'FREE', active:'Active', upBtn:'Upgrade', dy:'Daily', days:'Days', tot:'Total', mo:'Monthly', myAcc:'My Account', refCode:'Referral Link', secT:'Security & Contract', aboutT:'About BlackRock', refsT:'Referrals', wheel:'Lucky Wheel', setT:'Settings', out:'Sign Out', compT:'🏆 Referral Contest', compS:'10 friends = Free upgrade!', prog:'Progress', goal:'Goal: 10 M1 friends', spin:'SPIN NOW', noSpin:'No spins left', prize:'PRIZE', signIn:'Sign In', signUp:'Create Account', user:'Username', pass:'Password', conf:'Confirm Password', noAcc:"Don't have account? Sign up", hasAcc:'Have account? Sign in', show:'Show', hide:'Hide', notifs:'Notifications', noNotifs:'No notifications', cnfT:'Cancel Task?', keepT:'Keep Going', cnfB:'Cancel Anyway', wLock:'Withdrawal Locked', wReq:'Requires M1 + 10,000 د.ج', sup:'Contact Support', copied:'Copied!', lang:'عربي', aiP:'Ask me anything...', avT:'Choose Avatar', clear:'Clear Data', totRef:'Total Referrals', refDzd:'د.ج from Referrals', wd:'Withdraw', qwd:'Quick Withdraw', chg:'Changes daily by level', ef:'Each friend = 🎡 spin for you + spin for them!', lo:'⚡ Link opens app directly', sub:'Investment Platform' }
+};
+
+// Utility Functions
+function fmt(n){if(isNaN(n))return'0,00';if(n>=1e6)return(n/1e6).toFixed(2).replace('.',',')+'M';if(n>=1e3)return(n/1e3).toFixed(1).replace('.',',')+'K';return n.toLocaleString('fr-DZ',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fDZD(n){return fmt(n)+' د.ج'}
+function today(){return new Date().toDateString()}
+function lvN(id){return LVS.find(l=>l.id===id)?.n||'Starter'}
+function lvD(id){return LVS.find(l=>l.id===id)||LVS[0]}
+function normalizePhone(value){const digits=String(value||'').replace(/\D/g,'');if(/^0[567]\d{7,8}$/.test(digits))return'+213'+digits.slice(1);if(/^213[567]\d{7,8}$/.test(digits))return'+'+digits;if(/^[567]\d{7,8}$/.test(digits))return'+213'+digits;return'';}
+function isValidWilaya(value){return WILAYAS.includes(value)}
+function cleanPhoneInput(value){let digits=String(value||'').replace(/\D/g,'');if(digits.startsWith('213'))digits=digits.slice(3);if(digits.startsWith('0'))digits=digits.slice(1);return digits.slice(0,9)}
+
+// LocalStorage Functions
+const LOCAL_KEY = 'br10-users';
+function getUsers(){try{return JSON.parse(localStorage.getItem(LOCAL_KEY)||'[]')}catch{return[]}}
+function saveUsers(users){localStorage.setItem(LOCAL_KEY,JSON.stringify(users))}
+function getUserByCode(code){return getUsers().find(u=>String(u.code).toUpperCase()===code.toUpperCase())||null}
+function getUserByUsername(username){return getUsers().find(u=>u.un===username)||null}
+function createUserLocal(user){const users=getUsers();users.push(user);saveUsers(users);return user}
+function updateUserLocal(user){const users=getUsers();const i=users.findIndex(u=>u.id===user.id);if(i>=0){users[i]=user;saveUsers(users)}return user}
+
+// Invite Link
+function inviteLink(code){try{const basePath=location.pathname.replace(/\/?index\.html$/i,'').replace(/\/$/,'');return`${location.origin}${basePath||''}?code=${code}`}catch{return'blackrock.app?code='+code}}
+
+// Normalize User
+function normalizeUser(u){
+  const out={id:Date.now(),un:'',pw:'',code:'',ref:'',phone:'',wilaya:'',balance:0,taskBal:0,refEarn:0,teamCount:0,wheelSpins:0,m1Refs:0,level:null,totalEarned:0,avatar:null,joined:new Date().toISOString(),joinedVia:null,notifs:[],investments:[],investEarned:0,withdrawals:[],upgradeRequests:[],team:[],loginStreak:0,badges:[],activityLog:[],showLiveActivity:true,profileCompleted:false,...u};
+  out.investments=out.investments||[];out.withdrawals=out.withdrawals||[];out.upgradeRequests=out.upgradeRequests||[];out.team=out.team||[];out.notifs=out.notifs||[];out.activityLog=out.activityLog||[];out.badges=out.badges||[];
+  if(!out.ref||String(out.ref).includes('?ref=')||String(out.ref).includes('/ref/')||String(out.ref).includes('/invite')||!String(out.ref).includes('?code=')){out.ref=inviteLink(out.code)}
+  return out
 }
 
-// ============================================
-// 11. src/components/ui.tsx - مكونات الواجهة
-// ============================================
-import { useEffect, useState } from 'react';
-import { useStore } from '../store';
-import { Home as HI, Zap, Diamond, User as UI } from 'lucide-react';
-import { T } from '../utils';
+// Toast
+function toast2(msg,type='info'){S.toast={msg,type,id:Date.now()};render();setTimeout(()=>{S.toast=null;render()},2800)}
 
-export function Nav() {
-  const { tab, setTab, tasks, user, lang } = useStore();
-  const t = T[lang];
-  const avail = tasks ? tasks.filter(x => x.status === 'available').length : 5;
-  const unread = user?.notifs?.filter(n => !n.r).length || 0;
-  const tabs: { id: 'home' | 'tasks' | 'up' | 'profile'; ic: typeof HI; l: string; b: number }[] = [
-    { id: 'home', ic: HI, l: t.home, b: 0 },
-    { id: 'tasks', ic: Zap, l: t.tasks, b: avail },
-    { id: 'up', ic: Diamond, l: t.up, b: 0 },
-    { id: 'profile', ic: UI, l: t.acc, b: unread },
-  ];
-  return (
-    <nav style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 68, background: 'rgba(2,5,9,.97)', borderTop: '1px solid rgba(212,175,55,.1)', display: 'flex', zIndex: 50 }}>
-      {tabs.map(tb => {
-        const on = tab === tb.id;
-        return (
-          <button key={tb.id} onClick={() => setTab(tb.id)} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, background: 'none', border: 'none', cursor: 'pointer', color: on ? '#D4AF37' : 'rgba(255,255,255,.3)', position: 'relative', transition: 'color .2s', fontFamily: 'Tajawal, sans-serif' }}>
-            {on && <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: 28, height: 3, borderRadius: '0 0 2px 2px', background: 'linear-gradient(135deg, #D4AF37, #C9992C)' }} />}
-            <div style={{ position: 'relative' }}>
-              <tb.ic size={22} strokeWidth={on ? 2.5 : 1.8} />
-              {tb.b > 0 && <span style={{ position: 'absolute', top: -5, right: -8, minWidth: 16, height: 16, background: '#EF4444', borderRadius: 8, border: '1.5px solid #020509', fontSize: 8, fontWeight: 900, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>{tb.b}</span>}
-            </div>
-            <span style={{ fontSize: 10, fontWeight: on ? 800 : 600, opacity: on ? 1 : 0.7 }}>{tb.l}</span>
-          </button>
-        );
-      })}
-    </nav>
-  );
-}
+// Save User
+function saveUser(user){S.savePulse++;const normalized=normalizeUser(user);updateUserLocal(normalized);S.user=normalized}
 
-export function Toast() {
-  const { toast } = useStore();
-  useEffect(() => { if (!toast) return; const tm = setTimeout(() => useStore.setState({ toast: null }), 2800); return () => clearTimeout(tm); }, [toast]);
-  if (!toast) return null;
-  const c: Record<string, string> = { success: '#16A34A', error: '#DC2626', warning: '#D97706', info: '#1E40AF' };
-  return (
-    <div className="an-enter" style={{ position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 9999, padding: '10px 20px', borderRadius: 99, fontSize: 13, fontWeight: 800, color: '#fff', whiteSpace: 'nowrap', maxWidth: '88vw', overflow: 'hidden', textOverflow: 'ellipsis', background: c[toast.type] || c.info, boxShadow: '0 8px 30px rgba(0,0,0,.5)' }}>{toast.msg}</div>
-  );
-}
+// Create User
+function createUser(user,password){const normalized=normalizeUser({...user,pw:'',passwordHash:password});return createUserLocal(normalized)}
 
-export function SaveBadge() {
-  const pulse = useStore(s => s.savePulse);
-  const lang = useStore(s => s.lang);
-  const [show, setShow] = useState(false);
-  useEffect(() => { if (!pulse) return; setShow(true); const t = setTimeout(() => setShow(false), 1200); return () => clearTimeout(t); }, [pulse]);
-  if (!show) return null;
-  return (
-    <div className="an-enter" style={{ position: 'fixed', top: 14, right: 14, zIndex: 9998, display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(34,197,94,.12)', border: '1px solid rgba(34,197,94,.25)', borderRadius: 99, padding: '6px 10px', color: '#22C55E', fontSize: 11, fontWeight: 900, backdropFilter: 'blur(8px)' }}>
-      <span style={{ width: 7, height: 7, borderRadius: 4, background: '#22C55E', display: 'inline-block' }} />
-      {lang === 'ar' ? 'تم الحفظ' : 'Saved'}
+// Find User
+function findUserByCode(code){return getUserByCode(code.toUpperCase())}
+
+// Login
+function loginUser(username,password){const user=getUserByUsername(username);if(!user)return null;if(user.passwordHash===password||user.pw===password)return normalizeUser(user);return null}
+
+// Username Exists
+function usernameExists(username){return Boolean(getUserByUsername(username))}
+
+// Render Functions
+function render(){document.getElementById('root').innerHTML=appHTML()}
+
+function appHTML(){
+  if(!S.user)return authHTML();
+  return `
+    <div class="w-full max-w-[430px] h-full relative overflow-hidden bg-[#020509] mx-auto">
+      <div class="absolute top-0 left-0 right-0 bottom-[68px] overflow-y-auto overflow-x-hidden no-sb touch-scroll bg-[#020509]">
+        ${S.tab==='home'?homeHTML():S.tab==='tasks'?tasksHTML():S.tab==='up'?upgradeHTML():profileHTML()}
+      </div>
+      ${navHTML()}
+      ${(S.tab==='home'||S.tab==='tasks')?aiButtonHTML():''}
+      ${S.showWheel?wheelOverlayHTML():''}
+      ${S.showCompany?companyHTML():''}
+      ${S.showInvest?investHTML():''}
+      ${toastHTML()}
+      ${saveBadgeHTML()}
+      ${sheetHTML()}
     </div>
-  );
+  `
 }
 
-export function Sheet() {
-  const { sheet, closeSheet } = useStore();
-  if (!sheet) return null;
-  return (
-    <div className="an-fadeIn" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.85)', zIndex: 200, display: 'flex', alignItems: 'flex-end' }} onClick={e => { if (e.target === e.currentTarget) closeSheet(); }}>
-      <div className="an-slideUp no-sb touch-scroll" style={{ background: 'linear-gradient(180deg, #0b1122, #050912)', borderRadius: '22px 22px 0 0', borderTop: '1px solid rgba(212,175,55,.12)', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
-        <div style={{ width: 36, height: 4, background: 'rgba(212,175,55,.18)', borderRadius: 2, margin: '12px auto 8px' }} />
-        {sheet.title && <div style={{ textAlign: 'center', fontSize: 15, fontWeight: 800, color: '#fff', padding: '0 16px 12px', borderBottom: '1px solid rgba(255,255,255,.05)' }}>{sheet.title}</div>}
-        <div style={{ padding: '16px 16px 48px' }}>{sheet.content}</div>
-      </div>
-    </div>
-  );
-}
-
-// ============================================
-// 12. src/components/Wheel.tsx - عجلة الحظ
-// ============================================
-import { useState } from 'react';
-import { useStore } from '../store';
-import { T, WP } from '../utils';
-import { X } from 'lucide-react';
-
-export function Wheel() {
-  const { user, lang, wheelRot, setWheelRot, toast2, updUser, setShowWheel } = useStore();
-  const t = T[lang];
-  const [spinning, setSpinning] = useState(false);
-  const [prizeRec, setPrizeRec] = useState<{l:string;v:number}|null>(null);
-  if (!user) return null;
-  const doSpin = () => {
-    if (spinning || (user.wheelSpins||0) <= 0) return;
-    setSpinning(true); setPrizeRec(null);
-    const n=WP.length, seg=360/n, add=1440+Math.random()*1440, nr=wheelRot+add;
-    setWheelRot(nr);
-    setTimeout(() => {
-      const wi=Math.floor(((360-(nr%360))+(seg/2))%360/seg)%n;
-      const prize=WP[wi]; setSpinning(false);
-      const ns=Math.max(0,(user.wheelSpins||0)-1);
-      if (prize.v>0) { updUser({balance:(user.balance||0)+prize.v,totalEarned:(user.totalEarned||0)+prize.v,wheelSpins:ns}); toast2(`🎉 +${prize.v} د.ج!`,'success'); }
-      else { updUser({wheelSpins:ns+1}); toast2(lang==='ar'?'🎠 دورة إضافية!':'🎠 Extra spin!','warning'); }
-      setPrizeRec(prize);
-    }, 4100);
-  };
-  const cx=134,cy=134,r=128,n=WP.length,seg=360/n;
-  return (
-    <div className="an-fadeIn" style={{position:'fixed',inset:0,background:'rgba(0,0,0,.95)',zIndex:300,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:20,color:'#fff'}}>
-      <button onClick={()=>setShowWheel(false)} style={{position:'absolute',top:48,right:16,width:36,height:36,background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.06)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'rgba(255,255,255,.45)'}}><X size={16} /></button>
-      <div style={{textAlign:'center',marginBottom:16}}>
-        <p className="font-mon" style={{fontSize:11,fontWeight:800,color:'#D4AF37',letterSpacing:2}}>{t.wheel.toUpperCase()}</p>
-        <p style={{color:'rgba(255,255,255,.3)',fontSize:12,marginTop:4}}>{lang==='ar'?'دوراتك':'Spins'}: <span style={{color:'#D4AF37',fontWeight:800}}>{user.wheelSpins||0}</span></p>
-      </div>
-      <div style={{position:'relative',marginBottom:20}}>
-        <div style={{position:'absolute',top:-12,left:'50%',transform:'translateX(-50%)',borderLeft:'11px solid transparent',borderRight:'11px solid transparent',borderTop:'22px solid #EF4444',zIndex:10,filter:'drop-shadow(0 0 5px rgba(239,68,68,.6))'}} />
-        <svg width="268" height="268" viewBox="0 0 268 268" style={{borderRadius:'50%',boxShadow:'0 0 40px rgba(212,175,55,.2)',transform:`rotate(${wheelRot}deg)`,transition:spinning?'transform 4s cubic-bezier(.17,.67,.12,.99)':'none'}}>
-          {WP.map((p,i)=>{const a1=(i*seg-90)*Math.PI/180,a2=((i+1)*seg-90)*Math.PI/180;const x1=(cx+r*Math.cos(a1)).toFixed(1),y1=(cy+r*Math.sin(a1)).toFixed(1),x2=(cx+r*Math.cos(a2)).toFixed(1),y2=(cy+r*Math.sin(a2)).toFixed(1),mx=(cx+(r*.62)*Math.cos((a1+a2)/2)).toFixed(1),my=(cy+(r*.62)*Math.sin((a1+a2)/2)).toFixed(1),rot=(i*seg+(seg/2)-90).toFixed(1);return(<g key={i}><path d={`M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z`} fill={p.cl} stroke="rgba(0,0,0,.35)" strokeWidth="1"/><text x={mx} y={my} textAnchor="middle" dominantBaseline="middle" fontFamily="Montserrat,sans-serif" fontWeight="900" fontSize="10.5" fill="#fff" transform={`rotate(${rot},${mx},${my})`}>{p.l}</text></g>)})}
-          <circle cx={cx} cy={cy} r="25" fill="#020509" stroke="#D4AF37" strokeWidth="3"/><text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle" fontFamily="Montserrat,sans-serif" fontSize="11" fontWeight="900" fill="#D4AF37">BLK</text>
-        </svg>
-      </div>
-      <div style={{minHeight:50,display:'flex',alignItems:'center',justifyContent:'center',marginBottom:12,width:'100%',maxWidth:275}}>
-        {prizeRec && <div className="bg-shim an-enter" style={{border:'1px solid rgba(212,175,55,.1)',borderRadius:16,padding:'10px 18px',textAlign:'center',width:'100%'}}>
-          <p className="font-mon" style={{color:'rgba(255,255,255,.3)',fontSize:9,marginBottom:2}}>{t.prize}</p>
-          <p className="font-mon tg" style={{fontSize:22,fontWeight:900}}>{prizeRec.v>0?`+${prizeRec.v} د.ج`:prizeRec.l}</p>
-        </div>}
-      </div>
-      <button onClick={doSpin} disabled={spinning||(user.wheelSpins||0)<=0} className="bg-gold" style={{width:'100%',maxWidth:275,border:'none',color:'#020509',borderRadius:12,padding:'14px 0',fontSize:15,fontWeight:800,cursor:spinning||(user.wheelSpins||0)<=0?'not-allowed':'pointer',opacity:spinning||(user.wheelSpins||0)<=0?.5:1}}>
-        {spinning?'🎡':((user.wheelSpins||0)>0?`🎯 ${t.spin}`:t.noSpin)}
-      </button>
-      <p style={{color:'rgba(255,255,255,.25)',fontSize:9,marginTop:8,textAlign:'center',fontWeight:700}}>{t.ef}</p>
-    </div>
-  );
-}
-
-// ============================================
-// 13. src/components/Auth.tsx - تسجيل الدخول
-// ============================================
-import { useState } from 'react';
-import { useStore } from '../store';
-import { T } from '../utils';
-import { Shield, Diamond, Eye, EyeOff } from 'lucide-react';
-import { createUser, findUserByCode, loginUser, normalizeUser, saveUser, usernameExists } from '../backend';
-import { WILAYAS, cleanAlgerianPhoneInput, normalizeAlgerianPhone } from '../utils/algeria';
-
-const AVATAR_STYLES = ['avataaars', 'lorelei', 'micah'];
-const AVATAR_SEEDS = ['Ahmed', 'Amina', 'Yacine', 'Sofia', 'Karim', 'Lina', 'Nassim', 'Rania'];
-const avatarUrl = (style: string, seed: string) => `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}&backgroundColor=0f172a,1e293b,312e81`;
-const randomAvatar = () => avatarUrl(AVATAR_STYLES[Math.floor(Math.random() * AVATAR_STYLES.length)], AVATAR_SEEDS[Math.floor(Math.random() * AVATAR_SEEDS.length)]);
-
-export function Auth() {
-  const { lang, toggleLang, setUser, toast2 } = useStore();
-  const t = T[lang];
-  const joinCode = (() => { try { const params = new URLSearchParams(window.location.search); const queryRef = params.get('code') || params.get('ref'); if (queryRef) return queryRef.trim().toUpperCase(); const hash = window.location.hash || ''; const match = hash.match(/(?:code|ref)=([^&]+)/i); return match ? decodeURIComponent(match[1]).trim().toUpperCase() : ''; } catch { return ''; } })();
-  const buildRefLink = (code: string) => { try { const basePath = window.location.pathname.replace(/\/?index\.html$/i, '').replace(/\/$/, ''); return `${window.location.origin}${basePath || ''}?code=${code}`; } catch { return 'blackrock.app?code=' + code; } };
-  const [isLogin, setIsLogin] = useState(true);
-  const [un, setUn] = useState('');
-  const [pw, setPw] = useState('');
-  const [cpw, setCpw] = useState('');
-  const [phone, setPhone] = useState('');
-  const [wilaya, setWilaya] = useState('');
-  const [showWilayas, setShowWilayas] = useState(false);
-  const [showPw, setShowPw] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const go = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!un || !pw) { toast2(lang === 'ar' ? 'يرجى ملء الحقول' : 'Fill all fields', 'error'); return; }
-    if (!isLogin && pw !== cpw) { toast2(lang === 'ar' ? 'كلمتا المرور مختلفتان' : "Passwords don't match", 'error'); return; }
-    const normalizedPhone = normalizeAlgerianPhone(phone);
-    if (!isLogin && !normalizedPhone) { toast2(lang === 'ar' ? 'أدخل رقم جزائري صحيح' : 'Enter a valid Algerian phone', 'error'); return; }
-    if (!isLogin && !wilaya.trim()) { toast2(lang === 'ar' ? 'أدخل الولاية' : 'Enter wilaya', 'error'); return; }
-    setLoading(true);
-    try {
-      setLoading(false);
-      if (isLogin) {
-        const f = await loginUser(un, pw);
-        if (f) { setUser(f); toast2('👋 ' + un, 'success'); }
-        else toast2(lang === 'ar' ? 'بيانات خاطئة' : 'Wrong credentials', 'error');
-      } else {
-        if (await usernameExists(un)) { toast2(lang === 'ar' ? 'الاسم موجود' : 'Username taken', 'error'); return; }
-        const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-        const newAvatar = randomAvatar();
-        const referrer = joinCode ? await findUserByCode(joinCode) : null;
-        console.log('🔍 Referral check - joinCode:', joinCode, 'referrer found:', !!referrer);
-        
-        const nu = normalizeUser({
-          id: Date.now(), un, pw, code, ref: buildRefLink(code), phone: normalizedPhone, wilaya: wilaya.trim(), profileCompleted: true,
-          balance: 0, taskBal: 0, refEarn: 0, teamCount: 0, wheelSpins: 1,
-          m1Refs: 0, level: null, totalEarned: 0, avatar: newAvatar,
-          joined: new Date().toISOString(), joinedVia: referrer ? joinCode : null,
-          investments: [], investEarned: 0, withdrawals: [], upgradeRequests: [], team: [], showLiveActivity: true, lastLogin: new Date().toDateString(), loginStreak: 1,
-          badges: ['founder'], activityLog: [new Date().toLocaleString() + ' - account created'],
-          notifs: [
-            { id: 1, title: '👋 ' + (lang === 'ar' ? 'مرحباً!' : 'Welcome!'), desc: (lang === 'ar' ? 'سجلت بنجاح! حصلت على دورة عجلة حظ مجانية! 🎡' : 'You registered successfully! You got a free lucky spin! 🎡'), t: 'Now', r: false },
-            { id: 2, title: '🏆 ' + (lang === 'ar' ? 'مسابقة الإحالة' : 'Referral Contest'), desc: lang === 'ar' ? '10 أصدقاء = ترقية مجانية!' : '10 friends = Free upgrade!', t: 'Now', r: false }
-          ]
-        });
-        
-        const saved = await createUser(nu, pw);
-        console.log('✅ New user created:', saved.un, 'wheelSpins:', saved.wheelSpins);
-        
-        if (referrer) {
-          referrer.teamCount = (referrer.teamCount || 0) + 1;
-          referrer.wheelSpins = (referrer.wheelSpins || 0) + 1;
-          referrer.team = [...(referrer.team || []), { id: saved.id, username: un, code, joined: new Date().toISOString(), avatar: newAvatar, level: null, active: true }];
-          referrer.notifs = [...(referrer.notifs || []), { id: Date.now(), title: '🎡 ' + (lang === 'ar' ? 'صديق جديد انضم!' : 'New friend joined!'), desc: un + (lang === 'ar' ? ' سجل برابطك. حصلت على دورة عجلة حظ! 🎁' : ' joined via your link. You earned a lucky spin! 🎁'), t: new Date().toLocaleTimeString(), r: false }];
-          await saveUser(referrer);
-          console.log('✅ Referrer updated:', referrer.un, 'wheelSpins:', referrer.wheelSpins, 'teamCount:', referrer.teamCount);
-        } else if (joinCode) {
-          console.log('⚠️ Referrer NOT found for code:', joinCode);
-        }
-        
-        setUser(saved);
-        toast2('🎉 ' + (lang === 'ar' ? 'مرحباً! لديك دورة عجلة حظ مجانية 🎡' : 'Welcome! You have a free lucky spin 🎡'), 'success');
-      }
-    } catch (err) {
-      console.error(err);
-      toast2(lang === 'ar' ? 'خطأ في الاتصال بقاعدة البيانات' : 'Database connection error', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const inputStyle: React.CSSProperties = { width: '100%', background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 14, color: '#fff', padding: '14px 16px', fontSize: 15, fontWeight: 700, outline: 'none', fontFamily: 'Tajawal, sans-serif' };
-  const labelStyle: React.CSSProperties = { display: 'block', color: 'rgba(255,255,255,.5)', fontSize: 11, fontWeight: 800, letterSpacing: 1, marginBottom: 8 };
-
-  return (
-    <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 24px', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40%', background: 'radial-gradient(ellipse at 50% -20%, rgba(212,175,55,.06), transparent 68%)', pointerEvents: 'none' }} />
-      <div className="an-enter" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 370 }}>
-        {joinCode && (<div style={{ background: 'linear-gradient(135deg, rgba(212,175,55,.12), rgba(34,197,94,.06))', border: '1px solid rgba(212,175,55,.28)', borderRadius: 16, padding: 14, textAlign: 'center', marginBottom: 16 }}><p style={{ color: '#D4AF37', fontSize: 13, fontWeight: 900, marginBottom: 4 }}>🎁 {lang === 'ar' ? 'دعوة صديق مفعلة' : 'Referral Invite Active'}</p><p style={{ color: 'rgba(255,255,255,.48)', fontSize: 12, fontWeight: 700 }}>{lang === 'ar' ? 'سجل الآن لتحصل على دورة عجلة حظ مجانية' : 'Sign up now to get a free lucky wheel spin'}</p></div>)}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 32 }}>
-          <div style={{ width: 72, height: 72, background: 'linear-gradient(135deg, #D4AF37, #C9992C, #B8860B)', borderRadius: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, boxShadow: '0 0 24px rgba(212,175,55,.4)' }} className="an-glow"><Diamond size={36} strokeWidth={2.5} color="#020509" /></div>
-          <h1 style={{ fontFamily: 'Montserrat, sans-serif', fontSize: 26, fontWeight: 900, letterSpacing: 4 }} className="tg">BLACKROCK</h1>
-          <p style={{ color: 'rgba(255,255,255,.35)', fontSize: 11, fontWeight: 700, letterSpacing: 2, marginTop: 4 }}>{t.sub.toUpperCase()}</p>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 14, flexWrap: 'wrap' }}>
-            <span style={{ background: 'rgba(34,197,94,.08)', border: '1px solid rgba(34,197,94,.22)', borderRadius: 99, padding: '3px 10px', display: 'inline-flex', alignItems: 'center', gap: 4 }}><Shield size={11} color="#22C55E" /><span style={{ color: '#22C55E', fontSize: 10, fontWeight: 800 }}>SSL V3</span></span>
-            <span style={{ background: 'rgba(212,175,55,.07)', border: '1px solid rgba(212,175,55,.2)', borderRadius: 99, padding: '3px 10px' }}><span style={{ color: '#D4AF37', fontSize: 10, fontWeight: 800 }}>NYSE:BLK</span></span>
-            <button onClick={toggleLang} style={{ background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 99, padding: '3px 10px', color: 'rgba(255,255,255,.55)', fontSize: 10, fontWeight: 800, cursor: 'pointer', fontFamily: 'Tajawal, sans-serif' }}>{t.lang}</button>
+function authHTML(){
+  const joinCode=(()=>{try{const params=new URLSearchParams(window.location.search);const queryRef=params.get('code')||params.get('ref');if(queryRef)return queryRef.trim().toUpperCase();const hash=window.location.hash||'';const match=hash.match(/(?:code|ref)=([^&]+)/i);return match?decodeURIComponent(match[1]).trim().toUpperCase():''}catch{return''}})();
+  const t=T[S.lang];
+  return `
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px;overflow-y:auto">
+      <div style="position:absolute;top:0;left:0;right:0;height:40%;background:radial-gradient(ellipse at 50% -20%,rgba(212,175,55,.06),transparent 68%);pointer-events:none"></div>
+      <div class="an-enter" style="position:relative;z-index:1;width:100%;max-width:370px">
+        ${joinCode?`<div style="background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(34,197,94,.06));border:1px solid rgba(212,175,55,.28);border-radius:16;padding:14;text-align:center;margin-bottom:16"><p style="color:#D4AF37;font-size:13;font-weight:900;margin-bottom:4">🎁 ${S.lang==='ar'?'دعوة صديق مفعلة':'Referral Invite Active'}</p><p style="color:rgba(255,255,255,.48);font-size:12;font-weight:700">${S.lang==='ar'?'سجل الآن لتحصل على دورة عجلة حظ مجانية':'Sign up now to get a free lucky wheel spin'}</p></div>`:''}
+        <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:32">
+          <div style="width:72;height:72;background:linear-gradient(135deg,#D4AF37,#C9992C,#B8860B);border-radius:18;display:flex;align-items:center;justify-content:center;margin-bottom:16;box-shadow:0 0 24px rgba(212,175,55,.4)" class="an-glow"><div style="width:36;height:36;background:#D4AF37;border-radius:8"></div></div>
+          <h1 class="tg" style="font-family:'Montserrat',sans-serif;font-size:26;font-weight:900;letter-spacing:4">BLACKROCK</h1>
+          <p style="color:rgba(255,255,255,.35);font-size:11;font-weight:700;letter-spacing:2;margin-top:4">${t.sub.toUpperCase()}</p>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8;margin-top:14;flex-wrap:wrap">
+            <span style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.22);border-radius:99;padding:3px 10px;display:inline-flex;align-items:center;gap:4"><div style="width:11;height:11;background:#22C55E;border-radius:50%"></div><span style="color:#22C55E;font-size:10;font-weight:800">SSL V3</span></span>
+            <span style="background:rgba(212,175,55,.07);border:1px solid rgba(212,175,55,.2);border-radius:99;padding:3px 10px"><span style="color:#D4AF37;font-size:10;font-weight:800">NYSE:BLK</span></span>
+            <button onclick="toggleLang()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:99;padding:3px 10px;color:rgba(255,255,255,.55);font-size:10;font-weight:800;cursor:pointer;font-family:'Tajawal',sans-serif">${t.lang}</button>
           </div>
         </div>
-        <form onSubmit={go} autoComplete="off" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div><label style={labelStyle}>{t.user}</label><input value={un} onChange={e => setUn(e.target.value)} style={inputStyle} placeholder={t.user} /></div>
-          <div><label style={labelStyle}>{t.pass}</label><div style={{ position: 'relative' }}><input type={showPw ? 'text' : 'password'} value={pw} onChange={e => setPw(e.target.value)} style={{ ...inputStyle, paddingLeft: lang === 'ar' ? 16 : 50, paddingRight: lang === 'ar' ? 50 : 16 }} placeholder={t.pass} /><button type="button" onClick={() => setShowPw(!showPw)} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', ...(lang === 'ar' ? { right: 14 } : { left: 14 }), background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: 'rgba(255,255,255,.35)' }}>{showPw ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></div>
-          {!isLogin && (<>
-            <div className="an-enter"><label style={labelStyle}>{t.conf}</label><input type="password" value={cpw} onChange={e => setCpw(e.target.value)} style={inputStyle} placeholder={t.conf} /></div>
-            <div className="an-enter"><label style={labelStyle}>{lang === 'ar' ? 'رقم الهاتف' : 'Phone number'}</label><div style={{position:'relative'}}><span style={{position:'absolute',left:14,top:'50%',transform:'translateY(-50%)',color:'#D4AF37',fontFamily:'Montserrat,sans-serif',fontWeight:900,fontSize:15,pointerEvents:'none'}}>+213</span><input type="tel" value={phone} onChange={e => setPhone(cleanAlgerianPhoneInput(e.target.value))} name="br_phone_no_autofill" autoComplete="off" inputMode="tel" style={{ ...inputStyle, direction: 'ltr', textAlign: 'left', fontFamily: 'Montserrat, sans-serif', paddingLeft: 58 }} placeholder="" /></div></div>
-            <div className="an-enter"><label style={labelStyle}>{lang === 'ar' ? 'الولاية' : 'Wilaya'}</label><button type="button" onClick={()=>setShowWilayas(true)} style={{...inputStyle,textAlign:lang==='ar'?'right':'left',cursor:'pointer',color:wilaya?'#fff':'rgba(255,255,255,.55)',display:'flex',alignItems:'center',justifyContent:'space-between'}}><span>{wilaya || (lang === 'ar' ? 'اختر ولايتك من القائمة' : 'Choose your wilaya from list')}</span><span style={{color:'#D4AF37'}}>⌄</span></button>{showWilayas && <div className="no-sb" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:7,maxHeight:260,overflowY:'auto',marginTop:8}}>{WILAYAS.map(w=><button key={w} onClick={()=>{wilayaVal=w;showWilayas=false;}} style={{background:wilaya===w?'linear-gradient(135deg,#D4AF37,#C9992C)':'rgba(255,255,255,.04)',border:wilaya===w?'none':'1px solid rgba(255,255,255,.07)',borderRadius:10,padding:'9px 6px',color:wilaya===w?'#020509':'#fff',fontWeight:800,cursor:'pointer',fontFamily:'Tajawal,sans-serif'}}>{w}</button>)}</div>}</div>
-          </>)}
-          <button type="submit" disabled={loading} style={{ width: '100%', background: 'linear-gradient(135deg, #D4AF37, #C9992C, #B8860B)', border: 'none', borderRadius: 14, color: '#020509', padding: '14px 0', fontSize: 16, fontWeight: 900, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1, boxShadow: '0 4px 20px rgba(212,175,55,.3)', fontFamily: 'Tajawal, sans-serif', marginTop: 4 }}>{loading ? '...' : (isLogin ? t.signIn : t.signUp)}</button>
+        <form onsubmit="handleAuth(event)" autocomplete="off" style="display:flex;flex-direction:column;gap:16">
+          <div><label style="display:block;color:rgba(255,255,255,.5);font-size:11;font-weight:800;letter-spacing:1;margin-bottom:8">${t.user}</label><input type="text" id="auth-un" class="inp" placeholder="${t.user}" /></div>
+          <div><label style="display:block;color:rgba(255,255,255,.5);font-size:11;font-weight:800;letter-spacing:1;margin-bottom:8">${t.pass}</label><div style="position:relative"><input type="password" id="auth-pw" class="inp" placeholder="${t.pass}" style="padding-left:50px" /><button type="button" onclick="togglePw()" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4;color:rgba(255,255,255,.35)">👁</button></div></div>
+          <div class="an-enter"><label style="display:block;color:rgba(255,255,255,.5);font-size:11;font-weight:800;letter-spacing:1;margin-bottom:8">${t.conf}</label><input type="password" id="auth-cpw" class="inp" placeholder="${t.conf}" /></div>
+          <div class="an-enter"><label style="display:block;color:rgba(255,255,255,.5);font-size:11;font-weight:800;letter-spacing:1;margin-bottom:8">${S.lang==='ar'?'رقم الهاتف':'Phone number'}</label><div style="position:relative"><span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#D4AF37;font-family:'Montserrat',sans-serif;font-weight:900;font-size:15;pointer-events:none">+213</span><input type="tel" id="auth-phone" class="inp" placeholder="" style="padding-left:58px;font-family:'Montserrat',sans-serif;text-align:left" oninput="this.value=cleanPhoneInput(this.value)" /></div></div>
+          <div class="an-enter"><label style="display:block;color:rgba(255,255,255,.5);font-size:11;font-weight:800;letter-spacing:1;margin-bottom:8">${S.lang==='ar'?'الولاية':'Wilaya'}</label><select id="auth-wilaya" class="inp" style="cursor:pointer"><option value="">${S.lang==='ar'?'اختر ولايتك':'Choose wilaya'}</option>${WILAYAS.map(w=>`<option value="${w}">${w}</option>`).join('')}</select></div>
+          <button type="submit" class="btn bg-gold" style="width:100%;background:linear-gradient(135deg,#D4AF37,#C9992C,#B8860B);color:#020509;margin-top:4">${t.signUp}</button>
         </form>
-        <button onClick={() => { setIsLogin(!isLogin); setPhone(''); setWilaya(''); setCpw(''); }} style={{ display: 'block', margin: '16px auto 16px', background: 'none', border: 'none', color: 'rgba(255,255,255,.45)', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Tajawal, sans-serif' }}>{isLogin ? t.noAcc : t.hasAcc}</button>
-        <div style={{ background: 'linear-gradient(160deg, rgba(10,16,32,.98), rgba(7,12,24,.99))', border: '1px solid rgba(212,175,55,.1)', borderRadius: 16, padding: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}><Shield size={14} color="#22C55E" style={{ flexShrink: 0 }} /><span style={{ color: '#22C55E', fontSize: 13, fontWeight: 800 }}>Platform Security</span></div>
-          <p style={{ color: 'rgba(255,255,255,.35)', fontSize: 12, lineHeight: 1.8, fontWeight: 600 }}>• {lang === 'ar' ? 'عقد رسمي: يناير 2025 → ديسمبر 2027' : 'Contract: Jan 2025 → Dec 2027'}<br/>• AES-256 + SSL/TLS 3.0<br/>• NYSE: BLK — EIN: 32-0174431</p>
+        <button onclick="toggleAuthMode()" style="display:block;margin:16px auto;background:none;border:none;color:rgba(255,255,255,.45);font-size:13;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif">${isLogin?t.noAcc:t.hasAcc}</button>
+        <div class="card" style="margin-top:16"><div style="display:flex;align-items:center;gap:8;margin-bottom:8"><div style="width:14;height:14;background:#22C55E;border-radius:50%"></div><span style="color:#22C55E;font-size:13;font-weight:800">Platform Security</span></div><p style="color:rgba(255,255,255,.35);font-size:12;line-height:1.8;font-weight:600">• ${S.lang==='ar'?'عقد رسمي: يناير 2025 → ديسمبر 2027':'Contract: Jan 2025 → Dec 2027'}<br/>• AES-256 + SSL/TLS 3.0<br/>• NYSE: BLK — EIN: 32-0174431</p></div>
+      </div>
+    </div>
+  `
+}
+
+function homeHTML(){
+  const t=T[S.lang];
+  const user=S.user;
+  const lv=lvD(user.level);
+  const done=user.tasks?user.tasks.filter(x=>x.status==='done').length:0;
+  return `
+    <div class="an-enter" style="padding-bottom:16">
+      <div style="position:sticky;top:0;z-index:40;background:rgba(2,5,9,.97);padding:10px 16px;border-bottom:1px solid rgba(212,175,55,.06)">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:8">
+            <div class="bg-gold" style="width:28;height:28;border-radius:8;display:flex;align-items:center;justify-content:center;color:#020509;flex-shrink:0">💎</div>
+            <div><p style="color:#fff;font-weight:800;font-size:15">${t.home}</p><p style="color:rgba(255,255,255,.25);font-size:9;font-weight:700">${t.chg}</p></div>
+          </div>
+          <button onclick="toggleLang()" style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.12);border-radius:99;padding:2px 10px;color:#D4AF37;font-size:9;font-weight:800;cursor:pointer">${t.lang}</button>
+        </div>
+      </div>
+      <div style="padding:12px 16px;display:flex;flex-direction:column;gap:12">
+        <div class="bg-shim" style="border:1px solid rgba(212,175,55,.12);border-radius:16;padding:16">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14">
+            <div><p style="color:rgba(255,255,255,.4);font-size:10;font-weight:700;letter-spacing:.5;margin-bottom:4">${t.bal.toUpperCase()}</p><p class="tg font-mon" style="font-size:30;font-weight:900;line-height:1">${fmt(user.balance||0)}</p><p style="color:rgba(255,255,255,.3);font-size:10;font-weight:700;margin-top:2">د.ج</p></div>
+            <div style="text-align:center"><div class="bg-gold" style="width:48;height:48;border-radius:24;display:flex;align-items:center;justify-content:center;font-size:18;font-weight:900;color:#020509">${(user.un||'?')[0].toUpperCase()}</div><span style="display:inline-block;margin-top:4;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.2);border-radius:99;padding:1px 8px;color:#D4AF37;font-size:9;font-weight:800">${lvN(user.level)}</span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6">
+            <div style="background:rgba(255,255,255,.03);border-radius:10;padding:8px 4px;text-align:center"><p class="font-mon" style="font-size:13;font-weight:900;color:#D4AF37">${user.teamCount||0}</p><p style="color:rgba(255,255,255,.3);font-size:9;font-weight:700;margin-top:2">${t.team}</p></div>
+            <div style="background:rgba(255,255,255,.03);border-radius:10;padding:8px 4px;text-align:center"><p class="font-mon" style="font-size:13;font-weight:900;color:#22C55E">${done}/5</p><p style="color:rgba(255,255,255,.3);font-size:9;font-weight:700;margin-top:2">${t.done}</p></div>
+            <div style="background:rgba(255,255,255,.03);border-radius:10;padding:8px 4px;text-align:center"><p class="font-mon" style="font-size:13;font-weight:900;color:#3B82F6">+${lv.dy}</p><p style="color:rgba(255,255,255,.3);font-size:9;font-weight:700;margin-top:2">${t.daily}</p></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8">
+          <button onclick="openDeposit()" class="card" style="border:1px solid rgba(255,255,255,.06);padding:12;display:flex;align-items:center;gap:10;cursor:pointer;text-align:${S.lang==='ar'?'right':'left'}"><div style="width:40;height:40;background:rgba(212,175,55,.07);border-radius:10;display:flex;align-items:center;justify-content:center;color:#D4AF37;flex-shrink:0">💰</div><div style="min-width:0"><p style="color:#fff;font-weight:800;font-size:13;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${S.lang==='ar'?'شحن':'Deposit'}</p><p style="color:rgba(255,255,255,.3);font-size:10;font-weight:700">${S.lang==='ar'?'شحن الرصيد':'Add funds'}</p></div></button>
+          <button onclick="openWithdraw()" class="card" style="border:1px solid rgba(255,255,255,.06);padding:12;display:flex;align-items:center;gap:10;cursor:pointer;text-align:${S.lang==='ar'?'right':'left'}"><div style="width:40;height:40;background:rgba(34,197,94,.07);border-radius:10;display:flex;align-items:center;justify-content:center;color:#22C55E;flex-shrink:0">💳</div><div style="min-width:0"><p style="color:#fff;font-weight:800;font-size:13;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.wd}</p><p style="color:rgba(255,255,255,.3);font-size:10;font-weight:700">${t.qwd}</p></div></button>
+        </div>
+        <div class="card" style="border:1px solid rgba(212,175,55,.1);border-radius:16;padding:14">
+          <p style="color:#fff;font-weight:800;font-size:13;text-align:center;margin-bottom:10">🔗 ${S.lang==='ar'?'رابط الدعوة الوحيد':'Single referral link'}</p>
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:10;padding:7px 10px;display:flex;align-items:center;gap:8;margin-bottom:10"><span style="flex:1;color:rgba(255,255,255,.35);font-size:10;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;direction:ltr">${user.ref}</span><button onclick="copyRef()" class="bg-gold" style="border:none;border-radius:8;color:#020509;font-size:10;font-weight:800;padding:4px 10px;cursor:pointer;flex-shrink:0">${t.copy}</button></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6"><button onclick="copyRef()" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:#fff;border-radius:12;padding:10px 0;font-size:12;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6;cursor:pointer">📋 ${t.copy}</button><button onclick="shareRef()" class="bg-gold" style="border:none;color:#020509;border-radius:12;padding:10px 0;font-size:12;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6;cursor:pointer">🔗 ${t.share}</button></div>
         </div>
       </div>
     </div>
-  );
+  `
 }
 
-// ============================================
-// 14. src/App.tsx - التطبيق الرئيسي
-// ============================================
-import { useEffect, useState, useRef } from 'react';
-import { useStore } from './store';
-import { Auth } from './components/Auth';
-import { Home } from './components/Home';
-import { Tasks } from './components/Tasks';
-import { Upgrade } from './components/Upgrade';
-import { Profile } from './components/Profile';
-import { Company } from './components/Company';
-import { Invest } from './components/Invest';
-import { Wheel } from './components/Wheel';
-import { Nav, Toast, Sheet, SaveBadge } from './components/ui';
-import { Bot, X, Send } from 'lucide-react';
-import { T, fDZD, lvN, lvD } from './utils';
-import { saveUser, updateUserByCode } from './backend';
-import { applyInvestmentAccrual, applyReferralMilestones, ensureUserShape } from './appBrain';
-import { WILAYAS, isValidWilaya, normalizeAlgerianPhone } from './utils/algeria';
-
-function aiResp(txt: string, u: any, lang: string) {
-  const lo = txt.toLowerCase(); const ar = lang === 'ar';
-  const lv = lvD(u.level || 'trial'); const pr = Math.max(43, Math.round(lv.dy / 5));
-  if (/hello|hi\b|hey|مرحبا|هلا|اهلا|السلام/.test(lo)) return ar?`أهلاً ${u.un}! 👋\n\nأنا مساعد BlackRock.\n\n📊 رصيدك: ${fDZD(u.balance||0)}\n🏆 مستواك: ${lvN(u.level)}\n👥 فريقك: ${u.teamCount||0}\n\nكيف أساعدك؟`:`Hello ${u.un}! 👋\n\nI'm BlackRock AI.\n\n📊 Balance: ${fDZD(u.balance||0)}\n🏆 Level: ${lvN(u.level)}\n👥 Team: ${u.teamCount||0}\n\nHow can I help?`;
-  if (/earn|money|ربح|اكسب|كيف|طريقة/.test(lo)) return ar?`💡 استراتيجية الربح:\n\n1️⃣ المهام: 5 × ${pr} = ${pr*5} د.ج/يوم\n2️⃣ الإحالات: 5% مدى الحياة\n3️⃣ الترقية: M1→G7\n\n🏆 10 أصدقاء = ترقية مجانية!`:`💡 Earning:\n\n1️⃣ Tasks: 5 × ${pr} = ${pr*5} د.ج/day\n2️⃣ Referrals: 5% forever\n3️⃣ Upgrade: M1→G7\n\n🏆 10 friends = Free upgrade!`;
-  if (/task|daily|مهمة|مهام/.test(lo)) return ar?`⏱️ المهام اليومية:\n\n• 5 مهام كل يوم\n• كل مهمة = ${pr} د.ج\n• الإجمالي: ${pr*5} د.ج/يوم\n\nمستواك: ${lvN(u.level)}`:`⏱️ Daily Tasks:\n\n• 5 tasks daily\n• Each = ${pr} د.ج\n• Total: ${pr*5} د.ج/day\n\nLevel: ${lvN(u.level)}`;
-  if (/withdraw|سحب|اخراج/.test(lo)) return ar?`💳 السحب:\n\n• السحب عبر CCP بريد الجزائر فقط\n• الحد الأدنى: 10,000 د.ج\n• الشرط: مستوى M1 فأعلى\n• مدة المعالجة: 48 إلى 72 ساعة\n\n⚠️ يجب أن يكون الاسم مطابقاً لحساب CCP\n\n📲 افتح: الرئيسية ← سحب`:`💳 Withdrawal:\n\n• CCP Algeria Post only\n• Minimum: 10,000 د.ج\n• Requires: M1 level+\n• Processing: 48 to 72 hours\n\n⚠️ Name must match CCP account\n\n📲 Go to: Home ← Withdraw`;
-  if (/شحن|deposit|إيداع|charge/.test(lo)) return ar?`💰 شحن الرصيد:\n\n• تواصل مع وكلاء الشركة عبر Signal فقط\n• هذا رابطنا، تجدون الوكلاء للشحن أو الاستثمار:\nhttps://signal.me/#eu/8QzHlJCULtwT98_rnOOfdNxK5ndjabUYXgU8Zh8OsgPx3xc7m_hKhJUr0gUzR3cF\n\n• أرسل المبلغ مع كود حسابك\n• يتم تفعيل الرصيد خلال 15 دقيقة\n• لا يوجد حد أدنى أو حد أقصى للشحن\n\n⚠️ لا يوجد شحن عبر Baridimob أو CCP مباشرة\n\n📲 افتح: الرئيسية ← شحن`:`💰 Deposit:\n\n• Contact company agents through Signal only\n• Agents link:\nhttps://signal.me/#eu/8QzHlJCULtwT98_rnOOfdNxK5ndjabUYXgU8Zh8OsgPx3xc7m_hKhJUr0gUzR3cF\n\n• Send amount with your account code\n• Balance activated within 15 minutes\n• No minimum or maximum deposit limit\n\n⚠️ No direct Baridimob or CCP deposits\n\n📲 Go to: Home ← Deposit`;
-  if (/referral|friend|احال|صديق|5%/.test(lo)) return ar?`🎯 الإحالات:\n\n✅ 🎡 عجلة حظ لك وله\n✅ 5% من أرباحه!\n\n👥 فريقك: ${u.teamCount||0}\n💰 أرباح: ${fDZD(u.refEarn||0)}`:`🎯 Referrals:\n\n✅ 🎡 Spin for both\n✅ 5% of earnings!\n\n👥 Team: ${u.teamCount||0}\n💰 Earnings: ${fDZD(u.refEarn||0)}`;
-  if (/شركة|company|blackrock/.test(lo)) return ar?`🏢 BlackRock, Inc\n\n• 1988 — نيويورك\n• 10.2 تريليون $\n• NYSE: BLK\n\n🇩🇿 العقد: يناير 2025 → ديسمبر 2027`:`🏢 BlackRock, Inc\n\n• 1988 — New York\n• $10.2T AUM\n• NYSE: BLK\n\n🇩🇿 Contract: Jan 2025 → Dec 2027`;
-  if (/رصيد|balance|كم/.test(lo)) return ar?`💰 رصيدك:\n\n💳 ${fDZD(u.balance||0)}\n📋 مهام: ${fDZD(u.taskBal||0)}\n🤝 إحالات: ${fDZD(u.refEarn||0)}\n📈 إجمالي: ${fDZD(u.totalEarned||0)}`:`💰 Balance:\n\n💳 ${fDZD(u.balance||0)}\n📋 Tasks: ${fDZD(u.taskBal||0)}\n🤝 Ref: ${fDZD(u.refEarn||0)}\n📈 Total: ${fDZD(u.totalEarned||0)}`;
-  if (/wheel|عجلة|spin/.test(lo)) return ar?`🎡 عجلة الحظ:\n\nدوراتك: ${u.wheelSpins||0}\n\nكل صديق = دورة لك + دورة له!\n\n🥇 430  🥈 215  🥉 86  🎁 43`:`🎡 Wheel:\n\nSpins: ${u.wheelSpins||0}\n\nEach friend = spin for both!\n\n🥇 430  🥈 215  🥉 86  🎁 43`;
-  return ar?`🤔 جرّب:\n• "كيف أربح؟"\n• "المهام"\n• "الإحالات"\n• "رصيدي"\n• "السحب"\n• "الشركة"`:`🤔 Try:\n• "How to earn?"\n• "Tasks"\n• "Referrals"\n• "Balance"\n• "Withdraw"\n• "Company"`;
-}
-
-function AI() {
-  const { user, lang, aiMsgs, addAi } = useStore();
-  const t = T[lang];
-  const [open, setOpen] = useState(false);
-  const [input, setInput] = useState('');
-  const [typing, setTyping] = useState(false);
-  const msgsRef = useRef<HTMLDivElement>(null);
-  useEffect(() => { if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight; }, [aiMsgs, typing]);
-  const send = (ov?: string) => { const val = ov || input.trim(); if (!val || typing) return; addAi({ id: Date.now(), r: 'user', text: val }); setInput(''); setTyping(true); setTimeout(() => { addAi({ id: Date.now() + 1, r: 'ai', text: aiResp(val, user, lang) }); setTyping(false); }, 500 + Math.random() * 700); };
-  const qs = lang === 'ar' ? ['كيف أربح؟','المهام','الإحالات','رصيدي','السحب','الشركة'] : ['Earn?','Tasks','Referrals','Balance','Withdraw','Company'];
-  return (
-    <><button onClick={() => { setOpen(true); if (aiMsgs.length === 0) addAi({ id: 1, r: 'ai', text: lang === 'ar' ? 'أهلاً بك! 👋\n\nأنا المساعد الذكي لمنصة BlackRock.\nيمكنني مساعدتك في:\n\n💰 طرق الربح والمهام\n📊 معلومات رصيدك\n🏢 معلومات الشركة\n💳 السحب والإيداع\n👥 نظام الإحالات\n🎡 عجلة الحظ\n\nاكتب سؤالك أو اختر من الأزرار أدناه 👇' : "Welcome! 👋\n\nI'm BlackRock's AI Assistant.\nI can help you with:\n\n💰 Earning & Tasks\n📊 Your Balance\n🏢 Company Info\n💳 Withdrawals\n👥 Referral System\n🎡 Lucky Wheel\n\nType your question or tap a button below 👇" }); }} className="fixed bottom-[76px] left-3 z-[49] w-[52px] h-[52px] bg-gold rounded-[16px] flex items-center justify-center border-none cursor-pointer shadow-xl an-float" style={{boxShadow:'0 4px 20px rgba(212,175,55,.4)'}}><div className="an-pulse" style={{position:'absolute',top:-2,right:-2,width:12,height:12,background:'#22C55E',borderRadius:6,border:'2px solid #020509'}} /><Bot size={24} color="#020509" /></button>{open && (<div className="an-fadeIn" style={{position:'fixed',inset:0,background:'#020509',zIndex:300,display:'flex',flexDirection:'column'}}><div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 16px',borderBottom:'1px solid rgba(212,175,55,.06)',background:'rgba(2,5,9,.97)',flexShrink:0}}><button onClick={()=>setOpen(false)} style={{width:40,height:40,background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.06)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'rgba(255,255,255,.45)'}}><X size={18} /></button><div style={{textAlign:'center'}}><p style={{fontFamily:'Montserrat,sans-serif',fontSize:13,fontWeight:900,color:'#D4AF37',letterSpacing:2}}>AI ASSISTANT</p><div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:5,marginTop:2}}><span className="an-pulse" style={{width:7,height:7,background:'#22C55E',borderRadius:4,display:'inline-block'}} /><span style={{color:'#22C55E',fontSize:11,fontWeight:800}}>Online</span></div></div><div style={{width:40,height:40,background:'linear-gradient(135deg,#D4AF37,#C9992C)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center'}}><Bot size={18} color="#020509" /></div></div><div ref={msgsRef} className="no-sb touch-scroll" style={{flex:1,overflowY:'auto',padding:16,display:'flex',flexDirection:'column',gap:12}}>{aiMsgs.map(m => (<div key={m.id} style={{display:'flex',gap:8,alignItems:'flex-start',justifyContent:m.r==='user'?'flex-end':'flex-start'}}>{m.r==='ai' && (<div style={{width:32,height:32,background:'linear-gradient(135deg,#D4AF37,#C9992C)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:2}}><Bot size={14} color="#020509" /></div>)}<div style={{whiteSpace:'pre-wrap',fontSize:13,lineHeight:1.8,maxWidth:'84%',padding:'12px 16px',borderRadius:18,...(m.r==='ai'?{background:'rgba(10,16,32,.95)',border:'1px solid rgba(255,255,255,.06)',borderTopLeftRadius:4,color:'rgba(255,255,255,.8)'}:{background:'linear-gradient(135deg,#D4AF37,#C9992C)',borderTopRightRadius:4,color:'#020509',fontWeight:700})}}>{m.text}</div></div>))}{typing && (<div style={{display:'flex',gap:8,alignItems:'center'}}><div style={{width:32,height:32,background:'linear-gradient(135deg,#D4AF37,#C9992C)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><Bot size={14} color="#020509" /></div><div style={{background:'rgba(10,16,32,.95)',border:'1px solid rgba(255,255,255,.06)',borderRadius:18,borderTopLeftRadius:4,padding:'14px 20px',display:'flex',gap:6,alignItems:'center'}}><span className="td1" style={{width:7,height:7,background:'rgba(255,255,255,.3)',borderRadius:4,display:'inline-block'}} /><span className="td2" style={{width:7,height:7,background:'rgba(255,255,255,.3)',borderRadius:4,display:'inline-block'}} /><span className="td3" style={{width:7,height:7,background:'rgba(255,255,255,.3)',borderRadius:4,display:'inline-block'}} /></div></div>)}</div><div style={{flexShrink:0,padding:'8px 16px 16px',borderTop:'1px solid rgba(212,175,55,.06)'}}><div className="no-sb" style={{display:'flex',gap:6,overflowX:'auto',paddingBottom:8,WebkitOverflowScrolling:'touch'}}>{qs.map(q => (<button key={q} onClick={()=>send(q)} style={{padding:'7px 14px',background:'rgba(212,175,55,.06)',border:'1px solid rgba(212,175,55,.12)',borderRadius:99,color:'#D4AF37',fontSize:13,fontWeight:800,whiteSpace:'nowrap',flexShrink:0,cursor:'pointer',fontFamily:'Tajawal,sans-serif'}}>{q}</button>))}</div><div style={{display:'flex',gap:8,alignItems:'center'}}><input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} style={{flex:1,background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.06)',borderRadius:14,color:'#fff',padding:'12px 16px',fontSize:15,fontWeight:700,outline:'none',fontFamily:'Tajawal,sans-serif'}} placeholder={t.aiP} /><button onClick={()=>send()} style={{width:46,height:46,borderRadius:14,background:'linear-gradient(135deg,#D4AF37,#C9992C)',border:'none',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><Send size={18} color="#020509" /></button></div></div></div>)}</></>
-  );
-}
-
-export default function App() {
-  const { user, tab, lang, showWheel, showCompany, showInvest, updUser, toast2, setSheet, closeSheet } = useStore();
-  const inviteLink = (code: string) => { const basePath = window.location.pathname.replace(/\/?index\.html$/i, '').replace(/\/$/, ''); return `${window.location.origin}${basePath || ''}?code=${code}`; };
-  useEffect(() => { if (!user) return; const timer = setTimeout(() => saveUser(user).catch(console.error), 450); return () => clearTimeout(timer); }, [user]);
-  useEffect(() => { document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'; }, [lang]);
-  useEffect(() => {
-    if (!user) return;
-    const today = new Date().toDateString();
-    const shaped = ensureUserShape(user);
-    const migrated = { investments: user.investments || [], withdrawals: user.withdrawals || [], upgradeRequests: user.upgradeRequests || [], notifs: user.notifs || [], investEarned: user.investEarned || 0, loginStreak: user.loginStreak || 0, badges: user.badges || [], team: user.team || [], avatar: typeof user.avatar === 'string' && user.avatar.includes('dicebear') ? user.avatar : null, phone: user.phone || '', wilaya: user.wilaya || '', profileCompleted: Boolean(user.profileCompleted && normalizeAlgerianPhone(user.phone || '') && isValidWilaya(user.wilaya || '')), activityLog: user.activityLog || [], showLiveActivity: user.showLiveActivity !== false, ref: (!user.ref || user.ref.includes('?ref=') || user.ref.includes('/ref/') || user.ref.includes('/invite') || !user.ref.includes('?code=')) ? inviteLink(user.code) : user.ref };
-    const accrual = applyInvestmentAccrual(shaped, lang);
-    if (accrual.changed) { updUser(accrual.user); if (accrual.message) toast2(accrual.message, 'success'); return; }
-    const referralMilestone = applyReferralMilestones(shaped, lang);
-    if (referralMilestone.changed) { updUser(referralMilestone.user); toast2(lang === 'ar' ? '🏆 تم فتح ترقية مجانية' : '🏆 Free upgrade unlocked', 'success'); return; }
-    if (user.lastLogin !== today) {
-      const yesterday = new Date(Date.now() - 86400000).toDateString();
-      const streak = user.lastLogin === yesterday ? (user.loginStreak || 0) + 1 : 1;
-      const reward = Math.min(100, 10 + streak * 2);
-      updUser({ ...migrated, lastLogin: today, loginStreak: streak, balance: (user.balance || 0) + reward, totalEarned: (user.totalEarned || 0) + reward, notifs: [...migrated.notifs, { id: Date.now(), title: lang === 'ar' ? '🎁 مكافأة الحضور اليومي' : '🎁 Daily check-in reward', desc: `+${reward} د.ج • ${streak} ${lang === 'ar' ? 'أيام متتالية' : 'day streak'}`, t: new Date().toLocaleTimeString(), r: false }], activityLog: [...migrated.activityLog.slice(-30), new Date().toLocaleString() + ` - daily login +${reward} د.ج`] });
-      toast2(lang === 'ar' ? `🎁 مكافأة حضور +${reward} د.ج` : `🎁 Check-in +${reward} د.ج`, 'success');
-    } else if (!user.investments || !user.withdrawals || !user.upgradeRequests || !user.ref || (typeof user.avatar === 'string' && !user.avatar.includes('dicebear'))) { updUser(migrated); }
-  }, [user?.id]);
-  useEffect(() => {
-    if (!user?.joinedVia || user.m1ReferralCredited || !user.level || user.level === 'trial') return;
-    updateUserByCode(user.joinedVia, referrer => {
-      const updatedTeam = (referrer.team || []).map(m => m.code === user.code ? { ...m, level: user.level, active: true } : m);
-      const credited = (referrer.m1Refs || 0) + 1;
-      const withCredit = { ...referrer, team: updatedTeam, m1Refs: credited, refEarn: (referrer.refEarn || 0) + 350, balance: (referrer.balance || 0) + 350, totalEarned: (referrer.totalEarned || 0) + 350, notifs: [...(referrer.notifs || []), { id: Date.now(), title: '💎 صديق وصل M1', desc: `${user.un} وصل إلى ${user.level}. +350 د.ج`, t: new Date().toLocaleTimeString(), r: false }], activityLog: [...(referrer.activityLog || []).slice(-30), `${new Date().toLocaleString()} - friend M1 ${user.un} +350 د.ج`] };
-      return applyReferralMilestones(withCredit, lang).user;
-    }).then(() => updUser({ m1ReferralCredited: true })).catch(console.error);
-  }, [user?.id, user?.level, user?.joinedVia, user?.m1ReferralCredited]);
-  if (!user) return (<><Auth /><Toast /></>);
-  return (
-    <div className="w-full max-w-[430px] h-full relative overflow-hidden bg-[#020509] mx-auto">
-      <div className="absolute top-0 left-0 right-0 bottom-[68px] overflow-y-auto overflow-x-hidden no-sb touch-scroll bg-[#020509]">
-        {tab === 'home' && <Home />}
-        {tab === 'tasks' && <Tasks />}
-        {tab === 'up' && <Upgrade />}
-        {tab === 'profile' && <Profile />}
+function tasksHTML(){
+  const t=T[S.lang];
+  const user=S.user;
+  const hasLevel=Boolean(user?.level);
+  const lv=lvD(user.level||'trial');
+  const taskCount=lv.id==='trial'?5:lv.d;
+  const reward=lv.dy;
+  return `
+    <div class="an-enter" style="padding-bottom:16">
+      <div style="position:sticky;top:0;z-index:40;background:rgba(2,5,9,.97);padding:10px 16px;border-bottom:1px solid rgba(212,175,55,.06)">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:8"><div class="bg-gold" style="width:28;height:28;border-radius:8;display:flex;align-items:center;justify-content:center;color:#020509;flex-shrink:0">⚡</div><div><p style="color:#fff;font-weight:800;font-size:15">${t.taskT}</p><p style="color:rgba(255,255,255,.25);font-size:9;font-weight:700">${t.chg}</p></div></div>
+          <span style="background:${hasLevel?'rgba(212,175,55,.06)':'rgba(239,68,68,.08)'};border:${hasLevel?'1px solid rgba(212,175,55,.12)':'1px solid rgba(239,68,68,.16)'};border-radius:99;padding:2px 10px;color:${hasLevel?'#D4AF37':'#EF4444'};font-size:9;font-weight:800">${hasLevel?lvN(user.level):(S.lang==='ar'?'غير مفعل':'Inactive')}</span>
+        </div>
       </div>
-      <Nav />
-      {(tab === 'home' || tab === 'tasks') && <AI />}
-      {showWheel && <Wheel />}
-      {showCompany && <Company />}
-      {showInvest && <Invest />}
-      <Toast />
-      <SaveBadge />
-      <Sheet />
+      <div style="padding:12px 16px;display:flex;flex-direction:column;gap:10">
+        ${!hasLevel?`<div style="background:linear-gradient(135deg,rgba(212,175,55,.10),rgba(239,68,68,.05));border:1px solid rgba(212,175,55,.22);border-radius:16;padding:14;text-align:center"><div style="width:46;height:46;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.25);border-radius:14;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;color:#D4AF37">🔒</div><p style="color:#fff;font-weight:900;font-size:15;margin-bottom:5">${S.lang==='ar'?'المهام مقفلة حالياً':'Tasks are locked'}</p><p style="color:rgba(255,255,255,.45);font-size:12;line-height:1.7;margin-bottom:12">${S.lang==='ar'?'يجب تفعيل التجربة المجانية أو أي مستوى استثماري قبل تشغيل المهام اليومية.':'Activate the free trial or any investment level before starting daily tasks.'}</p><button onclick="S.tab='up';render()" class="bg-gold" style="width:100%;border:none;border-radius:12;color:#020509;padding:12px 0;font-size:14;font-weight:900;cursor:pointer;font-family:'Tajawal',sans-serif">✓ ${S.lang==='ar'?'تفعيل التجربة المجانية':'Activate Free Trial'}</button></div>`:''}
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6">
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:14;padding:10px 4px;text-align:center"><p class="font-mon" style="font-size:15;font-weight:900;color:#22C55E">${doneC||0}/${taskCount}</p><p style="color:rgba(255,255,255,.25);font-size:9;font-weight:700;letter-spacing:1;margin-top:2">DONE</p></div>
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:14;padding:10px 4px;text-align:center"><p class="font-mon" style="font-size:15;font-weight:900;color:#D4AF37">${totalR||0}</p><p style="color:rgba(255,255,255,.25);font-size:9;font-weight:700;letter-spacing:1;margin-top:2">د.ج</p></div>
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:14;padding:10px 4px;text-align:center"><p class="font-mon" style="font-size:15;font-weight:900;color:#3B82F6">${user.teamCount||0}</p><p style="color:rgba(255,255,255,.25);font-size:9;font-weight:700;letter-spacing:1;margin-top:2">TEAM</p></div>
+        </div>
+        ${Array.from({length:taskCount},(_,i)=>`
+          <div class="card" style="border:1px solid rgba(255,255,255,.05);border-radius:16;padding:14;opacity:${hasLevel?1:.55}">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10">
+              <div style="display:flex;align-items:center;gap:10;min-width:0">
+                <div class="${hasLevel?'bg-gold':''}" style="width:40;height:40;border-radius:10;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:${hasLevel?'#020509':'rgba(255,255,255,.3)'}">🚀</div>
+                <div style="min-width:0"><p style="color:${hasLevel?'#fff':'rgba(255,255,255,.25)'};font-weight:800;font-size:13;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${S.lang==='ar'?TASKS_AR[i%TASKS_AR.length]:TASKS_EN[i%TASKS_EN.length]}</p><p style="color:rgba(255,255,255,.25);font-size:10;font-weight:700;margin-top:1">${t.rew}: ${reward} د.ج · 40 ${t.sec}</p></div>
+              </div>
+              <span class="font-mon" style="font-size:16;font-weight:900;color:${hasLevel?'#D4AF37':'rgba(255,255,255,.3)'}">+${reward}</span>
+            </div>
+            <div style="background:rgba(255,255,255,.05);border-radius:4;height:4;margin-bottom:10;overflow:hidden"><div style="height:100%;border-radius:4;width:0%;background:linear-gradient(135deg,#D4AF37,#C9992C);transition:width .3s"></div></div>
+            <button onclick="${hasLevel?'startTask('+i+')':'toast2(\''+(S.lang==='ar'?'فعّل المستوى أولاً':'Activate level first')+'\',\'warning\')'}" class="${hasLevel?'bg-gold':''}" style="width:100%;border:${hasLevel?'none':'1px solid rgba(212,175,55,.18)'};background:${hasLevel?undefined:'rgba(212,175,55,.07)'};color:${hasLevel?'#020509':'#D4AF37'};border-radius:12;padding:12px 0;font-size:14;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6;cursor:pointer">${hasLevel?'🚀': '🔒'} ${hasLevel?`${t.start} — 40 ${t.sec}`:(S.lang==='ar'?'فعّل المستوى أولاً':'Activate level first')}</button>
+          </div>
+        `).join('')}
+      </div>
     </div>
-  );
+  `
 }
+
+function profileHTML(){
+  const t=T[S.lang];
+  const user=S.user;
+  return `
+    <div class="an-enter" style="padding-bottom:16">
+      <div style="position:sticky;top:0;z-index:40;background:rgba(2,5,9,.97);padding:10px 16px;border-bottom:1px solid rgba(212,175,55,.06)">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:8"><div class="bg-gold" style="width:28;height:28;border-radius:8;display:flex;align-items:center;justify-content:center;color:#020509;flex-shrink:0">👤</div><p style="color:#fff;font-weight:800;font-size:15">${t.myAcc}</p></div>
+          <button onclick="toggleLang()" style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.12);border-radius:99;padding:2px 10px;color:#D4AF37;font-size:9;font-weight:800;cursor:pointer">${t.lang}</button>
+        </div>
+      </div>
+      <div style="padding:12px 16px;display:flex;flex-direction:column;gap:10">
+        <div class="bg-shim" style="border:1px solid rgba(212,175,55,.12);border-radius:20;padding:20px 16px;text-align:center">
+          <div class="bg-gold" style="width:78;height:78;border-radius:39;display:flex;align-items:center;justify-content:center;font-size:30;font-weight:900;color:#020509;margin:0 auto 10px">${(user.un||'?')[0].toUpperCase()}</div>
+          <p style="color:#fff;font-weight:800;font-size:17;margin-bottom:2">${user.un}</p>
+          <p class="font-mon" style="color:rgba(255,255,255,.25);font-size:11;font-weight:700;margin-bottom:8">BLK-${String(user.id).slice(-6)}</p>
+          <span style="display:inline-block;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.18);border-radius:99;padding:2px 10px;color:#D4AF37;font-size:10;font-weight:800">${lvN(user.level)}</span>
+          <p style="color:rgba(255,255,255,.25);font-size:10;font-weight:700;margin-top:8">${S.lang==='ar'?'انضم:':'Since:'} ${new Date(user.joined||Date.now()).toLocaleDateString()}</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6">
+          <div class="card" style="border:1px solid rgba(255,255,255,.05);border-radius:16;padding:10;text-align:center"><p class="font-mon" style="font-size:13;font-weight:800;color:#D4AF37;margin-bottom:2">${fmt(user.balance||0)} د.ج</p><p style="color:rgba(255,255,255,.3);font-size:10;font-weight:700">💰 ${t.bal}</p></div>
+          <div class="card" style="border:1px solid rgba(255,255,255,.05);border-radius:16;padding:10;text-align:center"><p class="font-mon" style="font-size:13;font-weight:800;color:#3B82F6;margin-bottom:2">${user.teamCount||0}</p><p style="color:rgba(255,255,255,.3);font-size:10;font-weight:700">👥 ${t.team}</p></div>
+          <div class="card" style="border:1px solid rgba(255,255,255,.05);border-radius:16;padding:10;text-align:center"><p class="font-mon" style="font-size:13;font-weight:800;color:#22C55E;margin-bottom:2">${fDZD(user.totalEarned||0)}</p><p style="color:rgba(255,255,255,.3);font-size:10;font-weight:700">📈 ${t.earned}</p></div>
+          <div class="card" style="border:1px solid rgba(255,255,255,.05);border-radius:16;padding:10;text-align:center"><p class="font-mon" style="font-size:13;font-weight:800;color:#A855F7;margin-bottom:2">${user.wheelSpins||0}</p><p style="color:rgba(255,255,255,.3);font-size:10;font-weight:700">🎡 ${t.wheel}</p></div>
+        </div>
+        <div class="card" style="border:1px solid rgba(212,175,55,.1);border-radius:16;padding:14">
+          <p style="color:#fff;font-weight:800;font-size:13;text-align:center;margin-bottom:10">🔗 ${t.refCode}</p>
+          <div style="background:rgba(212,175,55,.03);border:1px solid rgba(212,175,55,.1);border-radius:12;padding:10;text-align:center;margin-bottom:10"><p class="font-mon tg" style="font-size:24;font-weight:900;letter-spacing:5">${user.code}</p></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6"><button onclick="copyRef()" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:#fff;border-radius:12;padding:10px 0;font-size:12;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6;cursor:pointer">📋 ${t.copy}</button><button onclick="shareRef()" class="bg-gold" style="border:none;color:#020509;border-radius:12;padding:10px 0;font-size:12;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6;cursor:pointer">🔗 ${t.share}</button></div>
+        </div>
+        <button onclick="logout()" style="width:100%;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.12);color:#EF4444;border-radius:16;padding:14px 0;font-size:13;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8;cursor:pointer">🚪 ${t.out}</button>
+      </div>
+    </div>
+  `
+}
+
+function upgradeHTML(){
+  const t=T[S.lang];
+  const user=S.user;
+  return `
+    <div class="an-enter" style="padding-bottom:16">
+      <div style="position:sticky;top:0;z-index:40;background:rgba(2,5,9,.97);padding:12px 16px;border-bottom:1px solid rgba(212,175,55,.06)">
+        <div style="display:flex;align-items:center;gap:9"><div class="bg-gold" style="width:34;height:34;border-radius:10;display:flex;align-items:center;justify-content:center;color:#020509;flex-shrink:0">💎</div><div><p style="color:#fff;font-weight:800;font-size:17">${t.plans}</p><p style="color:rgba(255,255,255,.3);font-size:9;font-weight:800">${S.lang==='ar'?'ترقية يدوية عبر طاقم الشركة':'Manual upgrade through company team'}</p></div></div>
+      </div>
+      <div style="padding:12px 16px;display:flex;flex-direction:column;gap:11">
+        <div class="bg-shim" style="border:1px solid rgba(212,175,55,.15);border-radius:18;padding:15">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10;margin-bottom:10"><div><p style="color:rgba(255,255,255,.42);font-size:11;font-weight:800">${S.lang==='ar'?'نظام الترقية':'Upgrade System'}</p><p class="tg" style="font-size:18;font-weight:900">${S.lang==='ar'?'الدفع عبر CCP للطاقم':'CCP payment to team'}</p></div><div style="width:28;height:28;background:#D4AF37;border-radius:8;display:flex;align-items:center;justify-content:center;color:#020509">🏢</div></div>
+          <p style="color:rgba(255,255,255,.42);font-size:12;line-height:1.8;font-weight:650">${S.lang==='ar'?'اختر المستوى، تواصل مع وكلاء الشركة عبر Signal، ادفع عبر CCP، ثم تتم ترقية حسابك بعد تأكيد الدفع. لا يتم خصم أي مبلغ من رصيد التطبيق.':'Choose a level, contact company agents through Signal, pay by CCP, then your account is upgraded after payment verification. No in-app balance is deducted.'}</p>
+        </div>
+        ${LVS.map(lv=>{const cur=user.level===lv.id;const trial=lv.id==='trial';return `
+          <div class="card" style="border:${cur?'1px solid rgba(34,197,94,.22)':'1px solid rgba(212,175,55,.1)'};border-radius:18;padding:15;opacity:${cur?.85:1}">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12">
+              <div style="display:flex;align-items:center;gap:10"><div class="${cur?'':'bg-gold'}" style="width:44;height:44;border-radius:12;display:flex;align-items:center;justify-content:center;color:${cur?'#22C55E':'#020509'};background:${cur?'rgba(34,197,94,.08)':undefined}">${cur?'✓':'🚀'}</div><div><p style="color:${cur?'#fff':'rgba(255,255,255,.3)'};font-weight:800;font-size:16">${lv.n}</p><p style="color:${lv.p===0?'#22C55E':'#D4AF37'};font-size:13;font-weight:800">${lv.p===0?t.free:fmt(lv.p)+' د.ج'}</p></div></div>
+              ${cur?`<span style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:99;padding:3px 10px;color:#22C55E;font-size:9;font-weight:800">✓ ${t.active}</span>`:''}
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5;margin-bottom:12">
+              <div style="background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.035);border-radius:10;padding:7px 2px;text-align:center"><p style="color:#22C55E;font-weight:800;font-size:10">${lv.dy} د.ج</p><p style="color:rgba(255,255,255,.2);font-size:8;font-weight:700;margin-top:1">${t.dy}</p></div>
+              <div style="background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.035);border-radius:10;padding:7px 2px;text-align:center"><p style="color:#D4AF37;font-weight:800;font-size:10">${lv.d}</p><p style="color:rgba(255,255,255,.2);font-size:8;font-weight:700;margin-top:1">${t.days}</p></div>
+              <div style="background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.035);border-radius:10;padding:7px 2px;text-align:center"><p style="color:#F97316;font-weight:800;font-size:10">${lv.tot}</p><p style="color:rgba(255,255,255,.2);font-size:8;font-weight:700;margin-top:1">${t.tot}</p></div>
+              <div style="background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.035);border-radius:10;padding:7px 2px;text-align:center"><p style="color:#3B82F6;font-weight:800;font-size:10">${lv.mo?fmt(lv.mo):'—'}</p><p style="color:rgba(255,255,255,.2);font-size:8;font-weight:700;margin-top:1">${t.mo}</p></div>
+            </div>
+            ${!cur&&trial?`<button onclick="activateTrial()" style="width:100%;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.18);color:#22C55E;border-radius:13;padding:13px 0;font-size:14;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7;cursor:pointer;font-family:'Tajawal',sans-serif">✓ ${S.lang==='ar'?'بدء التجربة المجانية':'Start Free Trial'}</button>`:''}
+            ${!cur&&!trial?`<button onclick="openUpgradeRequest('${lv.id}')" class="bg-gold" style="width:100%;border:none;color:#020509;border-radius:13;padding:13px 0;font-size:14;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7;cursor:pointer;font-family:'Tajawal',sans-serif">🚀 ${t.upBtn} → ${lv.n}</button>`:''}
+          </div>
+        `}).join('')}
+      </div>
+    </div>
+  `
+}
+
+function navHTML(){
+  const t=T[S.lang];
+  const avail=S.tasks?S.tasks.filter(x=>x.status==='available').length:5;
+  const unread=S.user?.notifs?.filter(n=>!n.r).length||0;
+  const tabs=[['home','🏠','0',t.home],['tasks','⚡',String(avail),t.tasks],['up','💎','0',t.up],['profile','👤',String(unread),t.acc]];
+  return `
+    <nav style="position:absolute;bottom:0;left:0;right:0;height:68;background:rgba(2,5,9,.97);border-top:1px solid rgba(212,175,55,.1);display:flex;z-index:50">
+      ${tabs.map(tb=>`<button onclick="S.tab='${tb[0]}';render()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3;background:none;border:none;cursor:pointer;color:${S.tab===tb[0]?'#D4AF37':'rgba(255,255,255,.3)'};position:relative;transition:color .2s;font-family:'Tajawal',sans-serif">${S.tab===tb[0]?`<div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:28;height:3;border-radius:0 0 2px 2px;background:linear-gradient(135deg,#D4AF37,#C9992C)"></div>`:''}<div style="position:relative"><div style="font-size:22">${tb[1]}</div>${parseInt(tb[2])>0?`<span style="position:absolute;top:-5px;right:-8px;min-width:16;height:16;background:#EF4444;border-radius:8;border:1.5px solid #020509;font-size:8;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 3px">${tb[2]}</span>`:''}</div><span style="font-size:10;font-weight:${S.tab===tb[0]?800:600};opacity:${S.tab===tb[0]?1:0.7}">${tb[3]}</span></button>`).join('')}
+    </nav>
+  `
+}
+
+function aiButtonHTML(){
+  return `<button onclick="openAI()" class="fixed bottom-[76px] left-3 z-[49] w-[52px] h-[52px] bg-gold rounded-[16px] flex items-center justify-center border-none cursor-pointer shadow-xl an-float" style="box-shadow:0 4px 20px rgba(212,175,55,.4)"><div class="an-pulse" style="position:absolute;top:-2px;right:-2px;width:12px;height:12px;background:#22C55E;border-radius:6px;border:2px solid #020509"></div>🤖</button>`
+}
+
+function wheelOverlayHTML(){
+  const t=T[S.lang];
+  const user=S.user;
+  return `
+    <div class="an-fadeIn" style="position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20;color:#fff">
+      <button onclick="S.showWheel=false;render()" style="position:absolute;top:48px;right:16px;width:36px;height:36px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.45)">✕</button>
+      <div style="text-align:center;margin-bottom:16px"><p class="font-mon" style="font-size:11px;font-weight:800;color:#D4AF37;letter-spacing:2">${t.wheel.toUpperCase()}</p><p style="color:rgba(255,255,255,.3);font-size:12px;margin-top:4px">${S.lang==='ar'?'دوراتك':'Spins'}: <span style="color:#D4AF37;font-weight:800">${user.wheelSpins||0}</span></p></div>
+      <div style="position:relative;margin-bottom:20px"><div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);border-left:11px solid transparent;border-right:11px solid transparent;border-top:22px solid #EF4444;z-index:10;filter:drop-shadow(0 0 5px rgba(239,68,68,.6))"></div><svg width="268" height="268" viewBox="0 0 268 268" style="border-radius:50%;box-shadow:0 0 40px rgba(212,175,55,.2);transform:rotate(${S.wheelRot}deg);transition:transform 4s cubic-bezier(.17,.67,.12,.99)">${WP.map((p,i)=>{const seg=360/WP.length;const a1=(i*seg-90)*Math.PI/180;const a2=((i+1)*seg-90)*Math.PI/180;const cx=134;const cy=134;const r=128;const x1=(cx+r*Math.cos(a1)).toFixed(1);const y1=(cy+r*Math.sin(a1)).toFixed(1);const x2=(cx+r*Math.cos(a2)).toFixed(1);const y2=(cy+r*Math.sin(a2)).toFixed(1);return `<g key="${i}"><path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z" fill="${p.cl}" stroke="rgba(0,0,0,.35)" stroke-width="1"/><text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" font-family="Montserrat,sans-serif" font-weight="900" font-size="10.5" fill="#fff" transform="rotate(${(i*seg+(seg/2)-90)},${cx},${cy})">${p.l}</text></g>`}).join('')}<circle cx="134" cy="134" r="25" fill="#020509" stroke="#D4AF37" stroke-width="3"/><text x="134" y="134" text-anchor="middle" dominant-baseline="middle" font-family="Montserrat,sans-serif" font-size="11" font-weight="900" fill="#D4AF37">BLK</text></svg></div>
+      <button onclick="doSpin()" disabled="${S.spinning||(user.wheelSpins||0)<=0}" class="bg-gold" style="width:100%;max-width:275px;border:none;color:#020509;border-radius:12px;padding:14px 0;font-size:15px;font-weight:800;cursor:${(S.spinning||(user.wheelSpins||0)<=0)?'not-allowed':'pointer'};opacity:${(S.spinning||(user.wheelSpins||0)<=0)?.5:1}">${S.spinning?'🎡':((user.wheelSpins||0)>0?`🎯 ${t.spin}`:t.noSpin)}</button>
+      <p style="color:rgba(255,255,255,.25);font-size:9px;margin-top:8px;text-align:center;font-weight:700">${t.ef}</p>
+    </div>
+  `
+}
+
+function toastHTML(){
+  if(!S.toast)return '';
+  const c={success:'#16A34A',error:'#DC2626',warning:'#D97706',info:'#1E40AF'};
+  return `<div class="an-enter" style="position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;padding:10px 20px;border-radius:99px;font-size:13px;font-weight:800;color:#fff;white-space:nowrap;max-width:88vw;overflow:hidden;text-overflow:ellipsis;background:${c[S.toast.type]||c.info};box-shadow:0 8px 30px rgba(0,0,0,.5)">${S.toast.msg}</div>`
+}
+
+function saveBadgeHTML(){
+  if(!S.savePulse)return '';
+  return `<div class="an-enter" style="position:fixed;top:14px;right:14px;z-index:9998;display:flex;align-items:center;gap:6;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:99px;padding:6px 10px;color:#22C55E;font-size:11px;font-weight:900;backdrop-filter:blur(8px)"><span style="width:7px;height:7px;border-radius:4px;background:#22C55E;display:inline-block"></span>${S.lang==='ar'?'تم الحفظ':'Saved'}</div>`
+}
+
+function sheetHTML(){
+  if(!S.sheet)return '';
+  return `<div class="an-fadeIn" style="position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:flex-end" onclick="if(event.target===event.currentTarget){S.sheet=null;render()}"><div class="an-slideUp no-sb touch-scroll" style="background:linear-gradient(180deg,#0b1122,#050912);border-radius:22px 22px 0 0;border-top:1px solid rgba(212,175,55,.12);width:100%;max-height:90vh;overflow-y:auto"><div style="width:36px;height:4px;background:rgba(212,175,55,.18);border-radius:2px;margin:12px auto 8px"></div>${S.sheet.title?`<div style="text-align:center;font-size:15px;font-weight:800;color:#fff;padding:0 16px 12px;border-bottom:1px solid rgba(255,255,255,.05)">${S.sheet.title}</div>`:''}<div style="padding:16px 16px 48px">${S.sheet.content}</div></div></div>`
+}
+
+function companyHTML(){
+  const t=T[S.lang];
+  return `
+    <div class="an-fadeIn" style="position:fixed;inset:0;background:#020509;z-index:300;display:flex;flex-direction:column">
+      <div style="flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(212,175,55,.08);background:rgba(2,5,9,.97)"><button onclick="S.showCompany=false;render()" style="width:36px;height:36px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.45)">←</button><div style="text-align:center"><p class="font-mon" style="font-size:13px;font-weight:900;color:#D4AF37;letter-spacing:2">BLACKROCK</p><p style="color:rgba(255,255,255,.25);font-size:8px;letter-spacing:1;font-weight:700">COMPANY PROFILE</p></div><div class="bg-gold" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#020509">🏢</div></div>
+      <div class="no-sb touch-scroll" style="flex:1;overflow-y:auto;padding:12px 16px 48px;display:flex;flex-direction:column;gap:10">
+        <div class="bg-shim" style="border:1px solid rgba(212,175,55,.12);border-radius:20px;padding:24px 16px;text-align:center;position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:100px;background:radial-gradient(ellipse at 50% -30%,rgba(212,175,55,.05),transparent 70%)"></div><div style="position:relative"><div class="bg-gold an-glow" style="width:68px;height:68px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">🏢</div><h2 class="font-mon tg" style="font-size:22px;font-weight:900;letter-spacing:3;margin-bottom:4px">BLACKROCK</h2><p style="color:rgba(255,255,255,.3);font-size:11px;font-weight:700;letter-spacing:1">BlackRock, Inc — New York, USA</p><div style="display:flex;align-items:center;justify-content:center;gap:6;margin-top:10px;flex-wrap:wrap"><span style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:99px;padding:2px 10px;color:#22C55E;font-size:9px;font-weight:800;display:inline-flex;align-items:center;gap:3">🛡️ ${S.lang==='ar'?'موثقة':'Verified'}</span><span style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.12);border-radius:99px;padding:2px 10px;color:#D4AF37;font-size:9px;font-weight:800">NYSE: BLK</span></div></div></div>
+        <div class="card" style="border:1px solid rgba(255,255,255,.04);border-radius:16px;padding:14px"><div style="display:flex;align-items:center;gap:8;margin-bottom:8"><div style="width:32px;height:32px;background:rgba(59,130,246,.06);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">🌍</div><p style="color:#fff;font-weight:800;font-size:14px">${t.aboutT}</p></div><p style="color:rgba(255,255,255,.45);font-size:13px;line-height:1.9">${t.coDesc}</p></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6"><div class="card" style="border:1px solid rgba(255,255,255,.04);border-radius:16px;padding:12px;text-align:center"><div style="width:32px;height:32px;background:rgba(212,175,55,.05);border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px">🏢</div><p class="font-mon" style="font-size:16px;font-weight:900;color:#D4AF37">1988</p><p style="color:rgba(255,255,255,.3);font-size:10px;font-weight:700;margin-top:2px">${S.lang==='ar'?'سنة التأسيس':'Founded'}</p></div><div class="card" style="border:1px solid rgba(255,255,255,.04);border-radius:16px;padding:12px;text-align:center"><div style="width:32px;height:32px;background:rgba(34,197,94,.05);border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px">📈</div><p class="font-mon" style="font-size:16px;font-weight:900;color:#22C55E">$10.2T</p><p style="color:rgba(255,255,255,.3);font-size:10px;font-weight:700;margin-top:2px">${S.lang==='ar'?'الأصول المدارة':'AUM'}</p></div></div>
+        <div class="card" style="border:1px solid rgba(34,197,94,.12);border-radius:16px;padding:14px"><div style="display:flex;align-items:center;gap:8;margin-bottom:8"><div style="width:32px;height:32px;background:rgba(34,197,94,.06);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">🛡️</div><p style="color:#fff;font-weight:800;font-size:14px">${t.secT}</p></div><p style="color:rgba(255,255,255,.45);font-size:13px;line-height:1.9;margin-bottom:10px">${t.coSec}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:6"><div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.03);border-radius:10px;padding:8px;text-align:center"><p class="font-mon" style="color:#22C55E;font-size:11px;font-weight:800">AES-256</p><p style="color:rgba(255,255,255,.25);font-size:9px;font-weight:700;margin-top:1px">${S.lang==='ar'?'تشفير عسكري':'Military'}</p></div><div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.03);border-radius:10px;padding:8px;text-align:center"><p class="font-mon" style="color:#22C55E;font-size:11px;font-weight:800">SSL/TLS 3.0</p><p style="color:rgba(255,255,255,.25);font-size:9px;font-weight:700;margin-top:1px">${S.lang==='ar'?'بروتوكول آمن':'Protocol'}</p></div></div></div>
+        <div class="card" style="border:1px solid rgba(212,175,55,.12);border-radius:16px;padding:14px"><div style="display:flex;align-items:center;gap:8;margin-bottom:8"><div style="width:32px;height:32px;background:rgba(212,175,55,.06);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">🇩🇿</div><p style="color:#fff;font-weight:800;font-size:14px">${S.lang==='ar'?'العقد الجزائري':'Algeria Contract'}</p></div><p style="color:rgba(255,255,255,.45);font-size:13px;line-height:1.9;margin-bottom:10px">${t.coAlg}</p><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6"><div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.03);border-radius:10px;padding:8px;text-align:center"><p class="font-mon" style="color:#22C55E;font-size:11px;font-weight:800">Jan 2025</p><p style="color:rgba(255,255,255,.2);font-size:9px;font-weight:700;margin-top:1px">${S.lang==='ar'?'البداية':'Start'}</p></div><div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.03);border-radius:10px;padding:8px;text-align:center"><p class="font-mon" style="color:#D4AF37;font-size:11px;font-weight:800">Dec 2027</p><p style="color:rgba(255,255,255,.2);font-size:9px;font-weight:700;margin-top:1px">${S.lang==='ar'?'النهاية':'End'}</p></div><div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.03);border-radius:10px;padding:8px;text-align:center"><p class="font-mon" style="color:#3B82F6;font-size:11px;font-weight:800">3 ${S.lang==='ar'?'سنوات':'Years'}</p><p style="color:rgba(255,255,255,.2);font-size:9px;font-weight:700;margin-top:1px">${S.lang==='ar'?'المدة':'Duration'}</p></div></div></div>
+        <div class="bg-shim" style="border:1px solid rgba(212,175,55,.08);border-radius:16px;padding:16px"><div style="display:flex;align-items:center;gap:6;margin-bottom:8"><div style="width:12px;height:12px;background:#D4AF37;border-radius:50%"></div><span style="color:#D4AF37;font-size:10px;font-weight:800;letter-spacing:1">${S.lang==='ar'?'النص الرسمي للعقد':'OFFICIAL CONTRACT'}</span></div><p style="color:rgba(255,255,255,.55);font-size:13px;line-height:2">${t.contract}</p></div>
+        <button onclick="window.open('https://www.blackrock.com','_blank')" class="bg-gold" style="width:100%;border:none;color:#020509;border-radius:16px;padding:14px 0;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8;cursor:pointer;font-family:'Tajawal',sans-serif">🌐 blackrock.com</button>
+      </div>
+    </div>
+  `
+}
+
+function investHTML(){
+  return `<div class="an-fadeIn" style="position:fixed;inset:0;background:#020509;z-index:300;display:flex;flex-direction:column"><div style="flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(212,175,55,.08);background:rgba(2,5,9,.97)"><button onclick="S.showInvest=false;render()" style="width:36px;height:36px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.45)">✕</button><div style="text-align:center"><p style="font-size:17px;font-weight:900;color:#D4AF37">${S.lang==='ar'?'استثمار BlackRock':'BlackRock Invest'}</p><p style="color:rgba(255,255,255,.35);font-size:12px;font-weight:700">${S.lang==='ar'?'صناديق استثمارية مضمونة':'Guaranteed Investment Funds'}</p></div><div class="bg-gold" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#020509">📈</div></div><div class="no-sb touch-scroll" style="flex:1;overflow-y:auto;padding:12px 16px 48px;display:flex;flex-direction:column;gap:12"><div style="background:linear-gradient(135deg,rgba(34,197,94,.06),rgba(34,197,94,.02));border:1px solid rgba(34,197,94,.18);border-radius:14px;padding:14px;display:flex;align-items:center;gap:10"><div style="width:36px;height:36px;background:rgba(34,197,94,.06);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#22C55E;flex-shrink:0">🔒</div><div><p style="color:#22C55E;font-size:14px;font-weight:900;margin-bottom:4px">${S.lang==='ar'?'الأموال آمنة ومأمنة ✅':'Funds Safe & Secure ✅'}</p><p style="color:rgba(255,255,255,.48);font-size:12px;line-height:1.8;font-weight:650">${S.lang==='ar'?'لا يوجد دفع داخل التطبيق. تواصل مع وكلاء الشركة عبر Signal، ادفع لهم عبر CCP، ثم تتم ترقية حسابك حسب المستوى المطلوب.':'No in-app payment. Contact company agents through Signal, pay by CCP, then your account is upgraded to the requested level.'}</p></div></div></div></div>`
+}
+
+// Event Handlers
+let isLogin=false;
+function toggleAuthMode(){isLogin=!isLogin;document.getElementById('auth-pw').value='';document.getElementById('auth-cpw').value='';document.getElementById('auth-phone').value='';document.getElementById('auth-wilaya').value='';render()}
+function togglePw(){const pw=document.getElementById('auth-pw');pw.type=pw.type==='password'?'text':'password'}
+function toggleLang(){S.lang=S.lang==='ar'?'en':'ar';document.documentElement.lang=S.lang;document.documentElement.dir=S.lang==='ar'?'rtl':'ltr';render()}
+function handleAuth(e){e.preventDefault();const un=document.getElementById('auth-un').value;const pw=document.getElementById('auth-pw').value;const cpw=document.getElementById('auth-cpw').value;const phone=document.getElementById('auth-phone').value;const wilaya=document.getElementById('auth-wilaya').value;const t=T[S.lang];if(!un||!pw){toast2(S.lang==='ar'?'يرجى ملء الحقول':'Fill all fields','error');return}if(!isLogin&&pw!==cpw){toast2(S.lang==='ar'?'كلمتا المرور مختلفتان':"Passwords don't match",'error');return}const normalizedPhone=normalizePhone(phone);if(!isLogin&&!normalizedPhone){toast2(S.lang==='ar'?'أدخل رقم جزائري صحيح':'Enter a valid Algerian phone','error');return}if(!isLogin&&!wilaya.trim()){toast2(S.lang==='ar'?'أدخل الولاية':'Enter wilaya','error');return}if(isLogin){const f=loginUser(un,pw);if(f){S.user=f;toast2('👋 '+un,'success')}else{toast2(S.lang==='ar'?'بيانات خاطئة':'Wrong credentials','error')}}else{if(usernameExists(un)){toast2(S.lang==='ar'?'الاسم موجود':'Username taken','error');return}const code=Math.random().toString(36).substring(2,8).toUpperCase();const joinCode=(()=>{try{const params=new URLSearchParams(window.location.search);const queryRef=params.get('code')||params.get('ref');if(queryRef)return queryRef.trim().toUpperCase();return''}catch{return''}})();const referrer=joinCode?findUserByCode(joinCode):null;console.log('🔍 Referral check - joinCode:',joinCode,'referrer found:',!!referrer);const nu=normalizeUser({id:Date.now(),un,pw,code,ref:inviteLink(code),phone:normalizedPhone,wilaya:wilaya.trim(),profileCompleted:true,balance:0,taskBal:0,refEarn:0,teamCount:0,wheelSpins:1,m1Refs:0,level:null,totalEarned:0,avatar:null,joined:new Date().toISOString(),joinedVia:referrer?joinCode:null,investments:[],investEarned:0,withdrawals:[],upgradeRequests:[],team:[],showLiveActivity:true,lastLogin:new Date().toDateString(),loginStreak:1,badges:['founder'],activityLog:[new Date().toLocaleString()+' - account created'],notifs:[{id:1,title:'👋 '+(S.lang==='ar'?'مرحباً!':'Welcome!'),desc:(S.lang==='ar'?'سجلت بنجاح! حصلت على دورة عجلة حظ مجانية! 🎡':'You registered successfully! You got a free lucky spin! 🎡'),t:'Now',r:false},{id:2,title:'🏆 '+(S.lang==='ar'?'مسابقة الإحالة':'Referral Contest'),desc:S.lang==='ar'?'10 أصدقاء = ترقية مجانية!':'10 friends = Free upgrade!',t:'Now',r:false}]});const saved=createUser(nu,pw);console.log('✅ New user created:',saved.un,'wheelSpins:',saved.wheelSpins);if(referrer){referrer.teamCount=(referrer.teamCount||0)+1;referrer.wheelSpins=(referrer.wheelSpins||0)+1;referrer.team=[...(referrer.team||[]),{id:saved.id,username:un,code,joined:new Date().toISOString(),avatar:null,level:null,active:true}];referrer.notifs=[...(referrer.notifs||[]),{id:Date.now(),title:'🎡 '+(S.lang==='ar'?'صديق جديد انضم!':'New friend joined!'),desc:un+(S.lang==='ar'?' سجل برابطك. حصلت على دورة عجلة حظ! 🎁':' joined via your link. You earned a lucky spin! 🎁'),t:new Date().toLocaleTimeString(),r:false}];updateUserLocal(referrer);console.log('✅ Referrer updated:',referrer.un,'wheelSpins:',referrer.wheelSpins,'teamCount:',referrer.teamCount)}else if(joinCode){console.log('⚠️ Referrer NOT found for code:',joinCode)}S.user=saved;toast2('🎉 '+(S.lang==='ar'?'مرحباً! لديك دورة عجلة حظ مجانية 🎡':'Welcome! You have a free lucky spin 🎡'),'success')}render()}
+function copyRef(){navigator.clipboard.writeText(S.user.ref).catch(()=>{});toast2(T[S.lang].copied,'success')}
+function shareRef(){const msg=`🏦 BlackRock\n${S.user.ref}\n💰 ${S.lang==='ar'?'اربح يومياً!':'Earn daily!'}`;if(navigator.share){navigator.share({title:'BlackRock',text:msg,url:S.user.ref}).catch(()=>{})}else{navigator.clipboard.writeText(msg).catch(()=>{});toast2(T[S.lang].copied,'success')}}
+function openDeposit(){const SIGNAL_LINK='https://signal.me/#eu/8QzHlJCULtwT98_rnOOfdNxK5ndjabUYXgU8Zh8OsgPx3xc7m_hKhJUr0gUzR3cF';S.sheet={content:`<div style="display:flex;flex-direction:column;gap:12"><div style="text-align:center;margin-bottom:4px"><div style="width:56px;height:56px;background:linear-gradient(135deg,#D4AF37,#C9992C);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px">💰</div><p style="color:#fff;font-weight:900;font-size:18px;margin-bottom:4px">${S.lang==='ar'?'شحن الرصيد':'Deposit Funds'}</p><p style="color:rgba(255,255,255,.4);font-size:13px;font-weight:700">${S.lang==='ar'?'تواصل معنا عبر Signal للشحن':'Contact us on Signal to deposit'}</p></div><div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.15);border-radius:14px;padding:14px"><p style="color:#D4AF37;font-weight:900;font-size:15px;margin-bottom:8px;text-align:center">🔐 Signal</p><p style="color:#fff;font-weight:800;font-size:13px;line-height:1.8;text-align:center">${S.lang==='ar'?'هذا رابطنا، تجدون فيه الوكلاء للشحن أو الاستثمار:':'This is our link, you will find our agents for deposit or investment:'}</p><div style="background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px;margin-top:10px;color:rgba(255,255,255,.55);font-size:11px;word-break:break-all;direction:ltr;text-align:left">${SIGNAL_LINK}</div></div><div style="color:rgba(255,255,255,.35);font-size:12px;line-height:2;font-weight:600">${S.lang==='ar'?'<ul><li>تواصل مع الوكلاء عبر Signal فقط</li><li>أرسل المبلغ المطلوب مع كود حسابك: <span style="color:#D4AF37;font-weight:800">'+S.user.code+'</span></li><li>سيتم تفعيل الرصيد خلال 15 دقيقة</li><li>الشحن بدون حد أدنى أو حد أقصى</li><li>لا يوجد شحن عبر Baridimob أو CCP مباشرة</li></ul>':'<ul><li>Contact agents through Signal only</li><li>Send amount with your code: <span style="color:#D4AF37;font-weight:800">'+S.user.code+'</span></li><li>Balance activated within 15 minutes</li><li>Deposit has no minimum or maximum limit</li><li>No direct Baridimob or CCP deposits</li></ul>'}</div><button onclick="window.open(\''+SIGNAL_LINK+'\',\'_blank\')" class="btn" style="width:100%;background:linear-gradient(135deg,#3A76F0,#2546D8);color:#fff;border:none;border-radius:14px;padding:14px 0;font-size:16px;font-weight:900;cursor:pointer;font-family:\'Tajawal\',sans-serif;display:flex;align-items:center;justify-content:center;gap:8">🔐 ${S.lang==='ar'?'فتح Signal والتواصل مع الوكلاء':'Open Signal and contact agents'}</button></div>`,title:S.lang==='ar'?'شحن الرصيد':'Deposit'};render()}
+function openWithdraw(){const t=T[S.lang];if(!S.user.level||S.user.level==='trial'){toast2(S.lang==='ar'?'⚠️ يتطلب مستوى M1 على الأقل':'⚠️ Requires M1 level','warning');S.tab='up';render();return}if((S.user.balance||0)<10000){toast2(S.lang==='ar'?'⚠️ الحد الأدنى للسحب 10,000 د.ج':'⚠️ Minimum withdrawal 10,000 د.ج','warning');return}S.sheet={content:`<div style="display:flex;flex-direction:column;gap:12"><div style="text-align:center;margin-bottom:4px"><div style="width:56px;height:56px;background:rgba(34,197,94,.1);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;color:#22C55E">💳</div><p style="color:#fff;font-weight:900;font-size:18px;margin-bottom:4px">${t.wd}</p><p style="color:rgba(255,255,255,.4);font-size:13px;font-weight:700">${S.lang==='ar'?'السحب عبر CCP بريد الجزائر فقط':'Withdrawal via CCP Algeria Post only'}</p></div><div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:14px;padding:14px;text-align:center"><p style="color:rgba(255,255,255,.4);font-size:12px;font-weight:700;margin-bottom:4px">${S.lang==='ar'?'الرصيد المتاح للسحب':'Available for Withdrawal'}</p><p class="font-mon" style="font-size:24px;font-weight:900;color:#22C55E">${fmt(S.user.balance||0)} <span style="font-size:12px;color:rgba(255,255,255,.3)">د.ج</span></p></div><div><label style="display:block;color:rgba(255,255,255,.5);font-size:12px;font-weight:800;margin-bottom:6px">${S.lang==='ar'?'رقم حساب CCP':'CCP Account Number'} *</label><input type="text" id="wd-ccp" class="inp" placeholder="${S.lang==='ar'?'مثال: 1234567890 CLE 42':'Example: 1234567890 CLE 42'}" style="direction:ltr;text-align:left;font-family:'Montserrat',sans-serif" /></div><div><label style="display:block;color:rgba(255,255,255,.5);font-size:12px;font-weight:800;margin-bottom:6px">${S.lang==='ar'?'الاسم الكامل (كما في CCP)':'Full Name (as on CCP)'} *</label><input type="text" id="wd-name" class="inp" placeholder="${S.lang==='ar'?'الاسم واللقب':'First and Last Name'}" /></div><div><label style="display:block;color:rgba(255,255,255,.5);font-size:12px;font-weight:800;margin-bottom:6px">${S.lang==='ar'?'المبلغ المراد سحبه (د.ج)':'Amount to Withdraw (د.ج)'} *</label><input type="number" id="wd-amt" class="inp" placeholder="10000" style="font-family:'Montserrat',sans-serif" /></div><div style="display:flex;align-items:center;gap:8;padding:10px 14px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:12px"><div style="width:16px;height:16px;color:#F59E0B">⏰</div><p style="color:#F59E0B;font-size:13px;font-weight:800">${S.lang==='ar'?'مدة المعالجة: 48 إلى 72 ساعة':'Processing time: 48 to 72 hours'}</p></div><div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:12px"><p style="color:rgba(255,255,255,.3);font-size:11px;line-height:1.9;font-weight:600">${S.lang==='ar'?'<ul><li>السحب عبر CCP بريد الجزائر فقط</li><li>الحد الأدنى: 10,000 د.ج</li><li>يجب أن يكون الاسم مطابقاً لحساب CCP</li><li>مدة المعالجة: 48-72 ساعة عمل</li><li>يتطلب مستوى M1 على الأقل</li></ul>':'<ul><li>CCP Algeria Post only</li><li>Minimum: 10,000 د.ج</li><li>Name must match CCP account</li><li>Processing: 48-72 business hours</li><li>Requires M1 level minimum</li></ul>'}</p></div><button onclick="submitWithdraw()" class="btn" style="width:100%;background:linear-gradient(135deg,#22C55E,#16A34A);color:#fff;border:none;border-radius:14px;padding:15px 0;font-size:16px;font-weight:900;cursor:pointer;font-family:'Tajawal',sans-serif">${S.lang==='ar'?'تأكيد السحب ✅':'Confirm Withdrawal ✅'}</button></div>`,title:S.lang==='ar'?'سحب الأموال':'Withdraw Funds'};render()}
+function submitWithdraw(){const amt=parseFloat(document.getElementById('wd-amt').value);const ccp=document.getElementById('wd-ccp').value;const name=document.getElementById('wd-name').value;if(!ccp.trim()){toast2(S.lang==='ar'?'أدخل رقم CCP':'Enter CCP number','error');return}if(!name.trim()){toast2(S.lang==='ar'?'أدخل الاسم الكامل':'Enter full name','error');return}if(!amt||amt<10000){toast2(S.lang==='ar'?'الحد الأدنى 10,000 د.ج':'Minimum 10,000 د.ج','error');return}if(amt>(S.user.balance||0)){toast2(S.lang==='ar'?'رصيد غير كافي':'Insufficient balance','error');return}const newW={id:Date.now(),amount:amt,ccp:ccp.trim(),name:name.trim(),date:new Date().toISOString(),status:'pending'};const newNotif={id:Date.now(),title:S.lang==='ar'?'💳 طلب سحب جديد':'💳 New Withdrawal',desc:`${fmt(amt)} د.ج → CCP: ${ccp.trim()}`,t:new Date().toLocaleTimeString(),r:false};S.user.balance=(S.user.balance||0)-amt;S.user.withdrawals=[...(S.user.withdrawals||[]),newW];S.user.notifs=[...(S.user.notifs||[]),newNotif];saveUser(S.user);S.sheet=null;toast2(S.lang==='ar'?'✅ تم إرسال طلب السحب! سيتم المعالجة خلال 48-72 ساعة':'✅ Withdrawal submitted! Processing in 48-72 hours','success');render()}
+function openUpgradeRequest(lvId){const lv=LVS.find(l=>l.id===lvId);const ref=`UP-${Date.now().toString().slice(-6)}`;const ar=S.lang==='ar';const SIGNAL_LINK='https://signal.me/#eu/8QzHlJCULtwT98_rnOOfdNxK5ndjabUYXgU8Zh8OsgPx3xc7m_hKhJUr0gUzR3cF';const supportMsg=ar?`مرحباً، أريد ترقية حسابي\nالمستوى المطلوب: ${lv.n}\nالمبلغ: ${fmt(lv.p)} د.ج\nكود الحساب: ${S.user.code}\nرقم الطلب: ${ref}`:`Hello, I want to upgrade my account\nRequested level: ${lv.n}\nAmount: ${fmt(lv.p)} د.ج\nAccount code: ${S.user.code}\nRequest ID: ${ref}`;S.sheet={content:`<div style="display:flex;flex-direction:column;gap:12"><div style="text-align:center"><div class="bg-gold an-glow" style="width:62px;height:62px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 0 24px rgba(212,175,55,.25)">💎</div><p style="color:#fff;font-size:19px;font-weight:900;margin-bottom:4px">${ar?'طلب ترقية الحساب':'Account Upgrade Request'}</p><p style="color:#D4AF37;font-size:15px;font-weight:900">${lv.n} • ${fmt(lv.p)} د.ج</p></div><div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.18);border-radius:14px;padding:14px;display:flex;gap:10;align-items:flex-start"><div style="width:18px;height:18px;color:#22C55E;flex-shrink:0;margin-top:2px">🛡️</div><div><p style="color:#22C55E;font-size:14px;font-weight:900;margin-bottom:4px">${ar?'الدفع خارج التطبيق عبر CCP':'External CCP payment'}</p><p style="color:rgba(255,255,255,.48);font-size:12px;line-height:1.8;font-weight:650">${ar?'لا يوجد دفع داخل التطبيق. تواصل مع وكلاء الشركة عبر Signal، ادفع لهم عبر CCP، ثم تتم ترقية حسابك حسب المستوى المطلوب.':'No in-app payment. Contact company agents through Signal, pay by CCP, then your account is upgraded to the requested level.'}</p></div></div><div class="card" style="border:1px solid rgba(212,175,55,.12);border-radius:14px;padding:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:rgba(255,255,255,.4);font-size:12px;font-weight:750">${ar?'المستوى':'Level'}</span><span style="color:#fff;font-size:12px;font-weight:900;text-align:left">${lv.n}</span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:10;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:rgba(255,255,255,.4);font-size:12px;font-weight:750">${ar?'المبلغ المطلوب':'Required amount'}</span><span style="color:#fff;font-size:12px;font-weight:900;text-align:left">${fmt(lv.p)} د.ج</span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:10;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:rgba(255,255,255,.4);font-size:12px;font-weight:750">${ar?'كود حسابك':'Your account code'}</span><span style="color:#fff;font-size:12px;font-weight:900;text-align:left">${S.user.code}</span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:10;padding:8px 0"><span style="color:rgba(255,255,255,.4);font-size:12px;font-weight:750">${ar?'رقم الطلب':'Request ID'}</span><span style="color:#fff;font-size:12px;font-weight:900;text-align:left">${ref}</span></div></div><div style="display:flex;flex-direction:column;gap:8"><button onclick="window.open('${SIGNAL_LINK}','_blank')" style="width:100%;background:rgba(59,130,246,.09);border:1px solid rgba(59,130,246,.18);border-radius:14px;padding:11px;display:flex;align-items:center;gap:10;cursor:pointer;text-align:${ar?'right':'left'}"><div style="width:38px;height:38px;background:rgba(255,255,255,.04);border-radius:11px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);flex-shrink:0">📱</div><div style="min-width:0"><p style="color:#fff;font-weight:900;font-size:13px">Signal</p><p style="color:rgba(255,255,255,.32);font-size:11px;direction:ltr">${ar?'رابط الوكلاء للشحن أو الاستثمار':'Agents link for deposit or investment'}</p></div></button><div style="background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px;color:rgba(255,255,255,.55);font-size:10px;word-break:break-all;direction:ltr;text-align:left">${SIGNAL_LINK}</div></div><div style="background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:12px"><p style="color:rgba(255,255,255,.36);font-size:11px;line-height:1.9;font-weight:650">${ar?'مهم: بعد الدفع عبر CCP أرسل وصل الدفع، كود حسابك، ورقم الطلب عبر Signal. الترقية تتم يدوياً بعد التأكد من الدفع.':'Important: After CCP payment send receipt, account code, and request ID via Signal. Upgrade is applied manually after verification.'}</p></div></div>`,title:ar?'💎 طلب ترقية':'💎 Upgrade Request'};render()}
+function activateTrial(){S.user.level='trial';saveUser(S.user);toast2(S.lang==='ar'?'✓ تم تفعيل التجربة المجانية':'✓ Free trial activated','success');render()}
+function openAI(){S.showAI=true;sheet("AI ASSISTANT",`<div style="display:flex;flex-direction:column;gap:12"><div style="text-align:center"><p class="font-mon" style="font-size:13px;font-weight:900;color:#D4AF37;letter-spacing:2">AI ASSISTANT</p><div style="display:flex;align-items:center;justify-content:center;gap:5;margin-top:2px"><span class="an-pulse" style="width:7px;height:7px;background:#22C55E;border-radius:4px;display:inline-block"></span><span style="color:#22C55E;font-size:11px;font-weight:800">Online</span></div></div><div style="background:rgba(10,16,32,.95);border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:16px;color:rgba(255,255,255,.8)">${S.lang==='ar'?'أهلاً بك! 👋\n\nأنا المساعد الذكي لمنصة BlackRock.\nيمكنني مساعدتك في:\n\n💰 طرق الربح والمهام\n📊 معلومات رصيدك\n🏢 معلومات الشركة\n💳 السحب والإيداع\n👥 نظام الإحالات\n🎡 عجلة الحظ\n\nاكتب سؤالك أو اختر من الأزرار أدناه 👇':"Welcome! 👋\n\nI'm BlackRock's AI Assistant.\nI can help you with:\n\n💰 Earning & Tasks\n📊 Your Balance\n🏢 Company Info\n💳 Withdrawals\n👥 Referral System\n🎡 Lucky Wheel\n\nType your question or tap a button below 👇"}</div><div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;flex-wrap:nowrap">${['كيف أربح؟','المهام','الإحالات','رصيدي','السحب','الشركة'].map(q=>`<button onclick="aiQuery('${q}')" style="padding:7px 14px;background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.12);border-radius:99px;color:#D4AF37;font-size:13px;font-weight:800;white-space:nowrap;flex-shrink:0;cursor:pointer;font-family:'Tajawal',sans-serif">${q}</button>`).join('')}</div></div>`)}
+function aiQuery(q){S.sheet=null;toast2(q,'info')}
+function logout(){S.user=null;S.tab='home';S.tasks=null;S.activeTask=null;S.aiMsgs=[];S.wheelRot=0;S.showWheel=false;S.showAI=false;S.showCompany=false;S.showInvest=false;render()}
+function startTask(i){if(!S.user.level){toast2(S.lang==='ar'?'فعّل التجربة المجانية أولاً':'Activate free trial first','warning');S.tab='up';render();return}if(S.activeTask!==null){toast2(S.lang==='ar'?'مهمة جارية!':'Task in progress!','warning');return}S.activeTask=i;S.cdVal=40;render();const timer=setInterval(()=>{S.cdVal--;if(S.cdVal<=0){clearInterval(timer);completeTask(i)}else{render()}},1000)}
+function completeTask(i){const lv=lvD(S.user.level||'trial');const reward=lv.dy;S.user.taskBal=(S.user.taskBal||0)+reward;S.user.totalEarned=(S.user.totalEarned||0)+reward;S.user.balance=(S.user.balance||0)+reward;S.activeTask=null;toast2(`✓ +${reward} د.ج!`,'success');render()}
+function doSpin(){if(S.spinning||(S.user.wheelSpins||0)<=0)return;S.spinning=true;S.prizeRec=null;const n=WP.length;const seg=360/n;const add=1440+Math.random()*1440;S.wheelRot+=add;render();setTimeout(()=>{const wi=Math.floor(((360-(S.wheelRot%360))+(seg/2))%360/seg)%n;const prize=WP[wi];S.spinning=false;const ns=Math.max(0,(S.user.wheelSpins||0)-1);if(prize.v>0){S.user.balance=(S.user.balance||0)+prize.v;S.user.totalEarned=(S.user.totalEarned||0)+prize.v;S.user.wheelSpins=ns;toast2(`🎉 +${prize.v} د.ج!`,'success')}else{S.user.wheelSpins=ns+1;toast2(S.lang==='ar'?'🎠 دورة إضافية!':'🎠 Extra spin!','warning')}S.prizeRec=prize;render()},4100)}
+
+// Initialize
+render();
+</script>
+</body>
+</html>
